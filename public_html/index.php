@@ -28,14 +28,30 @@ try {
 
 
 function index() {
+    echo "<pre>";
     echo \Entities\User::alter();
+    echo PHP_EOL;
+    echo PHP_EOL;
     echo \Entities\SimCard::alter();
+    echo PHP_EOL;
+    echo PHP_EOL;
     echo \Entities\Farm::alter();
+    echo "</pre>";
 
-    $user = new \Entities\User(2);
-//    $user->markToDelete()->store();
-//    $user->firstName = 'کمیار';
-//    $user->store();
+    $user = new \Entities\User(5);
+    $user->personType = 'juridical';
+    $user->firstNameEn = 'Abbas';
+    $user->lastNameEn = 'Ghaderi';
+    $user->firstNameFa = 'عباس';
+    $user->lastNameFa = 'قادری';
+    $user->nationalCode = '0123456789';
+    $user->cellphoneNumber = '09123456789';
+    $user->email = 'a@b.c';
+    $user->address = 'nah nah';
+    $user->workingFarms = [];
+    $user->lastSimCard = new \Entities\SimCard(1);
+
+    $user->store();
 
 //    $simCard = new Entities\SimCard(1);
 //    var_dump($simCard->lastOwners);

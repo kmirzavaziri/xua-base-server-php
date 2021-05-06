@@ -40,7 +40,7 @@ class Text extends Super
         }
 
         if (!is_string($input)) {
-            $message = gettype($input) . " is not string or castable to string.";
+            $message = gettype($input) . " is not string.";
             return false;
         }
 
@@ -81,7 +81,7 @@ class Text extends Super
         } else {
             return null;
         }
-        $nullExpression = $this->nullable ? '' : ' NOT NULL';
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
 
         return "$type$nullExpression";
     }

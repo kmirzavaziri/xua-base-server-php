@@ -61,6 +61,7 @@ class EntityRelation extends Super
                 $message = implode(' ', $messages);
                 return false;
             }
+            return true;
         }
         return false;
     }

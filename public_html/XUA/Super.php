@@ -56,6 +56,11 @@ abstract class Super extends XUA
         return static::class . "($args)";
     }
 
+    public function __debugInfo(): array
+    {
+        return $this->_x_actual;
+    }
+
     final public static function formal() : array {
         return self::$_x_formal[static::class];
     }

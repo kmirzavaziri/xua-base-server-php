@@ -59,7 +59,7 @@ class PhpVirtualField extends Super
                     ],
                     [
                         'name' => 'value',
-                        'type' => '',
+                        'type' => 'mixed',
                         'required' => true,
                         'checkDefault' => false,
                         'default' => null,

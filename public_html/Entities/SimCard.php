@@ -49,7 +49,7 @@ class SimCard extends Entity
 
     protected static function _indexes(): array
     {
-        return array_merge(parent::_fields(), [
+        return array_merge(parent::_indexes(), [
         ]);
     }
 }

@@ -22,9 +22,9 @@ use XUA\Tools\EntityFieldSignature;
 /**
  * @property int id
  * @property string personType
- * @property string firstName
+ * @property string firstNameFa
  * @property string firstNameEn
- * @property string lastName
+ * @property string lastNameFa
  * @property string lastNameEn
  * @property mixed name
  * @property mixed nameDB
@@ -55,8 +55,8 @@ class User extends Entity
                 null
             ),
             # Natural Person / Juridical Person Agent Information
-            'firstName' => new EntityFieldSignature(
-                static::class, 'firstName',
+            'firstNameFa' => new EntityFieldSignature(
+                static::class, 'firstNameFa',
                 new Text(['minLength' => 1, 'maxLength' => 200]),
                 null
             ),
@@ -65,8 +65,8 @@ class User extends Entity
                 new Text(['minLength' => 1, 'maxLength' => 200]),
                 null
             ),
-            'lastName' => new EntityFieldSignature(
-                static::class, 'lastName',
+            'lastNameFa' => new EntityFieldSignature(
+                static::class, 'lastNameFa',
                 new Text(['minLength' => 1, 'maxLength' => 200]),
                 null
             ),
@@ -77,10 +77,16 @@ class User extends Entity
             ),
             'name' => new EntityFieldSignature(
                 static::class, 'name',
-                new PhpVirtualField(['getter' => function (Entity $entity, array $param) {
-                    $sep = $param['sep'] ?? ' ';
-                    return $entity->firstNameEn . $sep . $entity->lastNameEn;
-                }]),
+                new PhpVirtualField([
+                    'getter' => function (Entity $entity, array $param) {
+                        $sep = $param['sep'] ?? ' ';
+                        return $entity->firstNameEn . $sep . $entity->lastNameEn;
+                    },
+                    'setter' => function (Entity &$entity, array $param, mixed $value) {
+                        $sep = $param['sep'] ?? ' ';
+                        [$entity->firstNameEn, $entity->lastNameEn] = explode($sep, $value);
+                    },
+                ]),
                 null
             ),
             'nameDB' => new EntityFieldSignature(
@@ -174,7 +180,7 @@ class User extends Entity
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                null
+                new SimCard()
             ),
             'lastSimCard' => new EntityFieldSignature(
                 static::class, 'lastSimCard',
@@ -198,14 +204,14 @@ class User extends Entity
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                null
+                []
             ),
         ]);
     }
 
     protected static function _indexes(): array
     {
-        return array_merge(parent::_fields(), [
+        return array_merge(parent::_indexes(), [
         ]);
     }
 }

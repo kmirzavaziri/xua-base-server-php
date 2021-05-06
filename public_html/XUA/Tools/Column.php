@@ -16,6 +16,7 @@ class Column
     {
         return stripos($haystack, $needle) !== false;
     }
+
     public static function fromQuery(string $definition) : Column
     {
         $column = new Column();
@@ -33,11 +34,6 @@ class Column
         }
         $definition = str_ireplace('NULL', '', $definition);
 
-        if (self::contains($definition, 'PRIMARY KEY')) {
-            $column->Key .= 'PRI';
-        }
-        $definition = str_ireplace('PRIMARY KEY', '', $definition);
-
         if (self::contains($definition, 'AUTO_INCREMENT')) {
             $column->Extra .= 'auto_increment';
         }
@@ -51,8 +47,7 @@ class Column
     public function toQuery() : string
     {
         $nullExpression = $this->Null == 'YES' ? 'NULL' : 'NOT NULL';
-        $primaryExpression = self::contains($this->Key, 'PRI')? 'PRIMARY KEY' : '';
-        return trim("$this->Field $this->Type $nullExpression $primaryExpression $this->Extra");
+        return trim("$this->Field $this->Type $nullExpression $this->Extra");
     }
 
     public function eq(Column $column) : bool
@@ -64,9 +59,6 @@ class Column
             return false;
         }
         if ($this->Null != $column->Null) {
-            return false;
-        }
-        if ($this->Key != $column->Key) {
             return false;
         }
         if ($this->Extra != $column->Extra) {

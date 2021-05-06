@@ -47,7 +47,8 @@ class Integer extends Number
 
     protected function _databaseType(): ?string
     {
-        return 'INT';
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
+        return "INT$nullExpression";
     }
 
     protected function _phpType(): string

@@ -16,7 +16,7 @@ class Trilean extends Super
 
     protected function _databaseType(): ?string
     {
-        return "BOOL";
+        return "BOOL NULL";
     }
 
     protected function _phpType(): string

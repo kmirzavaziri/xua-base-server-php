@@ -119,7 +119,7 @@ class Decimal extends Number
             $signExpression = '';
         }
 
-        $nullExpression = $this->nullable ? '' : ' NOT NULL';
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
         return "$type$signExpression$nullExpression";
     }
 

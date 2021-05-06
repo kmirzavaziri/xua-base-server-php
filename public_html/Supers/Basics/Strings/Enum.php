@@ -45,7 +45,7 @@ class Enum extends Text
         }
 
         if (!in_array($input, $this->values)) {
-            $message = "Value '$input' is not a member of values (" . implode(', ', $this->values) . ")";
+            $message = "Value '$input' is not a member of values (" . implode(', ', $this->values) . ").";
             return false;
         }
 
@@ -58,7 +58,7 @@ class Enum extends Text
             return null;
         }
 
-        $nullExpression = $this->nullable ? '' : ' NOT NULL';
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
         return "ENUM('" . implode("','", $this->values) . "')$nullExpression";
     }
 }

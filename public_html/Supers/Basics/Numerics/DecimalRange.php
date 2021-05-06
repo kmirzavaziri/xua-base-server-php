@@ -98,7 +98,7 @@ class DecimalRange extends Decimal
             $signExpression = '';
         }
 
-        $nullExpression = $this->nullable ? '' : ' NOT NULL';
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
         return "$type$signExpression$nullExpression";
     }
 }

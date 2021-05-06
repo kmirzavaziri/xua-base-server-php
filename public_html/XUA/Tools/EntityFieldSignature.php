@@ -4,6 +4,7 @@
 namespace XUA\Tools;
 
 
+use XUA\Exceptions\EntityFieldException;
 use XUA\Super;
 
 final class EntityFieldSignature
@@ -35,13 +36,4 @@ final class EntityFieldSignature
             return $this;
         }
     }
-
-    public static function processField(EntityFieldSignature $signature, &$arg)
-    {
-//        if (!$signature->type->accepts($arg, $messages)) {
-//            throw new SuperArgumentException("$arg is not of type " . $signature->type . ": " . implode(' ', $messages));
-//        }
-    }
-
-
 }
