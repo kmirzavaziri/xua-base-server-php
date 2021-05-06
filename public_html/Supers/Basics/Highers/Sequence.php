@@ -58,7 +58,7 @@ class Sequence extends Json
         if ($this->type != null) {
             foreach ($input as $i => $item) {
                 if (!$this->type->accepts($item)) {
-                    $message = "Type $this->type does not accept sequence item number $i: " . var_export($item, true) . ".";
+                    $message = "Type $this->type does not accept sequence item number $i: " . xua_var_dump($item) . ".";
                     return false;
                 }
             }
@@ -71,5 +71,6 @@ class Sequence extends Json
     protected function _phpType(): string
     {
         return ($this->nullable ? '?' : '') . 'array';
+//        return ($this->nullable ? '?' : '') . ($this->type->_phpType() != 'mixed' ? $this->type->_phpType() . '[]' : 'array');
     }
 }

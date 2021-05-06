@@ -50,7 +50,7 @@ abstract class Super extends XUA
     {
         $args = [];
         foreach ($this->actual() as $key => $value) {
-            $args[] = $key . ' = ' . var_export($value, true);
+            $args[] = $key . ' = ' . xua_var_dump($value);
         }
         $args = implode(', ', $args);
         return static::class . "($args)";

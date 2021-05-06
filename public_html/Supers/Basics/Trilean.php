@@ -21,6 +21,6 @@ class Trilean extends Super
 
     protected function _phpType(): string
     {
-        return '?boolean';
+        return '?bool';
     }
 }

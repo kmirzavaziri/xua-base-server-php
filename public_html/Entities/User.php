@@ -3,7 +3,9 @@
 namespace Entities;
 
 
+use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
+use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
@@ -24,6 +26,8 @@ use XUA\Tools\EntityFieldSignature;
  * @property string firstNameEn
  * @property string lastName
  * @property string lastNameEn
+ * @property mixed name
+ * @property mixed nameDB
  * @property string nationalCode
  * @property ?string organizationName
  * @property ?string organizationNameEn
@@ -36,9 +40,9 @@ use XUA\Tools\EntityFieldSignature;
  * @property ?string phoneNumber
  * @property ?string faxNumber
  * @property ?string iban
- * @property SimCard simCard
- * @property ?SimCard lastSimCard
- * @property Farm[] workingFarms
+ * @property \Entities\SimCard simCard
+ * @property ?\Entities\SimCard lastSimCard
+ * @property \Entities\Farm[] workingFarms
  */
 class User extends Entity
 {
@@ -69,6 +73,22 @@ class User extends Entity
             'lastNameEn' => new EntityFieldSignature(
                 static::class, 'lastNameEn',
                 new Text(['minLength' => 1, 'maxLength' => 200]),
+                null
+            ),
+            'name' => new EntityFieldSignature(
+                static::class, 'name',
+                new PhpVirtualField(['getter' => function (Entity $entity, array $param) {
+                    $sep = $param['sep'] ?? ' ';
+                    return $entity->firstNameEn . $sep . $entity->lastNameEn;
+                }]),
+                null
+            ),
+            'nameDB' => new EntityFieldSignature(
+                static::class, 'name',
+                new DatabaseVirtualField(['getter' => function (array $param) {
+                    $sep = $param['sep'] ?? ' ';
+                    return "CONCAT(firstName, '$sep', lastName)";
+                }]),
                 null
             ),
             'nationalCode' => new EntityFieldSignature(

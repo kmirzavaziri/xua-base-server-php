@@ -65,7 +65,7 @@ class Map extends Json
         if ($this->valueType != null) {
             foreach ($input as $key => $value) {
                 if(!$this->valueType->accepts($value)) {
-                    $message = "Type $this->valueType does not accept map item $key: " . var_export($value, true) . ".";
+                    $message = "Type $this->valueType does not accept map item $key: " . xua_var_dump($value) . ".";
                     return false;
                 }
             }

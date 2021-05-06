@@ -15,7 +15,12 @@ try {
     index();
 } catch (Throwable $throwable) {
     if (Credentials::developer()) {
-        throw $throwable;
+        echo
+            "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
+            $throwable->getMessage() . "\n\n" .
+            "Trace:\n" .
+            $throwable->getTraceAsString() .
+            "</pre>";
     } else {
         echo 'Something went wrong.';
     }
@@ -27,9 +32,10 @@ function index() {
     echo \Entities\SimCard::alter();
     echo \Entities\Farm::alter();
 
-    $user = new \Entities\User(3);
-    $user->firstName = 'کمیار';
-    $user->store();
+    $user = new \Entities\User(2);
+//    $user->markToDelete()->store();
+//    $user->firstName = 'کمیار';
+//    $user->store();
 
 //    $simCard = new Entities\SimCard(1);
 //    var_dump($simCard->lastOwners);

@@ -4,24 +4,40 @@
 namespace XUA\Tools;
 
 
-use XUA\Entity;
 use XUA\Super;
 
-class EntityFieldSignature
+final class EntityFieldSignature
 {
     public EntityRelObject $rel;
+    private array $param = [];
 
     public function __construct(
         public string $entity,
         public string $name,
         public Super $type,
         public $default = null,
-    ) {
+    )
+    {
         $this->rel = new EntityRelObject($this->name);
-        $this->name = $this->entity::table() . '.' . $this->name;
     }
 
-    public static function processField(EntityFieldSignature $signature, &$arg) {
+    public function name() : string
+    {
+        return $this->entity::table() . '.' . $this->name;
+    }
+
+    public function p(?array $param = null) : array|EntityFieldSignature
+    {
+        if ($param === null) {
+            return $this->param;
+        } else {
+            $this->param = $param;
+            return $this;
+        }
+    }
+
+    public static function processField(EntityFieldSignature $signature, &$arg)
+    {
 //        if (!$signature->type->accepts($arg, $messages)) {
 //            throw new SuperArgumentException("$arg is not of type " . $signature->type . ": " . implode(' ', $messages));
 //        }

@@ -6,7 +6,7 @@ namespace XUA\Tools;
 
 final class EntityRelObject
 {
-    public function __construct(private string $__field) {}
+    public function __construct(private string $_x_field) {}
 
     public function __get(string $name)
     {

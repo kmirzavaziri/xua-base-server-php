@@ -40,8 +40,9 @@ abstract class Entity extends XUA
     private array $_x_properties = [];
 
     private bool $_x_toDelete = false;
-    private array $_x_fetched = [];
-    private array $_x_stored = [];
+    private array $_x_must_fetch = [];
+    private array $_x_fetched_by_p = [];
+    private array $_x_must_store = [];
 
     /* DONE */ final public static function _init() : void
     {
@@ -69,25 +70,33 @@ abstract class Entity extends XUA
         }
         if ($exists) {
             $this->_x_properties['id'] = $id;
-            $this->_x_fetched['id'] = true;
-            $this->_x_stored['id'] = true;
+            $this->_x_must_fetch['id'] = false;
+            $this->_x_must_store['id'] = false;
         }
     }
 
-    /* DONE */ function __get($key)
+    /* DONE */ function __get(string $key)
     {
         if (! isset(static::structure()[$key])) {
             throw new EntityFieldException("$key is not in (" . implode(', ', array_keys(static::structure())) . ")");
         }
 
-        if (!$this->_x_fetched[$key]) {
+        $signature = static::structure()[$key];
+        if (
+            (is_a($signature->type, PhpVirtualField::class) or is_a($signature->type, DatabaseVirtualField::class)) and
+            $this->_x_fetched_by_p[$key] != static::structure()[$key]->p()
+        ) {
+            $this->_x_must_fetch[$key] = true;
+        }
+
+        if ($this->_x_must_fetch[$key]) {
             $this->_x_fetch($key);
         }
 
         return $this->_x_properties[$key];
     }
 
-    function __set($key, $value) : void
+    function __set(string $key, mixed $value) : void
     {
         if (! isset(static::structure()[$key])) {
             throw new EntityFieldException("'$key' is not in " . implode(', ', array_keys(static::structure())) . ".");
@@ -101,7 +110,7 @@ abstract class Entity extends XUA
 
         if ($this->_x_properties[$key] != $value) {
             $this->_x_properties[$key] = $value;
-            $this->_x_stored[$key] = false;
+            $this->_x_must_store[$key] = true;
         };
     }
 
@@ -278,8 +287,11 @@ abstract class Entity extends XUA
     /* DONE */ final protected function _x_initialize() : void {
         foreach (static::structure() as $key => $signature) {
             $this->_x_properties[$key] = $signature->default;
-            $this->_x_fetched[$key] = false;
-            $this->_x_stored[$key] = false;
+            $this->_x_must_fetch[$key] = true;
+            $this->_x_must_store[$key] = false;
+            if (is_a($signature->type, PhpVirtualField::class) or is_a($signature->type, DatabaseVirtualField::class)) {
+                $this->_x_fetched_by_p[$key] = [];
+            }
         }
     }
 
@@ -290,19 +302,18 @@ abstract class Entity extends XUA
 
     final protected function _x_store() : Entity
     {
-        if ($this->_x_stored) {
-            return $this;
+        if ($this->id) {
+            if ($this->_x_toDelete) {
+                $this->_x_delete();
+            } else {
+                $this->_x_update();
+            }
+        } else {
+            if (!$this->_x_toDelete) {
+                $this->_x_insert();
+            }
         }
 
-        if (!$this->_x_toDelete and !$this->id) {
-            $this->_x_insert();
-        } elseif (!$this->_x_toDelete and $this->id) {
-            $this->_x_update();
-        } elseif ($this->_x_toDelete and $this->id) {
-            $this->_x_delete();
-        }
-
-        $this->_x_stored = true;
         return $this;
     }
 
@@ -310,7 +321,6 @@ abstract class Entity extends XUA
     {
         if (!$this->_x_toDelete) {
             $this->_x_toDelete = true;
-            $this->_x_stored = false;
         }
         return $this;
     }
@@ -319,7 +329,6 @@ abstract class Entity extends XUA
     {
         if ($this->_x_toDelete) {
             $this->_x_toDelete = false;
-            $this->_x_stored = false;
         }
         return $this;
     }
@@ -339,7 +348,7 @@ abstract class Entity extends XUA
         }
         $entities = [];
         foreach ($arrays as $array) {
-            $entities[] = (new static())->fromArray($array);
+            $entities[] = (new static())->fromDbArray($array);
         }
 
         return $entities;
@@ -356,7 +365,7 @@ abstract class Entity extends XUA
     }
 
     # Predefined Methods (Array-Entity Conversations)
-    final protected function fromArray (array $array) : Entity {
+    /* DONE */ final protected function fromDbArray (array $array) : Entity {
         foreach ($array as $key => $value) {
             /** @var EntityFieldSignature $signature */
             $signature = static::structure()[$key];
@@ -366,8 +375,8 @@ abstract class Entity extends XUA
                     if ($result->id) {
                         if ($signature->type->relation[0] == 'I') {
                             $result->_x_properties[$signature->type->invName] = $this;
-                            $result->_x_fetched[$signature->type->invName] = true;
-                            $result->_x_stored[$signature->type->invName] = true;
+                            $result->_x_must_fetch[$signature->type->invName] = false;
+                            $result->_x_must_store[$signature->type->invName] = false;
                         }
                     } else {
                         $result = null;
@@ -380,30 +389,29 @@ abstract class Entity extends XUA
                             if ($tmp->id) {
                                 if ($signature->type->relation[0] == 'I') {
                                     $tmp->_x_properties[$signature->type->invName] = $this;
-                                    $tmp->_x_fetched[$signature->type->invName] = true;
-                                    $tmp->_x_stored[$signature->type->invName] = true;
+                                    $tmp->_x_must_fetch[$signature->type->invName] = false;
+                                    $tmp->_x_must_store[$signature->type->invName] = false;
                                 }
                                 $result[] = $tmp;
                             }
                         }
                     }
                 }
-            } elseif (is_a($signature->type, PhpVirtualField::class)) {
-
-            } elseif (is_a($signature->type, DatabaseVirtualField::class)) {
-
+            } elseif (is_a($signature->type, PhpVirtualField::class) or is_a($signature->type, DatabaseVirtualField::class)) {
+                $this->_x_fetched_by_p[$key] = $signature->p();
+                $result = $value;
             } else {
                 $result = $signature->type->unmarshalDatabase($value);
             }
             $this->_x_properties[$key] = $result;
-            $this->_x_fetched[$key] = true;
-            $this->_x_stored[$key] = true;
+            $this->_x_must_fetch[$key] = false;
+            $this->_x_must_store[$key] = false;
         }
 
         return $this;
     }
 
-    final protected function toArray () : array {
+    final protected function toDbArray () : array {
         $array = [];
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
@@ -415,7 +423,7 @@ abstract class Entity extends XUA
     }
 
     # Predefined Methods (low-level direct mysql communicator)
-    private function _x_fetch(?string $fieldName = 'id') : void
+    /* DONE */ private function _x_fetch(?string $fieldName = 'id') : void
     {
         if (!($this->_x_properties['id'] ?? false)) {
             return;
@@ -450,11 +458,11 @@ abstract class Entity extends XUA
                 }
             }
         } elseif (is_a($signature->type, PhpVirtualField::class)) {
-
+            $array[$fieldName] = ($signature->type->getter)($this, $signature->p());
         } else {
             [$columnsExpression, $joinsExpression, $keys] = self::columnsExpression($this);
             if ($columnsExpression) {
-                $statement = self::connection()->prepare("SELECT $columnsExpression FROM " . static::table() . " $joinsExpression WHERE " . static::structure()['id']->name . " = ? LIMIT 1");
+                $statement = self::connection()->prepare("SELECT $columnsExpression FROM " . static::table() . " $joinsExpression WHERE " . static::structure()['id']->name() . " = ? LIMIT 1");
                 $statement->execute([$this->_x_properties['id']]);
                 $rawArray = $statement->fetch(PDO::FETCH_NUM);
                 if ($rawArray) {
@@ -465,13 +473,13 @@ abstract class Entity extends XUA
             }
         }
 
-        $this->fromArray($array);
+        $this->fromDbArray($array);
     }
 
     private function _x_insert() : void {
         $this->validation();
 
-        $array = $this->toArray();
+        $array = $this->toDbArray();
         $keys = implode(', ', array_keys($array));
         $questionMarks = implode(', ', array_fill(0, count($array), '?'));
         $values = array_values($array);
@@ -483,7 +491,7 @@ abstract class Entity extends XUA
 //        self::connection()->query("DELETE FROM $table $condition");
     }
 
-    private function _x_delete() : void {
+    /* DONE (not tested) */ private function _x_delete() : void {
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->relation[0] == 'I' and !$signature->type->invNullable and $this->$key) {
@@ -498,17 +506,22 @@ abstract class Entity extends XUA
                     ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') or
                     $signature->type->relation == 'IN'
                 ) {
-                    $this->$key->{$signature->type->invName} = null;
-                    $this->$key->store();
-                } elseif ($signature->type->relation = 'NN') {
-                    $this->$key = [];
-                    $this->store();
+//                    if ($this->$key) {
+//                        $this->$key->{$signature->type->invName} = null;
+//                        $this->$key->store();
+//                    }
+                } elseif ($signature->type->relation == 'NN') {
+//                    $this->$key = [];
+//                    $this->store();
                 }
             }
         }
 
         $statement = self::connection()->prepare("DELETE FROM " . static::table() . " WHERE id = ? LIMIT 1");
         $statement->execute([$this->id]);
+
+        $thisName = 'this';
+        $$thisName = new static();
     }
 
     # Predefined Methods (helpers)
@@ -556,7 +569,7 @@ abstract class Entity extends XUA
     {
         if ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
             $name = $signature->rel->entity();
-            $idName = static::structure()['id']->name;
+            $idName = static::structure()['id']->name();
             $thereEntity = $signature->type->relatedEntity::table();
             $thereName = $signature->type->invName;
             return "LEFT JOIN $thereEntity $name ON $idName = $name.$thereName";
@@ -572,12 +585,12 @@ abstract class Entity extends XUA
         $keys = [];
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
-            if ($entity and $entity->_x_fetched[$key]) {
+            if ($entity and !$entity->_x_must_fetch[$key]) {
                 continue;
             }
             if (is_a($signature->type, EntityRelation::class)) {
                 if (($signature->type->relation == 'II' and $signature->type->definedOn == 'here') or $signature->type->relation == 'NI') {
-                    $expression =  $signature->name;
+                    $expression =  $signature->name();
                 } elseif ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
                     $expression = $signature->rel->id;
                     $joiningFields[] = $signature;
@@ -587,9 +600,9 @@ abstract class Entity extends XUA
             } elseif (is_a($signature->type, PhpVirtualField::class)) {
                 continue;
             } elseif (is_a($signature->type, DatabaseVirtualField::class)) {
-
+                $expression =  ($signature->type->getter)($signature->p()) . ' ' . $signature->name;
             } else {
-                $expression =  $signature->name;
+                $expression =  $signature->name();
             }
 
             $columnExpressions[] = $expression;
