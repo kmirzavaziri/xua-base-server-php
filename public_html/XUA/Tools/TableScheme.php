@@ -6,6 +6,7 @@ namespace XUA\Tools;
 
 use Exception;
 use PDO;
+use PDOException;
 use PDOStatement;
 use XUA\Entity;
 
@@ -130,8 +131,7 @@ class TableScheme
     {
         try {
             $rawOldColumns = Entity::connection()->query("DESCRIBE $this->tableName", PDO::FETCH_CLASS, Column::class);
-            // @TODO change this Exception to exact Exception Class the PDO throws.
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             // Specified by variable $rawOldColumns being undefined
         }
 

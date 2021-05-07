@@ -7,6 +7,7 @@ use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Strings\Text;
 use XUA\Entity;
 use XUA\Tools\EntityFieldSignature;
+use XUA\Tools\Index;
 
 /**
  * @property int id
@@ -50,6 +51,7 @@ class SimCard extends Entity
     protected static function _indexes(): array
     {
         return array_merge(parent::_indexes(), [
+            new Index(['code' => 'ASC'], true)
         ]);
     }
 }

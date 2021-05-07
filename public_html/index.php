@@ -30,15 +30,11 @@ try {
 function index() {
     echo "<pre>";
     echo \Entities\User::alter();
-    echo PHP_EOL;
-    echo PHP_EOL;
     echo \Entities\SimCard::alter();
-    echo PHP_EOL;
-    echo PHP_EOL;
     echo \Entities\Farm::alter();
     echo "</pre>";
 
-    $user = new \Entities\User(5);
+    $user = new \Entities\User();
     $user->personType = 'juridical';
     $user->firstNameEn = 'Abbas';
     $user->lastNameEn = 'Ghaderi';
@@ -48,8 +44,12 @@ function index() {
     $user->cellphoneNumber = '09123456789';
     $user->email = 'a@b.c';
     $user->address = 'nah nah';
-    $user->workingFarms = [];
-    $user->lastSimCard = new \Entities\SimCard(1);
+
+    $simCard = new \Entities\SimCard();
+    $simCard->code = 'aaabbbcccds';
+    $simCard->owner = $user;
+    $simCard->store();
+    $user->simCard = $simCard;
 
     $user->store();
 

@@ -61,6 +61,7 @@ class Instance extends Super
 
             return true;
         } else {
+            $message = xua_var_dump($input) . " is not a class or object.";
             return false;
         }
     }

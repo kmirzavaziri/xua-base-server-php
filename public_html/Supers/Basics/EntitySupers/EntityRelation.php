@@ -4,6 +4,7 @@
 namespace Supers\Basics\EntitySupers;
 
 
+use Services\FlagService;
 use Supers\Basics\Boolean;
 use Supers\Basics\Highers\Instance;
 use Supers\Basics\Highers\Sequence;
@@ -51,8 +52,22 @@ class EntityRelation extends Super
     protected function _predicate($input, string &$message = null) : bool
     {
         if ($this->relation[1] == 'I') {
-            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => true]))->accepts($input, $messages)) {
+            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->accepts($input, $messages)) {
                 $message = implode(' ', $messages);
+                return false;
+            }
+            if ($input !== null and $input->id === null) {
+                if ($this->relation == 'II' and !$this->invNullable) {
+                    if (!FlagService::get('force-store-II') and $this->definedOn == 'here') {
+                        FlagService::set('force-store-II', true);
+                        $input->store();
+                        FlagService::unset('force-store-II');
+                        return true;
+                    } elseif (FlagService::get('force-store-II')) {
+                        return true;
+                    }
+                }
+                $message = "$this->relatedEntity with id " . ($input->givenId() === null ? 'NULL' : $input->givenId()) . " does not exist.";
                 return false;
             }
             return true;
@@ -61,43 +76,21 @@ class EntityRelation extends Super
                 $message = implode(' ', $messages);
                 return false;
             }
+            foreach ($input as $item) {
+                if ($item->id === null) {
+                    $message = "$this->relatedEntity with id " . $item->givenId() . " does not exist.";
+                    return false;
+                }
+            }
             return true;
         }
         return false;
     }
 
-//    protected function _marshalDatabase($input)
-//    {
-//        if ($this->relation[1] == 'I') {
-//            return $input->id;
-//        } elseif ($this->relation[1] == 'N') {
-//            return array_map(function ($item) { return $item->id; }, $input);
-//        }
-//
-//        return $input;
-//    }
-//
-//    protected function _unmarshalDatabase($input)
-//    {
-//        if ($this->relation[1] == 'I') {
-//            return new $this->relatedEntity($input);
-//        }
-//        } elseif ($this->relation[1] == 'N') {
-//            # In this case, we expect the input to be the instance of Entity which the field of it is requested
-//            if ($this->relation[0] == 'I') {
-//                $input
-//            } elseif ($this->relation[0] == 'N') {
-//                $currentTable = $this->relatedEntity->tableName();
-//                $relatingTable = $this->relatedEntity->tableName();
-//                $result = Entity::connection()->query("SELECT * FROM " .  . );
-//            }
-//        }
-//    }
-
     protected function _databaseType(): ?string
     {
         if (($this->relation == 'II' and $this->definedOn == 'here') or $this->relation == 'NI') {
-            return (new Decimal([]))->databaseType();
+            return (new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2, 'nullable' => $this->nullable]))->databaseType();
         } else {
             return 'DONT STORE';
         }

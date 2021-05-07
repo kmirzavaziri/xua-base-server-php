@@ -45,6 +45,8 @@ abstract class Entity extends XUA
     private array $_x_fetched_by_p = [];
     private array $_x_must_store = [];
 
+    private ?int $_x_given_id = null;
+
     /* DONE */ final public static function _init() : void
     {
         $tableNameTemp = explode("\\", static::class);
@@ -63,6 +65,8 @@ abstract class Entity extends XUA
     {
         $this->initialize();
 
+        $this->_x_given_id = $id;
+
         $exists = false;
         if ($id) {
             $statement = self::$connection->prepare("SELECT EXISTS (SELECT * FROM " . static::table() . " WHERE id = ?) e");
@@ -77,6 +81,8 @@ abstract class Entity extends XUA
             foreach (static::structure() as $key => $signature) {
                 $this->_x_must_store[$key] = true;
             }
+            $this->_x_must_fetch['id'] = false;
+            $this->_x_must_store['id'] = false;
         }
     }
 
@@ -154,6 +160,11 @@ abstract class Entity extends XUA
         return self::$_x_table[static::class];
     }
 
+    /* DONE */ final public function givenId() : ?int
+    {
+        return $this->_x_given_id;
+    }
+
     # Overridable Methods
     /* DONE */ protected static function _fields() : array
     {
@@ -222,12 +233,26 @@ abstract class Entity extends XUA
 
     /* DONE */ final public static function indexes() : array
     {
-        return static::_indexes();
+        $relIndexes = [];
+        foreach (static::structure() as $key => $signature) {
+            if (is_a($signature->type, EntityRelation::class) and $signature->type->relation == 'II' and $signature->type->definedOn == 'here') {
+                $relIndexes[] = new Index([$key => 'ASC'], true);
+            }
+        }
+        return array_merge(static::_indexes(), $relIndexes);
     }
 
     /* DONE */ private function validation() : void
     {
         $this->_validation();
+
+        foreach (static::structure() as $key => $signature) {
+            /** @var EntityFieldSignature $signature */
+            if ($this->_x_must_store[$key] and !$signature->type->accepts($this->_x_properties[$key], $messages)) {
+                throw new EntityFieldException("$key: " . implode(" ", $messages));
+            }
+        }
+
     }
 
     /* DONE */ private function initialize(string $caller = Visibility::CALLER_PHP) : void
@@ -436,7 +461,7 @@ abstract class Entity extends XUA
             if ($this->_x_must_store[$key] and $key != 'id') {
                 if (is_a($signature->type, EntityRelation::class)) {
                     if ($signature->type->relation[1] == 'I') {
-                        $array[$key] = $this->_x_properties[$key]->id;
+                        $array[$key] = $this->_x_properties[$key] === null ? null : $this->_x_properties[$key]->id;
                     } elseif ($signature->type->relation[1] == 'N') {
                         $array[$key] = [];
                         foreach ($this->_x_properties[$key] as $item) {
@@ -510,14 +535,6 @@ abstract class Entity extends XUA
     private function _x_insert() : void
     {
         $this->validation();
-        foreach (static::structure() as $key => $signature) {
-            /** @var EntityFieldSignature $signature */
-            if ($key != 'id' and $this->_x_must_store[$key]) {
-                if (!$signature->type->accepts($this->_x_properties[$key], $messages)) {
-                    throw new EntityFieldException("$key: " . implode(" ", $messages));
-                }
-            }
-        }
 
         $array = $this->toDbArray();
 
@@ -549,6 +566,9 @@ abstract class Entity extends XUA
 
         $statement = self::connection()->prepare("INSERT INTO " . static::table() . " ($columnNames) VALUES ($placeHolders)");
         $statement->execute($values);
+        $this->_x_properties['id'] = self::connection()->lastInsertId();
+        $this->_x_must_fetch['id'] = false;
+        $this->_x_must_store['id'] = false;
     }
 
     private function _x_update() : void {
@@ -622,10 +642,13 @@ abstract class Entity extends XUA
         $tables[] = new TableScheme(static::table(), $columns, static::indexes());
         $alters = [];
         foreach ($tables as $table) {
-            $alters[] = $table->alter();
+            $tmp = $table->alter();
+            if ($tmp) {
+                $alters[] = $tmp;
+            }
         }
 
-        return implode(PHP_EOL . PHP_EOL, $alters);
+        return implode(PHP_EOL . PHP_EOL, $alters) . PHP_EOL . PHP_EOL;
     }
 
     /* DONE */ private static function joinExpression(EntityFieldSignature $signature) : string
