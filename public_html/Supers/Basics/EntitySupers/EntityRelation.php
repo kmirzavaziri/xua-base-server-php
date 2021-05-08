@@ -87,6 +87,14 @@ class EntityRelation extends Super
         return false;
     }
 
+    protected function _marshalDatabase($input) : ?string
+    {
+        if (($this->relation == 'II' and $this->definedOn == 'here') or $this->relation == 'NI') {
+            return $input === null ? null : $input->id;
+        }
+        return null;
+    }
+
     protected function _databaseType(): ?string
     {
         if (($this->relation == 'II' and $this->definedOn == 'here') or $this->relation == 'NI') {

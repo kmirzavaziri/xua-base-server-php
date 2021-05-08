@@ -93,7 +93,7 @@ class User extends Entity
                 static::class, 'name',
                 new DatabaseVirtualField(['getter' => function (array $param) {
                     $sep = $param['sep'] ?? ' ';
-                    return "CONCAT(firstName, '$sep', lastName)";
+                    return "CONCAT(firstNameFa, '$sep', lastNameFa)";
                 }]),
                 null
             ),

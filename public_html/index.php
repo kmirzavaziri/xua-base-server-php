@@ -34,26 +34,30 @@ function index() {
     echo \Entities\Farm::alter();
     echo "</pre>";
 
-    $user = new \Entities\User();
-    $user->personType = 'juridical';
-    $user->firstNameEn = 'Abbas';
-    $user->lastNameEn = 'Ghaderi';
-    $user->firstNameFa = 'عباس';
-    $user->lastNameFa = 'قادری';
-    $user->nationalCode = '0123456789';
-    $user->cellphoneNumber = '09123456789';
-    $user->email = 'a@b.c';
-    $user->address = 'nah nah';
+//    $user = new \Entities\User();
+//    $user->personType = 'juridical';
+//    $user->firstNameEn = 'Abbas';
+//    $user->lastNameEn = 'Ghaderi';
+//    $user->firstNameFa = 'عباس';
+//    $user->lastNameFa = 'قادری';
+//    $user->nationalCode = '0123456789';
+//    $user->cellphoneNumber = '09123456789';
+//    $user->email = 'a@b.c';
+//    $user->address = 'nah nah';
+//
+//    $simCard = new \Entities\SimCard();
+//    $simCard->code = 'aaabbbcccds';
+//    $simCard->owner = $user;
+//    $simCard->store();
+//    $user->simCard = $simCard;
+//
+//    $user->store();
 
-    $simCard = new \Entities\SimCard();
-    $simCard->code = 'aaabbbcccds';
-    $simCard->owner = $user;
-    $simCard->store();
-    $user->simCard = $simCard;
-
-    $user->store();
-
-//    $simCard = new Entities\SimCard(1);
+    $users = \Entities\User::getMany(\XUA\Tools\Condition::trueLeaf() , null, null);
+//    var_dump($users);
+    $farm = new \Entities\Farm(1);
+//    $farm->workers = $users;
+    $farm->delete();
 //    var_dump($simCard->lastOwners);
 //    $farm = new \Entities\Farm(2);
 //    $farm
