@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Services\Dev;
+namespace Services\XUA\Dev;
 
 
 use Exception;

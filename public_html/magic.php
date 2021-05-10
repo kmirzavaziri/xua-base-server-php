@@ -49,7 +49,7 @@ function xua_var_dump(mixed $value, int $level = 0, $visited = []) : string
             $result .= PHP_EOL;
             $items = [];
             foreach ($value as $k => $v) {
-                $tmp = "$k => " . xua_var_dump($v, $level + 1, $visited);
+                $tmp = (is_numeric($k) ? $k : "'$k'") . " => " . xua_var_dump($v, $level + 1, $visited);
                 $tmp = implode(PHP_EOL, array_map(function (string $line) {
                     return XUA_VAR_DUMP_TAB . $line;
                 }, explode(PHP_EOL, $tmp)));

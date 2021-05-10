@@ -4,7 +4,7 @@
 namespace Supers\Basics\EntitySupers;
 
 
-use Services\FlagService;
+use Services\XUA\FlagService;
 use Supers\Basics\Boolean;
 use Supers\Basics\Highers\Instance;
 use Supers\Basics\Highers\Sequence;
