@@ -34,7 +34,7 @@ abstract class Super extends XUA
         if (! isset(static::formal()[$key])) {
             throw new SuperArgumentException("$key is not in (" . implode(', ', array_keys(static::formal())) . ")");
         }
-        return $this->actual()[$key];
+        return $this->_x_actual[$key];
     }
 
     final function __set($key, $value) : void
@@ -49,7 +49,7 @@ abstract class Super extends XUA
     final public function __toString() : string
     {
         $args = [];
-        foreach ($this->actual() as $key => $value) {
+        foreach ($this->_x_actual as $key => $value) {
             $args[] = $key . ' = ' . xua_var_dump($value);
         }
         $args = implode(', ', $args);
@@ -63,10 +63,6 @@ abstract class Super extends XUA
 
     final public static function formal() : array {
         return self::$_x_formal[static::class];
-    }
-
-    final public function actual() : array {
-        return $this->_x_actual;
     }
 
     # Overridable Methods
