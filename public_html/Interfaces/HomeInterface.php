@@ -4,11 +4,13 @@ namespace Interfaces;
 
 use Services\XUA\TemplateService;
 use XUA\InterfaceEve;
+use XUA\XUA;
 
 class HomeInterface extends InterfaceEve
 {
     public static function execute(): string
     {
-        return (new TemplateService())->render('test/index.twig', []);
+        self::$bind['data'] = ['version' => XUA::VERSION];
+        return TemplateService::render('home.twig', self::$bind);
     }
 }

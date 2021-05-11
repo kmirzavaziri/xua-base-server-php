@@ -6,6 +6,8 @@ namespace XUA;
 
 abstract class XUA
 {
+    const VERSION = '1.0-β';
+
     private static array $initialized = [];
 
     final public static function init() {

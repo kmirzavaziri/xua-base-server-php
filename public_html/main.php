@@ -2,8 +2,11 @@
 
 require 'magic.php';
 
+use Interfaces\XUA\NotFoundInterface;
 use Services\XUA\Dev\Credentials;
 use Services\XUA\RouteService;
+use Services\XUA\TemplateService;
+use XUA\Exceptions\RouteException;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -22,6 +25,10 @@ try {
             $throwable->getTraceAsString() .
             "</pre>";
     } else {
-        echo 'Something went wrong.';
+        if ($throwable instanceof RouteException) {
+            echo NotFoundInterface::execute();
+        } else {
+            TemplateService::render('errors/500.twig', []);
+        }
     }
 }

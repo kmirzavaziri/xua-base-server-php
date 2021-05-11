@@ -4,13 +4,19 @@
 namespace Services\XUA;
 
 
+use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use XUA\Service;
 
-class TemplateService extends Service
+final class TemplateService extends Service
 {
     private static Environment $twig;
+
+    function __construct()
+    {
+        throw new Exception('Cannot instantiate class `TemplateService`.');
+    }
 
     protected static function _init()
     {
@@ -19,7 +25,7 @@ class TemplateService extends Service
         ]);
     }
 
-    public function render(string $template, array $bind) : string
+    public static function render(string $template, array $bind) : string
     {
         return self::$twig->render($template, $bind);
     }

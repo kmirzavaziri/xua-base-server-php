@@ -40,6 +40,12 @@ final class RouteService extends Service
         $level = 0;
         $stack = [&self::$routes];
         foreach ($lines as $lineNo => $line) {
+            if ($commentPos = strpos($line, '#')) {
+                $line = substr($line, 0, $commentPos);
+            }
+            if (!$line) {
+                continue;
+            }
             $lineLevel = (strlen($line)-strlen(ltrim($line))) / self::TAB_LEN;
             if ($lineLevel == $level) {
                 $level++;
@@ -114,7 +120,7 @@ final class RouteService extends Service
             return ConstantService::INTERFACES_NAMESPACE . '\\' . $lastSARoute[''][$method];
         }
         else {
-            throw new RouteException("not found for $routePart");
+            throw new RouteException("Not found for $routePart");
         }
     }
 
