@@ -16,10 +16,14 @@ class SuperArgumentSignature
         public bool $const = false,
     ) {}
 
+    /**
+     * @throws SuperArgumentException
+     */
     public static function processArguments(array $signatures, array &$args) {
+        $exception = new SuperArgumentException();
         $unknownKeys = array_diff(array_keys($args), array_keys($signatures));
-        if ($unknownKeys) {
-            throw new SuperArgumentException("Unknown arguments (" . implode(', ', $unknownKeys) . ").");
+        foreach ($unknownKeys as $unknownKey) {
+            $exception->setError($unknownKey, 'Unknown argument');
         }
         $newArgs = [];
         foreach ($signatures as $key => $signature) {
@@ -27,30 +31,27 @@ class SuperArgumentSignature
 
             if (in_array($key, array_keys($args))) {
                 if ($signature->const) {
-                    throw new SuperArgumentException("Cannot set constant argument $key.");
+                    $exception->setError($key, 'Cannot set constant argument');
                 }
             } else {
                 if ($signature->required) {
-                    throw new SuperArgumentException("Required argument $key not provided.");
+                    $exception->setError($key, 'Required argument not provided');
                 } else {
                     $args[$key] = $signature->default;
                 }
             }
 
             if (!$signature->type->accepts($args[$key], $messages)) {
-                throw new SuperArgumentException("$key: " . implode(' ', $messages));
+                $exception->setError($key, implode(' ', $messages));
             }
 
             $newArgs[$key] = $args[$key];
         }
 
+        if($exception->getErrors()) {
+            throw $exception;
+        }
+
         $args = $newArgs;
     }
-
-    public static function processArgument(SuperArgumentSignature $signature, &$arg) {
-        if (!$signature->type->accepts($arg, $messages)) {
-            throw new SuperArgumentException(implode(' ', $messages));
-        }
-    }
-
 }

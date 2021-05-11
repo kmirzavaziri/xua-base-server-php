@@ -4,7 +4,6 @@
 namespace XUA\Tools;
 
 
-use XUA\Exceptions\EntityFieldException;
 use XUA\Super;
 
 final class EntityFieldSignature

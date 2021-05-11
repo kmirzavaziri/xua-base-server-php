@@ -2,6 +2,7 @@ Entities/
     User
         Farmer
         Agent
+        Owner
         Operator
         Inspector
         Veterinarian

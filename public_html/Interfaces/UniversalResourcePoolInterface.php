@@ -4,9 +4,12 @@ namespace Interfaces;
 
 use Services\XUA\Dev\Credentials;
 use Services\XUA\RouteService;
-use Services\XUA\TemplateService;
 use Supers\Basics\Highers\Json;
+use Throwable;
+use XUA\Entity;
+use XUA\Exceptions\MethodRequestException;
 use XUA\InterfaceEve;
+use XUA\Method;
 
 class UniversalResourcePoolInterface extends InterfaceEve
 {
@@ -15,19 +18,40 @@ class UniversalResourcePoolInterface extends InterfaceEve
         header('Content-Type: application/json');
 
         $response = [
-            'error' => '',
-            'errorPath' => '',
+            'errors' => [],
             'response' => (object)[]
         ];
         $request = file_get_contents("php://input");
         if (empty(RouteService::$routeArgs['methodOrEntityPath'])) {
-            $response['error'] = 'Invalid path';
+            $response['errors'] = ['' => 'Invalid path'];
         } elseif (!(new Json([]))->accepts($request, $message)) {
-            $response['error'] = 'Invalid json input';
+            $response['errors'] = ['' => 'Invalid json input'];
         } else {
-            // @TODO call method or entity
-            $response['response'] = $request;
-            $response['name'] = RouteService::$routeArgs['methodOrEntityPath'];
+            $class = str_replace('/', "\\", RouteService::$routeArgs['methodOrEntityPath']);
+            if (class_exists($class)) {
+                if (is_a($class, Method::class, true)) {
+                    try {
+                        $response['response'] = (new $class((array)$request));
+                    } catch (Throwable $e) {
+                        if (is_a($e, MethodRequestException::class)) {
+                            $response['errors'] = $e->getErrors();
+                        } else {
+                            if (Credentials::developer()) {
+                                throw $e;
+                            } else {
+                                $response['errors'] = ['' => 'Internal error'];
+                            }
+                        }
+                    }
+                } elseif (is_a($class, Entity::class, true)) {
+                    $response['errors'] = ['' => 'Not implemented yet'];
+                } else {
+                    $response['errors'] = ['' => 'Invalid path'];
+                }
+
+            } else {
+                $response['errors'] = ['' => 'Invalid path'];
+            }
         }
 
         if (Credentials::developer()) {
