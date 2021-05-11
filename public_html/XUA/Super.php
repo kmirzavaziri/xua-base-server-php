@@ -32,7 +32,7 @@ abstract class Super extends XUA
     final function __get($key)
     {
         if (! isset(static::formal()[$key])) {
-            throw (new SuperArgumentException())->setError($key, "Unknown super argument");
+            throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
         }
         return $this->_x_actual[$key];
     }
@@ -40,7 +40,7 @@ abstract class Super extends XUA
     final function __set($key, $value) : void
     {
         if (!isset(static::formal()[$key])) {
-            throw (new SuperArgumentException())->setError($key, "Unknown super argument");
+            throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
         }
         /** @var SuperArgumentSignature $signature */
         $signature = static::formal()[$key];
