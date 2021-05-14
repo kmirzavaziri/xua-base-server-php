@@ -2,11 +2,8 @@
 
 namespace Interfaces;
 
-use Entities\Farm;
 use Entities\User;
-use Services\XUA\RouteService;
 use XUA\InterfaceEve;
-use XUA\Tools\Entity\Condition;
 
 class TestInterface extends InterfaceEve
 {
@@ -14,7 +11,6 @@ class TestInterface extends InterfaceEve
     {
         echo "<pre>";
         echo \Entities\User::alter();
-        echo \Entities\SimCard::alter();
         echo \Entities\Farm::alter();
         echo "</pre>";
 
@@ -23,7 +19,7 @@ class TestInterface extends InterfaceEve
 //        $farm->delete();
 
         $users = User::getMany(
-            Condition::leaf(User::CF(User::workingFarms)->rel(Farm::F(Farm::title)), Condition::LIKE, '%قارچ%')
+//            Condition::leaf(User::CF(User::workingFarms)->rel(Farm::F(Farm::title)), Condition::LIKE, '%قارچ%')
         );
         var_dump($users);
 

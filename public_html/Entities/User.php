@@ -26,8 +26,6 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string firstNameEn
  * @property string lastNameFa
  * @property string lastNameEn
- * @property mixed name
- * @property mixed nameDB
  * @property string nationalCode
  * @property ?string organizationName
  * @property ?string organizationNameEn
@@ -40,9 +38,6 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string phoneNumber
  * @property ?string faxNumber
  * @property ?string iban
- * @property \Entities\SimCard simCard
- * @property ?\Entities\SimCard lastSimCard
- * @property \Entities\Farm[] workingFarms
  */
 class User extends Entity
 {
@@ -52,8 +47,6 @@ class User extends Entity
     const firstNameEn = 'firstNameEn';
     const lastNameFa = 'lastNameFa';
     const lastNameEn = 'lastNameEn';
-    const name = 'name';
-    const nameDB = 'name';
     const nationalCode = 'nationalCode';
     const organizationName = 'organizationName';
     const organizationNameEn = 'organizationNameEn';
@@ -66,9 +59,6 @@ class User extends Entity
     const phoneNumber = 'phoneNumber';
     const faxNumber = 'faxNumber';
     const iban = 'iban';
-    const simCard = 'simCard';
-    const lastSimCard = 'lastSimCard';
-    const workingFarms = 'workingFarms';
 
     protected static function _fields(): array
     {
@@ -97,28 +87,6 @@ class User extends Entity
             'lastNameEn' => new EntityFieldSignature(
                 static::class, 'lastNameEn',
                 new Text(['minLength' => 1, 'maxLength' => 200]),
-                null
-            ),
-            'name' => new EntityFieldSignature(
-                static::class, 'name',
-                new PhpVirtualField([
-                    'getter' => function (Entity $entity, array $param) {
-                        $sep = $param['sep'] ?? ' ';
-                        return $entity->firstNameEn . $sep . $entity->lastNameEn;
-                    },
-                    'setter' => function (Entity &$entity, array $param, mixed $value) {
-                        $sep = $param['sep'] ?? ' ';
-                        [$entity->firstNameEn, $entity->lastNameEn] = explode($sep, $value);
-                    },
-                ]),
-                null
-            ),
-            'nameDB' => new EntityFieldSignature(
-                static::class, 'name',
-                new DatabaseVirtualField(['getter' => function (array $param) {
-                    $sep = $param['sep'] ?? ' ';
-                    return "CONCAT(firstNameFa, '$sep', lastNameFa)";
-                }]),
                 null
             ),
             'nationalCode' => new EntityFieldSignature(
@@ -192,42 +160,6 @@ class User extends Entity
             'iban' => new EntityFieldSignature(
                 static::class, 'iban',
                 new Iban(['nullable' => true]),
-                null
-            ),
-            'simCard' => new EntityFieldSignature(
-                static::class, 'simCard',
-                new EntityRelation([
-                    'relatedEntity' => SimCard::class,
-                    'relation' => 'II',
-                    'invName' => 'owner',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
-                ]),
-                new SimCard()
-            ),
-            'lastSimCard' => new EntityFieldSignature(
-                static::class, 'lastSimCard',
-                new EntityRelation([
-                    'relatedEntity' => SimCard::class,
-                    'relation' => 'NI',
-                    'invName' => 'lastOwners',
-                    'nullable' => true,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
-                ]),
-                null
-            ),
-            'workingFarms' => new EntityFieldSignature(
-                static::class, 'workingFarms',
-                new EntityRelation([
-                    'relatedEntity' => \Entities\Farm::class,
-                    'relation' => 'NN',
-                    'invName' => 'workers',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
-                ]),
                 null
             ),
         ]);
