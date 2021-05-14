@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpIncludeInspection */
+/** @noinspection PhpIncludeInspection */
 
 
 spl_autoload_register(function ($class) {

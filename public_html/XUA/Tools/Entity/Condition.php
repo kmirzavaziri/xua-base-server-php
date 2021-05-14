@@ -7,10 +7,12 @@ namespace XUA\Tools\Entity;
 
 use Exception;
 use ReflectionClass;
+use ReflectionException;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Sequence;
 use XUA\Exceptions\EntityConditionException;
 use XUA\Exceptions\InstantiationException;
+use XUA\Exceptions\SuperValidationException;
 
 final class Condition
 {
@@ -44,6 +46,9 @@ final class Condition
     public string $template = "";
     public array $parameters = [];
 
+    /**
+     * @throws InstantiationException
+     */
     public function __construct()
     {
         throw new InstantiationException('cannot instantiate class `Condition` directly, use `leaf`, `falseLeaf`, or `trueLeaf` methods.');
@@ -54,6 +59,11 @@ final class Condition
         return (new ReflectionClass(self::class))->getConstants();
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws SuperValidationException
+     * @throws EntityConditionException
+     */
     public static function leaf (ConditionField $field, string $relation, mixed $value = null) : Condition
     {
         if (!in_array($relation, self::relations())) {
@@ -157,7 +167,7 @@ final class Condition
         return $condition->not();
     }
 
-    public function joins()
+    public function joins(): string
     {
         $joins = [];
         foreach ($this->joins as $join) {

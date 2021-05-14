@@ -16,7 +16,8 @@ final class Credentials extends Service
 
     private static ?string $developer = null;
 
-    public static function developer() {
+    public static function developer(): ?string
+    {
         return self::$developer;
     }
 

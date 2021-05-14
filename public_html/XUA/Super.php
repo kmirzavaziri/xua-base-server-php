@@ -36,6 +36,9 @@ abstract class Super extends XUA
         $this->validation();
     }
 
+    /**
+     * @throws SuperArgumentException
+     */
     final function __get($key)
     {
         if (! isset(static::formal()[$key])) {
@@ -44,6 +47,9 @@ abstract class Super extends XUA
         return $this->_x_actual[$key];
     }
 
+    /**
+     * @throws SuperArgumentException
+     */
     final function __set($key, $value) : void
     {
         if (!isset(static::formal()[$key])) {
@@ -77,6 +83,9 @@ abstract class Super extends XUA
     }
 
     # Overridable Methods
+    /**
+     * @throws SuperValidationException
+     */
     protected static function _arguments() : array
     {
         return [];
@@ -89,22 +98,22 @@ abstract class Super extends XUA
 
     abstract protected function _predicate($input, string &$message = null) : bool;
 
-    protected function _marshal($input)
+    protected function _marshal($input): mixed
     {
         return $input;
     }
 
-    protected function _unmarshal($input)
+    protected function _unmarshal($input): mixed
     {
         return $input;
     }
 
-    protected function _marshalDatabase($input)
+    protected function _marshalDatabase($input): mixed
     {
         return $input;
     }
 
-    protected function _unmarshalDatabase($input)
+    protected function _unmarshalDatabase($input): mixed
     {
         return $input;
     }
@@ -120,6 +129,9 @@ abstract class Super extends XUA
     }
 
     # Overridable Method Wrappers
+    /**
+     * @throws SuperValidationException
+     */
     private static function arguments() : array
     {
         return static::_arguments();
@@ -141,6 +153,9 @@ abstract class Super extends XUA
         return $this->_predicate($input, $message);
     }
 
+    /**
+     * @throws SuperMarshalException
+     */
     final public function marshal($input)
     {
         if (!$this->explicitlyAccepts($input, $message)) {

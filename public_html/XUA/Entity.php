@@ -14,6 +14,7 @@ use Supers\Basics\Numerics\Decimal;
 use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityException;
 use XUA\Exceptions\EntityFieldException;
+use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Entity\Column;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Entity\ConditionField;
@@ -242,6 +243,9 @@ abstract class Entity extends XUA
     }
 
     # Overridable Methods
+    /**
+     * @throws SuperValidationException
+     */
     protected static function _fields() : array
     {
         return [

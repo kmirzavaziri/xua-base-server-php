@@ -59,7 +59,7 @@ class Text extends Super
         return true;
     }
 
-    protected function _unmarshal($input)
+    protected function _unmarshal($input): mixed
     {
         if (is_scalar($input)) {
             return (string)$input;

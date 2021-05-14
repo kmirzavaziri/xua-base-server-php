@@ -34,7 +34,7 @@ class Number extends Super
         return true;
     }
 
-    protected function _unmarshal($input)
+    protected function _unmarshal($input): mixed
     {
         if (is_numeric($input)) {
             return $input + 0;

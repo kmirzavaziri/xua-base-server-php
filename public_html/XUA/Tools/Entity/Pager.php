@@ -17,7 +17,8 @@ class Pager
         return new Pager(0, 0);
     }
 
-    public function render() {
+    public function render(): string
+    {
         if ($this->pageIndex < 1) {
             $this->pageIndex = 1;
         }

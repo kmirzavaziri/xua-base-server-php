@@ -36,17 +36,17 @@ class Json extends Super
         return true;
     }
 
-    protected function _marshal($input)
+    protected function _marshal($input): mixed
     {
         return json_encode($input);
     }
 
-    protected function _marshalDatabase($input)
+    protected function _marshalDatabase($input): mixed
     {
         return $this->_marshal($input);
     }
 
-    protected function _unmarshal($input)
+    protected function _unmarshal($input): mixed
     {
         if (is_string($input)) {
             $data = json_decode($input);
@@ -58,7 +58,7 @@ class Json extends Super
         return $input;
     }
 
-    protected function _unmarshalDatabase($input)
+    protected function _unmarshalDatabase($input): mixed
     {
         return $this->_unmarshal($input);
     }

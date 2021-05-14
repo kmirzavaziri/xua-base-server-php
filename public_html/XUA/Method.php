@@ -32,6 +32,9 @@ abstract class Method extends XUA
         MethodItemSignature::processResponse(self::$_x_response_structure[static::class], $this->_x_response);
     }
 
+    /**
+     * @throws MethodResponseException
+     */
     final function __get($key)
     {
         if (! isset(self::$_x_response_structure[static::class][$key])) {
@@ -40,6 +43,10 @@ abstract class Method extends XUA
         return $this->_x_response[$key];
     }
 
+    /**
+     * @throws MethodRequestException
+     * @throws MethodResponseException
+     */
     final function __set($key, $value) : void
     {
         if (!isset(self::$_x_response_structure[static::class][$key])) {

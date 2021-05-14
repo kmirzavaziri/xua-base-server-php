@@ -18,7 +18,8 @@ final class ConditionField
         $this->alias = $this->signature->entity::table();
     }
 
-    public function rel(EntityFieldSignature $signature) {
+    public function rel(EntityFieldSignature $signature): static
+    {
         if (!is_a($this->signature->type, EntityRelation::class)) {
             throw (new EntityConditionException())->setError($signature->name, 'Cannot relate on non-relational field.');
         }
