@@ -5,19 +5,22 @@ namespace XUA;
 use PDO;
 use PDOException;
 use PDOStatement;
+use ReflectionClass;
+use Services\XUA\ConstantService;
 use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
 use XUA\Exceptions\EntityException;
 use XUA\Exceptions\EntityFieldException;
-use XUA\Tools\Column;
-use XUA\Tools\Condition;
-use XUA\Tools\EntityFieldSignature;
-use XUA\Tools\Index;
-use XUA\Tools\Order;
-use XUA\Tools\Pager;
-use XUA\Tools\TableScheme;
+use XUA\Tools\Entity\Column;
+use XUA\Tools\Entity\Condition;
+use XUA\Tools\Entity\ConditionField;
+use XUA\Tools\Signature\EntityFieldSignature;
+use XUA\Tools\Entity\Index;
+use XUA\Tools\Entity\Order;
+use XUA\Tools\Entity\Pager;
+use XUA\Tools\Entity\TableScheme;
 use XUA\Tools\Visibility;
 
 /**
@@ -25,10 +28,8 @@ use XUA\Tools\Visibility;
  */
 abstract class Entity extends XUA
 {
-    # Connection Information & Procedures
-    private const CONNECTION_DSN = "mysql:host=db;dbname=myfarm";
-    private const CONNECTION_USERNAME = "root";
-    private const CONNECTION_PASSWORD = "root";
+    const id = 'id';
+
     private static ?PDO $connection = null;
 
     final public static function connection() : ?PDO
@@ -77,7 +78,11 @@ abstract class Entity extends XUA
                 $start = $pos + 1;
             }
             $boundQuery .= substr($query, $start);
-            throw new PDOException($e->getMessage() . PHP_EOL . $boundQuery, $e->getCode());
+
+            $messageProperty = (new ReflectionClass(PDOException::class))->getProperty('message');
+            $messageProperty->setAccessible(true);
+            $messageProperty->setValue($e, $e->getMessage() . PHP_EOL . $boundQuery);
+            throw $e;
         }
 
         return $statement;
@@ -104,7 +109,7 @@ abstract class Entity extends XUA
         self::$_x_structure[static::class] = static::fields();
 
         if (!self::$connection) {
-            self::$connection = new PDO(self::CONNECTION_DSN, self::CONNECTION_USERNAME, self::CONNECTION_PASSWORD);
+            self::$connection = new PDO(ConstantService::CONNECTION_DSN, ConstantService::CONNECTION_USERNAME, ConstantService::CONNECTION_PASSWORD);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
     }
@@ -135,15 +140,15 @@ abstract class Entity extends XUA
 
     /* DONE */ function __get(string $key)
     {
-        if (! isset(static::structure()[$key])) {
+        $signature = static::F($key);
+
+        if ($signature === null) {
             throw new EntityFieldException("$key is not in (" . implode(', ', array_keys(static::structure())) . ")");
         }
 
-        $signature = static::structure()[$key];
-
         if (
             (is_a($signature->type, PhpVirtualField::class) or is_a($signature->type, DatabaseVirtualField::class)) and
-            $this->_x_fetched_by_p[$key] != static::structure()[$key]->p()
+            $this->_x_fetched_by_p[$key] != $signature->p()
         ) {
             $this->_x_must_fetch[$key] = true;
         }
@@ -157,16 +162,15 @@ abstract class Entity extends XUA
 
     /* DONE */ function __set(string $key, mixed $value) : void
     {
-        if (! isset(static::structure()[$key])) {
+        $signature = static::F($key);
+
+        if ($signature === null) {
             throw new EntityFieldException("'$key' is not in " . implode(', ', array_keys(static::structure())) . ".");
         }
 
         if ($key == 'id') {
             throw new EntityFieldException("Cannot set field 'id' of an entity.");
         }
-
-        /** @var EntityFieldSignature $signature */
-        $signature = static::structure()[$key];
 
         if (!$signature->type->accepts($value, $messages)) {
             throw new EntityFieldException("$key: " . implode(" ", $messages));
@@ -205,8 +209,13 @@ abstract class Entity extends XUA
 
     /* DONE */ public function __debugInfo(): array
     {
-//        $this->_x_fetch();
-        return $this->_x_properties;
+        $result = [];
+        foreach ($this->_x_properties as $key => $value) {
+            if (!$this->_x_must_fetch[$key]) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 
     /* DONE */ final public static function structure() : array {
@@ -435,11 +444,10 @@ abstract class Entity extends XUA
         self::execute("DELETE FROM " . static::table() . " WHERE id = ? LIMIT 1", [$this->id]);
     }
 
-
     /* DONE */ final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager) : array
     {
-        [$columnsExpression, $joinsExpression, $keys] = self::columnsExpression();
-        $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " $joinsExpression WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
+        [$columnsExpression, $keys] = self::columnsExpression();
+        $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
         $rawArrays = $statement->fetchAll(PDO::FETCH_NUM);
         $arrays = [];
         foreach ($rawArrays as $item => $rawArray) {
@@ -469,8 +477,7 @@ abstract class Entity extends XUA
     # Predefined Methods (Array-Entity Conversations)
     /* DONE */ final protected function fromDbArray (array $array) : Entity {
         foreach ($array as $key => $value) {
-            /** @var EntityFieldSignature $signature */
-            $signature = static::structure()[$key];
+            $signature = static::F($key);
             if (is_a($signature->type, EntityRelation::class)) {
                 if ($signature->type->relation[1] == 'I') {
                     $result = new $signature->type->relatedEntity($value);
@@ -529,7 +536,7 @@ abstract class Entity extends XUA
             return;
         }
 
-        $signature = static::structure()[$fieldName];
+        $signature = static::F($fieldName);
         $array = [];
 
         if (
@@ -546,7 +553,7 @@ abstract class Entity extends XUA
                     }
                 }
             } elseif ($signature->type->relation == 'NN') {
-                $statement = self::execute("SELECT " . $signature->type->relatedEntity::table() . " FROM " . self::junctionTableName($fieldName) . " WHERE " . static::table() . " = ?", [$this->_x_properties['id']]);
+                $statement = self::execute("SELECT " . $signature->type->relatedEntity::table() . " FROM " . static::junctionTableName($fieldName) . " WHERE " . static::table() . " = ?", [$this->_x_properties['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
                     $array[$fieldName] = [];
@@ -558,9 +565,9 @@ abstract class Entity extends XUA
         } elseif (is_a($signature->type, PhpVirtualField::class)) {
             $array[$fieldName] = ($signature->type->getter)($this, $signature->p());
         } else {
-            [$columnsExpression, $joinsExpression, $keys] = self::columnsExpression($this);
+            [$columnsExpression, $keys] = self::columnsExpression($this);
             if ($columnsExpression) {
-                $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " $joinsExpression WHERE " . static::structure()['id']->name() . " = ? LIMIT 1", [$this->_x_properties['id']]);
+                $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " WHERE " . static::table() . ".id = ? LIMIT 1", [$this->_x_properties['id']]);
                 $rawArray = $statement->fetch(PDO::FETCH_NUM);
                 if ($rawArray) {
                     foreach ($keys as $i => $key) {
@@ -621,6 +628,7 @@ abstract class Entity extends XUA
             try {
                 self::execute($query, $bind);
             } catch (PDOException $e) {
+                // TODO check $e->getCode() instead of str_contains
                 if (str_contains($e->getMessage(), 'Duplicate entry')) {
                     $pattern = "/Duplicate entry '([^']*)' for key '([^.]*)\.([^']*)'/";
                     preg_match($pattern, $e->getMessage(), $matches);
@@ -680,7 +688,7 @@ abstract class Entity extends XUA
                 $relNNQuery = '';
                 $relNNBind = [];
                 if ($addingIds) {
-                    $relNNQuery .= "INSERT INTO " . self::junctionTableName($key) . " ($leftColumn, $rightColumn) VALUES\n" .
+                    $relNNQuery .= "INSERT INTO " . static::junctionTableName($key) . " ($leftColumn, $rightColumn) VALUES\n" .
                         implode(",\n", array_fill(0, count($addingIds), "\t(?, ?)")) . ";\n";
                     foreach ($addingIds as $addingId) {
                         $relNNBind[] = $this->_x_properties['id'];
@@ -688,7 +696,7 @@ abstract class Entity extends XUA
                     }
                 }
                 if ($removingIds) {
-                    $relNNQuery .= "DELETE FROM " . self::junctionTableName($key) . " WHERE $leftColumn = ? AND $rightColumn IN (?);";
+                    $relNNQuery .= "DELETE FROM " . static::junctionTableName($key) . " WHERE $leftColumn = ? AND $rightColumn IN (?);";
                     $relNNBind[] = $this->_x_properties['id'];
                     $relNNBind[] = $removingIds;
                 }
@@ -708,7 +716,7 @@ abstract class Entity extends XUA
 
         $tables = [];
 
-        $columns = ['id' => Column::fromQuery("id " . static::structure()['id']->type->databaseType() . " NOT NULL AUTO_INCREMENT")];
+        $columns = ['id' => Column::fromQuery("id " . static::F('id')->type->databaseType() . " NOT NULL AUTO_INCREMENT")];
         foreach ($signatures as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if ($signature->type->databaseType() != 'DONT STORE') {
@@ -722,8 +730,8 @@ abstract class Entity extends XUA
                 $leftColumn = static::table();
                 $rightColumn = $signature->type->relatedEntity::table();
                 $tables[] = new TableScheme('_' . static::table() . '_' . $key, [
-                    $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->type->relatedEntity::structure()['id']->type->databaseType() . " NOT NULL"),
-                    $rightColumn => Column::fromQuery($signature->type->relatedEntity::table() . ' ' . $signature->type->relatedEntity::structure()['id']->type->databaseType() . " NOT NULL"),
+                    $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->type->relatedEntity::F('id')->type->databaseType() . " NOT NULL"),
+                    $rightColumn => Column::fromQuery($signature->type->relatedEntity::table() . ' ' . $signature->type->relatedEntity::F('id')->type->databaseType() . " NOT NULL"),
                 ], [
                     new Index([$leftColumn => 'ASC', $rightColumn => 'ASC'], true, 'PRIMARY')
                 ]);
@@ -743,64 +751,35 @@ abstract class Entity extends XUA
         return implode(PHP_EOL . PHP_EOL, $alters) . PHP_EOL . PHP_EOL;
     }
 
-    /* DONE */ private static function joinExpression(EntityFieldSignature $signature) : string
-    {
-        if ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
-            $name = $signature->rel->entity();
-            $idName = static::structure()['id']->name();
-            $thereEntity = $signature->type->relatedEntity::table();
-            $thereName = $signature->type->invName;
-            return "LEFT JOIN $thereEntity $name ON $idName = $name.$thereName";
-        }
-
-        return '';
-    }
-
     /* DONE */ private static function columnsExpression(?Entity $entity = null) : array
     {
         $columnExpressions = [];
-        $joiningFields = [];
         $keys = [];
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if ($entity and !$entity->_x_must_fetch[$key]) {
                 continue;
             }
-            if (is_a($signature->type, EntityRelation::class)) {
-                if (($signature->type->relation == 'II' and $signature->type->definedOn == 'here') or $signature->type->relation == 'NI') {
-                    $expression =  $signature->name();
-                } elseif ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
-                    $expression = $signature->rel->id;
-                    $joiningFields[] = $signature;
-                } else {
-                    continue;
-                }
-            } elseif (is_a($signature->type, PhpVirtualField::class)) {
-                continue;
-            } elseif (is_a($signature->type, DatabaseVirtualField::class)) {
+            if (is_a($signature->type, DatabaseVirtualField::class)) {
                 $expression =  ($signature->type->getter)($signature->p()) . ' ' . $signature->name;
+            } elseif ($signature->type->databaseType() != 'DONT STORE') {
+                $expression = static::table() . '.' . $signature->name;
             } else {
-                $expression =  $signature->name();
+                continue;
             }
 
             $columnExpressions[] = $expression;
             $keys[] = $key;
         }
 
-        $joinExpressions = [];
-        foreach ($joiningFields as $joiningField) {
-            $joinExpressions[] = self::joinExpression($joiningField);
-        }
-
         $columnsExpression = implode(', ', $columnExpressions);
-        $joinsExpression = implode(PHP_EOL, $joinExpressions);
 
-        return [$columnsExpression, $joinsExpression, $keys];
+        return [$columnsExpression, $keys];
     }
 
-    /* DONE */ private static function junctionTableName (string $fieldName) : string
+    /* DONE */ final public static function junctionTableName (string $fieldName) : string
     {
-        $signature = static::structure()[$fieldName];
+        $signature = static::F($fieldName);
         return $signature->type->definedOn == 'here'
             ? '_' . static::table() . '_' . $fieldName
             : '_' . $signature->type->relatedEntity::table() . '_' . $signature->type->invName;
@@ -846,5 +825,14 @@ abstract class Entity extends XUA
         $addingIds = array_diff($currentIds, $dbIds);
         $removingIds = array_diff($dbIds, $currentIds);
         return [$addingIds, $removingIds];
+    }
+
+    /* DONE */ final public static function F(string $key) : ?EntityFieldSignature
+    {
+        return static::structure()[$key] ?? null;
+    }
+    /* DONE */ final public static function CF(string $key) : ?ConditionField
+    {
+        return static::F($key) ? new ConditionField(static::F($key)) : null;
     }
 }

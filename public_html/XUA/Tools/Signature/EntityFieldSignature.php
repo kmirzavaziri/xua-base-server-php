@@ -1,14 +1,13 @@
 <?php
 
 
-namespace XUA\Tools;
+namespace XUA\Tools\Signature;
 
 
 use XUA\Super;
 
 final class EntityFieldSignature
 {
-    public EntityRelObject $rel;
     private array $param = [];
 
     public function __construct(
@@ -16,15 +15,7 @@ final class EntityFieldSignature
         public string $name,
         public Super $type,
         public $default = null,
-    )
-    {
-        $this->rel = new EntityRelObject($this->name);
-    }
-
-    public function name() : string
-    {
-        return $this->entity::table() . '.' . $this->name;
-    }
+    ) {}
 
     public function p(?array $param = null) : array|EntityFieldSignature
     {

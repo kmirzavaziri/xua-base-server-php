@@ -6,7 +6,7 @@ namespace Supers\Basics\Numerics;
 
 use Supers\Basics\Boolean;
 use XUA\Exceptions\SuperValidationException;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

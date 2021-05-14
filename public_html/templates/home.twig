@@ -1,10 +1,12 @@
 {% extends 'eve.twig' %}
 
+{% block title %}XUA{% endblock %}
+
 {% block body %}
     <div style="text-align: center;">
         <h1>XUA</h1>
         XUA@{{ data.version }}
         <hr>
-        This is not a website. It's only a webservice, send requests to <a href="urpi">Universal Resource Pool Interface</a>
+        This is not a website. It's only a webservice, POST requests to <a href="urpi">Universal Resource Pool Interface</a>
     </div>
 {% endblock %}

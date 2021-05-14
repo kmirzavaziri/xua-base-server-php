@@ -7,7 +7,7 @@ namespace Supers\Basics\EntitySupers;
 use Supers\Basics\Highers\Callback;
 use XUA\Entity;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property callable getter

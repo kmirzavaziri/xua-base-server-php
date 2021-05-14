@@ -5,9 +5,8 @@ namespace Supers\Basics\EntitySupers;
 
 
 use Supers\Basics\Highers\Callback;
-use Supers\Basics\Strings\Text;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property callable getter

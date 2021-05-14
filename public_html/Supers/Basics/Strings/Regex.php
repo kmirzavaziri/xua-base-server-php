@@ -8,7 +8,7 @@ use Supers\Basics\Boolean;
 use Supers\Basics\Numerics\Integer;
 use XUA\Exceptions\SuperValidationException;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength

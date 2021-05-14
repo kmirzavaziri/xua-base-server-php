@@ -5,7 +5,7 @@ namespace XUA;
 
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
-use XUA\Tools\MethodItemSignature;
+use XUA\Tools\Signature\MethodItemSignature;
 
 abstract class Method extends XUA
 {
@@ -16,8 +16,8 @@ abstract class Method extends XUA
 
     protected static function _init()
     {
-        self::$_x_request_structure[static::class] = static::request();
-        self::$_x_response_structure[static::class] = static::response();
+        self::$_x_request_structure[static::class] = static::_request();
+        self::$_x_response_structure[static::class] = static::_response();
     }
 
     /**
@@ -40,17 +40,32 @@ abstract class Method extends XUA
         return $this->_x_response[$key];
     }
 
-    /**
-     * @throws MethodResponseException
-     */
     final function __set($key, $value) : void
     {
-        throw (new MethodResponseException())->setError($key, 'Cannot set method response.');
+        if (!isset(self::$_x_response_structure[static::class][$key])) {
+            throw (new MethodResponseException())->setError($key, 'Unknown response item');
+        }
+        /** @var MethodItemSignature $signature */
+        $signature = self::$_x_response_structure[static::class][$key];
+        if (!$signature->type->accepts($value, $messages)) {
+            throw (new MethodRequestException())->setError($key, implode(' ', $messages));
+        }
+        $this->_x_response[$key] = $value;
     }
 
     public function __debugInfo(): array
     {
         return $this->toArray();
+    }
+
+    final public static function request() : array
+    {
+        return self::$_x_request_structure[static::class];
+    }
+
+    final public static function response() : array
+    {
+        return self::$_x_response_structure[static::class];
     }
 
     # Overridable Methods
@@ -59,12 +74,12 @@ abstract class Method extends XUA
         return true;
     }
 
-    static protected function request() : array
+    static protected function _request() : array
     {
         return [];
     }
 
-    static protected function response() : array
+    static protected function _response() : array
     {
         return [];
     }

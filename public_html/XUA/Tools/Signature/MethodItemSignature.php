@@ -1,7 +1,7 @@
 <?php
 
 
-namespace XUA\Tools;
+namespace XUA\Tools\Signature;
 
 
 use XUA\Exceptions\MethodRequestException;

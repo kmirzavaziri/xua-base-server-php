@@ -6,8 +6,8 @@ namespace Entities;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Strings\Text;
 use XUA\Entity;
-use XUA\Tools\EntityFieldSignature;
-use XUA\Tools\Index;
+use XUA\Tools\Signature\EntityFieldSignature;
+use XUA\Tools\Entity\Index;
 
 /**
  * @property int id

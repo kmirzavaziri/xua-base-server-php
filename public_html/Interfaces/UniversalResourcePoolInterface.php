@@ -31,7 +31,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
             if (class_exists($class)) {
                 if (is_a($class, Method::class, true)) {
                     try {
-                        $response['response'] = (new $class((array)$request));
+                        $response['response'] = (new $class((array)$request))->toArray();
                     } catch (Throwable $e) {
                         if (is_a($e, MethodRequestException::class)) {
                             $response['errors'] = $e->getErrors();

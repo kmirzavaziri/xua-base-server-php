@@ -7,6 +7,7 @@ use Services\XUA\Dev\Credentials;
 use Services\XUA\RouteService;
 use Services\XUA\TemplateService;
 use XUA\Exceptions\RouteException;
+use XUA\XUAException;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -20,7 +21,7 @@ try {
     if (Credentials::developer()) {
         echo
             "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
-            $throwable->getMessage() . "\n\n" .
+            (is_a($throwable, XUAException::class) ? xua_var_dump($throwable->getErrors()) : $throwable->getMessage()) . "\n\n" .
             "Trace:\n" .
             $throwable->getTraceAsString() .
             "</pre>";

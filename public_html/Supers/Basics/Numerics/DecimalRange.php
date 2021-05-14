@@ -5,7 +5,7 @@ namespace Supers\Basics\Numerics;
 
 
 use Supers\Basics\Boolean;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

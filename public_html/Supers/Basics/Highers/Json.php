@@ -8,7 +8,7 @@ namespace Supers\Basics\Highers;
 use Supers\Basics\Boolean;
 use Supers\Basics\Strings\Text;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

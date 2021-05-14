@@ -17,7 +17,7 @@ use Supers\Customs\IranNationalId;
 use Supers\Customs\IranPhone;
 use Supers\Customs\IranPostalCode;
 use XUA\Entity;
-use XUA\Tools\EntityFieldSignature;
+use XUA\Tools\Signature\EntityFieldSignature;
 
 /**
  * @property int id
@@ -46,6 +46,30 @@ use XUA\Tools\EntityFieldSignature;
  */
 class User extends Entity
 {
+    const id = 'id';
+    const personType = 'personType';
+    const firstNameFa = 'firstNameFa';
+    const firstNameEn = 'firstNameEn';
+    const lastNameFa = 'lastNameFa';
+    const lastNameEn = 'lastNameEn';
+    const name = 'name';
+    const nameDB = 'name';
+    const nationalCode = 'nationalCode';
+    const organizationName = 'organizationName';
+    const organizationNameEn = 'organizationNameEn';
+    const organizationNationalId = 'organizationNationalId';
+    const cellphoneNumber = 'cellphoneNumber';
+    const email = 'email';
+    const address = 'address';
+    const geolocation = 'geolocation';
+    const postalCode = 'postalCode';
+    const phoneNumber = 'phoneNumber';
+    const faxNumber = 'faxNumber';
+    const iban = 'iban';
+    const simCard = 'simCard';
+    const lastSimCard = 'lastSimCard';
+    const workingFarms = 'workingFarms';
+
     protected static function _fields(): array
     {
         return array_merge(parent::_fields(), [
@@ -197,14 +221,14 @@ class User extends Entity
             'workingFarms' => new EntityFieldSignature(
                 static::class, 'workingFarms',
                 new EntityRelation([
-                    'relatedEntity' => Farm::class,
+                    'relatedEntity' => \Entities\Farm::class,
                     'relation' => 'NN',
                     'invName' => 'workers',
                     'nullable' => false,
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                []
+                null
             ),
         ]);
     }

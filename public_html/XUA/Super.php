@@ -5,7 +5,7 @@ namespace XUA;
 use XUA\Exceptions\SuperArgumentException;
 use XUA\Exceptions\SuperMarshalException;
 use XUA\Exceptions\SuperValidationException;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 abstract class Super extends XUA
 {

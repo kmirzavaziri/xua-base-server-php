@@ -6,15 +6,19 @@ namespace Entities;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Strings\Text;
 use XUA\Entity;
-use XUA\Tools\EntityFieldSignature;
+use XUA\Tools\Signature\EntityFieldSignature;
 
 /**
  * @property int id
  * @property string title
- * @property User[] workers
+ * @property \Entities\User[] workers
  */
 class Farm extends Entity
 {
+    const id = 'id';
+    const title = 'title';
+    const workers = 'workers';
+
     protected static function _fields(): array
     {
         return array_merge(parent::_fields(), [

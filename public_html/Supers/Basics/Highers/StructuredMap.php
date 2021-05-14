@@ -7,7 +7,7 @@ namespace Supers\Basics\Highers;
 use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Symbol;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

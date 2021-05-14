@@ -29,7 +29,7 @@ def setClassParameters(className):
     if result['status']:
         with open(args.fileName, 'r') as f:
             content = f.read()
-        content = re.sub(r'(\/\*\*.*\*\/\s*)?((abstract\s*)?class.*\{.*\})', lambda m, c=result['result'] : c + m.group(2), content, 1, re.DOTALL)
+        content = re.sub(r'(\/\*\*.*\*\/\s*)?((abstract\s*)?class.*\})', lambda m, c=result['result'] : c + m.group(2), content, 1, re.DOTALL)
         with open(args.fileName, 'w') as f:
             f.write(content)
         print('SUCCESS')
@@ -60,6 +60,30 @@ def setRelationInverseColumns(className):
     else:
         raise Exception('false result from PHP Engine Helper.\n')
 
+def setMethodExecuteVars(className):
+    result = callAction(className, 'getMethodExecuteVars')
+    if result['status']:
+        with open(args.fileName, 'r') as f:
+            content = f.read()
+        content = re.sub(r'(protected\s+function\s+execute\([^)]*\)[^{]*\{\s*)([^\/]*(\/\*\*.*\*\/\s*)?)', lambda m, c=result['result'] : m.group(1) + c, content, 1, re.DOTALL)
+        with open(args.fileName, 'w') as f:
+            f.write(content)
+        print('SUCCESS')
+    else:
+        raise Exception('false result from PHP Engine Helper.\n')
+
+def setEntityConstants(className):
+    result = callAction(className, 'getEntityConstants')
+    if result['status']:
+        with open(args.fileName, 'r') as f:
+            content = f.read()
+        content = re.sub(r'(class\s+\w+\s+extends\s+\w+\s*\{\s*)(.*?)(protected|private|public|static|final|function)', lambda m, c=result['result'] : m.group(1) + c +  m.group(3), content, 1, re.DOTALL)
+        with open(args.fileName, 'w') as f:
+            f.write(content)
+        print('SUCCESS')
+    else:
+        raise Exception('false result from PHP Engine Helper.\n')
+
 parser = argparse.ArgumentParser()
 parser.add_argument('fileName', type=str)
 
@@ -70,8 +94,20 @@ print(className)
 try:
     print('setClassParameters: ', end = '')
     setClassParameters(className)
+except Exception as e:
+    print(e)
+try:
     print('setRelationInverseColumns: ', end = '')
     setRelationInverseColumns(className)
 except Exception as e:
     print(e)
-
+try:
+    print('setMethodExecuteVars: ', end = '')
+    setMethodExecuteVars(className)
+except Exception as e:
+    print(e)
+try:
+    print('setEntityConstants: ', end = '')
+    setEntityConstants(className)
+except Exception as e:
+    print(e)

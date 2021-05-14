@@ -14,7 +14,7 @@ use Supers\Basics\Strings\Symbol;
 use XUA\Entity;
 use XUA\Exceptions\SuperValidationException;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property \XUA\Entity|string relatedEntity

@@ -1,11 +1,13 @@
 <?php
 
 
-namespace XUA\Tools;
+namespace XUA\Tools\Entity;
 
 
 
+use Exception;
 use ReflectionClass;
+use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Sequence;
 use XUA\Exceptions\EntityConditionException;
 
@@ -36,23 +38,36 @@ final class Condition
     const REGEXP      = "$ REGEXP ?";
     const NOT_REGEXP  = "$ NOT REGEXP ?";
 
+    private array $joins = [];
+
     public string $template = "";
     public array $parameters = [];
+
+    public function __construct()
+    {
+        throw new Exception('cannot instantiate class `Condition` directly, use `leaf`, `falseLeaf`, or `trueLeaf` methods.');
+    }
 
     public static function relations() : array
     {
         return (new ReflectionClass(self::class))->getConstants();
     }
 
-    public static function leaf (EntityFieldSignature $field, string $relation, mixed $value) : Condition
+    public static function leaf (ConditionField $field, string $relation, mixed $value = null) : Condition
     {
         if (!in_array($relation, self::relations())) {
             throw new EntityConditionException('Invalid relation provided. Relation must be a constant of class Condition.');
         }
 
-        $condition = new Condition();
+        if (is_a($field->signature->type, EntityRelation::class)) {
+            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use relIf or relMust function on the CF.');
+        }
 
-        $condition->template = str_replace('$', $field->name, $relation);
+        /** @var Condition $condition */
+        $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
+
+        $condition->template = str_replace('$', $field->name(), $relation);
+        $condition->joins = $field->joins();
 
         if ($relation == self::BETWEEN or $relation == self::NBETWEEN) {
             if ((new Sequence(['minLength' => 2, 'maxLength' => 2]))->accepts($value, $message)) {
@@ -77,14 +92,16 @@ final class Condition
 
     public static function trueLeaf() : Condition
     {
-        $condition = new Condition();
+        /** @var Condition $condition */
+        $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
         $condition->template = 'TRUE';
         return $condition;
     }
 
     public static function falseLeaf() : Condition
     {
-        $condition = new Condition();
+        /** @var Condition $condition */
+        $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
         $condition->template = 'FALSE';
         return $condition;
     }
@@ -92,21 +109,24 @@ final class Condition
     public function and(Condition $condition) : Condition
     {
         $this->template = "($this->template) AND ($condition->template)";
-        $this->parameters += $condition->parameters;
+        $this->parameters = array_merge($this->parameters, $condition->parameters);
+        $this->joins = array_merge($this->joins, $condition->joins);
         return $this;
     }
 
     public function or(Condition $condition) : Condition
     {
         $this->template = "($this->template) OR ($condition->template)";
-        $this->parameters += $condition->parameters;
+        $this->parameters = array_merge($this->parameters, $condition->parameters);
+        $this->joins = array_merge($this->joins, $condition->joins);
         return $this;
     }
 
     public function xor(Condition $condition) : Condition
     {
         $this->template = "($this->template) XOR ($condition->template)";
-        $this->parameters += $condition->parameters;
+        $this->parameters = array_merge($this->parameters, $condition->parameters);
+        $this->joins = array_merge($this->joins, $condition->joins);
         return $this;
     }
 
@@ -136,5 +156,14 @@ final class Condition
         return $condition->not();
     }
 
-
+    public function joins()
+    {
+        $joins = [];
+        foreach ($this->joins as $join) {
+            in_array($join, $joins) or $joins[] = $join;
+        }
+        return implode(PHP_EOL, array_map(function (Join $join) {
+            return $join->expression();
+        }, $joins));
+    }
 }

@@ -12,7 +12,7 @@ use Supers\Basics\Strings\Text;
 use Supers\Basics\Trilean;
 use Supers\Basics\Universal;
 use XUA\Super;
-use XUA\Tools\SuperArgumentSignature;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?array parameters
