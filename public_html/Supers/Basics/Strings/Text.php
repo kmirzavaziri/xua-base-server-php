@@ -26,7 +26,7 @@ class Text extends Super
             ]);
     }
 
-    protected function _validation(SuperValidationException &$exception): void
+    protected function _validation(SuperValidationException $exception): void
     {
         if ($this->minLength !== null and $this->maxLength !== null and $this->minLength > $this->maxLength) {
             $exception->setError('maxLength', "Max length $this->maxLength cannot be less than min length $this->minLength");

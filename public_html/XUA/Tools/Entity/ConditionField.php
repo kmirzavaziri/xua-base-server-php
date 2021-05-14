@@ -12,7 +12,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
 final class ConditionField
 {
     private array $joins = [];
-    private string $alias = '';
+    private string $alias;
 
     public function __construct(public EntityFieldSignature $signature) {
         $this->alias = $this->signature->entity::table();

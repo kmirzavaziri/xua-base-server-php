@@ -1,5 +1,11 @@
 <?php
 
+use Supers\Basics\EntitySupers\EntityRelation;
+use XUA\Entity;
+use XUA\Method;
+use XUA\Super;
+use XUA\Tools\Signature\EntityFieldSignature;
+
 require 'magic.php';
 require 'autoload.php';
 
@@ -37,7 +43,7 @@ function getClassParameters(string $class) : object
 {
     $result = new Result(true, '');
 
-    if (is_a($class, \XUA\Super::class, true)) {
+    if (is_a($class, Super::class, true)) {
         foreach ($class::formal() as $key => $signature) {
             $result->result .= " * @method SuperArgumentSignature $key" . PHP_EOL;
             $result->result .= " * @property " . $signature->type->phpType() . " $key" . PHP_EOL;
@@ -45,14 +51,14 @@ function getClassParameters(string $class) : object
         if ($result->result) {
             $result->result = "/**" . PHP_EOL . $result->result . " */" . PHP_EOL;
         }
-    } elseif (is_a($class, \XUA\Entity::class, true)) {
+    } elseif (is_a($class, Entity::class, true)) {
         foreach ($class::structure() as $key => $signature) {
             $result->result .= " * @property " . $signature->type->phpType() . " $key" . PHP_EOL;
         }
         if ($result->result) {
             $result->result = "/**" . PHP_EOL . $result->result . " */" . PHP_EOL;
         }
-    } elseif (is_a($class, \XUA\Method::class, true)) {
+    } elseif (is_a($class, Method::class, true)) {
         foreach ($class::response() as $key => $signature) {
             $result->result .= " * @property " . $signature->type->phpType() . " $key" . PHP_EOL;
         }
@@ -71,10 +77,10 @@ function getRelationInverseColumns(string $class) : object
 {
     $result = new Result(true, []);
 
-    if (is_a($class, \XUA\Entity::class, true)) {
+    if (is_a($class, Entity::class, true)) {
         foreach ($class::structure() as $key => $signature) {
-            /** @var \XUA\Tools\Signature\EntityFieldSignature $signature */
-            if (is_a($signature->type, \Supers\Basics\EntitySupers\EntityRelation::class) and $signature->type->definedOn == 'here') {
+            /** @var EntityFieldSignature $signature */
+            if (is_a($signature->type, EntityRelation::class) and $signature->type->definedOn == 'here') {
                 $result->result[] = [
                     'new' => !in_array($signature->type->invName, array_keys($signature->type->relatedEntity::structure())),
                     'name' => $signature->type->invName,
@@ -106,7 +112,7 @@ function getMethodExecuteVars(string $class) : object
 {
     $result = new Result(true, '');
 
-    if (is_a($class, \XUA\Method::class, true)) {
+    if (is_a($class, Method::class, true)) {
         foreach ($class::request() as $key => $signature) {
             $result->result .= '         * @var ' . $signature->type->phpType() . ' $' . $key . PHP_EOL;
         }
@@ -131,7 +137,7 @@ function getEntityConstants(string $class) : object
 {
     $result = new Result(true, '');
 
-    if (is_a($class, \XUA\Entity::class, true)) {
+    if (is_a($class, Entity::class, true)) {
         foreach ($class::structure() as $key => $signature) {
             $result->result .= "const $key = '$signature->name';" . PHP_EOL . '    ';
         }

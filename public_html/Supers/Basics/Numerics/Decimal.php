@@ -27,7 +27,7 @@ class Decimal extends Number
         ]);
     }
 
-    protected function _validation(SuperValidationException &$exception): void
+    protected function _validation(SuperValidationException $exception): void
     {
         parent::_validation($exception);
 

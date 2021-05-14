@@ -11,7 +11,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
 /**
  * @property int id
  * @property string title
- * @property \Entities\User[] workers
+ * @property User[] workers
  */
 class Farm extends Entity
 {

@@ -28,7 +28,7 @@ class DecimalRange extends Decimal
         ]);
     }
 
-    protected function _validation(SuperValidationException &$exception): void
+    protected function _validation(SuperValidationException $exception): void
     {
         $this->unsigned = $this->min >= 0;
         parent::_validation($exception);

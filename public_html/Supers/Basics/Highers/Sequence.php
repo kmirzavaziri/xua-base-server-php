@@ -11,7 +11,7 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
- * @property ?\XUA\Super type
+ * @property ?Super type
  * @property ?int minLength
  * @property ?int maxLength
  */
@@ -26,7 +26,7 @@ class Sequence extends Json
         ]);
     }
 
-    protected function _validation(SuperValidationException &$exception): void
+    protected function _validation(SuperValidationException $exception): void
     {
         if ($this->minLength !== null and $this->maxLength !== null and $this->minLength > $this->maxLength) {
             $exception->setError('maxLength', "Max length $this->maxLength cannot be less than min length $this->minLength");

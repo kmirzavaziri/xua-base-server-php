@@ -2,6 +2,7 @@
 
 namespace Interfaces;
 
+use Entities\Farm;
 use Entities\User;
 use XUA\InterfaceEve;
 
@@ -10,8 +11,8 @@ class TestInterface extends InterfaceEve
     public static function execute(): string
     {
         echo "<pre>";
-        echo \Entities\User::alter();
-        echo \Entities\Farm::alter();
+        echo User::alter();
+        echo Farm::alter();
         echo "</pre>";
 
 //        $farm = new Farm(4);

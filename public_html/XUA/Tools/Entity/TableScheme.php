@@ -80,12 +80,12 @@ class TableScheme
             }
             $oldIndexes[$rawOldIndex['Key_name']]->fields[$rawOldIndex['Seq_in_index']] = $rawOldIndex['Column_name'];
         }
-        foreach ($oldIndexes as $key => $oldIndex) {
+        foreach ($oldIndexes as $oldIndex) {
             $tmp = [];
             foreach ($oldIndex->fields as $field) {
                 $tmp[$field] = Index::ASC;
             }
-            $oldIndexes[$key]->fields = $tmp;
+            $oldIndex->fields = $tmp;
         }
 
         $newIndexesSeq = $this->indexes;

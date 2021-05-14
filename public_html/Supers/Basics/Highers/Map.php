@@ -10,8 +10,8 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
- * @property ?\XUA\Super keyType
- * @property ?\XUA\Super valueType
+ * @property ?Super keyType
+ * @property ?Super valueType
  * @property ?int minSize
  * @property ?int maxSize
  */

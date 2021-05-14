@@ -17,7 +17,7 @@ use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
- * @property \XUA\Entity|string relatedEntity
+ * @property Entity|string relatedEntity
  * @property string relation
  * @property ?string invName
  * @property bool nullable
@@ -38,7 +38,7 @@ class EntityRelation extends Super
             ]);
     }
 
-    protected function _validation(SuperValidationException &$exception): void
+    protected function _validation(SuperValidationException $exception): void
     {
         if ($this->relation[0] == 'N' and $this->invNullable != false) {
             $exception->setError('invNullable', 'Inverse nullable must be false when defining a many-to-? (N?) relation.');

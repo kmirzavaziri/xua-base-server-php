@@ -99,7 +99,7 @@ abstract class Entity extends XUA
     private array $_x_fetched_by_p = [];
     private array $_x_must_store = [];
 
-    private ?int $_x_given_id = null;
+    private ?int $_x_given_id;
 
     final public static function _init() : void
     {
@@ -128,15 +128,13 @@ abstract class Entity extends XUA
         }
         if ($exists) {
             $this->_x_properties['id'] = $id;
-            $this->_x_must_fetch['id'] = false;
-            $this->_x_must_store['id'] = false;
         } else {
             foreach (static::structure() as $key => $signature) {
                 $this->_x_must_store[$key] = true;
             }
-            $this->_x_must_fetch['id'] = false;
-            $this->_x_must_store['id'] = false;
         }
+        $this->_x_must_fetch['id'] = false;
+        $this->_x_must_store['id'] = false;
     }
 
     /**
@@ -258,7 +256,7 @@ abstract class Entity extends XUA
         ];
     }
 
-    protected function _validation(EntityFieldException &$exception) : void
+    protected function _validation(EntityFieldException $exception) : void
     {
         # Empty by default
     }
@@ -757,7 +755,7 @@ abstract class Entity extends XUA
             : '_' . $signature->type->relatedEntity::table() . '_' . $signature->type->invName;
     }
 
-    private function addThisToAnotherEntity (Entity &$entity, string $key) {
+    private function addThisToAnotherEntity (Entity $entity, string $key) {
         // one-to-? relation
         if ($entity->_x_properties[$key] === null or $entity->_x_properties[$key] instanceof Entity) {
             if ($entity->_x_properties[$key] === null or $entity->_x_properties[$key] !== $this) {

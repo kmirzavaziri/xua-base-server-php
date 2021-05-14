@@ -82,7 +82,7 @@ abstract class Super extends XUA
         return [];
     }
 
-    protected function _validation(SuperValidationException &$exception) : void
+    protected function _validation(SuperValidationException $exception) : void
     {
         # Empty by default
     }

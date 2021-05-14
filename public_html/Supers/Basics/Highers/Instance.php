@@ -12,6 +12,7 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 /**
  * @property string of
  * @property bool strict
+ * @property bool acceptClass
  * @property bool nullable
  */
 class Instance extends Super
