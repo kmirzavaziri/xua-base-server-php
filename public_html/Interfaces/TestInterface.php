@@ -19,10 +19,10 @@ class TestInterface extends InterfaceEve
 //        var_dump($farm);
 //        $farm->delete();
 
-        $users = User::getMany(
-//            Condition::leaf(User::CF(User::workingFarms)->rel(Farm::F(Farm::title)), Condition::LIKE, '%قارچ%')
-        );
-        var_dump($users);
+//        $users = User::getMany(
+////            Condition::leaf(User::CF(User::workingFarms)->rel(Farm::F(Farm::title)), Condition::LIKE, '%قارچ%')
+//        );
+//        var_dump($users);
 
 //    $user = new \Entities\User();
 //    $user->personType = 'juridical';

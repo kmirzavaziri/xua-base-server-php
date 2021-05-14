@@ -4,13 +4,12 @@
 namespace XUA\Tools\Entity;
 
 
-use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
 use XUA\Entity;
 
-class TableScheme
+final class TableScheme
 {
     public function __construct(
         private string $tableName,
@@ -42,7 +41,10 @@ class TableScheme
         $newColumns = $this->columns;
         $removedColumns = array_diff(array_keys($oldColumns), array_keys($newColumns));
         $freshColumns = array_diff(array_keys($newColumns), array_keys($oldColumns));
-        $potentiallyChangedColumns = array_intersect(array_keys($newColumns), array_keys($oldColumns));
+        $potentiallyChangedColumns = array_intersect(array_keys($oldColumns), array_keys($newColumns));
+
+        $orderChangeColumns = self::getOrderChanges(array_merge($potentiallyChangedColumns, $freshColumns), array_keys($newColumns));
+
         $changedColumns = [];
         foreach ($potentiallyChangedColumns as $key) {
             if (!$newColumns[$key]->eq($oldColumns[$key])) {
@@ -52,23 +54,41 @@ class TableScheme
 
         $adds = [];
         foreach ($freshColumns as $column) {
-            $adds[] = "ADD " . $newColumns[$column]->toQuery() . ",";
+            $tmpOrder = '';
+            if (isset($orderChangeColumns[$column])) {
+                $tmpOrder = ' ' . $orderChangeColumns[$column];
+                unset($orderChangeColumns[$column]);
+            }
+            $adds[] =
+                "ADD " . $newColumns[$column]->toQuery() . $tmpOrder . ", # NEW COLUMN";
         }
         $adds = $adds ? "\n\t" . implode("\n\t", $adds) : "";
 
         $changes = [];
         foreach ($changedColumns as $column) {
-            $changes[] = "CHANGE COLUMN $column " . $newColumns[$column]->toQuery() . ", # CHANGED FROM " . $oldColumns[$column]->toQuery();
+            $tmpOrder = '';
+            if (isset($orderChangeColumns[$column])) {
+                $tmpOrder = ' ' . $orderChangeColumns[$column];
+                unset($orderChangeColumns[$column]);
+            }
+            $changes[] =
+                "CHANGE COLUMN $column " . $newColumns[$column]->toQuery() . $tmpOrder .", # CHANGED FROM " . $oldColumns[$column]->toQuery();
         }
         $changes = $changes ? "\n\t" . implode("\n\t", $changes) : "";
 
         $drops = [];
         foreach ($removedColumns as $column) {
-            $drops[] = "DROP COLUMN $column,";
+            $drops[] = "DROP COLUMN $column, # DROP COLUMN";
         }
         $drops = $drops ? "\n\t" . implode("\n\t", $drops) : "";
 
-        return "$drops$adds$changes";
+        $orderChanges = [];
+        foreach ($orderChangeColumns as $column => $change) {
+            $orderChanges[] = "CHANGE COLUMN $column " . $oldColumns[$column]->toQuery() . " $change, # CHANGE ORDER";
+        }
+        $orderChanges = $orderChanges ? "\n\t" . implode("\n\t", $orderChanges) : "";
+
+        return "$drops$adds$changes$orderChanges";
     }
 
     private function indexesAlter(false|PDOStatement $rawOldIndexes): string
@@ -150,5 +170,43 @@ class TableScheme
 
             return "ALTER TABLE $this->tableName$columnsAlter$indexesAlter\nENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;";
         }
+    }
+
+    private static function getOrderChanges(array $oldKeys, array $newKeys): array
+    {
+        $order = [];
+        $i = 0;
+        foreach ($newKeys as $key) {
+            $order[$key] = $i++;
+        }
+
+        $sequences = [];
+        foreach ($oldKeys as $index => $key)
+        {
+            $sequences[$index][$key] = true;
+            foreach ($sequences as $i => $sequence)
+            {
+                if ($order[$key] > $order[array_key_last($sequence)]) {
+                    $sequences[$i][$key] = true;
+                }
+            }
+        }
+        $longestSequenceIndex = 0;
+        foreach ($sequences as $index => $sequence)
+        {
+            if (count($sequence) > count($sequences[$longestSequenceIndex])) {
+                $longestSequenceIndex = $index;
+            }
+        }
+        $LIS = $sequences[$longestSequenceIndex];
+
+        $result = [];
+        foreach ($order as $key => $ord) {
+            if (!isset($LIS[$key])) {
+                $result[$key] = $ord == 0 ? 'FIRST' : 'AFTER ' . $newKeys[$ord - 1];
+            }
+        }
+
+        return $result;
     }
 }
