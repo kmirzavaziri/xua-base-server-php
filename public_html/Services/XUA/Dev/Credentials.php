@@ -5,6 +5,7 @@ namespace Services\XUA\Dev;
 
 
 use Exception;
+use XUA\Exceptions\InstantiationException;
 use XUA\Service;
 
 final class Credentials extends Service
@@ -19,9 +20,12 @@ final class Credentials extends Service
         return self::$developer;
     }
 
+    /**
+     * @throws InstantiationException
+     */
     function __construct()
     {
-        throw new Exception('Cannot instantiate class `Credentials`.');
+        throw new InstantiationException('Cannot instantiate class `Credentials`.');
     }
 
     protected static function _init()

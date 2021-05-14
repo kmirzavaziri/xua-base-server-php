@@ -6,6 +6,7 @@ namespace XUA\Tools\Entity;
 
 use Exception;
 use Supers\Basics\EntitySupers\EntityRelation;
+use XUA\Exceptions\EntityJoinException;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 class Join
@@ -20,7 +21,7 @@ class Join
         private EntityFieldSignature $joiningField,
     ) {
         if (!is_a($this->joiningField->type, EntityRelation::class)) {
-            throw new Exception('Cannot create JOIN for non-relational field.');
+            throw (new EntityJoinException)->setError($this->joiningField->name, 'Cannot create JOIN for non-relational field.');
         }
     }
 

@@ -4,9 +4,8 @@
 namespace XUA\Exceptions;
 
 
-
 use XUA\XUAException;
 
-class RouteException extends XUAException
+class EntityJoinException extends XUAException
 {
 }

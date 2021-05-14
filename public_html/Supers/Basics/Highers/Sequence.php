@@ -5,6 +5,7 @@ namespace Supers\Basics\Highers;
 
 
 use Supers\Basics\Numerics\Integer;
+use XUA\Exceptions\SuperValidationException;
 use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
@@ -23,6 +24,13 @@ class Sequence extends Json
             'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
             'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
         ]);
+    }
+
+    protected function _validation(SuperValidationException &$exception): void
+    {
+        if ($this->minLength !== null and $this->maxLength !== null and $this->minLength > $this->maxLength) {
+            $exception->setError('maxLength', "Max length $this->maxLength cannot be less than min length $this->minLength");
+        }
     }
 
     protected function _predicate($input, string &$message = null): bool

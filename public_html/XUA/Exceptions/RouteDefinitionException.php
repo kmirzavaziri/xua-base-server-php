@@ -4,8 +4,8 @@
 namespace XUA\Exceptions;
 
 
-use Exception;
+use XUA\XUAException;
 
-class RouteDefinitionException extends Exception
+class RouteDefinitionException extends XUAException
 {
 }

@@ -5,6 +5,7 @@ namespace Services\XUA;
 
 
 use Exception;
+use XUA\Exceptions\InstantiationException;
 use XUA\Service;
 
 final class ConstantService extends Service
@@ -18,9 +19,12 @@ final class ConstantService extends Service
     const CONNECTION_USERNAME = "root";
     const CONNECTION_PASSWORD = "root";
 
+    /**
+     * @throws InstantiationException
+     */
     function __construct()
     {
-        throw new Exception('Cannot instantiate class `ConstantService`.');
+        throw new InstantiationException('Cannot instantiate class `ConstantService`.');
     }
 
 }

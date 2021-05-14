@@ -5,15 +5,19 @@ namespace Services\XUA;
 
 
 use Exception;
+use XUA\Exceptions\InstantiationException;
 use XUA\Service;
 
 final class FlagService extends Service
 {
     private static array $flags = [];
 
+    /**
+     * @throws InstantiationException
+     */
     function __construct()
     {
-        throw new Exception('Cannot instantiate class `FlagService`.');
+        throw new InstantiationException('Cannot instantiate class `FlagService`.');
     }
 
     public static function get(string $key) : mixed

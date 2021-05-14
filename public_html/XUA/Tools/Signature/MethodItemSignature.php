@@ -22,6 +22,7 @@ class MethodItemSignature
      */
     public static function processRequest(array $signatures, array &$request) {
         $exception = new MethodRequestException();
+
         $unknownKeys = array_diff(array_keys($request), array_keys($signatures));
         foreach ($unknownKeys as $unknownKey) {
             $exception->setError($unknownKey, 'Unknown request item');
@@ -72,6 +73,7 @@ class MethodItemSignature
     public static function processResponse(array $signatures, array &$response)
     {
         $exception = new MethodResponseException();
+
         $unknownKeys = array_diff(array_keys($response), array_keys($signatures));
         foreach ($unknownKeys as $unknownKey) {
             $exception->setError($unknownKey, 'Unknown response item');

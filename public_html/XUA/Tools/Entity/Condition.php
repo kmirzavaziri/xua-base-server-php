@@ -10,6 +10,7 @@ use ReflectionClass;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Sequence;
 use XUA\Exceptions\EntityConditionException;
+use XUA\Exceptions\InstantiationException;
 
 final class Condition
 {
@@ -45,7 +46,7 @@ final class Condition
 
     public function __construct()
     {
-        throw new Exception('cannot instantiate class `Condition` directly, use `leaf`, `falseLeaf`, or `trueLeaf` methods.');
+        throw new InstantiationException('cannot instantiate class `Condition` directly, use `leaf`, `falseLeaf`, or `trueLeaf` methods.');
     }
 
     public static function relations() : array

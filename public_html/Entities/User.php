@@ -3,9 +3,6 @@
 namespace Entities;
 
 
-use Supers\Basics\EntitySupers\DatabaseVirtualField;
-use Supers\Basics\EntitySupers\EntityRelation;
-use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;

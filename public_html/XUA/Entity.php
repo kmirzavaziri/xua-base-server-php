@@ -11,6 +11,7 @@ use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
+use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityException;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Entity\Column;
@@ -100,7 +101,7 @@ abstract class Entity extends XUA
 
     private ?int $_x_given_id = null;
 
-    /* DONE */ final public static function _init() : void
+    final public static function _init() : void
     {
         $tableNameTemp = explode("\\", static::class);
         array_shift($tableNameTemp);
@@ -114,7 +115,7 @@ abstract class Entity extends XUA
         }
     }
 
-    /* DONE */ final public function __construct(?int $id = null)
+    final public function __construct(?int $id = null)
     {
         $this->initialize();
 
@@ -138,12 +139,15 @@ abstract class Entity extends XUA
         }
     }
 
-    /* DONE */ function __get(string $key)
+    /**
+     * @throws EntityFieldException
+     */
+    function __get(string $key)
     {
         $signature = static::F($key);
 
         if ($signature === null) {
-            throw new EntityFieldException("$key is not in (" . implode(', ', array_keys(static::structure())) . ")");
+            throw (new EntityFieldException())->setError($key, 'Unknown entity field');
         }
 
         if (
@@ -160,32 +164,35 @@ abstract class Entity extends XUA
         return $this->_x_properties[$key];
     }
 
-    /* DONE */ function __set(string $key, mixed $value) : void
+    /**
+     * @throws EntityFieldException
+     */
+    function __set(string $key, mixed $value) : void
     {
         $signature = static::F($key);
 
         if ($signature === null) {
-            throw new EntityFieldException("'$key' is not in " . implode(', ', array_keys(static::structure())) . ".");
+            throw (new EntityFieldException())->setError($key, 'Unknown entity field');
         }
 
         if ($key == 'id') {
-            throw new EntityFieldException("Cannot set field 'id' of an entity.");
+            throw (new EntityFieldException())->setError($key, 'Cannot change id of an entity.');
         }
 
         if (!$signature->type->accepts($value, $messages)) {
-            throw new EntityFieldException("$key: " . implode(" ", $messages));
+            throw (new EntityFieldException())->setError($key, implode(" ", $messages));
         }
 
         if (is_a($signature->type, PhpVirtualField::class)) {
             if ($signature->type->setter !== null) {
                 ($signature->type->setter)($this, $signature->p(), $value);
             } else {
-                throw new EntityFieldException('Cannot set PhpVirtualField with no setter.');
+                throw (new EntityFieldException())->setError($key, 'Cannot set PhpVirtualField with no setter.');
             }
         }
 
         if (is_a($signature->type, DatabaseVirtualField::class)) {
-            throw new EntityFieldException('Cannot set DatabaseVirtualField.');
+            throw (new EntityFieldException())->setError($key, 'Cannot set DatabaseVirtualField.');
         }
 
         if (is_a($signature->type, EntityRelation::class)) {
@@ -207,7 +214,7 @@ abstract class Entity extends XUA
         }
     }
 
-    /* DONE */ public function __debugInfo(): array
+    public function __debugInfo(): array
     {
         $result = [];
         foreach ($this->_x_properties as $key => $value) {
@@ -218,86 +225,76 @@ abstract class Entity extends XUA
         return $result;
     }
 
-    /* DONE */ final public static function structure() : array {
+    final public static function structure() : array {
         return self::$_x_structure[static::class];
     }
 
-    /* DONE */ final public function properties() : array {
+    final public function properties() : array {
         return $this->_x_properties;
     }
 
-    /* DONE */ final public static function table() : string
+    final public static function table() : string
     {
         return self::$_x_table[static::class];
     }
 
-    /* DONE */ final public function givenId() : ?int
+    final public function givenId() : ?int
     {
         return $this->_x_given_id;
     }
 
     # Overridable Methods
-    /* DONE */ protected static function _fields() : array
+    protected static function _fields() : array
     {
         return [
             'id' => new EntityFieldSignature(static::class, 'id', new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2]), null),
         ];
     }
 
-    /* DONE */ protected static function _indexes() : array
+    protected static function _indexes() : array
     {
         return [
             new Index(['id' => Index::ASC], true, 'PRIMARY'),
         ];
     }
 
-    /* DONE */ protected function _validation() : void
+    protected function _validation(EntityFieldException &$exception) : void
     {
         # Empty by default
     }
 
-    /* DONE */ protected function _initialize(string $caller) : void
+    protected function _initialize(string $caller) : void
     {
         $this->_x_initialize();
     }
 
-    /* DONE */ protected static function _getOne(Condition $condition, Order $order, string $caller) : Entity
+    protected static function _getOne(Condition $condition, Order $order, string $caller) : Entity
     {
         return static::_x_getOne($condition, $order);
     }
 
-    /* DONE */ protected function _store(string $caller) : Entity
+    protected function _store(string $caller) : Entity
     {
         return $this->_x_store();
     }
 
-    /* DONE */ protected function _delete(string $caller) : void
+    protected function _delete(string $caller) : void
     {
         $this->_x_delete();
     }
 
-    /* DONE */ protected static function _getMany(Condition $condition, Order $order, Pager $pager, string $caller) : array
+    protected static function _getMany(Condition $condition, Order $order, Pager $pager, string $caller) : array
     {
         return static::_x_getMany($condition, $order, $pager);
     }
 
-    /* DONE */ protected static function _setMany(array $changes, Condition $condition, Order $order, Pager $pager, string $caller) : void
-    {
-        static::_x_setMany($changes, $condition, $order, $pager);
-    }
-
-    /* DONE */ protected static function _deleteMany(Condition $condition, Order $order, Pager $pager, string $caller) : void
-    {
-        static::_x_deleteMany($condition, $order, $pager);
-    }
-
     # Overridable Method Wrappers
-    /* DONE */ private static function fields() : array
+    private static function fields() : array
     {
         return static::_fields();
     }
 
-    /* DONE */ final public static function indexes() : array
+    final public static function indexes() : array
     {
         $relIndexes = [];
         foreach (static::structure() as $key => $signature) {
@@ -308,25 +305,32 @@ abstract class Entity extends XUA
         return array_merge(static::_indexes(), $relIndexes);
     }
 
-    /* DONE */ private function validation() : void
+    /**
+     * @throws EntityFieldException
+     */
+    private function validation() : void
     {
-        $this->_validation();
+        $exception = new EntityFieldException();
+        $this->_validation($exception);
 
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if ($this->_x_must_store[$key] and !$signature->type->accepts($this->_x_properties[$key], $messages)) {
-                throw new EntityFieldException("$key: " . implode(" ", $messages));
+                $exception->setError($key, implode(" ", $messages));
             }
         }
 
+        if ($exception->getErrors()) {
+            throw $exception;
+        }
     }
 
-    /* DONE */ private function initialize(string $caller = Visibility::CALLER_PHP) : void
+    private function initialize(string $caller = Visibility::CALLER_PHP) : void
     {
         $this->_initialize($caller);
     }
 
-    /* DONE */ final public static function getOne(?Condition $condition = null, ?Order $order = null, string $caller = Visibility::CALLER_PHP) : Entity
+    final public static function getOne(?Condition $condition = null, ?Order $order = null, string $caller = Visibility::CALLER_PHP) : Entity
     {
         if ($condition === null) {
             $condition = Condition::trueLeaf();
@@ -337,19 +341,19 @@ abstract class Entity extends XUA
         return static::_getOne($condition, $order, $caller);
     }
 
-    /* DONE */ final public function store(string $caller = Visibility::CALLER_PHP) : Entity
+    final public function store(string $caller = Visibility::CALLER_PHP) : Entity
     {
         return $this->_store($caller);
     }
 
-    /* DONE */ final public function delete(string $caller = Visibility::CALLER_PHP) : void
+    final public function delete(string $caller = Visibility::CALLER_PHP) : void
     {
         if ($this->id) {
             $this->_delete($caller);
         }
     }
 
-    /* DONE */ final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : array
+    final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : array
     {
         if ($condition === null) {
             $condition = Condition::trueLeaf();
@@ -363,36 +367,8 @@ abstract class Entity extends XUA
         return static::_getMany($condition, $order, $pager, $caller);
     }
 
-    /* DONE */ final public static function setMany(array $changes, ?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : void
-    {
-        if ($condition === null) {
-            $condition = Condition::trueLeaf();
-        }
-        if ($order === null) {
-            $order = Order::noOrder();
-        }
-        if ($pager === null) {
-            $pager = Pager::unlimited();
-        }
-        static::_setMany($changes, $condition, $order, $pager, $caller);
-    }
-
-    /* DONE */ final public static function deleteMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : void
-    {
-        if ($condition === null) {
-            $condition = Condition::trueLeaf();
-        }
-        if ($order === null) {
-            $order = Order::noOrder();
-        }
-        if ($pager === null) {
-            $pager = Pager::unlimited();
-        }
-        static::_deleteMany($condition, $order, $pager, $caller);
-    }
-
     # Predefined Methods (to wrap in overridable methods)
-    /* DONE */ final protected function _x_initialize() : void {
+    final protected function _x_initialize() : void {
         foreach (static::structure() as $key => $signature) {
             $this->_x_properties[$key] = $signature->default;
             $this->_x_must_fetch[$key] = true;
@@ -403,23 +379,26 @@ abstract class Entity extends XUA
         }
     }
 
-    /* DONE */ final protected static function _x_getOne(Condition $condition, Order $order) : Entity
+    final protected static function _x_getOne(Condition $condition, Order $order) : Entity
     {
         return static::_x_getMany($condition, $order, new Pager(1, 0))[0] ?? new static();
     }
 
-    /* DONE */ final protected function _x_store() : Entity
+    final protected function _x_store() : Entity
     {
         $this->_x_insert_or_update();
         return $this;
     }
 
-    /* DONE */ final protected function _x_delete() : void
+    /**
+     * @throws EntityDeleteException
+     */
+    final protected function _x_delete() : void
     {
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->relation[0] == 'I' and !$signature->type->invNullable and $this->$key) {
-                throw new EntityException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
+                throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
             }
         }
 
@@ -444,7 +423,7 @@ abstract class Entity extends XUA
         self::execute("DELETE FROM " . static::table() . " WHERE id = ? LIMIT 1", [$this->id]);
     }
 
-    /* DONE */ final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager) : array
+    final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager) : array
     {
         [$columnsExpression, $keys] = self::columnsExpression();
         $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
@@ -464,18 +443,8 @@ abstract class Entity extends XUA
         return $entities;
     }
 
-    final protected static function _x_setMany(array $changes, Condition $condition, Order $order, Pager $pager) : void
-    {
-        # @TODO implement
-    }
-
-    final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager) : void
-    {
-        # @TODO implement
-    }
-
     # Predefined Methods (Array-Entity Conversations)
-    /* DONE */ final protected function fromDbArray (array $array) : Entity {
+    final protected function fromDbArray (array $array) : Entity {
         foreach ($array as $key => $value) {
             $signature = static::F($key);
             if (is_a($signature->type, EntityRelation::class)) {
@@ -518,7 +487,7 @@ abstract class Entity extends XUA
         return $this;
     }
 
-    /* DONE */ final protected function toDbArray () : array {
+    final protected function toDbArray () : array {
         $array = [];
         foreach (static::structure() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
@@ -530,7 +499,7 @@ abstract class Entity extends XUA
     }
 
     # Predefined Methods (low-level direct mysql communicator)
-    /* DONE */ private function _x_fetch(?string $fieldName = 'id') : void
+    private function _x_fetch(?string $fieldName = 'id') : void
     {
         if (!($this->_x_properties['id'] ?? false)) {
             return;
@@ -580,6 +549,9 @@ abstract class Entity extends XUA
         $this->fromDbArray($array);
     }
 
+    /**
+     * @throws EntityFieldException
+     */
     private function _x_insert_or_update() : void
     {
         $this->validation();
@@ -647,9 +619,9 @@ abstract class Entity extends XUA
                         $iterator++;
                     }
                     $duplicateExpression = implode(', ', $duplicateExpressions);
-                    throw new EntityFieldException("$fieldNames[0]: A $table with $duplicateExpression already exists.");
+                    throw (new EntityFieldException())->setError($fieldNames[0], "A $table with $duplicateExpression already exists.");
                 } else {
-                    throw new PDOException($e->getMessage(), $e->getCode());
+                    throw $e;
                 }
             }
         }
@@ -709,7 +681,7 @@ abstract class Entity extends XUA
     }
 
     # Predefined Methods (helpers)
-    /* DONE */ final public static function alter() : string
+    final public static function alter() : string
     {
         $signatures = static::structure();
         unset($signatures['id']);
@@ -751,7 +723,7 @@ abstract class Entity extends XUA
         return implode(PHP_EOL . PHP_EOL, $alters) . PHP_EOL . PHP_EOL;
     }
 
-    /* DONE */ private static function columnsExpression(?Entity $entity = null) : array
+    private static function columnsExpression(?Entity $entity = null) : array
     {
         $columnExpressions = [];
         $keys = [];
@@ -777,7 +749,7 @@ abstract class Entity extends XUA
         return [$columnsExpression, $keys];
     }
 
-    /* DONE */ final public static function junctionTableName (string $fieldName) : string
+    final public static function junctionTableName (string $fieldName) : string
     {
         $signature = static::F($fieldName);
         return $signature->type->definedOn == 'here'
@@ -785,7 +757,7 @@ abstract class Entity extends XUA
             : '_' . $signature->type->relatedEntity::table() . '_' . $signature->type->invName;
     }
 
-    /* DONE */ private function addThisToAnotherEntity (Entity &$entity, string $key) {
+    private function addThisToAnotherEntity (Entity &$entity, string $key) {
         // one-to-? relation
         if ($entity->_x_properties[$key] === null or $entity->_x_properties[$key] instanceof Entity) {
             if ($entity->_x_properties[$key] === null or $entity->_x_properties[$key] !== $this) {
@@ -812,7 +784,7 @@ abstract class Entity extends XUA
         }
     }
 
-    /* DONE */ private function getAddingRemovingIds(string $key) : array
+    private function getAddingRemovingIds(string $key) : array
     {
         $currentIds = array_map(function (Entity $entity) {
             return $entity->_x_properties['id'];
@@ -827,11 +799,12 @@ abstract class Entity extends XUA
         return [$addingIds, $removingIds];
     }
 
-    /* DONE */ final public static function F(string $key) : ?EntityFieldSignature
+    final public static function F(string $key) : ?EntityFieldSignature
     {
         return static::structure()[$key] ?? null;
     }
-    /* DONE */ final public static function CF(string $key) : ?ConditionField
+
+    final public static function CF(string $key) : ?ConditionField
     {
         return static::F($key) ? new ConditionField(static::F($key)) : null;
     }

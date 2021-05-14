@@ -5,6 +5,7 @@ namespace Supers\Basics\Numerics;
 
 
 use Supers\Basics\Boolean;
+use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -27,10 +28,10 @@ class DecimalRange extends Decimal
         ]);
     }
 
-    protected function _validation(): void
+    protected function _validation(SuperValidationException &$exception): void
     {
         $this->unsigned = $this->min >= 0;
-        parent::_validation();
+        parent::_validation($exception);
     }
 
     protected function _predicate($input, string &$message = null): bool

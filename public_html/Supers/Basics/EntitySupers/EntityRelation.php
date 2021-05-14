@@ -38,14 +38,14 @@ class EntityRelation extends Super
             ]);
     }
 
-    protected function _validation(): void
+    protected function _validation(SuperValidationException &$exception): void
     {
         if ($this->relation[0] == 'N' and $this->invNullable != false) {
-            throw new SuperValidationException('Inverse nullable must be false when defining a many-to-? (N?) relation.');
+            $exception->setError('invNullable', 'Inverse nullable must be false when defining a many-to-? (N?) relation.');
         }
 
         if ($this->relation[1] == 'N' and $this->nullable != false) {
-            throw new SuperValidationException('Nullable must be false when defining a ?-to-many (?N) relation.');
+            $exception->setError('nullable', 'Nullable must be false when defining a ?-to-many (?N) relation.');
         }
     }
 

@@ -25,11 +25,11 @@ class Regex extends Text
         ]);
     }
 
-    protected function _validation(): void
+    protected function _validation(SuperValidationException &$exception): void
     {
         parent::_validation();
         if (@preg_match($this->pattern, '') === FALSE) {
-            throw new SuperValidationException('Provided pattern is not a valid regex.');
+            $exception->setError('pattern', 'Provided pattern is not a valid regex.');
         };
     }
 

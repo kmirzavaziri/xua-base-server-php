@@ -20,10 +20,10 @@ final class ConditionField
 
     public function rel(EntityFieldSignature $signature) {
         if (!is_a($this->signature->type, EntityRelation::class)) {
-            throw new EntityConditionException('Cannot relate on non-relational field.');
+            throw (new EntityConditionException())->setError($signature->name, 'Cannot relate on non-relational field.');
         }
         if ($signature->entity != $this->signature->type->relatedEntity) {
-            throw new EntityConditionException('Expected a field in ' . $this->signature->type->relatedEntity . ', got a field in ' . $signature->entity . '.');
+            throw (new EntityConditionException())->setError($signature->name, 'Expected a field in ' . $this->signature->type->relatedEntity . ', got a field in ' . $signature->entity . '.');
         }
 
         $join = new Join(Join::LEFT, $this->alias, $this->signature);

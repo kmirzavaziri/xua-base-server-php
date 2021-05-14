@@ -5,6 +5,7 @@ namespace Services\XUA;
 
 
 use Exception;
+use XUA\Exceptions\InstantiationException;
 use XUA\Exceptions\RouteDefinitionException;
 use XUA\Exceptions\RouteException;
 use XUA\Service;
@@ -25,11 +26,17 @@ final class RouteService extends Service
     private static string $methodRegx = '';
     public static array $routeArgs = [];
 
+    /**
+     * @throws InstantiationException
+     */
     function __construct()
     {
-        throw new Exception('Cannot instantiate class `RouteService`.');
+        throw new InstantiationException('Cannot instantiate class `RouteService`.');
     }
 
+    /**
+     * @throws RouteDefinitionException
+     */
     protected static function _init()
     {
         self::$methodRegx = implode('|', self::METHODS);
@@ -56,22 +63,32 @@ final class RouteService extends Service
                 array_pop($stack);
                 $level--;
             } else {
-                throw new RouteDefinitionException("Routes:" . ($lineNo + 1) . ": Expected " .
-                    ($level * self::TAB_LEN) . ", " . (($level - 1) * self::TAB_LEN) . ", or " . (($level - 2) * self::TAB_LEN) . " spaces, got " .
-                    ($lineLevel * self::TAB_LEN));
+                throw (new RouteDefinitionException())->setError(
+                    "Routes:" . ($lineNo + 1),
+                    "Expected " . ($level * self::TAB_LEN) . ", " .
+                    (($level - 1) * self::TAB_LEN) . ", or " .
+                    (($level - 2) * self::TAB_LEN) . " spaces, got " .
+                    ($lineLevel * self::TAB_LEN)
+                );
             }
 
             $lineData = preg_split('/\s+/', ltrim($line));
             $key = array_shift($lineData);
             if (strpos($key, '/') != strlen($key) - 1) {
-                throw new RouteDefinitionException("Routes:" . ($lineNo + 1) . ": A key must contain only one slash which should be at the end. but got '$key'");
+                throw  (new RouteDefinitionException())->setError(
+                    "Routes:" . ($lineNo + 1),
+                    "A key must contain only one slash which should be at the end. but got '$key'"
+                );
             }
             $key = substr($key, 0, strlen($key) - 1);
             $methods = self::getMethods($lineData);
             $head = &$stack[count($stack) - 1];
             if (strlen($key) > 2 and $key[0] == '{' and str_ends_with($key, '}')) {
                 if (isset($head['var'])) {
-                    throw new RouteDefinitionException("Routes:" . ($lineNo + 1) . ": Cannot have two variables under same route");
+                    throw (new RouteDefinitionException())->setError(
+                        "Routes:" . ($lineNo + 1),
+                        "Cannot have two variables under same route"
+                    );
                 }
                 $keyName = substr($key, 1, strlen($key) - 2);
                 $key = 'var';
@@ -92,6 +109,9 @@ final class RouteService extends Service
         }
     }
 
+    /**
+     * @throws RouteException
+     */
     public static function getInterface(string $route, string $method) : string
     {
         $route = trim($route, '/');
@@ -120,7 +140,7 @@ final class RouteService extends Service
             return ConstantService::INTERFACES_NAMESPACE . '\\' . $lastSARoute[''][$method];
         }
         else {
-            throw new RouteException("Not found for $routePart");
+            throw (new RouteException())->setError($routePart, 'Not found');
         }
     }
 

@@ -27,12 +27,12 @@ class Decimal extends Number
         ]);
     }
 
-    protected function _validation(): void
+    protected function _validation(SuperValidationException &$exception): void
     {
-        parent::_validation();
+        parent::_validation($exception);
 
         if (!(2 <= $this->base and $this->base <= 16)) {
-            throw new SuperValidationException("base must be in range [2, 16] but is $this->base");
+            $exception->setError('base', "base must be in range [2, 16] but is $this->base");
         }
 
         if ($this->integerLength === null) {

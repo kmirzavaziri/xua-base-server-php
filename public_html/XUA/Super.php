@@ -18,12 +18,19 @@ abstract class Super extends XUA
         self::$_x_formal[static::class] = static::arguments();
     }
 
+    /**
+     * @throws SuperValidationException
+     */
     final public function __construct(array $args)
     {
         try {
             SuperArgumentSignature::processArguments(static::formal(), $args);
         } catch (SuperArgumentException $e) {
-            throw (new SuperValidationException(static::class . ": " . $e->getMessage(), $e->getCode(), $e));
+            $exception = new SuperValidationException();
+            foreach ($e->getErrors() as $key => $message) {
+                $exception->setError($key, $message);
+            }
+            throw $exception;
         }
         $this->_x_actual = $args;
         $this->validation();
@@ -75,7 +82,7 @@ abstract class Super extends XUA
         return [];
     }
 
-    protected function _validation() : void
+    protected function _validation(SuperValidationException &$exception) : void
     {
         # Empty by default
     }
@@ -118,9 +125,16 @@ abstract class Super extends XUA
         return static::_arguments();
     }
 
+    /**
+     * @throws SuperValidationException
+     */
     private function validation() : void
     {
-        $this->_validation();
+        $exception = new SuperValidationException;
+        $this->_validation($exception);
+        if($exception->getErrors()) {
+            throw $exception;
+        }
     }
 
     private function predicate($input, string &$message = null) : bool {
@@ -143,7 +157,7 @@ abstract class Super extends XUA
     final public function marshalDatabase($input)
     {
         if (!$this->explicitlyAccepts($input, $message)) {
-            throw new SuperMarshalException(static::class . ': ' . $message);
+            throw new SuperMarshalException($message);
         }
         return $this->_marshalDatabase($input);
     }

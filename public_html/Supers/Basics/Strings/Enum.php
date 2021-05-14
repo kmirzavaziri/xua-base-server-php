@@ -22,16 +22,8 @@ class Enum extends Text
         return array_merge(parent::_arguments(), [
             'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
             'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
-            'values' => new SuperArgumentSignature(new Sequence(['type' => new Text([])]), true, null, false)
+            'values' => new SuperArgumentSignature(new Sequence(['type' => new Text([]), 'minLength' => 1]), true, null, false)
         ]);
-    }
-
-    protected function _validation(): void
-    {
-        if (count($this->values) < 1) {
-            throw new SuperValidationException('List of values must contain at least one element.');
-        }
-        parent::_validation();
     }
 
     protected function _predicate($input, string &$message = null): bool
