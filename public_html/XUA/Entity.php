@@ -13,7 +13,6 @@ use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
 use XUA\Exceptions\ClassMethodCallException;
 use XUA\Exceptions\EntityDeleteException;
-use XUA\Exceptions\EntityException;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Entity\Column;
