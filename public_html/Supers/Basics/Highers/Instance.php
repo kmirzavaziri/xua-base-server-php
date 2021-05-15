@@ -11,15 +11,19 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property string of
+ * @method static SuperArgumentSignature A_of() The Signature of: Argument `of`
  * @property bool strict
+ * @method static SuperArgumentSignature A_strict() The Signature of: Argument `strict`
  * @property bool acceptClass
+ * @method static SuperArgumentSignature A_acceptClass() The Signature of: Argument `acceptClass`
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Instance extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
                 'of' => new SuperArgumentSignature(new Text([]), true, null, false),
                 'strict' => new SuperArgumentSignature(new Boolean([]), false, false, false),
                 'acceptClass' => new SuperArgumentSignature(new Boolean([]), false, false, false),

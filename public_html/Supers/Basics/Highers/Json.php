@@ -12,12 +12,13 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Json extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
                 'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
             ]);
     }

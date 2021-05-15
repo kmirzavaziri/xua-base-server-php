@@ -11,15 +11,19 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
- * @property ?Super type
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
+ * @property null|\XUA\Super type
+ * @method static SuperArgumentSignature A_type() The Signature of: Argument `type`
  * @property ?int minLength
+ * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
+ * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  */
 class Sequence extends Json
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'type' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => true]), false, null, false),
             'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
             'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),

@@ -11,13 +11,15 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property callable getter
+ * @method static SuperArgumentSignature A_getter() The Signature of: Argument `getter`
  * @property ?callable setter
+ * @method static SuperArgumentSignature A_setter() The Signature of: Argument `setter`
  */
 class PhpVirtualField extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'getter' => new SuperArgumentSignature(new Callback([
                 'parameters' => [
                     [

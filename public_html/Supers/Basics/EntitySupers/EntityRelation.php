@@ -17,18 +17,24 @@ use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
- * @property Entity|string relatedEntity
+ * @property \XUA\Entity|string relatedEntity
+ * @method static SuperArgumentSignature A_relatedEntity() The Signature of: Argument `relatedEntity`
  * @property string relation
+ * @method static SuperArgumentSignature A_relation() The Signature of: Argument `relation`
  * @property ?string invName
+ * @method static SuperArgumentSignature A_invName() The Signature of: Argument `invName`
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property bool invNullable
+ * @method static SuperArgumentSignature A_invNullable() The Signature of: Argument `invNullable`
  * @property string definedOn
+ * @method static SuperArgumentSignature A_definedOn() The Signature of: Argument `definedOn`
  */
 class EntityRelation extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
                 'relatedEntity' => new SuperArgumentSignature(new Instance(['of' => Entity::class, 'acceptClass' => true]), true, null, false),
                 'relation' => new SuperArgumentSignature(new Enum(['values' => ['II', 'IN', 'NI', 'NN']]), true, null, false),
                 'invName' => new SuperArgumentSignature(new Symbol(['nullable' => true]), false, null, false),

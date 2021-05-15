@@ -10,16 +10,21 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
- * @property ?Super keyType
- * @property ?Super valueType
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
+ * @property null|\XUA\Super keyType
+ * @method static SuperArgumentSignature A_keyType() The Signature of: Argument `keyType`
+ * @property null|\XUA\Super valueType
+ * @method static SuperArgumentSignature A_valueType() The Signature of: Argument `valueType`
  * @property ?int minSize
+ * @method static SuperArgumentSignature A_minSize() The Signature of: Argument `minSize`
  * @property ?int maxSize
+ * @method static SuperArgumentSignature A_maxSize() The Signature of: Argument `maxSize`
  */
 class Map extends Json
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'keyType' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => true]), false, null, false),
             'valueType' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => true]), false, null, false),
             'minSize' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),

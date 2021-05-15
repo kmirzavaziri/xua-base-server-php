@@ -11,13 +11,15 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property array|object structure
+ * @method static SuperArgumentSignature A_structure() The Signature of: Argument `structure`
  */
 class StructuredMap extends Json
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'structure' => new SuperArgumentSignature(new Map(['keyType' => new Symbol([]), 'valueType' => new Instance(['of' => Super::class, 'nullable' => true])]), true, null, false),
         ]);
     }

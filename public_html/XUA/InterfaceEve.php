@@ -4,7 +4,7 @@
 namespace XUA;
 
 
-use Services\XUA\ConstantService;
+use Throwable;
 
 abstract class InterfaceEve extends XUA
 {
@@ -15,5 +15,8 @@ abstract class InterfaceEve extends XUA
         $bind['eve'] = [];
     }
 
+    /**
+     * @throws Throwable
+     */
     public abstract static function execute() : string;
 }

@@ -106,8 +106,8 @@ try:
     setMethodExecuteVars(className)
 except Exception as e:
     print(e)
-try:
-    print('setEntityConstants: ', end = '')
-    setEntityConstants(className)
-except Exception as e:
-    print(e)
+# try:
+#     print('setEntityConstants: ', end = '')
+#     setEntityConstants(className)
+# except Exception as e:
+#     print(e)

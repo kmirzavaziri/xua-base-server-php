@@ -44,23 +44,30 @@ function getClassParameters(string $class) : object
     $result = new Result(true, '');
 
     if (is_a($class, Super::class, true)) {
-        foreach ($class::formal() as $key => $signature) {
-            $result->result .= " * @method SuperArgumentSignature $key" . PHP_EOL;
+        foreach ($class::argumentSignatures() as $key => $signature) {
             $result->result .= " * @property " . $signature->type->phpType() . " $key" . PHP_EOL;
+            $result->result .= " * @method static SuperArgumentSignature A_$key() The Signature of: Argument `$key`" . PHP_EOL;
         }
         if ($result->result) {
             $result->result = "/**" . PHP_EOL . $result->result . " */" . PHP_EOL;
         }
     } elseif (is_a($class, Entity::class, true)) {
-        foreach ($class::structure() as $key => $signature) {
+        foreach ($class::fieldSignatures() as $key => $signature) {
             $result->result .= " * @property " . $signature->type->phpType() . " $key" . PHP_EOL;
+            $result->result .= " * @method static EntityFieldSignature F_$key() The Signature of: Field `$key`" . PHP_EOL;
+            $result->result .= " * @method static ConditionField C_$key() The Condition Field of: Field `$key`" . PHP_EOL;
         }
         if ($result->result) {
             $result->result = "/**" . PHP_EOL . $result->result . " */" . PHP_EOL;
         }
     } elseif (is_a($class, Method::class, true)) {
-        foreach ($class::response() as $key => $signature) {
+        foreach ($class::requestSignatures() as $key => $signature) {
+            $result->result .= " * @property " . $signature->type->phpType() . " Q_$key" . PHP_EOL;
+            $result->result .= " * @method static MethodItemSignature Q_$key() The Signature of: Request Item `$key`" . PHP_EOL;
+        }
+        foreach ($class::responseSignatures() as $key => $signature) {
             $result->result .= " * @property " . $signature->type->phpType() . " $key" . PHP_EOL;
+            $result->result .= " * @method static MethodItemSignature R_$key() The Signature of: Response Item `$key`" . PHP_EOL;
         }
         if ($result->result) {
             $result->result = "/**" . PHP_EOL . $result->result . " */" . PHP_EOL;
@@ -78,11 +85,11 @@ function getRelationInverseColumns(string $class) : object
     $result = new Result(true, []);
 
     if (is_a($class, Entity::class, true)) {
-        foreach ($class::structure() as $key => $signature) {
+        foreach ($class::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->definedOn == 'here') {
                 $result->result[] = [
-                    'new' => !in_array($signature->type->invName, array_keys($signature->type->relatedEntity::structure())),
+                    'new' => !in_array($signature->type->invName, array_keys($signature->type->relatedEntity::fieldSignatures())),
                     'name' => $signature->type->invName,
                     'target' => $signature->type->relatedEntity,
                     'text' => "new EntityFieldSignature(
@@ -113,7 +120,7 @@ function getMethodExecuteVars(string $class) : object
     $result = new Result(true, '');
 
     if (is_a($class, Method::class, true)) {
-        foreach ($class::request() as $key => $signature) {
+        foreach ($class::requestSignatures() as $key => $signature) {
             $result->result .= '         * @var ' . $signature->type->phpType() . ' $' . $key . PHP_EOL;
         }
         if ($result->result) {
@@ -138,7 +145,7 @@ function getEntityConstants(string $class) : object
     $result = new Result(true, '');
 
     if (is_a($class, Entity::class, true)) {
-        foreach ($class::structure() as $key => $signature) {
+        foreach ($class::fieldSignatures() as $key => $signature) {
             $result->result .= "const $key = '$signature->name';" . PHP_EOL . '    ';
         }
         $result->result = substr($result->result, 0, strlen($result->result) - 4) . PHP_EOL . '    ';

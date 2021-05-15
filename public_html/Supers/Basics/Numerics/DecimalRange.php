@@ -10,18 +10,25 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property ?int integerLength
+ * @method static SuperArgumentSignature A_integerLength() The Signature of: Argument `integerLength`
  * @property ?int fractionalLength
+ * @method static SuperArgumentSignature A_fractionalLength() The Signature of: Argument `fractionalLength`
  * @property ?int base
+ * @method static SuperArgumentSignature A_base() The Signature of: Argument `base`
  * @property bool unsigned
+ * @method static SuperArgumentSignature A_unsigned() The Signature of: Argument `unsigned`
  * @property int|float min
+ * @method static SuperArgumentSignature A_min() The Signature of: Argument `min`
  * @property int|float max
+ * @method static SuperArgumentSignature A_max() The Signature of: Argument `max`
  */
 class DecimalRange extends Decimal
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'min' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), false, null, false),
             'max' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), false, null, false),

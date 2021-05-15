@@ -16,14 +16,17 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?array parameters
+ * @method static SuperArgumentSignature A_parameters() The Signature of: Argument `parameters`
  * @property ?string returnType
+ * @method static SuperArgumentSignature A_returnType() The Signature of: Argument `returnType`
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Callback extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
                 'parameters' => new SuperArgumentSignature(new Sequence([
                     'type' => new StructuredMap([
                         'structure' => [

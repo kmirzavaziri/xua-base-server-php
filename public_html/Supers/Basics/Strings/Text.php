@@ -12,14 +12,17 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength
+ * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
+ * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Text extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
                 'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
                 'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 65_535, false),
                 'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),

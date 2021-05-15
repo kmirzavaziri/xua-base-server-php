@@ -3,6 +3,7 @@
 namespace XUA;
 
 
+use XUA\Exceptions\ClassMethodCallException;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -10,14 +11,14 @@ use XUA\Tools\Signature\MethodItemSignature;
 abstract class Method extends XUA
 {
     # Magics
-    private static array $_x_request_structure = [];
-    private static array $_x_response_structure = [];
+    private static array $_x_request_signatures = [];
+    private static array $_x_response_signatures = [];
     private array $_x_response = [];
 
     protected static function _init()
     {
-        self::$_x_request_structure[static::class] = static::_request();
-        self::$_x_response_structure[static::class] = static::_response();
+        self::$_x_request_signatures[static::class] = static::requestSignaturesCalculator();
+        self::$_x_response_signatures[static::class] = static::responseSignaturesCalculator();
     }
 
     /**
@@ -26,10 +27,10 @@ abstract class Method extends XUA
      */
     final public function __construct(array $request)
     {
-        MethodItemSignature::processRequest(self::$_x_request_structure[static::class], $request);
-        MethodItemSignature::preprocessResponse(self::$_x_response_structure[static::class], $this->_x_response);
+        MethodItemSignature::processRequest(self::$_x_request_signatures[static::class], $request);
+        MethodItemSignature::preprocessResponse(self::$_x_response_signatures[static::class], $this->_x_response);
         $this->execute($request);
-        MethodItemSignature::processResponse(self::$_x_response_structure[static::class], $this->_x_response);
+        MethodItemSignature::processResponse(self::$_x_response_signatures[static::class], $this->_x_response);
     }
 
     /**
@@ -37,7 +38,7 @@ abstract class Method extends XUA
      */
     final function __get($key)
     {
-        if (! isset(self::$_x_response_structure[static::class][$key])) {
+        if (! isset(self::$_x_response_signatures[static::class][$key])) {
             throw (new MethodResponseException())->setError($key, 'Unknown response item.');
         }
         return $this->_x_response[$key];
@@ -49,30 +50,60 @@ abstract class Method extends XUA
      */
     final function __set($key, $value) : void
     {
-        if (!isset(self::$_x_response_structure[static::class][$key])) {
+        if (!isset(self::$_x_response_signatures[static::class][$key])) {
             throw (new MethodResponseException())->setError($key, 'Unknown response item');
         }
         /** @var MethodItemSignature $signature */
-        $signature = self::$_x_response_structure[static::class][$key];
+        $signature = self::$_x_response_signatures[static::class][$key];
         if (!$signature->type->accepts($value, $messages)) {
             throw (new MethodRequestException())->setError($key, implode(' ', $messages));
         }
         $this->_x_response[$key] = $value;
     }
 
+    /**
+     * @throws ClassMethodCallException
+     * @throws MethodResponseException
+     * @throws MethodRequestException
+     */
+    public static function __callStatic(string $name, array $arguments)
+    {
+        if (str_starts_with($name, 'Q_')) {
+            $key = substr($name, 2, strlen($name) - 2);
+            if (!isset(static::requestSignatures()[$key])) {
+                throw (new MethodRequestException())->setError($key, 'Unknown method request item signature');
+            }
+            $result = static::requestSignatures()[$key];
+        } elseif (str_starts_with($name, 'R_')) {
+            $key = substr($name, 2, strlen($name) - 2);
+            if (!isset(static::responseSignatures()[$key])) {
+                throw (new MethodResponseException())->setError($key, 'Unknown method response item signature');
+            }
+            $result = static::responseSignatures()[$key];
+        } else {
+            throw (new ClassMethodCallException("Method $name does not exist."));
+        }
+        if ($arguments) {
+            throw (new ClassMethodCallException())->setError($key, 'A method request/response item signature method does not accept arguments');
+        }
+
+        return $result;
+    }
+
+
     public function __debugInfo(): array
     {
         return $this->toArray();
     }
 
-    final public static function request() : array
+    final public static function requestSignatures() : array
     {
-        return self::$_x_request_structure[static::class];
+        return self::$_x_request_signatures[static::class];
     }
 
-    final public static function response() : array
+    final public static function responseSignatures() : array
     {
-        return self::$_x_response_structure[static::class];
+        return self::$_x_response_signatures[static::class];
     }
 
     # Overridable Methods
@@ -81,17 +112,28 @@ abstract class Method extends XUA
         return true;
     }
 
-    static protected function _request() : array
+    static protected function _requestSignatures() : array
     {
         return [];
     }
 
-    static protected function _response() : array
+    static protected function _responseSignatures() : array
     {
         return [];
     }
 
     abstract protected function execute(array $request) : void;
+
+    # Overridable Method Wrappers
+    static private function requestSignaturesCalculator() : array
+    {
+        return static::_requestSignatures();
+    }
+
+    static private function responseSignaturesCalculator() : array
+    {
+        return static::_responseSignatures();
+    }
 
     # Predefined Methods
     public function toArray(): array

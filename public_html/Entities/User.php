@@ -3,6 +3,7 @@
 namespace Entities;
 
 
+use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
@@ -14,52 +15,73 @@ use Supers\Customs\IranNationalId;
 use Supers\Customs\IranPhone;
 use Supers\Customs\IranPostalCode;
 use XUA\Entity;
+use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 /**
  * @property int id
+ * @method static EntityFieldSignature F_id() The Signature of: Field `id`
+ * @method static ConditionField C_id() The Condition Field of: Field `id`
  * @property string personType
+ * @method static EntityFieldSignature F_personType() The Signature of: Field `personType`
+ * @method static ConditionField C_personType() The Condition Field of: Field `personType`
  * @property string firstNameFa
+ * @method static EntityFieldSignature F_firstNameFa() The Signature of: Field `firstNameFa`
+ * @method static ConditionField C_firstNameFa() The Condition Field of: Field `firstNameFa`
  * @property string firstNameEn
+ * @method static EntityFieldSignature F_firstNameEn() The Signature of: Field `firstNameEn`
+ * @method static ConditionField C_firstNameEn() The Condition Field of: Field `firstNameEn`
  * @property string lastNameFa
+ * @method static EntityFieldSignature F_lastNameFa() The Signature of: Field `lastNameFa`
+ * @method static ConditionField C_lastNameFa() The Condition Field of: Field `lastNameFa`
  * @property string lastNameEn
+ * @method static EntityFieldSignature F_lastNameEn() The Signature of: Field `lastNameEn`
+ * @method static ConditionField C_lastNameEn() The Condition Field of: Field `lastNameEn`
  * @property string nationalCode
+ * @method static EntityFieldSignature F_nationalCode() The Signature of: Field `nationalCode`
+ * @method static ConditionField C_nationalCode() The Condition Field of: Field `nationalCode`
  * @property ?string organizationName
+ * @method static EntityFieldSignature F_organizationName() The Signature of: Field `organizationName`
+ * @method static ConditionField C_organizationName() The Condition Field of: Field `organizationName`
  * @property ?string organizationNameEn
+ * @method static EntityFieldSignature F_organizationNameEn() The Signature of: Field `organizationNameEn`
+ * @method static ConditionField C_organizationNameEn() The Condition Field of: Field `organizationNameEn`
  * @property ?string organizationNationalId
+ * @method static EntityFieldSignature F_organizationNationalId() The Signature of: Field `organizationNationalId`
+ * @method static ConditionField C_organizationNationalId() The Condition Field of: Field `organizationNationalId`
  * @property string cellphoneNumber
+ * @method static EntityFieldSignature F_cellphoneNumber() The Signature of: Field `cellphoneNumber`
+ * @method static ConditionField C_cellphoneNumber() The Condition Field of: Field `cellphoneNumber`
  * @property string email
+ * @method static EntityFieldSignature F_email() The Signature of: Field `email`
+ * @method static ConditionField C_email() The Condition Field of: Field `email`
  * @property string address
+ * @method static EntityFieldSignature F_address() The Signature of: Field `address`
+ * @method static ConditionField C_address() The Condition Field of: Field `address`
  * @property null|array|object geolocation
+ * @method static EntityFieldSignature F_geolocation() The Signature of: Field `geolocation`
+ * @method static ConditionField C_geolocation() The Condition Field of: Field `geolocation`
  * @property ?string postalCode
+ * @method static EntityFieldSignature F_postalCode() The Signature of: Field `postalCode`
+ * @method static ConditionField C_postalCode() The Condition Field of: Field `postalCode`
  * @property ?string phoneNumber
+ * @method static EntityFieldSignature F_phoneNumber() The Signature of: Field `phoneNumber`
+ * @method static ConditionField C_phoneNumber() The Condition Field of: Field `phoneNumber`
  * @property ?string faxNumber
+ * @method static EntityFieldSignature F_faxNumber() The Signature of: Field `faxNumber`
+ * @method static ConditionField C_faxNumber() The Condition Field of: Field `faxNumber`
  * @property ?string iban
+ * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
+ * @method static ConditionField C_iban() The Condition Field of: Field `iban`
+ * @property \Entities\Farm[] workingFarms
+ * @method static EntityFieldSignature F_workingFarms() The Signature of: Field `workingFarms`
+ * @method static ConditionField C_workingFarms() The Condition Field of: Field `workingFarms`
  */
 class User extends Entity
 {
-    const id = 'id';
-    const personType = 'personType';
-    const firstNameFa = 'firstNameFa';
-    const firstNameEn = 'firstNameEn';
-    const lastNameFa = 'lastNameFa';
-    const lastNameEn = 'lastNameEn';
-    const nationalCode = 'nationalCode';
-    const organizationName = 'organizationName';
-    const organizationNameEn = 'organizationNameEn';
-    const organizationNationalId = 'organizationNationalId';
-    const cellphoneNumber = 'cellphoneNumber';
-    const email = 'email';
-    const address = 'address';
-    const geolocation = 'geolocation';
-    const postalCode = 'postalCode';
-    const phoneNumber = 'phoneNumber';
-    const faxNumber = 'faxNumber';
-    const iban = 'iban';
-
-    protected static function _fields(): array
+    protected static function _fieldSignatures(): array
     {
-        return array_merge(parent::_fields(), [
+        return array_merge(parent::_fieldSignatures(), [
             'personType' => new EntityFieldSignature(
                 static::class, 'personType',
                 new Enum(['values' => ['juridical', 'natural']]),
@@ -157,6 +179,18 @@ class User extends Entity
             'iban' => new EntityFieldSignature(
                 static::class, 'iban',
                 new Iban(['nullable' => true]),
+                null
+            ),
+            'workingFarms' => new EntityFieldSignature(
+                static::class, 'workingFarms',
+                new EntityRelation([
+                    'relatedEntity' => \Entities\Farm::class,
+                    'relation' => 'NN',
+                    'invName' => 'workers',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'there',
+                ]),
                 null
             ),
         ]);

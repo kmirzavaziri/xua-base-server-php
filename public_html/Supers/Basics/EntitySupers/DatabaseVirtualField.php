@@ -10,12 +10,13 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property callable getter
+ * @method static SuperArgumentSignature A_getter() The Signature of: Argument `getter`
  */
 class DatabaseVirtualField extends Super
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'getter' => new SuperArgumentSignature(new Callback([
                 'parameters' => [
                     [

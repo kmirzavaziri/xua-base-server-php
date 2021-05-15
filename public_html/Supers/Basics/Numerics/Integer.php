@@ -10,13 +10,15 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property bool unsigned
+ * @method static SuperArgumentSignature A_unsigned() The Signature of: Argument `unsigned`
  */
 class Integer extends Number
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, false),
         ]);
     }

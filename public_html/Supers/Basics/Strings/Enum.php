@@ -11,15 +11,19 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength
+ * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
+ * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property array values
+ * @method static SuperArgumentSignature A_values() The Signature of: Argument `values`
  */
 class Enum extends Text
 {
-    protected static function _arguments(): array
+    protected static function _argumentSignatures(): array
     {
-        return array_merge(parent::_arguments(), [
+        return array_merge(parent::_argumentSignatures(), [
             'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
             'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
             'values' => new SuperArgumentSignature(new Sequence(['type' => new Text([]), 'minLength' => 1]), true, null, false)

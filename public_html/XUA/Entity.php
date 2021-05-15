@@ -11,6 +11,7 @@ use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
+use XUA\Exceptions\ClassMethodCallException;
 use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityException;
 use XUA\Exceptions\EntityFieldException;
@@ -27,6 +28,8 @@ use XUA\Tools\Visibility;
 
 /**
  * @property int id
+ * @method static EntityFieldSignature F_id() The Signature of: Field id
+ * @method static ConditionField C_id() The Condition Field of: Field id
  */
 abstract class Entity extends XUA
 {
@@ -93,8 +96,8 @@ abstract class Entity extends XUA
     # Magics
     private static array $_x_table = [];
 
-    private static array $_x_structure = [];
-    private array $_x_properties = [];
+    private static array $_x_field_signatures = [];
+    private array $_x_fields = [];
 
     private array $_x_must_fetch = [];
     private array $_x_fetched_by_p = [];
@@ -102,13 +105,16 @@ abstract class Entity extends XUA
 
     private ?int $_x_given_id;
 
+    /**
+     * @throws SuperValidationException
+     */
     final public static function _init() : void
     {
         $tableNameTemp = explode("\\", static::class);
         array_shift($tableNameTemp);
         self::$_x_table[static::class] = implode('', $tableNameTemp);
 
-        self::$_x_structure[static::class] = static::fields();
+        self::$_x_field_signatures[static::class] = static::fieldSignaturesCalculator();
 
         if (!self::$connection) {
             self::$connection = new PDO(ConstantService::CONNECTION_DSN, ConstantService::CONNECTION_USERNAME, ConstantService::CONNECTION_PASSWORD);
@@ -128,9 +134,9 @@ abstract class Entity extends XUA
             $exists = $statement->fetch()['e'];
         }
         if ($exists) {
-            $this->_x_properties['id'] = $id;
+            $this->_x_fields['id'] = $id;
         } else {
-            foreach (static::structure() as $key => $signature) {
+            foreach (static::fieldSignatures() as $key => $signature) {
                 $this->_x_must_store[$key] = true;
             }
         }
@@ -143,7 +149,7 @@ abstract class Entity extends XUA
      */
     function __get(string $key)
     {
-        $signature = static::F($key);
+        $signature = static::fieldSignatures()[$key];
 
         if ($signature === null) {
             throw (new EntityFieldException())->setError($key, 'Unknown entity field');
@@ -160,7 +166,7 @@ abstract class Entity extends XUA
             $this->_x_fetch($key);
         }
 
-        return $this->_x_properties[$key];
+        return $this->_x_fields[$key];
     }
 
     /**
@@ -168,7 +174,7 @@ abstract class Entity extends XUA
      */
     function __set(string $key, mixed $value) : void
     {
-        $signature = static::F($key);
+        $signature = static::fieldSignatures()[$key];
 
         if ($signature === null) {
             throw (new EntityFieldException())->setError($key, 'Unknown entity field');
@@ -206,17 +212,44 @@ abstract class Entity extends XUA
             }
         }
 
-        if ($this->_x_properties[$key] != $value or $this->_x_must_fetch[$key]) {
-            $this->_x_properties[$key] = $value;
+        if ($this->_x_fields[$key] != $value or $this->_x_must_fetch[$key]) {
+            $this->_x_fields[$key] = $value;
             $this->_x_must_fetch[$key] = false;
             $this->_x_must_store[$key] = true;
         }
     }
 
+    /**
+     * @throws EntityFieldException
+     * @throws ClassMethodCallException
+     */
+    public static function __callStatic(string $name, array $arguments)
+    {
+        if (str_starts_with($name, 'F_')) {
+            $conditionField = false;
+        } elseif (str_starts_with($name, 'C_')) {
+            $conditionField = true;
+        } else {
+            throw (new ClassMethodCallException("Method $name does not exist."));
+        }
+
+        $key = substr($name, 2, strlen($name) - 2);
+
+        if (!isset(static::fieldSignatures()[$key])) {
+            throw (new EntityFieldException())->setError($key, 'Unknown entity field signature');
+        }
+
+        if ($arguments) {
+            throw (new ClassMethodCallException())->setError($key, 'An entity field signature method does not accept arguments');
+        }
+
+        return $conditionField ? new ConditionField(static::fieldSignatures()[$key]) : static::fieldSignatures()[$key];
+    }
+
     public function __debugInfo(): array
     {
         $result = [];
-        foreach ($this->_x_properties as $key => $value) {
+        foreach ($this->_x_fields as $key => $value) {
             if (!$this->_x_must_fetch[$key]) {
                 $result[$key] = $value;
             }
@@ -224,12 +257,15 @@ abstract class Entity extends XUA
         return $result;
     }
 
-    final public static function structure() : array {
-        return self::$_x_structure[static::class];
+    /**
+     * @return EntityFieldSignature[]
+     */
+    final public static function fieldSignatures() : array {
+        return self::$_x_field_signatures[static::class];
     }
 
-    final public function properties() : array {
-        return $this->_x_properties;
+    final public function fields() : array {
+        return $this->_x_fields;
     }
 
     final public static function table() : string
@@ -243,10 +279,12 @@ abstract class Entity extends XUA
     }
 
     # Overridable Methods
+
     /**
+     * @return EntityFieldSignature[]
      * @throws SuperValidationException
      */
-    protected static function _fields() : array
+    protected static function _fieldSignatures() : array
     {
         return [
             'id' => new EntityFieldSignature(static::class, 'id', new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2]), null),
@@ -291,15 +329,20 @@ abstract class Entity extends XUA
     }
 
     # Overridable Method Wrappers
-    private static function fields() : array
+
+    /**
+     * @return EntityFieldSignature[]
+     * @throws SuperValidationException
+     */
+    private static function fieldSignaturesCalculator() : array
     {
-        return static::_fields();
+        return static::_fieldSignatures();
     }
 
     final public static function indexes() : array
     {
         $relIndexes = [];
-        foreach (static::structure() as $key => $signature) {
+        foreach (static::fieldSignatures() as $key => $signature) {
             if (is_a($signature->type, EntityRelation::class) and $signature->type->relation == 'II' and $signature->type->definedOn == 'here') {
                 $relIndexes[] = new Index([$key => 'ASC'], true);
             }
@@ -315,9 +358,9 @@ abstract class Entity extends XUA
         $exception = new EntityFieldException();
         $this->_validation($exception);
 
-        foreach (static::structure() as $key => $signature) {
+        foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
-            if ($this->_x_must_store[$key] and !$signature->type->accepts($this->_x_properties[$key], $messages)) {
+            if ($this->_x_must_store[$key] and !$signature->type->accepts($this->_x_fields[$key], $messages)) {
                 $exception->setError($key, implode(" ", $messages));
             }
         }
@@ -371,8 +414,8 @@ abstract class Entity extends XUA
 
     # Predefined Methods (to wrap in overridable methods)
     final protected function _x_initialize() : void {
-        foreach (static::structure() as $key => $signature) {
-            $this->_x_properties[$key] = $signature->default;
+        foreach (static::fieldSignatures() as $key => $signature) {
+            $this->_x_fields[$key] = $signature->default;
             $this->_x_must_fetch[$key] = true;
             $this->_x_must_store[$key] = false;
             if (is_a($signature->type, PhpVirtualField::class) or is_a($signature->type, DatabaseVirtualField::class)) {
@@ -397,14 +440,14 @@ abstract class Entity extends XUA
      */
     final protected function _x_delete() : void
     {
-        foreach (static::structure() as $key => $signature) {
+        foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->relation[0] == 'I' and !$signature->type->invNullable and $this->$key) {
                 throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
             }
         }
 
-        foreach (static::structure() as $key => $signature) {
+        foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class)) {
                 if (
@@ -448,13 +491,13 @@ abstract class Entity extends XUA
     # Predefined Methods (Array-Entity Conversations)
     final protected function fromDbArray (array $array) : Entity {
         foreach ($array as $key => $value) {
-            $signature = static::F($key);
+            $signature = static::fieldSignatures()[$key];
             if (is_a($signature->type, EntityRelation::class)) {
                 if ($signature->type->relation[1] == 'I') {
                     $result = new $signature->type->relatedEntity($value);
                     if ($result->id) {
                         if ($signature->type->relation[0] == 'I') {
-                            $result->_x_properties[$signature->type->invName] = $this;
+                            $result->_x_fields[$signature->type->invName] = $this;
                             $result->_x_must_fetch[$signature->type->invName] = false;
                             $result->_x_must_store[$signature->type->invName] = false;
                         }
@@ -466,7 +509,7 @@ abstract class Entity extends XUA
                             $tmp = new $signature->type->relatedEntity($id);
                             if ($tmp->id) {
                                 if ($signature->type->relation[0] == 'I') {
-                                    $tmp->_x_properties[$signature->type->invName] = $this;
+                                    $tmp->_x_fields[$signature->type->invName] = $this;
                                     $tmp->_x_must_fetch[$signature->type->invName] = false;
                                     $tmp->_x_must_store[$signature->type->invName] = false;
                                 }
@@ -481,7 +524,7 @@ abstract class Entity extends XUA
             } else {
                 $result = $signature->type->unmarshalDatabase($value);
             }
-            $this->_x_properties[$key] = $result;
+            $this->_x_fields[$key] = $result;
             $this->_x_must_fetch[$key] = false;
             $this->_x_must_store[$key] = false;
         }
@@ -491,10 +534,10 @@ abstract class Entity extends XUA
 
     final protected function toDbArray () : array {
         $array = [];
-        foreach (static::structure() as $key => $signature) {
+        foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if ($this->_x_must_store[$key] /* @TODO is necessary and $key != 'id' */ and $signature->type->databaseType() != 'DONT STORE') {
-                $array[$key] = $signature->type->marshalDatabase($this->_x_properties[$key]);
+                $array[$key] = $signature->type->marshalDatabase($this->_x_fields[$key]);
             }
         }
         return $array;
@@ -503,11 +546,11 @@ abstract class Entity extends XUA
     # Predefined Methods (low-level direct mysql communicator)
     private function _x_fetch(?string $fieldName = 'id') : void
     {
-        if (!($this->_x_properties['id'] ?? false)) {
+        if (!($this->_x_fields['id'] ?? false)) {
             return;
         }
 
-        $signature = static::F($fieldName);
+        $signature = static::fieldSignatures()[$fieldName];
         $array = [];
 
         if (
@@ -515,7 +558,7 @@ abstract class Entity extends XUA
             $signature->type->relation[1] == 'N'
         ) {
             if ($signature->type->relation == 'IN') {
-                $statement = self::execute("SELECT id FROM " . $signature->type->relatedEntity::table() . " WHERE " . $signature->type->invName . " = ?", [$this->_x_properties['id']]);
+                $statement = self::execute("SELECT id FROM " . $signature->type->relatedEntity::table() . " WHERE " . $signature->type->invName . " = ?", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
                     $array[$fieldName] = [];
@@ -524,7 +567,7 @@ abstract class Entity extends XUA
                     }
                 }
             } elseif ($signature->type->relation == 'NN') {
-                $statement = self::execute("SELECT " . $signature->type->relatedEntity::table() . " FROM " . static::junctionTableName($fieldName) . " WHERE " . static::table() . " = ?", [$this->_x_properties['id']]);
+                $statement = self::execute("SELECT " . $signature->type->relatedEntity::table() . " FROM " . static::junctionTableName($fieldName) . " WHERE " . static::table() . " = ?", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
                     $array[$fieldName] = [];
@@ -538,7 +581,7 @@ abstract class Entity extends XUA
         } else {
             [$columnsExpression, $keys] = self::columnsExpression($this);
             if ($columnsExpression) {
-                $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " WHERE " . static::table() . ".id = ? LIMIT 1", [$this->_x_properties['id']]);
+                $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " WHERE " . static::table() . ".id = ? LIMIT 1", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetch(PDO::FETCH_NUM);
                 if ($rawArray) {
                     foreach ($keys as $i => $key) {
@@ -562,7 +605,7 @@ abstract class Entity extends XUA
 
         $query = '';
         $bind = [];
-        if ($this->_x_properties['id'] === null) {
+        if ($this->_x_fields['id'] === null) {
             $columnNames = [];
             $placeHolders = [];
             $values = [];
@@ -578,7 +621,7 @@ abstract class Entity extends XUA
             $query = "INSERT INTO " . static::table() . " ($columnNames) VALUES ($placeHolders)";
             $bind = $values;
 
-            $this->_x_properties['id'] = self::connection()->lastInsertId();
+            $this->_x_fields['id'] = self::connection()->lastInsertId();
             $this->_x_must_fetch['id'] = false;
             $this->_x_must_store['id'] = false;
         } else {
@@ -590,7 +633,7 @@ abstract class Entity extends XUA
             }
 
             $expressions = implode(', ', $expressions);
-            $values[] = $this->_x_properties['id'];
+            $values[] = $this->_x_fields['id'];
 
             if ($expressions) {
                 $query = "UPDATE " . static::table() . " SET $expressions WHERE id = ?";
@@ -629,8 +672,8 @@ abstract class Entity extends XUA
         }
 
         // Take care of relation
-        foreach (static::structure() as $key => $signature) {
-            $value = $this->_x_properties[$key];
+        foreach (static::fieldSignatures() as $key => $signature) {
+            $value = $this->_x_fields[$key];
             if (!is_a($signature->type, EntityRelation::class) or !$this->_x_must_store[$key]) {
                 continue;
             } elseif ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
@@ -643,7 +686,7 @@ abstract class Entity extends XUA
                 $relINBind = [];
                 if ($addingIds) {
                     $relINQuery .= "UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = ? WHERE id IN (?);";
-                    $relINBind[] = $this->_x_properties['id'];
+                    $relINBind[] = $this->_x_fields['id'];
                     $relINBind[] = $addingIds;
                 }
                 if ($removingIds) {
@@ -665,13 +708,13 @@ abstract class Entity extends XUA
                     $relNNQuery .= "INSERT INTO " . static::junctionTableName($key) . " ($leftColumn, $rightColumn) VALUES\n" .
                         implode(",\n", array_fill(0, count($addingIds), "\t(?, ?)")) . ";\n";
                     foreach ($addingIds as $addingId) {
-                        $relNNBind[] = $this->_x_properties['id'];
+                        $relNNBind[] = $this->_x_fields['id'];
                         $relNNBind[] = $addingId;
                     }
                 }
                 if ($removingIds) {
                     $relNNQuery .= "DELETE FROM " . static::junctionTableName($key) . " WHERE $leftColumn = ? AND $rightColumn IN (?);";
-                    $relNNBind[] = $this->_x_properties['id'];
+                    $relNNBind[] = $this->_x_fields['id'];
                     $relNNBind[] = $removingIds;
                 }
 
@@ -685,12 +728,12 @@ abstract class Entity extends XUA
     # Predefined Methods (helpers)
     final public static function alter() : string
     {
-        $signatures = static::structure();
+        $signatures = static::fieldSignatures();
         unset($signatures['id']);
 
         $tables = [];
 
-        $columns = ['id' => Column::fromQuery("id " . static::F('id')->type->databaseType() . " NOT NULL AUTO_INCREMENT")];
+        $columns = ['id' => Column::fromQuery("id " . static::fieldSignatures()['id']->type->databaseType() . " NOT NULL AUTO_INCREMENT")];
         foreach ($signatures as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if ($signature->type->databaseType() != 'DONT STORE') {
@@ -704,8 +747,8 @@ abstract class Entity extends XUA
                 $leftColumn = static::table();
                 $rightColumn = $signature->type->relatedEntity::table();
                 $tables[] = new TableScheme('_' . static::table() . '_' . $key, [
-                    $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->type->relatedEntity::F('id')->type->databaseType() . " NOT NULL"),
-                    $rightColumn => Column::fromQuery($signature->type->relatedEntity::table() . ' ' . $signature->type->relatedEntity::F('id')->type->databaseType() . " NOT NULL"),
+                    $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->type->relatedEntity::fieldSignatures()['id']->type->databaseType() . " NOT NULL"),
+                    $rightColumn => Column::fromQuery($signature->type->relatedEntity::table() . ' ' . $signature->type->relatedEntity::fieldSignatures()['id']->type->databaseType() . " NOT NULL"),
                 ], [
                     new Index([$leftColumn => 'ASC', $rightColumn => 'ASC'], true, 'PRIMARY')
                 ]);
@@ -729,7 +772,7 @@ abstract class Entity extends XUA
     {
         $columnExpressions = [];
         $keys = [];
-        foreach (static::structure() as $key => $signature) {
+        foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if ($entity and !$entity->_x_must_fetch[$key]) {
                 continue;
@@ -753,7 +796,7 @@ abstract class Entity extends XUA
 
     final public static function junctionTableName (string $fieldName) : string
     {
-        $signature = static::F($fieldName);
+        $signature = static::fieldSignatures()[$fieldName];
         return $signature->type->definedOn == 'here'
             ? '_' . static::table() . '_' . $fieldName
             : '_' . $signature->type->relatedEntity::table() . '_' . $signature->type->invName;
@@ -761,9 +804,9 @@ abstract class Entity extends XUA
 
     private function addThisToAnotherEntity (Entity $entity, string $key) {
         // one-to-? relation
-        if ($entity->_x_properties[$key] === null or $entity->_x_properties[$key] instanceof Entity) {
-            if ($entity->_x_properties[$key] === null or $entity->_x_properties[$key] !== $this) {
-                $entity->_x_properties[$key] = $this;
+        if ($entity->_x_fields[$key] === null or $entity->_x_fields[$key] instanceof Entity) {
+            if ($entity->_x_fields[$key] === null or $entity->_x_fields[$key] !== $this) {
+                $entity->_x_fields[$key] = $this;
                 $entity->_x_must_fetch[$key] = false;
                 $entity->_x_must_store[$key] = true;
             }
@@ -771,15 +814,15 @@ abstract class Entity extends XUA
         // many-to-? relation
         else {
             $found = false;
-            foreach ($entity->_x_properties[$key] as $index => $item) {
-                if ($item->_x_properties['id'] == $this->_x_properties['id']) {
-                    $entity->_x_properties[$key][$index] = $this;
+            foreach ($entity->_x_fields[$key] as $index => $item) {
+                if ($item->_x_fields['id'] == $this->_x_fields['id']) {
+                    $entity->_x_fields[$key][$index] = $this;
                     $found = true;
                     break;
                 }
             }
             if (!$found) {
-                $entity->_x_properties[$key][] = $this;
+                $entity->_x_fields[$key][] = $this;
             }
             $entity->_x_must_fetch[$key] = false;
             $entity->_x_must_store[$key] = true;
@@ -789,25 +832,15 @@ abstract class Entity extends XUA
     private function getAddingRemovingIds(string $key) : array
     {
         $currentIds = array_map(function (Entity $entity) {
-            return $entity->_x_properties['id'];
-        }, $this->_x_properties[$key]);
+            return $entity->_x_fields['id'];
+        }, $this->_x_fields[$key]);
 
         $dbIds = array_map(function (Entity $entity) {
-            return $entity->_x_properties['id'];
-        }, (new static($this->_x_properties['id']))->$key);
+            return $entity->_x_fields['id'];
+        }, (new static($this->_x_fields['id']))->$key);
 
         $addingIds = array_diff($currentIds, $dbIds);
         $removingIds = array_diff($dbIds, $currentIds);
         return [$addingIds, $removingIds];
-    }
-
-    final public static function F(string $key) : ?EntityFieldSignature
-    {
-        return static::structure()[$key] ?? null;
-    }
-
-    final public static function CF(string $key) : ?ConditionField
-    {
-        return static::F($key) ? new ConditionField(static::F($key)) : null;
     }
 }

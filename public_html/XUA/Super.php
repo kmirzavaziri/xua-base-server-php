@@ -2,6 +2,7 @@
 
 namespace XUA;
 
+use XUA\Exceptions\ClassMethodCallException;
 use XUA\Exceptions\SuperArgumentException;
 use XUA\Exceptions\SuperMarshalException;
 use XUA\Exceptions\SuperValidationException;
@@ -10,12 +11,15 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 abstract class Super extends XUA
 {
     # Magics
-    private static array $_x_formal;
-    private array $_x_actual;
+    private static array $_x_argument_signatures;
+    private array $_x_arguments;
 
+    /**
+     * @throws SuperValidationException
+     */
     protected static function _init()
     {
-        self::$_x_formal[static::class] = static::arguments();
+        self::$_x_argument_signatures[static::class] = static::argumentSignaturesCalculator();
     }
 
     /**
@@ -24,7 +28,7 @@ abstract class Super extends XUA
     final public function __construct(array $args)
     {
         try {
-            SuperArgumentSignature::processArguments(static::formal(), $args);
+            SuperArgumentSignature::processArguments(static::argumentSignatures(), $args);
         } catch (SuperArgumentException $e) {
             $exception = new SuperValidationException();
             foreach ($e->getErrors() as $key => $message) {
@@ -32,7 +36,7 @@ abstract class Super extends XUA
             }
             throw $exception;
         }
-        $this->_x_actual = $args;
+        $this->_x_arguments = $args;
         $this->validation();
     }
 
@@ -41,10 +45,10 @@ abstract class Super extends XUA
      */
     final function __get($key)
     {
-        if (! isset(static::formal()[$key])) {
+        if (!isset(static::argumentSignatures()[$key])) {
             throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
         }
-        return $this->_x_actual[$key];
+        return $this->_x_arguments[$key];
     }
 
     /**
@@ -52,21 +56,43 @@ abstract class Super extends XUA
      */
     final function __set($key, $value) : void
     {
-        if (!isset(static::formal()[$key])) {
+        if (!isset(static::argumentSignatures()[$key])) {
             throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
         }
         /** @var SuperArgumentSignature $signature */
-        $signature = static::formal()[$key];
+        $signature = static::argumentSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
             throw (new SuperArgumentException())->setError($key, implode(' ', $messages));
         }
-        $this->_x_actual[$key] = $value;
+        $this->_x_arguments[$key] = $value;
+    }
+
+    /**
+     * @throws SuperArgumentException
+     */
+    public static function __callStatic(string $name, array $arguments)
+    {
+        if (!str_starts_with($name, 'A_')) {
+            throw (new ClassMethodCallException("Method $name does not exist."));
+        }
+
+        $key = substr($name, 2, strlen($name) - 2);
+
+        if (!isset(static::argumentSignatures()[$key])) {
+            throw (new SuperArgumentException())->setError($key, 'Unknown super argument signature');
+        }
+
+        if ($arguments) {
+            throw (new ClassMethodCallException())->setError($key, 'A super argument signature method does not accept arguments');
+        }
+
+        return static::argumentSignatures()[$key];
     }
 
     final public function __toString() : string
     {
         $args = [];
-        foreach ($this->_x_actual as $key => $value) {
+        foreach ($this->_x_arguments as $key => $value) {
             $args[] = $key . ' = ' . xua_var_dump($value);
         }
         $args = implode(', ', $args);
@@ -75,18 +101,22 @@ abstract class Super extends XUA
 
     public function __debugInfo(): array
     {
-        return $this->_x_actual;
+        return $this->_x_arguments;
     }
 
-    final public static function formal() : array {
-        return self::$_x_formal[static::class];
+    /**
+     * @return SuperArgumentSignature[]
+     */
+    final public static function argumentSignatures() : array {
+        return self::$_x_argument_signatures[static::class];
     }
 
     # Overridable Methods
     /**
+     * @return SuperArgumentSignature[]
      * @throws SuperValidationException
      */
-    protected static function _arguments() : array
+    protected static function _argumentSignatures() : array
     {
         return [];
     }
@@ -130,11 +160,12 @@ abstract class Super extends XUA
 
     # Overridable Method Wrappers
     /**
+     * @return SuperArgumentSignature[]
      * @throws SuperValidationException
      */
-    private static function arguments() : array
+    private static function argumentSignaturesCalculator() : array
     {
-        return static::_arguments();
+        return static::_argumentSignatures();
     }
 
     /**
