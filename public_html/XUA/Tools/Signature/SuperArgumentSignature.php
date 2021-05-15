@@ -32,10 +32,12 @@ class SuperArgumentSignature
             if (in_array($key, array_keys($args))) {
                 if ($signature->const) {
                     $exception->setError($key, 'Cannot set constant argument');
+                    continue;
                 }
             } else {
                 if ($signature->required) {
                     $exception->setError($key, 'Required argument not provided');
+                    continue;
                 } else {
                     $args[$key] = $signature->default;
                 }

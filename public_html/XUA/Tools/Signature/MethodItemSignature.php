@@ -34,10 +34,12 @@ class MethodItemSignature
             if (in_array($key, array_keys($request))) {
                 if ($signature->const) {
                     $exception->setError($key, 'Cannot set constant request item');
+                    continue;
                 }
             } else {
                 if ($signature->required) {
                     $exception->setError($key, 'Required request item not provided');
+                    continue;
                 } else {
                     $request[$key] = $signature->default;
                 }
@@ -85,10 +87,12 @@ class MethodItemSignature
             if (in_array($key, array_keys($response))) {
                 if ($signature->const) {
                     $exception->setError($key, 'Cannot set constant response item');
+                    continue;
                 }
             } else {
                 if ($signature->required) {
                     $exception->setError($key, 'Required response item not provided');
+                    continue;
                 } else {
                     $response[$key] = $signature->default;
                 }

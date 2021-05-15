@@ -14,6 +14,7 @@ abstract class Method extends XUA
     private static array $_x_request_signatures = [];
     private static array $_x_response_signatures = [];
     private array $_x_response = [];
+    private array $_x_request = [];
 
     protected static function _init()
     {
@@ -27,9 +28,10 @@ abstract class Method extends XUA
      */
     final public function __construct(array $request)
     {
-        MethodItemSignature::processRequest(self::$_x_request_signatures[static::class], $request);
+        $this->_x_request = $request;
+        MethodItemSignature::processRequest(self::$_x_request_signatures[static::class], $this->_x_request);
         MethodItemSignature::preprocessResponse(self::$_x_response_signatures[static::class], $this->_x_response);
-        $this->execute($request);
+        $this->execute();
         MethodItemSignature::processResponse(self::$_x_response_signatures[static::class], $this->_x_response);
     }
 
@@ -38,10 +40,18 @@ abstract class Method extends XUA
      */
     final function __get($key)
     {
-        if (! isset(self::$_x_response_signatures[static::class][$key])) {
-            throw (new MethodResponseException())->setError($key, 'Unknown response item.');
+        if (str_starts_with($key, 'Q_')) {
+            $key = substr($key, 2, strlen($key) - 2);
+            if (!isset(static::requestSignatures()[$key])) {
+                throw (new MethodRequestException())->setError($key, 'Unknown request item');
+            }
+            return $this->_x_request[$key];
+        } else {
+            if (! isset(self::$_x_response_signatures[static::class][$key])) {
+                throw (new MethodResponseException())->setError($key, 'Unknown response item.');
+            }
+            return $this->_x_response[$key];
         }
-        return $this->_x_response[$key];
     }
 
     /**
@@ -71,20 +81,20 @@ abstract class Method extends XUA
         if (str_starts_with($name, 'Q_')) {
             $key = substr($name, 2, strlen($name) - 2);
             if (!isset(static::requestSignatures()[$key])) {
-                throw (new MethodRequestException())->setError($key, 'Unknown method request item signature');
+                throw (new MethodRequestException())->setError($key, 'Unknown request item signature');
             }
             $result = static::requestSignatures()[$key];
         } elseif (str_starts_with($name, 'R_')) {
             $key = substr($name, 2, strlen($name) - 2);
             if (!isset(static::responseSignatures()[$key])) {
-                throw (new MethodResponseException())->setError($key, 'Unknown method response item signature');
+                throw (new MethodResponseException())->setError($key, 'Unknown response item signature');
             }
             $result = static::responseSignatures()[$key];
         } else {
             throw (new ClassMethodCallException("Method $name does not exist."));
         }
         if ($arguments) {
-            throw (new ClassMethodCallException())->setError($key, 'A method request/response item signature method does not accept arguments');
+            throw (new ClassMethodCallException())->setError($key, 'A request/response item signature method does not accept arguments');
         }
 
         return $result;
@@ -122,7 +132,7 @@ abstract class Method extends XUA
         return [];
     }
 
-    abstract protected function execute(array $request) : void;
+    abstract protected function execute() : void;
 
     # Overridable Method Wrappers
     static private function requestSignaturesCalculator() : array

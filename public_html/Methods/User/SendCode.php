@@ -28,16 +28,8 @@ class SendCode extends Method
         ]);
     }
 
-    protected function execute(array $request): void
+    protected function execute(): void
     {
-        extract($request);
-        /**
-         **********************************************
-         * @var string $emailOrPhone
-         **********************************************
-         */
-
-        // @TODO send code
-        $this->test = 'you entered ' . $emailOrPhone;
+        $this->test = 'you entered ' . $this->Q_emailOrPhone                                                                    ;
     }
 }

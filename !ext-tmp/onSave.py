@@ -101,11 +101,11 @@ try:
     setRelationInverseColumns(className)
 except Exception as e:
     print(e)
-try:
-    print('setMethodExecuteVars: ', end = '')
-    setMethodExecuteVars(className)
-except Exception as e:
-    print(e)
+# try:
+#     print('setMethodExecuteVars: ', end = '')
+#     setMethodExecuteVars(className)
+# except Exception as e:
+#     print(e)
 # try:
 #     print('setEntityConstants: ', end = '')
 #     setEntityConstants(className)
