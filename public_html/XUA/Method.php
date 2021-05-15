@@ -11,10 +11,16 @@ use XUA\Tools\Signature\MethodItemSignature;
 abstract class Method extends XUA
 {
     # Magics
+    /**
+     * @var MethodItemSignature[][]
+     */
     private static array $_x_request_signatures = [];
+    /**
+     * @var MethodItemSignature[][]
+     */
     private static array $_x_response_signatures = [];
     private array $_x_response = [];
-    private array $_x_request = [];
+    private array $_x_request;
 
     protected static function _init()
     {
@@ -29,14 +35,15 @@ abstract class Method extends XUA
     final public function __construct(array $request)
     {
         $this->_x_request = $request;
-        MethodItemSignature::processRequest(self::$_x_request_signatures[static::class], $this->_x_request);
-        MethodItemSignature::preprocessResponse(self::$_x_response_signatures[static::class], $this->_x_response);
+        MethodItemSignature::processRequest(static::requestSignatures(), $this->_x_request);
+        MethodItemSignature::preprocessResponse(static::responseSignatures(), $this->_x_response);
         $this->execute();
-        MethodItemSignature::processResponse(self::$_x_response_signatures[static::class], $this->_x_response);
+        MethodItemSignature::processResponse(static::responseSignatures(), $this->_x_response);
     }
 
     /**
      * @throws MethodResponseException
+     * @throws MethodRequestException
      */
     final function __get($key)
     {
@@ -47,7 +54,7 @@ abstract class Method extends XUA
             }
             return $this->_x_request[$key];
         } else {
-            if (! isset(self::$_x_response_signatures[static::class][$key])) {
+            if (! isset(static::responseSignatures()[$key])) {
                 throw (new MethodResponseException())->setError($key, 'Unknown response item.');
             }
             return $this->_x_response[$key];
@@ -60,13 +67,12 @@ abstract class Method extends XUA
      */
     final function __set($key, $value) : void
     {
-        if (!isset(self::$_x_response_signatures[static::class][$key])) {
+        if (!isset(static::responseSignatures()[$key])) {
             throw (new MethodResponseException())->setError($key, 'Unknown response item');
         }
-        /** @var MethodItemSignature $signature */
-        $signature = self::$_x_response_signatures[static::class][$key];
+        $signature = static::responseSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new MethodRequestException())->setError($key, implode(' ', $messages));
+            throw (new MethodRequestException())->setError($key, $messages);
         }
         $this->_x_response[$key] = $value;
     }

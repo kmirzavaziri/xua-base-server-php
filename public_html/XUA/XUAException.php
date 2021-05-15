@@ -12,7 +12,7 @@ abstract class XUAException extends Exception
         return $this->errors ?: ($this->getMessage() ? ['' => $this->getMessage()] : []);
     }
 
-    public function setError(string $key, string $message) : XUAException
+    public function setError(string $key, mixed $message) : XUAException
     {
         $this->errors[$key] = $message;
         return $this;

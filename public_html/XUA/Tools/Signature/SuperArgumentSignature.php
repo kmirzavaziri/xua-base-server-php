@@ -44,7 +44,7 @@ class SuperArgumentSignature
             }
 
             if (!$signature->type->accepts($args[$key], $messages)) {
-                $exception->setError($key, implode(' ', $messages));
+                $exception->setError($key, $messages);
             }
 
             $newArgs[$key] = $args[$key];

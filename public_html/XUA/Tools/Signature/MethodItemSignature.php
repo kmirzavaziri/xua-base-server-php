@@ -46,7 +46,8 @@ class MethodItemSignature
             }
 
             if (!$signature->type->accepts($request[$key], $messages)) {
-                $exception->setError($key, implode(' ', $messages));
+                $messages = array_values(array_unique($messages));
+                $exception->setError($key, count($messages) == 1 ? $messages[0] : $messages);
             }
 
             $newRequest[$key] = $request[$key];
@@ -99,7 +100,7 @@ class MethodItemSignature
             }
 
             if (!$signature->type->accepts($response[$key], $messages)) {
-                $exception->setError($key, implode(' ', $messages));
+                $exception->setError($key, $messages);
             }
 
             $newResponse[$key] = $response[$key];

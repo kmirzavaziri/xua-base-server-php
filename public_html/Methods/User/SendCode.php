@@ -17,7 +17,7 @@ class SendCode extends Method
     protected static function _requestSignatures(): array
     {
         return array_merge(parent::_requestSignatures(), [
-            'emailOrPhone' => new MethodItemSignature(new Text([]), true, null, false)
+            'emailOrPhone' => new MethodItemSignature(new Text([]), true, null, false),
         ]);
     }
 

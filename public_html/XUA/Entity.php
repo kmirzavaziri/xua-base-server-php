@@ -27,8 +27,8 @@ use XUA\Tools\Visibility;
 
 /**
  * @property int id
- * @method static EntityFieldSignature F_id() The Signature of: Field id
- * @method static ConditionField C_id() The Condition Field of: Field id
+ * @method static EntityFieldSignature F_id() The Signature of: Field `id`
+ * @method static ConditionField C_id() The Condition Field of: Field `id`
  */
 abstract class Entity extends XUA
 {
@@ -95,6 +95,9 @@ abstract class Entity extends XUA
     # Magics
     private static array $_x_table = [];
 
+    /**
+     * @var EntityFieldSignature[][]
+     */
     private static array $_x_field_signatures = [];
     private array $_x_fields = [];
 
@@ -184,7 +187,7 @@ abstract class Entity extends XUA
         }
 
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new EntityFieldException())->setError($key, implode(" ", $messages));
+            throw (new EntityFieldException())->setError($key, $messages);
         }
 
         if (is_a($signature->type, PhpVirtualField::class)) {
@@ -256,9 +259,6 @@ abstract class Entity extends XUA
         return $result;
     }
 
-    /**
-     * @return EntityFieldSignature[]
-     */
     final public static function fieldSignatures() : array {
         return self::$_x_field_signatures[static::class];
     }
@@ -280,7 +280,6 @@ abstract class Entity extends XUA
     # Overridable Methods
 
     /**
-     * @return EntityFieldSignature[]
      * @throws SuperValidationException
      */
     protected static function _fieldSignatures() : array
@@ -330,7 +329,6 @@ abstract class Entity extends XUA
     # Overridable Method Wrappers
 
     /**
-     * @return EntityFieldSignature[]
      * @throws SuperValidationException
      */
     private static function fieldSignaturesCalculator() : array
@@ -358,9 +356,8 @@ abstract class Entity extends XUA
         $this->_validation($exception);
 
         foreach (static::fieldSignatures() as $key => $signature) {
-            /** @var EntityFieldSignature $signature */
             if ($this->_x_must_store[$key] and !$signature->type->accepts($this->_x_fields[$key], $messages)) {
-                $exception->setError($key, implode(" ", $messages));
+                $exception->setError($key, $messages);
             }
         }
 

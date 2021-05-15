@@ -58,8 +58,7 @@ class EntityRelation extends Super
     protected function _predicate($input, string &$message = null) : bool
     {
         if ($this->relation[1] == 'I') {
-            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->accepts($input, $messages)) {
-                $message = implode(' ', $messages);
+            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
             if ($input !== null and $input->id === null) {
@@ -78,8 +77,7 @@ class EntityRelation extends Super
             }
             return true;
         } elseif ($this->relation[1] == 'N') {
-            if (!(new Sequence(['type' => new Instance(['of' => $this->relatedEntity])]))->accepts($input, $messages)) {
-                $message = implode(' ', $messages);
+            if (!(new Sequence(['type' => new Instance(['of' => $this->relatedEntity])]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
             foreach ($input as $item) {

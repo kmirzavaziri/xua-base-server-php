@@ -11,6 +11,9 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 abstract class Super extends XUA
 {
     # Magics
+    /**
+     * @var SuperArgumentSignature[][]
+     */
     private static array $_x_argument_signatures;
     private array $_x_arguments;
 
@@ -59,10 +62,9 @@ abstract class Super extends XUA
         if (!isset(static::argumentSignatures()[$key])) {
             throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
         }
-        /** @var SuperArgumentSignature $signature */
         $signature = static::argumentSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new SuperArgumentException())->setError($key, implode(' ', $messages));
+            throw (new SuperArgumentException())->setError($key, $messages);
         }
         $this->_x_arguments[$key] = $value;
     }
@@ -104,16 +106,12 @@ abstract class Super extends XUA
         return $this->_x_arguments;
     }
 
-    /**
-     * @return SuperArgumentSignature[]
-     */
     final public static function argumentSignatures() : array {
         return self::$_x_argument_signatures[static::class];
     }
 
     # Overridable Methods
     /**
-     * @return SuperArgumentSignature[]
      * @throws SuperValidationException
      */
     protected static function _argumentSignatures() : array
@@ -160,7 +158,6 @@ abstract class Super extends XUA
 
     # Overridable Method Wrappers
     /**
-     * @return SuperArgumentSignature[]
      * @throws SuperValidationException
      */
     private static function argumentSignaturesCalculator() : array
