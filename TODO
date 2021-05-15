@@ -1,88 +1,104 @@
-Entities/
-    User
-        Farmer
-        Agent
-        Owner
-        Operator
-        Inspector
-        Veterinarian
-        Botanist
-        Researcher
-        Employee
-        Worker
-    Farm
-    Product
-    Order
-    Transaction
-    Report
-    Cooperation
-    ProductCategory
-    Post
-    ContactUsFields
-    Pure Deploy
-    Check Alters
-Methods/
-    User/
-        SendCode
-        GetAccessToken
-        GetMinimal
-        SetBasics
-        SetNatural
-        SetJuridical
-        Cart/Get
-        GetCapitalBasket
-        GetAddress
-        Cart/GetPaymentLink
-        SetAddress
-        SetFull
-    ProductCategory/
-        GetAll
-    Product/
-        GetMany
-        GetOne
-    Farms/
-        GetMany
-        GetOne
-    Farmers/
-        GetMany
-        GetOne
-    Info/
-        GetHome
-        GetAboutUs
-        GetContactUs
-    ContactUs/
-        SetOne
-    Post/
-        GetMany
-    ContactUsFields/
-        GetOne
-        GetAll
-        SetOne
-    Report/
-        GetMany
-        GetOne
-    Admin/
+XUA/
+    Me/
+        Duplicate Super Errors
+        Add fields array to _x_getMany
+        Efficient IN (fetch all possible data) ?
+        Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
+        Translate Service
+        Alter & Test Method
+        Deploy procedure
+        Entity toArray & fromArray on http
+    Keram/
+        Fix read&parse routes algorithm
+    Later/
+        Entity Lock
+        Entity Cache
+MyFarm/
+    Entities/
+        User
+            Farmer
+            Agent
+            Owner
+            Operator
+            Inspector
+            Veterinarian
+            Botanist
+            Researcher
+            Employee
+            Worker
+        Farm
+        Product
+        Order
+        Transaction
+        Report
+        Cooperation
+        ProductCategory
+        Post
+        ContactUsFields
+        Pure Deploy
+        Check Alters
+    Methods/
         User/
-            GetMany
-            GetOne
-            SetOne
+            SendCode
+            GetAccessToken
+            GetMinimal
+            SetBasics
+            SetNatural
+            SetJuridical
+            Cart/Get
+            GetCapitalBasket
+            GetAddress
+            Cart/GetPaymentLink
+            SetAddress
+            SetFull
+        ProductCategory/
+            GetAll
         Product/
             GetMany
             GetOne
-            SetOne
-        Farm/
+        Farms/
             GetMany
             GetOne
-            SetOne
-        Order/
+        Farmers/
             GetMany
             GetOne
+        Info/
+            GetHome
+            GetAboutUs
+            GetContactUs
+        ContactUs/
+            SetOne
+        Post/
+            GetMany
+        ContactUsFields/
+            GetOne
+            GetAll
             SetOne
         Report/
             GetMany
             GetOne
-            SetOne
-        Transaction/
-            GetMany
-            GetOne
-            SetOne
+        Admin/
+            User/
+                GetMany
+                GetOne
+                SetOne
+            Product/
+                GetMany
+                GetOne
+                SetOne
+            Farm/
+                GetMany
+                GetOne
+                SetOne
+            Order/
+                GetMany
+                GetOne
+                SetOne
+            Report/
+                GetMany
+                GetOne
+                SetOne
+            Transaction/
+                GetMany
+                GetOne
+                SetOne
