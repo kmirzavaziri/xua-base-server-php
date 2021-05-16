@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+use Entities\User\Session;
+use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Date;
 use Supers\Basics\Highers\File;
 use Supers\Basics\Highers\StructuredMap;
@@ -41,6 +43,30 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string nationalCode
  * @method static EntityFieldSignature F_nationalCode() The Signature of: Field `nationalCode`
  * @method static ConditionField C_nationalCode() The Condition Field of: Field `nationalCode`
+ * @property ?string gender
+ * @method static EntityFieldSignature F_gender() The Signature of: Field `gender`
+ * @method static ConditionField C_gender() The Condition Field of: Field `gender`
+ * @property mixed birthDate
+ * @method static EntityFieldSignature F_birthDate() The Signature of: Field `birthDate`
+ * @method static ConditionField C_birthDate() The Condition Field of: Field `birthDate`
+ * @property ?string nationality
+ * @method static EntityFieldSignature F_nationality() The Signature of: Field `nationality`
+ * @method static ConditionField C_nationality() The Condition Field of: Field `nationality`
+ * @property string education
+ * @method static EntityFieldSignature F_education() The Signature of: Field `education`
+ * @method static ConditionField C_education() The Condition Field of: Field `education`
+ * @property string job
+ * @method static EntityFieldSignature F_job() The Signature of: Field `job`
+ * @method static ConditionField C_job() The Condition Field of: Field `job`
+ * @property mixed profilePicture
+ * @method static EntityFieldSignature F_profilePicture() The Signature of: Field `profilePicture`
+ * @method static ConditionField C_profilePicture() The Condition Field of: Field `profilePicture`
+ * @property mixed nationalCardPicture
+ * @method static EntityFieldSignature F_nationalCardPicture() The Signature of: Field `nationalCardPicture`
+ * @method static ConditionField C_nationalCardPicture() The Condition Field of: Field `nationalCardPicture`
+ * @property mixed birthCertificatePicture
+ * @method static EntityFieldSignature F_birthCertificatePicture() The Signature of: Field `birthCertificatePicture`
+ * @method static ConditionField C_birthCertificatePicture() The Condition Field of: Field `birthCertificatePicture`
  * @property ?string organizationName
  * @method static EntityFieldSignature F_organizationName() The Signature of: Field `organizationName`
  * @method static ConditionField C_organizationName() The Condition Field of: Field `organizationName`
@@ -74,6 +100,15 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string iban
  * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
  * @method static ConditionField C_iban() The Condition Field of: Field `iban`
+ * @property string website
+ * @method static EntityFieldSignature F_website() The Signature of: Field `website`
+ * @method static ConditionField C_website() The Condition Field of: Field `website`
+ * @property string referral
+ * @method static EntityFieldSignature F_referral() The Signature of: Field `referral`
+ * @method static ConditionField C_referral() The Condition Field of: Field `referral`
+ * @property Session[] sessions
+ * @method static EntityFieldSignature F_sessions() The Signature of: Field `sessions`
+ * @method static ConditionField C_sessions() The Condition Field of: Field `sessions`
  */
 class User extends Entity
 {
@@ -228,6 +263,18 @@ class User extends Entity
             'referral' => new EntityFieldSignature(
                 static::class, 'referral',
                 new Text(['minLength' => 1, 'maxLength' => 200]),
+                null
+            ),
+            'sessions' => new EntityFieldSignature(
+                static::class, 'sessions',
+                new EntityRelation([
+                    'relatedEntity' => \Entities\User\Session::class,
+                    'relation' => 'IN',
+                    'invName' => 'user',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'there',
+                ]),
                 null
             ),
         ]);

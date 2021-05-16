@@ -22,10 +22,6 @@ use XUA\Tools\Signature\EntityFieldSignature;
  */
 class Farm extends Entity
 {
-    const id = 'id';
-    const title = 'title';
-    const workers = 'workers';
-
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [

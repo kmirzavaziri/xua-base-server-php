@@ -3,7 +3,8 @@
 namespace Methods\XUA;
 
 
-use DirectoryIterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Services\XUA\ConstantService;
 use Supers\Basics\Strings\Text;
 use XUA\Entity;
@@ -32,10 +33,10 @@ class DeployTest extends Method
 
     protected function execute(): void
     {
-        $entitiesDir = new DirectoryIterator(ConstantService::ENTITIES_NAMESPACE);
+        $entitiesIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ConstantService::ENTITIES_NAMESPACE));
         $alters = [];
         $newTables = [];
-        foreach ($entitiesDir as $entityFile) {
+        foreach ($entitiesIterator as $entityFile) {
             if ($entityFile->isFile() && $entityFile->getExtension() == 'php') {
                 $entityFileName = $entityFile->getPathname();
                 $class = str_replace(

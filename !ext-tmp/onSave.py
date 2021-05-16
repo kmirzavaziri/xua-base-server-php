@@ -49,7 +49,7 @@ def setRelationInverseColumns(className):
                 content = f.read()
 
             if new:
-                content = re.sub(r'(function\s+_fields.*\{.*\[.*\))(,?)(\s*\]\s*\)\s*;\s*\})', lambda m, c=text, n=name : m.group(1) + ",\n            '" + name + "' => " + c + ',' + m.group(3), content, 1, re.DOTALL)
+                content = re.sub(r'(function\s+_fieldSignatures.*\{.*\[.*\))(,?)(\s*\]\s*\)\s*;\s*\})', lambda m, c=text, n=name : m.group(1) + ",\n            '" + name + "' => " + c + ',' + m.group(3), content, 1, re.DOTALL)
             else:
                 content = re.sub(r'([\'\"]' + name + '[\'\"]\s*=>\s*)(.*)', lambda m, c=text : m.group(1) + c + m.group(2)[closingMatch(m.group(2)) + 1:], content, 1, re.DOTALL)
 

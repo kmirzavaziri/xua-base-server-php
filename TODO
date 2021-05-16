@@ -1,109 +1,111 @@
-XUA/
-    Me/
-        Validate method exception to have only request item names and empty string as keys
-        Method document generator
-        Add file upload procedure
-        Add DateTime service and complete the super
-        Add fields array to _x_getMany
-        Efficient IN (fetch all possible data) ?
-        Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
-        Translate Service
-        Deploy procedure
-        Entity toArray & fromArray on http
-    Keram/
-        Fix read&parse routes algorithm
-    Later/
-        Entity Lock
-        Entity Cache
-MyFarm/
-    Entities/
-        User
-        User/
-            Session
-            Info/
-                Farmer
-                Agent
-                Owner
-                Operator
-                Inspector
-                Veterinarian
-                Botanist
-                Researcher
-                Employee
-                Worker
-        Farm
-        Product
-        Order
-        Transaction
-        Report
-        Cooperation
-        ProductCategory
-        Post
-        ContactUsFields
-        Pure Deploy
-        Check Alters
-    Methods/
-        User/
-            SendCode
-            GetAccessToken
-            GetMinimal
-            SetBasics
-            SetNatural
-            SetJuridical
-            Cart/Get
-            GetCapitalBasket
-            GetAddress
-            Cart/GetPaymentLink
-            SetAddress
-            SetFull
-        ProductCategory/
-            GetAll
-        Product/
-            GetMany
-            GetOne
-        Farms/
-            GetMany
-            GetOne
-        Farmers/
-            GetMany
-            GetOne
-        Info/
-            GetHome
-            GetAboutUs
-            GetContactUs
-        ContactUs/
-            SetOne
-        Post/
-            GetMany
-        ContactUsFields/
-            GetOne
-            GetAll
-            SetOne
-        Report/
-            GetMany
-            GetOne
-        Admin/
-            User/
-                GetMany
-                GetOne
-                SetOne
-            Product/
-                GetMany
-                GetOne
-                SetOne
-            Farm/
-                GetMany
-                GetOne
-                SetOne
-            Order/
-                GetMany
-                GetOne
-                SetOne
-            Report/
-                GetMany
-                GetOne
-                SetOne
-            Transaction/
-                GetMany
-                GetOne
-                SetOne
+0   XUA/
+0       Me/
+0           Validate method exception to have only request item names and empty string as keys
+0           Method document generator
+0           Add file upload procedure
+0           Add DateTime service and complete the super
+0           Add fields array to _x_getMany
+0           Efficient IN (fetch all possible data) ?
+0           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
+0           Translate Service
+0           Deploy procedure
+0           Entity toArray & fromArray on http
+0           Default value for both sides of relation
+0           Copy Prod DB to Local by a command or on a weekly basis
+0       Keram/
+0           Fix read&parse routes algorithm
+0       Later/
+0           Entity Lock
+0           Entity Cache
+0   MyFarm/
+0       Entities/
+0           User
+0           User/
+1               Session
+0               Info/
+0                   Farmer
+0                   Agent
+0                   Owner
+0                   Operator
+0                   Inspector
+0                   Veterinarian
+0                   Botanist
+0                   Researcher
+0                   Employee
+0                   Worker
+0           Farm
+0           Product
+0           Order
+0           Transaction
+0           Report
+0           Cooperation
+0           ProductCategory
+0           Post
+0           ContactUsFields
+0           Pure Deploy
+0           Check Alters
+0       Methods/
+0           User/
+0               SendCode
+0               GetAccessToken
+0               GetMinimal
+0               SetBasics
+0               SetNatural
+0               SetJuridical
+0               Cart/Get
+0               GetCapitalBasket
+0               GetAddress
+0               Cart/GetPaymentLink
+0               SetAddress
+0               SetFull
+0           ProductCategory/
+0               GetAll
+0           Product/
+0               GetMany
+0               GetOne
+0           Farms/
+0               GetMany
+0               GetOne
+0           Farmers/
+0               GetMany
+0               GetOne
+0           Info/
+0               GetHome
+0               GetAboutUs
+0               GetContactUs
+0           ContactUs/
+0               SetOne
+0           Post/
+0               GetMany
+0           ContactUsFields/
+0               GetOne
+0               GetAll
+0               SetOne
+0           Report/
+0               GetMany
+0               GetOne
+0           Admin/
+0               User/
+0                   GetMany
+0                   GetOne
+0                   SetOne
+0               Product/
+0                   GetMany
+0                   GetOne
+0                   SetOne
+0               Farm/
+0                   GetMany
+0                   GetOne
+0                   SetOne
+0               Order/
+0                   GetMany
+0                   GetOne
+0                   SetOne
+0               Report/
+0                   GetMany
+0                   GetOne
+0                   SetOne
+0               Transaction/
+0                   GetMany
+0                   GetOne
+0                   SetOne
