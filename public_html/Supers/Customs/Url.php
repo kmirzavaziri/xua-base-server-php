@@ -15,8 +15,9 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
-class Email extends Text
+class Url extends Text
 {
+    // @TODO add types http/https, mailto, telegram, etc.
     protected function _predicate($input, string &$message = null): bool
     {
         $message = 'Not implemented yet';

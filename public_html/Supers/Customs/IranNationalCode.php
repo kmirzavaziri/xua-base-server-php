@@ -17,5 +17,9 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  */
 class IranNationalCode extends Text
 {
-
+    protected function _predicate($input, string &$message = null): bool
+    {
+        $message = 'Not implemented yet';
+        return false;
+    }
 }

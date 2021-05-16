@@ -5,6 +5,7 @@ namespace Supers\Customs;
 
 
 use Supers\Basics\Strings\Text;
+use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength
@@ -16,5 +17,9 @@ use Supers\Basics\Strings\Text;
  */
 class Iban extends Text
 {
-
+    protected function _predicate($input, string &$message = null): bool
+    {
+        $message = 'Not implemented yet';
+        return false;
+    }
 }

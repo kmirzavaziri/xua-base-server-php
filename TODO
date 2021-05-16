@@ -1,6 +1,9 @@
 XUA/
     Me/
+        Validate method exception to have only request item names and empty string as keys
+        Method document generator
         Add file upload procedure
+        Add DateTime service and complete the super
         Add fields array to _x_getMany
         Efficient IN (fetch all possible data) ?
         Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
@@ -16,16 +19,19 @@ XUA/
 MyFarm/
     Entities/
         User
-            Farmer
-            Agent
-            Owner
-            Operator
-            Inspector
-            Veterinarian
-            Botanist
-            Researcher
-            Employee
-            Worker
+        User/
+            Session
+            Info/
+                Farmer
+                Agent
+                Owner
+                Operator
+                Inspector
+                Veterinarian
+                Botanist
+                Researcher
+                Employee
+                Worker
         Farm
         Product
         Order

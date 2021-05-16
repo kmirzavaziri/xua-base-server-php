@@ -2,8 +2,8 @@
 
 namespace Entities;
 
-
-use Supers\Basics\EntitySupers\EntityRelation;
+use Supers\Basics\Highers\Date;
+use Supers\Basics\Highers\File;
 use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
@@ -14,6 +14,7 @@ use Supers\Customs\IranNationalCode;
 use Supers\Customs\IranNationalId;
 use Supers\Customs\IranPhone;
 use Supers\Customs\IranPostalCode;
+use Supers\Customs\Url;
 use XUA\Entity;
 use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
@@ -64,18 +65,15 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string postalCode
  * @method static EntityFieldSignature F_postalCode() The Signature of: Field `postalCode`
  * @method static ConditionField C_postalCode() The Condition Field of: Field `postalCode`
- * @property ?string phoneNumber
- * @method static EntityFieldSignature F_phoneNumber() The Signature of: Field `phoneNumber`
- * @method static ConditionField C_phoneNumber() The Condition Field of: Field `phoneNumber`
+ * @property ?string landlinePhoneNumber
+ * @method static EntityFieldSignature F_landlinePhoneNumber() The Signature of: Field `landlinePhoneNumber`
+ * @method static ConditionField C_landlinePhoneNumber() The Condition Field of: Field `landlinePhoneNumber`
  * @property ?string faxNumber
  * @method static EntityFieldSignature F_faxNumber() The Signature of: Field `faxNumber`
  * @method static ConditionField C_faxNumber() The Condition Field of: Field `faxNumber`
  * @property ?string iban
  * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
  * @method static ConditionField C_iban() The Condition Field of: Field `iban`
- * @property \Entities\Farm[] workingFarms
- * @method static EntityFieldSignature F_workingFarms() The Signature of: Field `workingFarms`
- * @method static ConditionField C_workingFarms() The Condition Field of: Field `workingFarms`
  */
 class User extends Entity
 {
@@ -113,7 +111,47 @@ class User extends Entity
                 new IranNationalCode([]),
                 null
             ),
-            # Juridical Person Information
+            'gender' => new EntityFieldSignature(
+                static::class, 'gender',
+                new Enum(['values' => ['male', 'female'], 'nullable' => true]),
+                null
+            ),
+            'birthDate' => new EntityFieldSignature(
+                static::class, 'birthDate',
+                new Date(['nullable' => true]),
+                null
+            ),
+            'nationality' => new EntityFieldSignature(
+                static::class, 'nationality',
+                new Enum(['values' => ['iranian', 'foreign'], 'nullable' => true]),
+                null
+            ),
+            'education' => new EntityFieldSignature(
+                static::class, 'education',
+                new Text(['minLength' => 1, 'maxLength' => 200]),
+                null
+            ),
+            'job' => new EntityFieldSignature(
+                static::class, 'job',
+                new Text(['minLength' => 1, 'maxLength' => 200]),
+                null
+            ),
+            'profilePicture' => new EntityFieldSignature(
+                static::class, 'profilePicture',
+                new File(['type' => 'image', 'storeExtension' => 'jpg', 'compress' => true, 'maxSize' => '2MB', 'nullable' => true]),
+                null
+            ),
+            'nationalCardPicture' => new EntityFieldSignature(
+                static::class, 'nationalCardPicture',
+                new File(['type' => 'image', 'storeExtension' => 'jpg', 'compress' => true, 'maxSize' => '2MB', 'nullable' => true]),
+                null
+            ),
+            'birthCertificatePicture' => new EntityFieldSignature(
+                static::class, 'birthCertificatePicture',
+                new File(['type' => 'image', 'storeExtension' => 'jpg', 'compress' => true, 'maxSize' => '2MB', 'nullable' => true]),
+                null
+            ),
+            # Organization Information
             'organizationName' => new EntityFieldSignature(
                 static::class, 'organizationName',
                 new Text(['minLength' => 1, 'maxLength' => 200, 'nullable' => true]),
@@ -133,7 +171,7 @@ class User extends Entity
             'cellphoneNumber' => new EntityFieldSignature(
                 static::class, 'cellphoneNumber',
                 new IranPhone([
-//                    'type' => 'cellphone'
+                    'type' => 'cellphone'
                 ]),
                 null
             ),
@@ -160,10 +198,10 @@ class User extends Entity
                 new IranPostalCode(['nullable' => true]),
                 null
             ),
-            'phoneNumber' => new EntityFieldSignature(
-                static::class, 'phoneNumber',
+            'landlinePhoneNumber' => new EntityFieldSignature(
+                static::class, 'landlinePhoneNumber',
                 new IranPhone([
-//                    'type' => 'landline',
+                    'type' => 'landline',
                     'nullable' => true
                 ]),
                 null
@@ -171,7 +209,7 @@ class User extends Entity
             'faxNumber' => new EntityFieldSignature(
                 static::class, 'faxNumber',
                 new IranPhone([
-//                    'type' => 'fax',
+                    'type' => 'fax',
                     'nullable' => true
                 ]),
                 null
@@ -181,16 +219,15 @@ class User extends Entity
                 new Iban(['nullable' => true]),
                 null
             ),
-            'workingFarms' => new EntityFieldSignature(
-                static::class, 'workingFarms',
-                new EntityRelation([
-                    'relatedEntity' => \Entities\Farm::class,
-                    'relation' => 'NN',
-                    'invName' => 'workers',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
-                ]),
+            'website' => new EntityFieldSignature(
+                static::class, 'website',
+                new Url([]),
+                null
+            ),
+            # Other Data
+            'referral' => new EntityFieldSignature(
+                static::class, 'referral',
+                new Text(['minLength' => 1, 'maxLength' => 200]),
                 null
             ),
         ]);

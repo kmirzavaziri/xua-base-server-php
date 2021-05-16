@@ -23,9 +23,9 @@ try {
     } else {
         throw new Exception('unknown Action');
     }
-} catch (Error $e) {
+} catch (Throwable $e) {
     $result->status = false;
-    $result->result = $e->getMessage() . ' ' . $e->getTraceAsString();
+    $result->result = (is_a($e, \XUA\XUAException::class) ? xua_var_dump($e->getErrors()) : $e->getMessage()) . ' ' . $e->getTraceAsString();
 }
 
 echo json_encode($result);
