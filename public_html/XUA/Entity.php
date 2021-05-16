@@ -722,7 +722,7 @@ abstract class Entity extends XUA
     }
 
     # Predefined Methods (helpers)
-    final public static function alter() : string
+    final public static function alter() : array
     {
         $signatures = static::fieldSignatures();
         unset($signatures['id']);
@@ -731,7 +731,6 @@ abstract class Entity extends XUA
 
         $columns = ['id' => Column::fromQuery("id " . static::fieldSignatures()['id']->type->databaseType() . " NOT NULL AUTO_INCREMENT")];
         foreach ($signatures as $key => $signature) {
-            /** @var EntityFieldSignature $signature */
             if ($signature->type->databaseType() != 'DONT STORE') {
                 $columns[$key] = Column::fromQuery("$key {$signature->type->databaseType()}");
             }
@@ -742,7 +741,7 @@ abstract class Entity extends XUA
             ) {
                 $leftColumn = static::table();
                 $rightColumn = $signature->type->relatedEntity::table();
-                $tables[] = new TableScheme('_' . static::table() . '_' . $key, [
+                $tables[] = new TableScheme(static::junctionTableName($key), [
                     $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->type->relatedEntity::fieldSignatures()['id']->type->databaseType() . " NOT NULL"),
                     $rightColumn => Column::fromQuery($signature->type->relatedEntity::table() . ' ' . $signature->type->relatedEntity::fieldSignatures()['id']->type->databaseType() . " NOT NULL"),
                 ], [
@@ -754,14 +753,19 @@ abstract class Entity extends XUA
 
         $tables[] = new TableScheme(static::table(), $columns, static::indexes());
         $alters = [];
+        $tableNames = [];
         foreach ($tables as $table) {
+            $tableNames[] = $table->tableName;
             $tmp = $table->alter();
             if ($tmp) {
                 $alters[] = $tmp;
             }
         }
 
-        return implode(PHP_EOL . PHP_EOL, $alters) . PHP_EOL . PHP_EOL;
+        return [
+            'tableNames' => $tableNames,
+            'alters' => implode(PHP_EOL . PHP_EOL, $alters)
+        ];
     }
 
     private static function columnsExpression(?Entity $entity = null) : array

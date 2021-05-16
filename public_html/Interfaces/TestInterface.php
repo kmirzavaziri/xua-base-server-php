@@ -13,11 +13,6 @@ class TestInterface extends InterfaceEve
 {
     public static function execute(): string
     {
-        echo "<pre>";
-        echo User::alter();
-        echo Farm::alter();
-        echo "</pre>";
-
 //        $farm = new Farm(4);
 //        $farm->workers = User::getMany(null, null, null, Visibility::CALLER_PHP, ['id']);
 //        $farm->workers = User::getMany();

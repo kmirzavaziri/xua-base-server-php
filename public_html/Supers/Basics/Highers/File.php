@@ -49,4 +49,10 @@ class File extends Super
         $message = 'Not implemented yet';
         return false;
     }
+
+    protected function _databaseType(): ?string
+    {
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
+        return "VARCHAR(500)$nullExpression";
+    }
 }

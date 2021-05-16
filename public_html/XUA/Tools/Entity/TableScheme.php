@@ -12,7 +12,7 @@ use XUA\Entity;
 final class TableScheme
 {
     public function __construct(
-        private string $tableName,
+        public string $tableName,
         private array $columns,
         private array $indexes,
     ) {
@@ -208,5 +208,18 @@ final class TableScheme
         }
 
         return $result;
+    }
+
+    public static function getDropTables(array $newTables): string
+    {
+        $oldTables = array_map(function (array $oneTableArray) {
+            return $oneTableArray[0];
+        }, Entity::connection()->query("SHOW TABLES", PDO::FETCH_NUM)->fetchAll());
+        $dropTables = array_diff($oldTables, $newTables);
+        $drops = [];
+        foreach ($dropTables as $dropTable) {
+            $drops[] = "DROP TABLE $dropTable";
+        }
+        return implode(PHP_EOL . PHP_EOL, $drops);
     }
 }

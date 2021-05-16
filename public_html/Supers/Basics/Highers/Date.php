@@ -5,13 +5,7 @@ namespace Supers\Basics\Highers;
 
 
 
-use ReflectionFunction;
 use Supers\Basics\Boolean;
-use Supers\Basics\Strings\Enum;
-use Supers\Basics\Strings\Symbol;
-use Supers\Basics\Strings\Text;
-use Supers\Basics\Trilean;
-use Supers\Basics\Universal;
 use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
@@ -32,5 +26,11 @@ class Date extends Super
     {
         $message = 'Not implemented yet';
         return false;
+    }
+
+    protected function _databaseType(): ?string
+    {
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
+        return "DATE$nullExpression";
     }
 }

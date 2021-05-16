@@ -10,8 +10,10 @@ use XUA\Service;
 
 final class ConstantService extends Service
 {
-    const ROUTE_FILE = './routes.xrml';
     const INTERFACES_NAMESPACE = 'Interfaces';
+    const ENTITIES_NAMESPACE = 'Entities';
+
+    const ROUTE_FILE = './routes.xrml';
     const TEMPLATES_PATH = 'templates';
     const TEMPLATES_CACHE_PATH = false;
 
