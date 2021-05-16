@@ -32,8 +32,6 @@ use XUA\Tools\Visibility;
  */
 abstract class Entity extends XUA
 {
-    const id = 'id';
-
     private static ?PDO $connection = null;
 
     final public static function connection() : ?PDO
@@ -306,7 +304,7 @@ abstract class Entity extends XUA
         $this->_x_initialize();
     }
 
-    protected static function _getOne(Condition $condition, Order $order, string $caller) : Entity
+    protected static function _getOne(Condition $condition, Order $order, string $caller) : static
     {
         return static::_x_getOne($condition, $order);
     }
@@ -321,6 +319,9 @@ abstract class Entity extends XUA
         $this->_x_delete();
     }
 
+    /**
+     * @return static[]
+     */
     protected static function _getMany(Condition $condition, Order $order, Pager $pager, string $caller) : array
     {
         return static::_x_getMany($condition, $order, $pager);
@@ -371,7 +372,7 @@ abstract class Entity extends XUA
         $this->_initialize($caller);
     }
 
-    final public static function getOne(?Condition $condition = null, ?Order $order = null, string $caller = Visibility::CALLER_PHP) : Entity
+    final public static function getOne(?Condition $condition = null, ?Order $order = null, string $caller = Visibility::CALLER_PHP) : static
     {
         if ($condition === null) {
             $condition = Condition::trueLeaf();
@@ -394,6 +395,9 @@ abstract class Entity extends XUA
         }
     }
 
+    /**
+     * @return static[]
+     */
     final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : array
     {
         if ($condition === null) {
@@ -420,7 +424,7 @@ abstract class Entity extends XUA
         }
     }
 
-    final protected static function _x_getOne(Condition $condition, Order $order) : Entity
+    final protected static function _x_getOne(Condition $condition, Order $order) : static
     {
         return static::_x_getMany($condition, $order, new Pager(1, 0))[0] ?? new static();
     }
@@ -464,6 +468,9 @@ abstract class Entity extends XUA
         self::execute("DELETE FROM " . static::table() . " WHERE id = ? LIMIT 1", [$this->id]);
     }
 
+    /**
+     * @return static[]
+     */
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager) : array
     {
         [$columnsExpression, $keys] = self::columnsExpression();

@@ -62,7 +62,6 @@ abstract class Method extends XUA
     }
 
     /**
-     * @throws MethodRequestException
      * @throws MethodResponseException
      */
     final function __set($key, $value) : void
@@ -72,7 +71,7 @@ abstract class Method extends XUA
         }
         $signature = static::responseSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new MethodRequestException())->setError($key, $messages);
+            throw (new MethodResponseException())->setError($key, $messages);
         }
         $this->_x_response[$key] = $value;
     }

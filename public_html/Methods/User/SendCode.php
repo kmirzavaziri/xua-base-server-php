@@ -2,6 +2,8 @@
 
 namespace Methods\User;
 
+use Entities\User\Session;
+use Services\UserService;
 use Supers\Basics\Strings\Text;
 use XUA\Method;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -24,12 +26,11 @@ class SendCode extends Method
     protected static function _responseSignatures(): array
     {
         return array_merge(parent::_responseSignatures(), [
-            'test' => new MethodItemSignature(new Text([]), true, null, false)
+
         ]);
     }
 
     protected function execute(): void
     {
-        $this->test = 'you entered ' . $this->Q_emailOrPhone                                                                    ;
     }
 }
