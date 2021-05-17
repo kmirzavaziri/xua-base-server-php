@@ -11,7 +11,7 @@ abstract class UserService extends Service
 {
     private static ?Session $session = null;
 
-    protected static function _init()
+    protected static function _init(): void
     {
         self::$session = new Session();
 

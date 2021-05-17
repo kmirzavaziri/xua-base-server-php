@@ -10,14 +10,16 @@ abstract class XUA
 
     private static array $initialized = [];
 
-    final public static function init() {
+    final public static function init(): void
+    {
         if (!isset(self::$initialized[static::class])) {
             static::_init();
             self::$initialized[static::class] = true;
         }
     }
 
-    protected static function _init() {
+    protected static function _init(): void
+    {
         # Empty by default
     }
 }

@@ -37,7 +37,7 @@ final class RouteService extends Service
     /**
      * @throws RouteDefinitionException
      */
-    protected static function _init()
+    protected static function _init(): void
     {
         self::$methodRegx = implode('|', self::METHODS);
 

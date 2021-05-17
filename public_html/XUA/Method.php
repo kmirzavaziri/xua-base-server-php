@@ -22,7 +22,7 @@ abstract class Method extends XUA
     private array $_x_response = [];
     private array $_x_request;
 
-    protected static function _init()
+    protected static function _init(): void
     {
         self::$_x_request_signatures[static::class] = static::requestSignaturesCalculator();
         self::$_x_response_signatures[static::class] = static::responseSignaturesCalculator();

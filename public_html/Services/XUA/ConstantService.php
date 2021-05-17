@@ -14,8 +14,11 @@ final class ConstantService extends Service
     const ENTITIES_NAMESPACE = 'Entities';
 
     const ROUTE_FILE = './routes.xrml';
+
     const TEMPLATES_PATH = 'templates';
     const TEMPLATES_CACHE_PATH = false;
+
+    const DICTIONARIES_PATH = 'private/dictionaries';
 
     const CONNECTION_DSN = "mysql:host=db;dbname=myfarm";
     const CONNECTION_USERNAME = "root";

@@ -29,7 +29,7 @@ final class Credentials extends Service
         throw new InstantiationException('Cannot instantiate class `Credentials`.');
     }
 
-    protected static function _init()
+    protected static function _init(): void
     {
         if (isset($_SERVER['HTTP_XUA_CREDENTIALS'])){
             $headerStringValue = explode(':', $_SERVER['HTTP_XUA_CREDENTIALS']);

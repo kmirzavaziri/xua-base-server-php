@@ -22,7 +22,7 @@ final class TemplateService extends Service
         throw new InstantiationException('Cannot instantiate class `TemplateService`.');
     }
 
-    protected static function _init()
+    protected static function _init(): void
     {
         self::$twig = new Environment(new FilesystemLoader(ConstantService::TEMPLATES_PATH), [
             'cache' => ConstantService::TEMPLATES_CACHE_PATH,

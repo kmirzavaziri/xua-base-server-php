@@ -20,7 +20,7 @@ abstract class Super extends XUA
     /**
      * @throws SuperValidationException
      */
-    protected static function _init()
+    protected static function _init(): void
     {
         self::$_x_argument_signatures[static::class] = static::argumentSignaturesCalculator();
     }

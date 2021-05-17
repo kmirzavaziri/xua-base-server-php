@@ -10,7 +10,7 @@ abstract class InterfaceEve extends XUA
 {
     protected static array $bind = [];
 
-    protected static function _init()
+    protected static function _init(): void
     {
         $bind['eve'] = [];
     }

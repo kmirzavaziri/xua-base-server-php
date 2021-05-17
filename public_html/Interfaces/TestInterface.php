@@ -4,6 +4,7 @@ namespace Interfaces;
 
 use Entities\Farm;
 use Entities\User;
+use Services\XUA\ExpressionService;
 use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use XUA\InterfaceEve;
 use XUA\Tools\Entity\Condition;
@@ -13,15 +14,18 @@ class TestInterface extends InterfaceEve
 {
     public static function execute(): string
     {
+
+        var_dump(ExpressionService::get('hello.name', ['name' => 'کامیار']));
+
 //        $farm = new Farm(4);
 //        $farm->workers = User::getMany(null, null, null, Visibility::CALLER_PHP, ['id']);
 //        $farm->workers = User::getMany();
 //        $farm->store();
 
-        $users = User::getMany(
-            Condition::leaf(User::C_workingFarms()->rel(Farm::F_title()), Condition::LIKE, '%عا%')
-        );
-        var_dump($users);
+//        $users = User::getMany(
+//            Condition::leaf(User::C_workingFarms()->rel(Farm::F_title()), Condition::LIKE, '%عا%')
+//        );
+//        var_dump($users);
 
 //    $user = new \Entities\User();
 //    $user->personType = 'juridical';
