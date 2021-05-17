@@ -1,31 +1,32 @@
-0   XUA/
-0       Me/
-0           Validate method exception to have only request item names and empty string as keys
-0           Method document generator
-0           Add file upload procedure
-0           Add DateTime service and complete the super
-0           Add fields array to _x_getMany
-0           Efficient IN (fetch all possible data) ?
-0           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
-0           Translate Service
-0           Deploy procedure
-0           Entity toArray & fromArray on http
-0           Default value for both sides of relation
-0           Copy Prod DB to Local by a command or on a weekly basis
-0       Keram/
-0           Fix read&parse routes algorithm
-0       Later/
-0           Entity Lock
-0           Entity Cache
-0   MyFarm/
-0       Entities/
-0           User
-0           User/
-1               Session
-0               Info/
+█   XUA/
+█       Me/
+2           Validate method exception to have only request item names and empty string as keys
+!           Method document generator
+s           Add file upload procedure
+3           Add DateTime service and complete the super
+a           Add fields array to _x_getMany
+b           Efficient IN (fetch all possible data) ?
+!           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
+1           Translate Service
+6           Deploy procedure
+c           Entity toArray & fromArray on http
+!           Default value for both sides of relation
+7           Copy Prod DB to Local by a command or on a weekly basis
+█       Keram/
+!           Fix read&parse routes algorithm
+█       Later/
+!           Entity Lock
+!           Entity Cache
+!           Entity Log
+█   MyFarm/
+█       Entities/
+5           User
+█           User/
+4               Session
+█               Info/
+j                   Owner
 0                   Farmer
 0                   Agent
-0                   Owner
 0                   Operator
 0                   Inspector
 0                   Veterinarian
@@ -33,7 +34,7 @@
 0                   Researcher
 0                   Employee
 0                   Worker
-0           Farm
+k           Farm
 0           Product
 0           Order
 0           Transaction
@@ -42,70 +43,69 @@
 0           ProductCategory
 0           Post
 0           ContactUsFields
-0           Pure Deploy
-0           Check Alters
-0       Methods/
-0           User/
-0               SendCode
-0               GetAccessToken
-0               GetMinimal
-0               SetBasics
-0               SetNatural
-0               SetJuridical
-0               Cart/Get
-0               GetCapitalBasket
-0               GetAddress
-0               Cart/GetPaymentLink
-0               SetAddress
-0               SetFull
-0           ProductCategory/
+█       Methods/
+█           User/
+8               SendCode
+9               GetAccessToken
+g               GetMinimal
+f               GetBasics
+e               SetBasics
+i               GetFull
+h               SetFull
+l               SetInfo
+█               CapitalBasket/
+0                   Get
+█               Cart/
+0                   Get
+0                   GetPaymentLink
+█           ProductCategory/
 0               GetAll
-0           Product/
+█           Product/
 0               GetMany
 0               GetOne
-0           Farms/
+█           Farms/
+p               GetMany
+q               GetOne
+█           Farmers/
 0               GetMany
 0               GetOne
-0           Farmers/
-0               GetMany
-0               GetOne
-0           Info/
+█           Info/
 0               GetHome
 0               GetAboutUs
 0               GetContactUs
-0           ContactUs/
+█           ContactUs/
 0               SetOne
-0           Post/
+█           Post/
 0               GetMany
-0           ContactUsFields/
+█           ContactUsFields/
 0               GetOne
 0               GetAll
 0               SetOne
-0           Report/
+█           Report/
 0               GetMany
 0               GetOne
-0           Admin/
-0               User/
+█           Admin/
+█               User/
+m                   GetMany
+n                   GetOne
+o                   SetOne
+█               Product/
 0                   GetMany
 0                   GetOne
 0                   SetOne
-0               Product/
+█               Farm/
+r                   GetMany
+s                   GetOne
+t                   SetOne
+█               Order/
 0                   GetMany
 0                   GetOne
 0                   SetOne
-0               Farm/
+█               Report/
 0                   GetMany
 0                   GetOne
 0                   SetOne
-0               Order/
-0                   GetMany
-0                   GetOne
-0                   SetOne
-0               Report/
-0                   GetMany
-0                   GetOne
-0                   SetOne
-0               Transaction/
+█               Transaction/
 0                   GetMany
 0                   GetOne
 0                   SetOne
