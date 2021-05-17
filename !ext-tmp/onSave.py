@@ -20,7 +20,7 @@ def closingMatch(s):
             started = True
 
 def callAction(className, action):
-    result = subprocess.check_output(['docker', 'exec', '-i', 'myfarm_php_1', 'php', '/public_html/xuaEngineHelper.php', action, className])
+    result = subprocess.check_output(['docker', 'exec', '-i', 'myfarm_php_1', 'php', '/urpi/xuaEngineHelper.php', action, className])
     print(result)
     return json.loads(result)
 
@@ -42,7 +42,7 @@ def setRelationInverseColumns(className):
         for res in result['result']:
             new = res['new']
             name = res['name']
-            target = os.path.join(os.getcwd(), 'public_html', res['target'].replace('\\', '/') + '.php')
+            target = os.path.join(os.getcwd(), 'urpi', res['target'].replace('\\', '/') + '.php')
             text = res['text'].replace('\n', '\n            ')
 
             with open(target, 'r') as f:
@@ -89,7 +89,7 @@ parser.add_argument('fileName', type=str)
 
 args = parser.parse_args()
 
-className = args.fileName[len(os.path.join(os.getcwd(), 'public_html')) + 1:].split('.')[0].replace('/', '\\')
+className = args.fileName[len(os.path.join(os.getcwd(), 'urpi')) + 1:].split('.')[0].replace('/', '\\')
 print(className)
 try:
     print('setClassParameters: ', end = '')

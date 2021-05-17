@@ -20,10 +20,6 @@ final class ConstantService extends Service
 
     const DICTIONARIES_PATH = 'private/dictionaries';
 
-    const CONNECTION_DSN = "mysql:host=db;dbname=myfarm";
-    const CONNECTION_USERNAME = "root";
-    const CONNECTION_PASSWORD = "root";
-
     /**
      * @throws InstantiationException
      */

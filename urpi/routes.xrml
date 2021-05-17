@@ -1,0 +1,4 @@
+: GET(HomeInterface) POST(UniversalResourcePoolInterface)
+  {methodOrEntityPath|SA}: POST(UniversalResourcePoolInterface)
+test: TestInterface
+404: XUA\NotFoundInterface

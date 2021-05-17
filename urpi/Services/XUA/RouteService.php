@@ -74,24 +74,26 @@ final class RouteService extends Service
 
             $lineData = preg_split('/\s+/', ltrim($line));
             $key = array_shift($lineData);
-            if (strpos($key, '/') != strlen($key) - 1) {
+            if (strpos($key, ':') != strlen($key) - 1) {
                 throw  (new RouteDefinitionException())->setError(
                     "Routes:" . ($lineNo + 1),
-                    "A key must contain only one slash which should be at the end. but got '$key'"
+                    "A key must contain only one colon (:) which should be at the end. but got '$key'"
                 );
             }
             $key = substr($key, 0, strlen($key) - 1);
             $methods = self::getMethods($lineData);
             $head = &$stack[count($stack) - 1];
             if (strlen($key) > 2 and $key[0] == '{' and str_ends_with($key, '}')) {
-                if (isset($head['var'])) {
-                    throw (new RouteDefinitionException())->setError(
-                        "Routes:" . ($lineNo + 1),
-                        "Cannot have two variables under same route"
-                    );
-                }
                 $keyName = substr($key, 1, strlen($key) - 2);
                 $key = 'var';
+            }
+            if (isset($head[$key])) {
+                throw (new RouteDefinitionException())->setError(
+                    "Routes:" . ($lineNo + 1),
+                    $key == 'var'
+                        ? "Cannot have two variables under same route"
+                        : "Cannot have two routes of a same name '$key' under same route"
+                );
             }
             $head[$key] = [];
             $stack[] = &$head[$key];

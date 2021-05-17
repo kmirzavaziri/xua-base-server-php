@@ -1,0 +1,16 @@
+project root name: urpi
+project nginx conf name: DockerFiles/rproxy/nginx/conf.d/confs/urpi.conf
+public resources dir: public
+
+
+INTERFACES_NAMESPACE = 'Interfaces';
+ENTITIES_NAMESPACE = 'Entities';
+
+ROUTE_FILE = './routes.xrml';
+
+TEMPLATES_PATH = 'templates';
+TEMPLATES_CACHE_PATH = false;
+
+DICTIONARIES_PATH = 'private/dictionaries';
+
+

@@ -12,6 +12,8 @@ b           Efficient IN (fetch all possible data) ?
 c           Entity toArray & fromArray on http
 !           Default value for both sides of relation
 7           Copy Prod DB to Local by a command or on a weekly basis
+!           Check route doesn't contain public
+0           Read DB credentials from db.yml
 █       Keram/
 !           Fix read&parse routes algorithm
 █       Later/
