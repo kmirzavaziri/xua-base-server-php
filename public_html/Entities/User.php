@@ -220,6 +220,7 @@ class User extends Entity
                 new Text(['minLength' => 1, 'maxLength' => 500]),
                 null
             ),
+            // @TODO maybe it's better to separate
             'geolocation' => new EntityFieldSignature(
                 static::class, 'geolocation',
                 new StructuredMap(['nullable' => true, 'structure' => [
