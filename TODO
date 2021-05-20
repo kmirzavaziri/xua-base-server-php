@@ -1,6 +1,8 @@
 █   XUA/
 █       Me/
 0           Read DB credentials from db.yml
+█           Expression Service
+█           Validate method exception to have only request item names and empty string as keys
 2           Expression Service: translate all super errors
 3           Add DateTime service and complete the super
 6           Deploy procedure
