@@ -5,6 +5,7 @@ namespace Methods\User;
 use Entities\User\Session;
 use Services\UserService;
 use Supers\Basics\Strings\Text;
+use XUA\Exceptions\MethodRequestException;
 use XUA\Method;
 use XUA\Tools\Signature\MethodItemSignature;
 
@@ -32,5 +33,6 @@ class SendCode extends Method
 
     protected function execute(): void
     {
+
     }
 }

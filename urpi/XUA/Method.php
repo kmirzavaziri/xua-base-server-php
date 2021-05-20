@@ -3,7 +3,7 @@
 namespace XUA;
 
 
-use XUA\Exceptions\ClassMethodCallException;
+use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -42,64 +42,61 @@ abstract class Method extends XUA
     }
 
     /**
-     * @throws MethodResponseException
-     * @throws MethodRequestException
+     * @throws MagicCallException
      */
-    final function __get($key)
+    final function __get(string $key)
     {
         if (str_starts_with($key, 'Q_')) {
             $key = substr($key, 2, strlen($key) - 2);
             if (!isset(static::requestSignatures()[$key])) {
-                throw (new MethodRequestException())->setError($key, 'Unknown request item');
+                throw (new MagicCallException())->setError($key, 'Unknown request item');
             }
             return $this->_x_request[$key];
         } else {
             if (! isset(static::responseSignatures()[$key])) {
-                throw (new MethodResponseException())->setError($key, 'Unknown response item.');
+                throw (new MagicCallException())->setError($key, 'Unknown response item.');
             }
             return $this->_x_response[$key];
         }
     }
 
     /**
-     * @throws MethodResponseException
+     * @throws MagicCallException
      */
     final function __set($key, $value) : void
     {
         if (!isset(static::responseSignatures()[$key])) {
-            throw (new MethodResponseException())->setError($key, 'Unknown response item');
+            throw (new MagicCallException())->setError($key, 'Unknown response item');
         }
         $signature = static::responseSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new MethodResponseException())->setError($key, $messages);
+            throw (new MagicCallException())->setError($key, $messages);
         }
         $this->_x_response[$key] = $value;
     }
 
     /**
-     * @throws ClassMethodCallException
-     * @throws MethodResponseException
-     * @throws MethodRequestException
+     * @throws MagicCallException
      */
     public static function __callStatic(string $name, array $arguments)
     {
         if (str_starts_with($name, 'Q_')) {
             $key = substr($name, 2, strlen($name) - 2);
             if (!isset(static::requestSignatures()[$key])) {
-                throw (new MethodRequestException())->setError($key, 'Unknown request item signature');
+                throw (new MagicCallException())->setError($key, 'Unknown request item signature');
             }
             $result = static::requestSignatures()[$key];
         } elseif (str_starts_with($name, 'R_')) {
             $key = substr($name, 2, strlen($name) - 2);
             if (!isset(static::responseSignatures()[$key])) {
-                throw (new MethodResponseException())->setError($key, 'Unknown response item signature');
+                throw (new MagicCallException())->setError($key, 'Unknown response item signature');
             }
             $result = static::responseSignatures()[$key];
         } else {
-            throw (new ClassMethodCallException("Method $name does not exist."));
+            throw (new MagicCallException("Method $name does not exist."));
         }
         if ($arguments) {
-            throw (new ClassMethodCallException())->setError($key, 'A request/response item signature method does not accept arguments');
+            throw (new MagicCallException())->setError($key, 'A request/response item signature method does not accept arguments');
         }
 
         return $result;

@@ -1,19 +1,19 @@
 █   XUA/
 █       Me/
-2           Validate method exception to have only request item names and empty string as keys
-!           Method document generator
-s           Add file upload procedure
+0           Read DB credentials from db.yml
+2           Expression Service: translate all super errors
 3           Add DateTime service and complete the super
+6           Deploy procedure
+7           Copy Prod DB to Local by a command or on a weekly basis
 a           Add fields array to _x_getMany
 b           Efficient IN (fetch all possible data) ?
-!           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
-1           Expression Service
-6           Deploy procedure
 c           Entity toArray & fromArray on http
+s           Add file upload procedure
+!           Method document generator
+!           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
 !           Default value for both sides of relation
-7           Copy Prod DB to Local by a command or on a weekly basis
 !           Check route doesn't contain public
-0           Read DB credentials from db.yml
+!           Error Log
 █       Keram/
 !           Fix read&parse routes algorithm
 █       Later/

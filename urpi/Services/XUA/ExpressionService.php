@@ -27,7 +27,7 @@ final class ExpressionService extends Service
 
     private static function lang()
     {
-        return $_SERVER['HTTP_XUA_LANG_SPEC'] ?? 'en';
+        return $_SERVER['HTTP_XUA_LANG_SPEC'] ?? ConstantService::DEFAULT_LANG;
     }
 
     public static function get(string $key, array $bind = []): string
@@ -37,7 +37,7 @@ final class ExpressionService extends Service
 
     private static function dictParse(string $filename) : array
     {
-        if (($content = file_get_contents($filename)) === false) {
+        if (!($content = @file_get_contents($filename))) {
             return [];
         }
 

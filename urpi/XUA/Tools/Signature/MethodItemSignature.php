@@ -4,6 +4,7 @@
 namespace XUA\Tools\Signature;
 
 
+use Services\XUA\ExpressionService;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
 use XUA\Super;
@@ -25,7 +26,7 @@ class MethodItemSignature
 
         $unknownKeys = array_diff(array_keys($request), array_keys($signatures));
         foreach ($unknownKeys as $unknownKey) {
-            $exception->setError($unknownKey, 'Unknown request item');
+            $exception->setError($unknownKey, ExpressionService::get('errormessage.unknown.request.item'));
         }
         $newRequest = [];
         foreach ($signatures as $key => $signature) {
@@ -33,12 +34,12 @@ class MethodItemSignature
 
             if (in_array($key, array_keys($request))) {
                 if ($signature->const) {
-                    $exception->setError($key, 'Cannot set constant request item');
+                    $exception->setError($key, ExpressionService::get('errormessage.cannot.set.constant.request.item'));
                     continue;
                 }
             } else {
                 if ($signature->required) {
-                    $exception->setError($key, 'Required request item not provided');
+                    $exception->setError($key, ExpressionService::get('errormessage.required.request.item.not.provided'));
                     continue;
                 } else {
                     $request[$key] = $signature->default;

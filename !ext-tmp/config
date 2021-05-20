@@ -11,6 +11,8 @@ ROUTE_FILE = './routes.xrml';
 TEMPLATES_PATH = 'templates';
 TEMPLATES_CACHE_PATH = false;
 
+DEFAULT_LANG = 'fa';
+
 DICTIONARIES_PATH = 'private/dictionaries';
 
 

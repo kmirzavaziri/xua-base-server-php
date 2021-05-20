@@ -11,7 +11,7 @@ use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
-use XUA\Exceptions\ClassMethodCallException;
+use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Exceptions\SuperValidationException;
@@ -145,14 +145,14 @@ abstract class Entity extends XUA
     }
 
     /**
-     * @throws EntityFieldException
+     * @throws MagicCallException
      */
-    function __get(string $key)
+    final function __get(string $key)
     {
         $signature = static::fieldSignatures()[$key];
 
         if ($signature === null) {
-            throw (new EntityFieldException())->setError($key, 'Unknown entity field');
+            throw (new MagicCallException())->setError($key, 'Unknown entity field');
         }
 
         if (
@@ -170,34 +170,34 @@ abstract class Entity extends XUA
     }
 
     /**
-     * @throws EntityFieldException
+     * @throws MagicCallException
      */
     function __set(string $key, mixed $value) : void
     {
         $signature = static::fieldSignatures()[$key];
 
         if ($signature === null) {
-            throw (new EntityFieldException())->setError($key, 'Unknown entity field');
+            throw (new MagicCallException())->setError($key, 'Unknown entity field');
         }
 
         if ($key == 'id') {
-            throw (new EntityFieldException())->setError($key, 'Cannot change id of an entity.');
+            throw (new MagicCallException())->setError($key, 'Cannot change id of an entity.');
         }
 
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new EntityFieldException())->setError($key, $messages);
+            throw (new MagicCallException())->setError($key, $messages);
         }
 
         if (is_a($signature->type, PhpVirtualField::class)) {
             if ($signature->type->setter !== null) {
                 ($signature->type->setter)($this, $signature->p(), $value);
             } else {
-                throw (new EntityFieldException())->setError($key, 'Cannot set PhpVirtualField with no setter.');
+                throw (new MagicCallException())->setError($key, 'Cannot set PhpVirtualField with no setter.');
             }
         }
 
         if (is_a($signature->type, DatabaseVirtualField::class)) {
-            throw (new EntityFieldException())->setError($key, 'Cannot set DatabaseVirtualField.');
+            throw (new MagicCallException())->setError($key, 'Cannot set DatabaseVirtualField.');
         }
 
         if (is_a($signature->type, EntityRelation::class)) {
@@ -220,8 +220,7 @@ abstract class Entity extends XUA
     }
 
     /**
-     * @throws EntityFieldException
-     * @throws ClassMethodCallException
+     * @throws MagicCallException
      */
     public static function __callStatic(string $name, array $arguments)
     {
@@ -230,17 +229,17 @@ abstract class Entity extends XUA
         } elseif (str_starts_with($name, 'C_')) {
             $conditionField = true;
         } else {
-            throw (new ClassMethodCallException("Method $name does not exist."));
+            throw (new MagicCallException("Method $name does not exist."));
         }
 
         $key = substr($name, 2, strlen($name) - 2);
 
         if (!isset(static::fieldSignatures()[$key])) {
-            throw (new EntityFieldException())->setError($key, 'Unknown entity field signature');
+            throw (new MagicCallException())->setError($key, 'Unknown entity field signature');
         }
 
         if ($arguments) {
-            throw (new ClassMethodCallException())->setError($key, 'An entity field signature method does not accept arguments');
+            throw (new MagicCallException())->setError($key, 'An entity field signature method does not accept arguments');
         }
 
         return $conditionField ? new ConditionField(static::fieldSignatures()[$key]) : static::fieldSignatures()[$key];

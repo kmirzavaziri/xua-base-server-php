@@ -2,7 +2,7 @@
 
 namespace XUA;
 
-use XUA\Exceptions\ClassMethodCallException;
+use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\SuperArgumentException;
 use XUA\Exceptions\SuperMarshalException;
 use XUA\Exceptions\SuperValidationException;
@@ -44,48 +44,48 @@ abstract class Super extends XUA
     }
 
     /**
-     * @throws SuperArgumentException
+     * @throws MagicCallException
      */
-    final function __get($key)
+    final function __get(string $key)
     {
         if (!isset(static::argumentSignatures()[$key])) {
-            throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
+            throw (new MagicCallException())->setError($key, 'Unknown super argument');
         }
         return $this->_x_arguments[$key];
     }
 
     /**
-     * @throws SuperArgumentException
+     * @throws MagicCallException
      */
     final function __set($key, $value) : void
     {
         if (!isset(static::argumentSignatures()[$key])) {
-            throw (new SuperArgumentException())->setError($key, 'Unknown super argument');
+            throw (new MagicCallException())->setError($key, 'Unknown super argument');
         }
         $signature = static::argumentSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
-            throw (new SuperArgumentException())->setError($key, $messages);
+            throw (new MagicCallException())->setError($key, $messages);
         }
         $this->_x_arguments[$key] = $value;
     }
 
     /**
-     * @throws SuperArgumentException
+     * @throws MagicCallException
      */
     public static function __callStatic(string $name, array $arguments)
     {
         if (!str_starts_with($name, 'A_')) {
-            throw (new ClassMethodCallException("Method $name does not exist."));
+            throw (new MagicCallException("Method $name does not exist."));
         }
 
         $key = substr($name, 2, strlen($name) - 2);
 
         if (!isset(static::argumentSignatures()[$key])) {
-            throw (new SuperArgumentException())->setError($key, 'Unknown super argument signature');
+            throw (new MagicCallException())->setError($key, 'Unknown super argument signature');
         }
 
         if ($arguments) {
-            throw (new ClassMethodCallException())->setError($key, 'A super argument signature method does not accept arguments');
+            throw (new MagicCallException())->setError($key, 'A super argument signature method does not accept arguments');
         }
 
         return static::argumentSignatures()[$key];

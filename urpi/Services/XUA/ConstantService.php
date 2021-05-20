@@ -20,6 +20,7 @@ final class ConstantService extends Service
 
     const DICTIONARIES_PATH = 'private/dictionaries';
 
+    const DEFAULT_LANG = 'fa';
     /**
      * @throws InstantiationException
      */

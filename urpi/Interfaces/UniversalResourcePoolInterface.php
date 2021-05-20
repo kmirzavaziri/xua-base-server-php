@@ -8,6 +8,7 @@ use Supers\Basics\Highers\Json;
 use Throwable;
 use XUA\Entity;
 use XUA\Exceptions\MethodRequestException;
+use XUA\Exceptions\UrpiException;
 use XUA\InterfaceEve;
 use XUA\Method;
 
@@ -31,6 +32,16 @@ class UniversalResourcePoolInterface extends InterfaceEve
                         try {
                             $response['response'] = (new $class($_POST))->toArray();
                         } catch (Throwable $e) {
+                            if (is_a($e, MethodRequestException::class)) {
+                                $unknownKeys = array_diff(array_keys($e->getErrors()), array_keys($class::requestSignatures()));
+                                if ($unknownKeys) {
+                                    $e = new UrpiException();
+                                    foreach ($unknownKeys as $unknownKey) {
+                                        $e->setError($unknownKey, 'Unknown request item.');
+                                    }
+                                }
+                            }
+
                             if (is_a($e, MethodRequestException::class)) {
                                 $response['errors'] = $e->getErrors();
                             } else {
