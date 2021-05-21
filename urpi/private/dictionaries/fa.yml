@@ -2,3 +2,4 @@ hello.name: سلام $name!
 errormessage.unknown.request.item: چنین فیلدی وجود ندارد.
 errormessage.cannot.set.constant.request.item: امکان تغییر این فیلد وجود ندارد.
 errormessage.required.request.item.not.provided: این فیلد ضروری است.
+errormessage.value.input.is.not.an.integer: مقدار $input عددی صحیح نیست.

@@ -2,7 +2,7 @@
 
 namespace Interfaces;
 
-use Services\XUA\ExpressionService;
+use Supers\Basics\Numerics\Integer;
 use XUA\InterfaceEve;
 
 class TestInterface extends InterfaceEve
@@ -10,7 +10,13 @@ class TestInterface extends InterfaceEve
     public static function execute(): string
     {
 
-        var_dump(ExpressionService::get('hello.name', ['name' => 'کامیار']));
+        $super = new Integer([]);
+
+        $input = 2.5;
+        var_dump($super->accepts($input, $messages));
+        var_dump($messages);
+
+//        var_dump(ExpressionService::get('hello.name', ['name' => 'کامیار']));
 
 //        $farm = new Farm(4);
 //        $farm->workers = User::getMany(null, null, null, Visibility::CALLER_PHP, ['id']);

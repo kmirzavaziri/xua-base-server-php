@@ -4,8 +4,8 @@
 namespace Supers\Basics\Numerics;
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Boolean;
-use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -35,7 +35,9 @@ class Integer extends Number
         }
 
         if ($input != floor($input)) {
-            $message = "Value $input is not an integer.";
+            $message = ExpressionService::get('errormessage.value.input.is.not.an.integer', [
+                'input' => $input
+            ]);
             return false;
         }
 
