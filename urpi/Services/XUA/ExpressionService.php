@@ -32,7 +32,7 @@ final class ExpressionService extends Service
 
     public static function get(string $key, array $bind = []): string
     {
-        return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return $bind[$matches[1]]; }, self::$dict[$key] ?? $key);
+        return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return $bind[$matches[1]] ?? $matches[1]; }, (self::$dict[$key]) ?? $key);
     }
 
     private static function dictParse(string $filename) : array
