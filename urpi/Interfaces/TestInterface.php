@@ -2,13 +2,8 @@
 
 namespace Interfaces;
 
-use Entities\Farm;
-use Entities\User;
 use Services\XUA\ExpressionService;
-use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use XUA\InterfaceEve;
-use XUA\Tools\Entity\Condition;
-use XUA\Tools\Visibility;
 
 class TestInterface extends InterfaceEve
 {
