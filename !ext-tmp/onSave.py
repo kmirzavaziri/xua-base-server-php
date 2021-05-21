@@ -20,7 +20,7 @@ def closingMatch(s):
             started = True
 
 def callAction(className, action):
-    result = subprocess.check_output(['docker', 'exec', '-i', 'myfarm_php_1', 'php', '/urpi/xuaEngineHelper.php', action, className])
+    result = subprocess.check_output(['docker', 'exec', '-i', 'myfarm_urpi_1', 'php', '/urpi/xuaEngineHelper.php', action, className])
     print(result)
     return json.loads(result)
 
