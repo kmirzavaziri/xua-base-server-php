@@ -15,6 +15,7 @@ s           Add file upload procedure
 !           Default value for both sides of relation
 !           Check route doesn't contain public
 !           Error Log
+!           Add a Language Service with all constants
 █       Keram/
 !           Fix read&parse routes algorithm
 █       AM/
