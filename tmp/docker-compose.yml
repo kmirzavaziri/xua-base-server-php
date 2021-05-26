@@ -13,7 +13,7 @@ services:
       - SERVER_NAME=urpi.myfarm.kamyar
     command: /bin/bash -c "envsubst '$$SERVER_NAME' < /etc/nginx/conf.d/urpi.conf.template > /etc/nginx/conf.d/urpi.conf && nginx -g 'daemon off;'"
   urpi:
-    build: ./DockerFiles/php
+    build: DockerFiles/php
     volumes:
       - ./urpi:/urpi
       - ./DockerFiles/php/php.ini:/usr/local/etc/php/php.ini
