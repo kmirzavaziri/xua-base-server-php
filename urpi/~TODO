@@ -3,13 +3,15 @@
 5           Read DB credentials from db.yml
 █           Expression Service
 █           Validate method exception to have only request item names and empty string as keys
-2           Add DateTime service and complete the super
+█           Add DateTime service and complete the super
+2           Date service and Super
 6           Deploy procedure
 7           Copy Prod DB to Local by a command or on a weekly basis
 a           Add fields array to _x_getMany
 b           Efficient IN (fetch all possible data) ?
 c           Entity toArray & fromArray on http
 s           Add file upload procedure
+!           Time service and Super
 !           Method document generator
 !           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
 !           Default value for both sides of relation

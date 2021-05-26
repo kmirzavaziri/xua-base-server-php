@@ -126,22 +126,22 @@ abstract class Super extends XUA
 
     abstract protected function _predicate($input, string &$message = null) : bool;
 
-    protected function _marshal($input): mixed
+    protected function _marshal(mixed $input): mixed
     {
         return $input;
     }
 
-    protected function _unmarshal($input): mixed
+    protected function _unmarshal(mixed $input): mixed
     {
         return $input;
     }
 
-    protected function _marshalDatabase($input): mixed
+    protected function _marshalDatabase(mixed $input): mixed
     {
         return $input;
     }
 
-    protected function _unmarshalDatabase($input): mixed
+    protected function _unmarshalDatabase(mixed $input): mixed
     {
         return $input;
     }

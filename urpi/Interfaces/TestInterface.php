@@ -2,7 +2,8 @@
 
 namespace Interfaces;
 
-use Supers\Basics\Numerics\Integer;
+use Services\XUA\DateTimeInstance;
+use Services\XUA\PersianExpressionService;
 use XUA\InterfaceEve;
 
 class TestInterface extends InterfaceEve
@@ -10,11 +11,13 @@ class TestInterface extends InterfaceEve
     public static function execute(): string
     {
 
-        $super = new Integer([]);
+        var_dump(DateTimeInstance::fromLocalYmdHis('1400-3-15 0:0:0')->formatJalali('r'));
 
-        $input = 2.5;
-        var_dump($super->accepts($input, $messages));
-        var_dump($messages);
+//        $super = new Integer([]);
+//
+//        $input = 2.5;
+//        var_dump($super->accepts($input, $messages));
+//        var_dump($messages);
 
 //        var_dump(ExpressionService::get('hello.name', ['name' => 'کامیار']));
 

@@ -9,34 +9,24 @@ use XUA\Service;
 
 class DateTimeInstance extends Service
 {
-    protected float $timestamp;
-    protected array $cache;
+    protected array $YmdHis;
+    protected int $timestamp;
 
-    // Constructor and Cache Updater
-    public function __construct(float $seconds = null)
+    // Constructor
+
+    public function __construct(float $timestamp = null)
     {
-        $this->timestamp = $seconds ?? microtime(true);
-        $this->updateCache();
-    }
-
-    protected function updateCache(): void
-    {
-        $g = explode('-', date('Y-m-d-H-i-s-u', $this->timestamp));
-        $j = static::gregorianToJalali($g[0], $g[1], $g[2]);
-        $this->cache = [
-            'yearGregorian' => $g[0],
-            'monthGregorian' => $g[1],
-            'dayGregorian' => $g[2],
-
-            'yearJalali' => $j[0],
-            'monthJalali' => $j[1],
-            'dayJalali' => $j[2],
-
-            'hour' => $g[3],
-            'minute' => $g[4],
-            'second' => $g[5],
-            'microsecond' => $g[6],
+        $this->timestamp = $timestamp ?? microtime(true);
+        $YmdHis = explode('-', date('Y-m-d-H-i-s', $this->timestamp));
+        $this->YmdHis = [
+            'Y' => $YmdHis[0],
+            'm' => $YmdHis[1],
+            'd' => $YmdHis[2],
+            'h' => $YmdHis[3],
+            'i' => $YmdHis[4],
+            's' => $YmdHis[5],
         ];
+
     }
 
     // Getters & Setters
@@ -57,31 +47,40 @@ class DateTimeInstance extends Service
         return new static($dateTime->getTimestamp());
     }
 
-    public static function fromGregorianString(string $format , string $datetime): ?DateTimeInstance
+    public static function fromGregorianYmdHis(string $datetime): ?DateTimeInstance
     {
-        $dt = DateTime::createFromFormat($format, $datetime);
+        $dt = date_create($datetime);
         return $dt ? static::fromNativeDateTime($dt) : null;
     }
 
-    public static function fromJalaliString(string $format , string $datetime): ?DateTimeInstance
+    public static function fromJalaliYmdHis(string $datetime): ?DateTimeInstance
     {
-        // @TODO implement
-        return null;
+        preg_match('/\s*([0-9]+)-([0-9]+)-([0-9]+)\s+([0-9]+):([0-9]+):([0-9]+)\s*/', $datetime, $matches);
+        [, $Y, $m, $d, $H, $i, $s] = $matches;
+        [$Y, $m, $d] = self::jalaliToGregorian($Y, $m, $d);
+        return static::fromGregorianYmdHis("$Y-$m-$d $H:$i:$s");
     }
 
-    public function formatGregorian (string $format): string
+    public static function fromLocalYmdHis(string $datetime): ?DateTimeInstance
     {
-        return date($format, $this->timestamp);
+        if (LocaleLanguage::getLocale() == LocaleLanguage::LOC_IR) {
+            return self::fromJalaliYmdHis($datetime);
+        } else {
+            return self::fromGregorianYmdHis($datetime);
+        }
     }
 
-    public function formatJalali (string $format, ?string $numericsLang = null): string
+    public function formatGregorian(string $format, ?string $numericsLang = null): string
     {
-        $Y = $this->cache['yearJalali'];
-        $m = $this->cache['monthJalali'];
-        $d = $this->cache['dayJalali'];
-        $H = $this->cache['hour'];
-        $i = $this->cache['minute'];
-        $s = $this->cache['second'];
+        return PersianExpressionService::changeNumerics(date($format, $this->timestamp), $numericsLang);
+    }
+
+    public function formatJalali(string $format, ?string $numericsLang = null): string
+    {
+        [$Y, $m, $d] = self::gregorianToJalali($this->YmdHis['Y'], $this->YmdHis['m'], $this->YmdHis['d']);
+        $H = $this->YmdHis['h'];
+        $i = $this->YmdHis['i'];
+        $s = $this->YmdHis['s'];
         [$O, $P, $w, $N] = explode('-', date('O-P-w-N', $this->timestamp));
         /** @var integer $w */
         $w = (($w + 1) % 7);
@@ -92,7 +91,7 @@ class DateTimeInstance extends Service
         $Q = $L + 364 - $z;
         $D = PersianExpressionService::JalaliExpressions($w, PersianExpressionService::JALALI_WEEK_SHORT);
         $M = PersianExpressionService::JalaliExpressions($m - 1, PersianExpressionService::JALALI_MONTH_SHORT);
-        $y = $Y % 100 ?? $Y;
+        $y = $Y % 100;
 
         $result = '';
         for ($index = 0; $index < strlen($format); $index++) {
@@ -242,6 +241,15 @@ class DateTimeInstance extends Service
         return PersianExpressionService::changeNumerics($result, $numericsLang);
     }
 
+    public function formatLocal(string $format, ?string $numericsLang = null): string
+    {
+        if (LocaleLanguage::getLocale() == LocaleLanguage::LOC_IR) {
+            return $this->formatJalali($format, $numericsLang);
+        } else {
+            return $this->formatGregorian($format, $numericsLang);
+        }
+    }
+
     // Operations
     public function add(DateTimeInstance $dateTimeInstance): static
     {
@@ -279,7 +287,7 @@ class DateTimeInstance extends Service
     // helpers
     protected static function gregorianToJalali(int $gY, int $gm, int $gd): array
     {
-        $gdm = array(0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334);
+        $gdm = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
         $gY2 = ($gm > 2) ? ($gY + 1) : $gY;
         $d = 355666 + (365 * $gY) + (floor(($gY2 + 3) / 4)) - (floor(($gY2 + 99) / 100)) + (floor(($gY2 + 399) / 400)) + $gd + $gdm[$gm - 1];
         $jY = -1595 + (33 * (floor($d / 12053)));
@@ -298,5 +306,30 @@ class DateTimeInstance extends Service
             $jd = 1 + (($d - 186) % 30);
         }
         return [$jY, str_pad($jm, 2, '0', STR_PAD_LEFT), str_pad($jd, 2, '0', STR_PAD_LEFT)];
+    }
+
+    protected static function jalaliToGregorian($jY, $jm, $jd) : array
+    {
+        $jY += 1595;
+        $days = -355668 + (365 * $jY) + (((int) ($jY / 33)) * 8) + ((int) ((($jY % 33) + 3) / 4)) + $jd + (($jm < 7) ? ($jm - 1) * 31 : (($jm - 7) * 30) + 186);
+        $gY = 400 * ((int) ($days / 146097));
+        $days %= 146097;
+        if ($days > 36524) {
+            $gY += 100 * ((int) (--$days / 36524));
+            $days %= 36524;
+            if ($days >= 365) $days++;
+        }
+        $gY += 4 * ((int) ($days / 1461));
+        $days %= 1461;
+        if ($days > 365) {
+            $gY += (int) (($days - 1) / 365);
+            $days = ($days - 1) % 365;
+        }
+        $gd = $days + 1;
+        $sal_a = [0, 31, (($gY % 4 == 0 and $gY % 100 != 0) or ($gY % 400 == 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        for ($gm = 0; $gm < 13 and $gd > $sal_a[$gm]; $gm++) {
+            $gd -= $sal_a[$gm];
+        }
+        return [$gY, str_pad($gm, 2, '0', STR_PAD_LEFT), str_pad($gd, 2, '0', STR_PAD_LEFT)];
     }
 }

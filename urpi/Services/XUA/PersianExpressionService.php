@@ -120,7 +120,7 @@ abstract class PersianExpressionService extends Service
             case self::JALALI_WEEK:
                 return ['شنبه', 'یکشنبه', 'دوشنبه', 'سه شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'][$number];
             case self::JALALI_WEEK_SHORT:
-                return ['یکش‍', 'دوش‍', 'سه‌ش‍', 'چها', 'پنج‍', 'جمع‍', 'شنب‍'][$number];
+                return ['شنب‍', 'یکش‍', 'دوش‍', 'سه‌ش‍', 'چها', 'پنج‍', 'جمع‍'][$number];
             default:
                 return $number;
         }
