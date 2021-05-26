@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name urpi.myfarm.kamyar;
+    server_name $SERVER_NAME;
     index main.php main.html;
     server_name php-docker.local;
     error_log  /var/log/nginx/error.log;

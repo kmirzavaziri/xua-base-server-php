@@ -21,6 +21,11 @@ final class ConstantService extends Service
     const DICTIONARIES_PATH = 'private/dictionaries';
 
     const DEFAULT_LANG = 'fa';
+
+    const CONNECTION_DSN = 'mysql:host=db;dbname=myfarm';
+    const CONNECTION_USERNAME = 'kmirzavaziri';
+    const CONNECTION_PASSWORD = 'Kamyar!!pwdMustBeSecure';
+
     /**
      * @throws InstantiationException
      */
