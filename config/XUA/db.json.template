@@ -1,0 +1,5 @@
+{
+  "dsn": "postgres:host=37.152.181.218:5433;dbname=myfarm_demo",
+  "username": "USERNAME",
+  "password": "PASSWORD"
+}

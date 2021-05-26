@@ -116,8 +116,18 @@ abstract class Entity extends XUA
 
         self::$_x_field_signatures[static::class] = static::fieldSignaturesCalculator();
 
+        if (!getenv('ENV_NAME') or getenv('ENV_NAME') != 'prod') {
+            $dbInfo = ConstantService::get('config/XUA/db.json');
+        } else {
+            $dbInfo = [
+                'dsn' => getenv('DB_DSN'),
+                'username' => getenv('DB_USERNAME'),
+                'password' => getenv('DB_PASSWORD'),
+            ];
+        }
+
         if (!self::$connection) {
-            self::$connection = new PDO(ConstantService::CONNECTION_DSN, ConstantService::CONNECTION_USERNAME, ConstantService::CONNECTION_PASSWORD);
+            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
     }
@@ -545,7 +555,7 @@ abstract class Entity extends XUA
         return $array;
     }
 
-    # Predefined Methods (low-level direct mysql communicator)
+    # Predefined Methods (low-level direct db communicator)
     private function _x_fetch(?string $fieldName = 'id') : void
     {
         if (!($this->_x_fields['id'] ?? false)) {

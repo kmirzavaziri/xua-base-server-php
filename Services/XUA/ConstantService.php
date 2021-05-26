@@ -22,9 +22,7 @@ final class ConstantService extends Service
 
     const DEFAULT_LANG = 'fa';
 
-    const CONNECTION_DSN = 'mysql:host=db;dbname=myfarm';
-    const CONNECTION_USERNAME = 'kmirzavaziri';
-    const CONNECTION_PASSWORD = 'Kamyar!!pwdMustBeSecure';
+    private static array $cache = [];
 
     /**
      * @throws InstantiationException
@@ -34,4 +32,31 @@ final class ConstantService extends Service
         throw new InstantiationException('Cannot instantiate class `ConstantService`.');
     }
 
+    public static function get(string $filePath, string $nodePath = '') : mixed
+    {
+        if (!isset(self::$cache[$filePath])) {
+            if (!($content = @file_get_contents($filePath))) {
+                self::$cache[$filePath] = [];
+            } else {
+                $data = @json_decode($content);
+                if ($data !== null) {
+                    self::$cache[$filePath] = $data;
+                } else {
+                    self::$cache[$filePath] = [];
+                }
+            }
+        }
+
+        $nodeNames = explode('/', $nodePath);
+        $tmp = self::$cache[$filePath];
+        foreach ($nodeNames as $nodeName) {
+            if ($tmp[$nodeName] ?? false) {
+                $tmp = $tmp[$nodeName];
+            } else {
+                return null;
+            }
+        }
+
+        return $tmp;
+    }
 }
