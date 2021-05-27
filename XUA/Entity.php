@@ -120,11 +120,15 @@ abstract class Entity extends XUA
             $dbInfo = ConstantService::get('config/XUA/db.json');
         } else {
             $dbInfo = [
-                'dsn' => getenv('DB_DSN'),
+                'engine' => getenv('DB_ENGINE'),
+                'hostname' => getenv('DB_HOSTNAME'),
+                'database' => getenv('DB_DATABASE'),
                 'username' => getenv('DB_USERNAME'),
                 'password' => getenv('DB_PASSWORD'),
             ];
         }
+
+        $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";dbname=" . $dbInfo['database'];
 
         if (!self::$connection) {
             self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);

@@ -1,5 +1,7 @@
 {
-  "dsn": "postgres:host=37.152.181.218:5433;dbname=myfarm_demo",
+  "engine": "postgres",
+  "hostname": "37.152.181.218:5433",
+  "database": "myfarm_demo",
   "username": "USERNAME",
   "password": "PASSWORD"
 }
