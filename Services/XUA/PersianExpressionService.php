@@ -106,24 +106,16 @@ abstract class PersianExpressionService extends Service
 
     public static function JalaliExpressions(int $number, string $type) : string
     {
-        switch ($type) {
-            case self::JALALI_YEAR_ZODIAC:
-                return ['مار', 'اسب', 'گوسفند', 'میمون', 'مرغ', 'سگ', 'خوک', 'موش', 'گاو', 'پلنگ', 'خرگوش', 'نهنگ'][$number];
-            case self::JALALI_SEASON:
-                return ['بهار', 'تابستان', 'پاییز', 'زمستان'][$number];
-            case self::JALALI_MONTH:
-                return ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'][$number];
-            case self::JALALI_MONTH_SHORT:
-                return ['فرو', 'ارد', 'خرد', 'تیر', 'امر', 'شهر', 'مهر', 'آبا', 'آذر', 'دی', 'بهم‍', 'اسف‍'][$number];
-            case self::JALALI_MONTH_ANCIENT:
-            return ['حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله', 'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'][$number];
-            case self::JALALI_WEEK:
-                return ['شنبه', 'یکشنبه', 'دوشنبه', 'سه شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'][$number];
-            case self::JALALI_WEEK_SHORT:
-                return ['شنب‍', 'یکش‍', 'دوش‍', 'سه‌ش‍', 'چها', 'پنج‍', 'جمع‍'][$number];
-            default:
-                return $number;
-        }
+        return match ($type) {
+            self::JALALI_YEAR_ZODIAC => ['مار', 'اسب', 'گوسفند', 'میمون', 'مرغ', 'سگ', 'خوک', 'موش', 'گاو', 'پلنگ', 'خرگوش', 'نهنگ'][$number],
+            self::JALALI_SEASON => ['بهار', 'تابستان', 'پاییز', 'زمستان'][$number],
+            self::JALALI_MONTH => ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'][$number],
+            self::JALALI_MONTH_SHORT => ['فرو', 'ارد', 'خرد', 'تیر', 'امر', 'شهر', 'مهر', 'آبا', 'آذر', 'دی', 'بهم‍', 'اسف‍'][$number],
+            self::JALALI_MONTH_ANCIENT => ['حمل', 'ثور', 'جوزا', 'سرطان', 'اسد', 'سنبله', 'میزان', 'عقرب', 'قوس', 'جدی', 'دلو', 'حوت'][$number],
+            self::JALALI_WEEK => ['شنبه', 'یکشنبه', 'دوشنبه', 'سه شنبه', 'چهارشنبه', 'پنجشنبه', 'جمعه'][$number],
+            self::JALALI_WEEK_SHORT => ['شنب‍', 'یکش‍', 'دوش‍', 'سه‌ش‍', 'چها', 'پنج‍', 'جمع‍'][$number],
+            default => $number,
+        };
 
     }
 
