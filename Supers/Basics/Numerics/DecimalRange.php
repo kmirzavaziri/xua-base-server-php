@@ -6,6 +6,8 @@ namespace Supers\Basics\Numerics;
 
 use Supers\Basics\Boolean;
 use XUA\Exceptions\SuperValidationException;
+use XUA\Tools\ColumnType;
+use XUA\Tools\Entity\Dialect;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -64,49 +66,12 @@ class DecimalRange extends Decimal
         return true;
     }
 
-    protected function _databaseType(): ?string
+    protected function _databaseType(): ?ColumnType
     {
         $min = $this->min;
         $max = min($this->max, pow($this->base, $this->integerLength));
+        $this->integerLength = floor(log(max(abs($min), abs($max)), $this->base) + 1);
 
-        $lengthCoefficient = log($this->base, 2);
-        $BYTE = 8;
-
-        $integerLength = floor(log(max(abs($min), abs($max)), 2) + 1);
-        $fractionalLength = ceil($this->fractionalLength * $lengthCoefficient);
-
-        if (!$fractionalLength) {
-            if (!$this->unsigned) {
-                $integerLength += 1;
-            }
-            if ($integerLength <= 1 * $BYTE) {
-                $type = "TINYINT";
-            } elseif ($integerLength <= 2 * $BYTE) {
-                $type = "SMALLINT";
-            } elseif ($integerLength <= 3 * $BYTE) {
-                $type = "MEDIUMINT";
-            } elseif ($integerLength <= 4 * $BYTE) {
-                $type = "INT";
-            } elseif ($integerLength <= 8 * $BYTE) {
-                $type = "BIGINT";
-            } else {
-                return null;
-            }
-            $signExpression = $this->unsigned ? ' UNSIGNED' : '';
-
-        } else {
-            $length = $this->integerLength + $this->fractionalLength;
-            if ($length <= 65 and $this->fractionalLength <= 30) {
-                $type = "DECIMAL($length, $this->fractionalLength)";
-            } elseif ($length <= 255 and $this->fractionalLength <= 30) {
-                $type = "DOUBLE($length, $this->fractionalLength)";
-            } else {
-                return null;
-            }
-            $signExpression = '';
-        }
-
-        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
-        return "$type$signExpression$nullExpression";
+        return parent::_databaseType();
     }
 }
