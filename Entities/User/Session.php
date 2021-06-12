@@ -6,11 +6,9 @@ namespace Entities\User;
 use Entities\User;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\DateTime;
-use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
 use XUA\Entity;
-use XUA\Super;
 use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
 

@@ -11,6 +11,7 @@ use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
+use XUA\Exceptions\EntityException;
 use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityFieldException;
@@ -34,12 +35,13 @@ abstract class Entity extends XUA
 {
     private static ?PDO $connection = null;
 
+    // TODO remove usages
     final public static function connection() : ?PDO
     {
         return self::$connection;
     }
 
-    final public static function execute(string $query, array $bind) : false|PDOStatement
+    final public static function execute(string $query, array $bind = []) : false|PDOStatement
     {
         $arrayBindPositions = [];
         $pos = 0;
@@ -123,12 +125,19 @@ abstract class Entity extends XUA
                 'engine' => getenv('DB_ENGINE'),
                 'hostname' => getenv('DB_HOSTNAME'),
                 'database' => getenv('DB_DATABASE'),
+                'port' => getenv('DB_PORT'),
                 'username' => getenv('DB_USERNAME'),
                 'password' => getenv('DB_PASSWORD'),
             ];
         }
 
-        $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";dbname=" . $dbInfo['database'];
+        if (!$dbInfo) {
+            throw new EntityException('Database connection config not found.');
+        }
+
+//        Dialect::$engine = $dbInfo['engine'];
+
+        $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['database'];
 
         if (!self::$connection) {
             self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);

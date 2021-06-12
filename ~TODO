@@ -4,6 +4,7 @@
 █           Expression Service
 █           Validate method exception to have only request item names and empty string as keys
 █           Add DateTime service and complete the super
+1           Add a Super for field ID
 2           Date service and Super
 6           Deploy procedure
 7           Copy Prod DB to Local by a command or on a weekly basis
@@ -18,6 +19,8 @@ s           Add file upload procedure
 !           Check route doesn't contain public
 !           Error Log
 !           Add a Language Service with all constants
+!           Index Type Ability
+!           Make ColumnType handling better than string
 █       Keram/
 !           Fix read&parse routes algorithm
 █       AM/

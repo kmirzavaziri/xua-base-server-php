@@ -15,8 +15,7 @@ final class TableScheme
         public string $tableName,
         private array $columns,
         private array $indexes,
-    ) {
-    }
+    ) {}
 
     private function addNewTable(): void
     {

@@ -6,7 +6,6 @@ namespace Supers\Basics\Strings;
 
 use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\Integer;
-use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

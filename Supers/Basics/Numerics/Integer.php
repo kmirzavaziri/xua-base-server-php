@@ -42,7 +42,9 @@ class Integer extends Number
         }
 
         if ($this->unsigned and $input < 0) {
-            $message = "$input is less than zero therefore is not unsigned.";
+            $message = ExpressionService::get('errormessage.input.is.less.than.zero.therefore.is.not.unsigned', [
+                'input' => $input
+            ]);
             return false;
         }
 

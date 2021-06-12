@@ -1,7 +1,8 @@
 {
-  "engine": "postgres",
-  "hostname": "37.152.181.218:5433",
-  "database": "myfarm_demo",
+  "engine": "mysql",
+  "hostname": "37.152.181.218",
+  "port": 3306,
+  "database": "demo_myfarm",
   "username": "USERNAME",
   "password": "PASSWORD"
 }

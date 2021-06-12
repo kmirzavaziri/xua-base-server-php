@@ -4,7 +4,6 @@
 namespace Services\XUA;
 
 
-use Exception;
 use XUA\Exceptions\InstantiationException;
 use XUA\Service;
 
@@ -38,7 +37,7 @@ final class ConstantService extends Service
             if (!($content = @file_get_contents($filePath))) {
                 self::$cache[$filePath] = [];
             } else {
-                $data = @json_decode($content);
+                $data = @json_decode($content, true);
                 if ($data !== null) {
                     self::$cache[$filePath] = $data;
                 } else {
@@ -47,7 +46,7 @@ final class ConstantService extends Service
             }
         }
 
-        $nodeNames = explode('/', $nodePath);
+        $nodeNames = array_filter(explode('/', $nodePath));
         $tmp = self::$cache[$filePath];
         foreach ($nodeNames as $nodeName) {
             if ($tmp[$nodeName] ?? false) {

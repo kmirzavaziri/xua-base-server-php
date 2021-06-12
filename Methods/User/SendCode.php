@@ -12,8 +12,6 @@ use XUA\Tools\Signature\MethodItemSignature;
 /**
  * @property string Q_emailOrPhone
  * @method static MethodItemSignature Q_emailOrPhone() The Signature of: Request Item `emailOrPhone`
- * @property string test
- * @method static MethodItemSignature R_test() The Signature of: Response Item `test`
  */
 class SendCode extends Method
 {
