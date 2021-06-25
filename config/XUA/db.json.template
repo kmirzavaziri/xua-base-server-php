@@ -2,7 +2,7 @@
   "engine": "mysql",
   "hostname": "HOSTNAME",
   "port": 13306,
-  "database": "demo_myfarm",
+  "database": "myfarm",
   "username": "USERNAME",
   "password": "PASSWORD"
 }
