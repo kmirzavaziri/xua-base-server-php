@@ -10,7 +10,12 @@ class TestInterface extends InterfaceEve
     public static function execute(): string
     {
 
-        var_dump('Testing what if we commit');
+        var_dump(getenv('ENV_NAME'));
+        var_dump(getenv('DB_ENGINE'));
+        var_dump(getenv('DB_HOSTNAME'));
+        var_dump(getenv('DB_DATABASE'));
+        var_dump(getenv('DB_PORT'));
+        var_dump(getenv('DB_USERNAME'));
 
         var_dump(DateTimeInstance::fromLocalYmdHis('1400-3-15 0:0:0')->formatJalali('r'));
 
