@@ -1,7 +1,7 @@
 {
   "engine": "mysql",
-  "hostname": "37.152.181.218",
-  "port": 3306,
+  "hostname": "HOSTNAME",
+  "port": 13306,
   "database": "demo_myfarm",
   "username": "USERNAME",
   "password": "PASSWORD"
