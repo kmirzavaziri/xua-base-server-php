@@ -5,9 +5,12 @@ use XUA\Entity;
 use XUA\Method;
 use XUA\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
+use XUA\XUAException;
 
 require 'magic.php';
 require 'autoload.php';
+
+chdir('/urpi');
 
 $result = new Result(true, '');
 try {
@@ -25,7 +28,7 @@ try {
     }
 } catch (Throwable $e) {
     $result->status = false;
-    $result->result = (is_a($e, \XUA\XUAException::class) ? xua_var_dump($e->getErrors()) : $e->getMessage()) . ' ' . $e->getTraceAsString();
+    $result->result = (is_a($e, XUAException::class) ? xua_var_dump($e->getErrors()) : $e->getMessage()) . ' ' . $e->getTraceAsString();
 }
 
 echo json_encode($result);

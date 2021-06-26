@@ -4,6 +4,7 @@
 namespace Supers\Customs;
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Strings\Text;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
@@ -19,7 +20,11 @@ class Email extends Text
 {
     protected function _predicate($input, string &$message = null): bool
     {
-        $message = 'Not implemented yet';
-        return false;
+        if ($this->nullable and $input === null) {
+            return true;
+        }
+
+        $message = ExpressionService::get('errormessage.email.format.is.not.valid');
+        return filter_var($input, FILTER_VALIDATE_EMAIL);
     }
 }

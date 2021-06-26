@@ -3,17 +3,9 @@
 
 namespace Supers\Basics\Highers;
 
-
-
-use ReflectionFunction;
+use Services\XUA\ExpressionService;
 use Supers\Basics\Boolean;
-use Supers\Basics\Numerics\Integer;
-use Supers\Basics\Strings\Enum;
-use Supers\Basics\Strings\Symbol;
 use Supers\Basics\Strings\Text;
-use Supers\Basics\Trilean;
-use Supers\Basics\Universal;
-use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -35,7 +27,11 @@ class FileSize extends Text
 
     protected function _predicate($input, string &$message = null): bool
     {
-        $message = 'Not implemented yet';
+        if ($this->nullable and $input === null) {
+            return true;
+        }
+
+        $message = ExpressionService::get('errormessage.not.implemented.yet');
         return true;
     }
 }

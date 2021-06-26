@@ -3,8 +3,8 @@
 namespace Interfaces;
 
 use Services\XUA\Dev\Credentials;
+use Services\XUA\ExpressionService;
 use Services\XUA\RouteService;
-use Supers\Basics\Highers\Json;
 use Throwable;
 use XUA\Entity;
 use XUA\Exceptions\MethodRequestException;
@@ -56,7 +56,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
                         $response['errors'] = ['' => 'Access denied'];
                     }
                 } elseif (is_a($class, Entity::class, true)) {
-                    $response['errors'] = ['' => 'Not implemented yet'];
+                    $response['errors'] = ['' => ExpressionService::get('errormessage.not.implemented.yet')];
                 } else {
                     $response['errors'] = ['' => 'Invalid path'];
                 }

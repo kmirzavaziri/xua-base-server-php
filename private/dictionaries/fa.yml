@@ -4,3 +4,9 @@ errormessage.cannot.set.constant.request.item: امکان تغییر این فی
 errormessage.required.request.item.not.provided: این فیلد ضروری است.
 errormessage.value.input.is.not.an.integer: مقدار $input عددی صحیح نیست.
 errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $input کمتر از صفر است و لذا بی‌علامت نیست.
+errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
+errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.
+errormessage.not.implemented.yet: هنوز پیاده‌سازی نشده.
+email.or.cellphone.is.not.valid: فرمت ایمیل یا شماره تلفن همراه صحیح نیست.
+verification.code: کد ورود به مزرعه من
+your.code.is.code: "کد ورود به مزرعه من\n$code"

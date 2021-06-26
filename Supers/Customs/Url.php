@@ -4,6 +4,7 @@
 namespace Supers\Customs;
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Strings\Text;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
@@ -20,7 +21,11 @@ class Url extends Text
     // @TODO add types http/https, mailto, telegram, etc.
     protected function _predicate($input, string &$message = null): bool
     {
-        $message = 'Not implemented yet';
+        if ($this->nullable and $input === null) {
+            return true;
+        }
+
+        $message = ExpressionService::get('errormessage.not.implemented.yet');
         return false;
     }
 }

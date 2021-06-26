@@ -4,8 +4,11 @@
 namespace Supers\Customs;
 
 
+use Services\XUA\ExpressionService;
+use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
+use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -22,15 +25,46 @@ class IranPhone extends Text
 {
     protected static function _argumentSignatures(): array
     {
-        // @TODO make maxLength and minLength constant
         return array_merge(parent::_argumentSignatures(), [
             'type' => new SuperArgumentSignature(new Enum(['values' => ['cellphone', 'landline', 'fax']]), true, null, false),
+            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
+            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 65_535, true),
         ]);
+    }
+
+    protected function _validation(SuperValidationException $exception): void
+    {
+        if ($this->type == 'cellphone') {
+            $this->maxLength = 13;
+        }
     }
 
     protected function _predicate($input, string &$message = null): bool
     {
-        $message = 'Not implemented yet';
-        return false;
+        if ($this->nullable and $input === null) {
+            return true;
+        }
+
+        switch ($this->type) {
+            case 'cellphone':
+                $message = ExpressionService::get('errormessage.cellphone.format.is.not.valid');
+                return strlen($input) == 13 and str_starts_with($input, '+989');
+            case 'landline':
+            case 'fax':
+            default:
+                $message = ExpressionService::get('errormessage.not.implemented.yet');
+                return false;
+        }
+    }
+
+    protected function _unmarshal($input): mixed
+    {
+        $input = parent::_unmarshal($input);
+        return match ($this->type) {
+            'cellphone' => strlen($input) < 9 ? $input : '+989' . substr($input, -9),
+            'landline' => $input,
+            'fax' => $input,
+            default => $input,
+        };
     }
 }

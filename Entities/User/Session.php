@@ -26,19 +26,19 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string code
  * @method static EntityFieldSignature F_code() The Signature of: Field `code`
  * @method static ConditionField C_code() The Condition Field of: Field `code`
- * @property mixed codeSentAt
+ * @property \Services\XUA\DateTimeInstance codeSentAt
  * @method static EntityFieldSignature F_codeSentAt() The Signature of: Field `codeSentAt`
  * @method static ConditionField C_codeSentAt() The Condition Field of: Field `codeSentAt`
  * @property string codeSentVia
  * @method static EntityFieldSignature F_codeSentVia() The Signature of: Field `codeSentVia`
  * @method static ConditionField C_codeSentVia() The Condition Field of: Field `codeSentVia`
- * @property string device
- * @method static EntityFieldSignature F_device() The Signature of: Field `device`
- * @method static ConditionField C_device() The Condition Field of: Field `device`
+ * @property ?string systemInfo
+ * @method static EntityFieldSignature F_systemInfo() The Signature of: Field `systemInfo`
+ * @method static ConditionField C_systemInfo() The Condition Field of: Field `systemInfo`
  * @property string ip
  * @method static EntityFieldSignature F_ip() The Signature of: Field `ip`
  * @method static ConditionField C_ip() The Condition Field of: Field `ip`
- * @property mixed lastOnline
+ * @property \Services\XUA\DateTimeInstance lastOnline
  * @method static EntityFieldSignature F_lastOnline() The Signature of: Field `lastOnline`
  * @method static ConditionField C_lastOnline() The Condition Field of: Field `lastOnline`
  */
@@ -79,8 +79,8 @@ class Session extends Entity
                 new Enum(['values' => ['sms', 'email']]),
                 null
             ),
-            'device' => new EntityFieldSignature(
-                static::class, 'device',
+            'systemInfo' => new EntityFieldSignature(
+                static::class, 'systemInfo',
                 new Text(['maxLength' => 255, 'nullable' => true]),
                 ''
             ),
@@ -91,7 +91,7 @@ class Session extends Entity
             ),
             'lastOnline' => new EntityFieldSignature(
                 static::class, 'lastOnline',
-                new DateTime([]),
+                new DateTime(['nullable' => true]),
                 null
             ),
         ]);

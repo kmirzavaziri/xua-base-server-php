@@ -6,9 +6,9 @@ namespace Supers\Basics\Highers;
 
 
 use Services\XUA\DateTimeInstance;
+use Services\XUA\LocaleLanguage;
 use Supers\Basics\Boolean;
 use Supers\Basics\Strings\Text;
-use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -40,18 +40,18 @@ class DateTime extends Instance
 
     protected function _unmarshal($input): mixed
     {
-        return DateTimeInstance::fromLocalYmdHis($input) ?? $input;
+        return $input ? (DateTimeInstance::fromLocalYmdHis($input) ?? $input) : $input;
     }
 
     protected function _marshalDatabase($input): mixed
     {
-        /** @var DateTimeInstance $input */
-        return $input->formatGregorian('Y-m-d H:i:s');
+        /** @var ?DateTimeInstance $input */
+        return $input ? $input->formatGregorian('Y-m-d H:i:s', LocaleLanguage::LANG_EN) : $input;
     }
 
     protected function _unmarshalDatabase($input): mixed
     {
-        return DateTimeInstance::fromGregorianYmdHis($input) ?? $input;
+        return $input ? (DateTimeInstance::fromGregorianYmdHis($input) ?? $input) : $input;
     }
 
     protected function _databaseType(): ?string

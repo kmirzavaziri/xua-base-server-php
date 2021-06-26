@@ -5,6 +5,7 @@ namespace Supers\Basics\Highers;
 
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Boolean;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
@@ -41,7 +42,11 @@ class File extends Super
 
     protected function _predicate($input, string &$message = null): bool
     {
-        $message = 'Not implemented yet';
+        if ($this->nullable and $input === null) {
+            return true;
+        }
+
+        $message = ExpressionService::get('errormessage.not.implemented.yet');
         return false;
     }
 
