@@ -118,19 +118,7 @@ abstract class Entity extends XUA
 
         self::$_x_field_signatures[static::class] = static::fieldSignaturesCalculator();
 
-        if (!getenv('ENV_NAME') or getenv('ENV_NAME') != 'prod') {
-            $dbInfo = ConstantService::get('config/XUA/db.json');
-        } else {
-            $dbInfo = [
-                'engine' => getenv('DB_ENGINE'),
-                'hostname' => getenv('DB_HOSTNAME'),
-                'database' => getenv('DB_DATABASE'),
-                'port' => getenv('DB_PORT'),
-                'username' => getenv('DB_USERNAME'),
-                'password' => getenv('DB_PASSWORD'),
-            ];
-        }
-
+        $dbInfo = ConstantService::get('config/XUA/db');
         if (!$dbInfo) {
             throw new EntityException('Database connection config not found.');
         }

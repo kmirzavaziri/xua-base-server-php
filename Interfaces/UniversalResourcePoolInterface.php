@@ -5,6 +5,7 @@ namespace Interfaces;
 use Services\XUA\Dev\Credentials;
 use Services\XUA\ExpressionService;
 use Services\XUA\RouteService;
+use Services\XUA\SecurityService;
 use Throwable;
 use XUA\Entity;
 use XUA\Exceptions\MethodRequestException;
@@ -28,7 +29,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
             $class = str_replace('/', "\\", RouteService::$routeArgs['methodOrEntityPath']);
             if (class_exists($class)) {
                 if (is_a($class, Method::class, true)) {
-                    if ($class::isPublic()) {
+                    if ($class::isPublic() or SecurityService::verifyPrivateMethodAccess()) {
                         try {
                             $response['response'] = (new $class($_POST))->toArray();
                         } catch (Throwable $e) {
