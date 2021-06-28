@@ -62,6 +62,7 @@ final class ConstantService extends Service
             foreach ($variables as $key => $value) {
                 if (str_starts_with($key, $path)) {
                     $relativeKey = substr($key, $pathLen, strlen($key) - $pathLen);
+                    $relativeKey = strtolower($relativeKey);
                     $explodedRelativeKey = explode('_', $relativeKey);
                     $tmp = &$tree;
                     foreach ($explodedRelativeKey as $keyPart) {
