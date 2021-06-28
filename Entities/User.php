@@ -264,14 +264,14 @@ class User extends Entity
             'sessions' => new EntityFieldSignature(
                 static::class, 'sessions',
                 new EntityRelation([
-                    'relatedEntity' => Session::class,
+                    'relatedEntity' => \Entities\User\Session::class,
                     'relation' => 'IN',
                     'invName' => 'user',
                     'nullable' => false,
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                []
+                null
             ),
         ]);
     }

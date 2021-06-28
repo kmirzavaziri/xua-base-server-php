@@ -9,6 +9,7 @@ use XUA\Service;
 
 class DateTimeInstance extends Service
 {
+    const MINUTE = 60;
     protected array $YmdHis;
     protected int $timestamp;
 

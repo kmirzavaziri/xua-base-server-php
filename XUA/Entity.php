@@ -16,6 +16,7 @@ use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Exceptions\SuperValidationException;
+use XUA\Tools\Entity\QueryBinder;
 use XUA\Tools\Entity\Column;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Entity\ConditionField;
@@ -43,33 +44,9 @@ abstract class Entity extends XUA
 
     final public static function execute(string $query, array $bind = []) : false|PDOStatement
     {
-        $arrayBindPositions = [];
-        $pos = 0;
-        $newBind = [];
-        foreach ($bind as $value) {
-            $pos = strpos($query, '?', $pos);
-            if (is_array($value)) {
-                $arrayBindPositions[$pos] = count($value);
-                $newBind   = array_merge($newBind, $value);
-            } else {
-                $newBind[] = $value;
-            }
-            $pos++;
-        }
-        if ($arrayBindPositions) {
-            $newQuery = '';
-            $start = 0;
-            foreach ($arrayBindPositions as $pos => $count) {
-                $newQuery .= substr($query, $start, $pos - $start);
-                $newQuery .= implode(',', array_fill(0, $count, '?'));
-                $start = $pos + 1;
-            }
-            $newQuery .= substr($query, $start);
-            $query = $newQuery;
-        }
-        $bind = $newBind;
-
+        [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
         try {
+            $statement = self::connection()->prepare($query);
             $statement = self::connection()->prepare($query);
             $statement->execute($bind);
         } catch (PDOException $e) {
@@ -286,7 +263,6 @@ abstract class Entity extends XUA
     }
 
     # Overridable Methods
-
     /**
      * @throws SuperValidationException
      */
@@ -337,8 +313,12 @@ abstract class Entity extends XUA
         return static::_x_getMany($condition, $order, $pager);
     }
 
-    # Overridable Method Wrappers
+    protected static function _deleteMany(Condition $condition, Order $order, Pager $pager, string $caller) : int
+    {
+        return static::_x_deleteMany($condition, $order, $pager);
+    }
 
+    # Overridable Method Wrappers
     /**
      * @throws SuperValidationException
      */
@@ -422,6 +402,20 @@ abstract class Entity extends XUA
         return static::_getMany($condition, $order, $pager, $caller);
     }
 
+    final public static function deleteMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : int
+    {
+        if ($condition === null) {
+            $condition = Condition::falseLeaf();
+        }
+        if ($order === null) {
+            $order = Order::noOrder();
+        }
+        if ($pager === null) {
+            $pager = Pager::unlimited();
+        }
+        return static::_deleteMany($condition, $order, $pager, $caller);
+    }
+
     # Predefined Methods (to wrap in overridable methods)
     final protected function _x_initialize() : void {
         foreach (static::fieldSignatures() as $key => $signature) {
@@ -499,6 +493,12 @@ abstract class Entity extends XUA
         }
 
         return $entities;
+    }
+
+    final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager) : int
+    {
+        [$columnsExpression, $keys] = self::columnsExpression();
+        return self::execute("DELETE FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
     }
 
     # Predefined Methods (Array-Entity Conversations)

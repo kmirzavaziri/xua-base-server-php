@@ -12,6 +12,7 @@ use Services\XUA\ExpressionService;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\Email;
 use Supers\Customs\IranPhone;
+use XUA\Entity;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Method;
 use XUA\Tools\Entity\Condition;
@@ -49,7 +50,17 @@ class SendCode extends Method
             $condition = Condition::leaf(User::C_email(), Condition::EQ, $emailOrPhone);
             $isEmail = true;
         } else {
-            throw (new MethodRequestException)->setError('emailOrPhone', ExpressionService::get('email.or.cellphone.is.not.valid'));
+            $this->addAndThrowError('emailOrPhone', ExpressionService::get('errormessage.email.or.cellphone.is.not.valid'));
+        }
+
+
+        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(2 * DateTimeInstance::MINUTE));
+        $session = Session::getOne(
+            Condition::leaf(Session::C_codeSentAt(), Condition::GRATER, $secondsAgo)
+        );
+
+        if ($session->id) {
+            $this->addAndThrowError('', ExpressionService::get('errormessage.wait.seconds.to.send.activation.code', ['seconds' => $session->codeSentAt->dist($secondsAgo)->getTimestamp()]));
         }
 
         $user = User::getOne($condition);
@@ -64,7 +75,7 @@ class SendCode extends Method
 
         $session = new Session();
         $session->user = $user;
-        $session->code = UserService::generateCode();
+        $session->activationCode = UserService::generateCode();
         $session->codeSentAt = new DateTimeInstance();
         $session->codeSentVia = $isEmail ? 'email' : 'sms';
         $session->store();
@@ -73,12 +84,12 @@ class SendCode extends Method
             EmailService::send(
                 $user->email,
                 ExpressionService::get('verification.code'),
-                ExpressionService::get('your.code.is.code', ['code' => $session->code])
+                ExpressionService::get('your.code.is.code', ['code' => $session->activationCode])
             );
         } else {
             SmsService::send(
                 $user->cellphoneNumber,
-                ExpressionService::get('your.code.is.code', ['code' => $session->code])
+                ExpressionService::get('your.code.is.code', ['code' => $session->activationCode])
             );
         }
     }

@@ -7,6 +7,7 @@ errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $inpu
 errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
 errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.
 errormessage.not.implemented.yet: هنوز پیاده‌سازی نشده.
-email.or.cellphone.is.not.valid: فرمت ایمیل یا شماره تلفن همراه صحیح نیست.
+errormessage.email.or.cellphone.is.not.valid: فرمت ایمیل یا شماره تلفن همراه صحیح نیست.
+errormessage.wait.seconds.to.send.activation.code: برای ارسال کد فعال‌سازی، $seconds ثانیه دیگر درخواست دهید.
 verification.code: کد ورود به مزرعه من
 your.code.is.code: "کد ورود به مزرعه من\n$code"

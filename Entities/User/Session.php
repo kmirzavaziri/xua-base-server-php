@@ -23,9 +23,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string accessToken
  * @method static EntityFieldSignature F_accessToken() The Signature of: Field `accessToken`
  * @method static ConditionField C_accessToken() The Condition Field of: Field `accessToken`
- * @property string code
- * @method static EntityFieldSignature F_code() The Signature of: Field `code`
- * @method static ConditionField C_code() The Condition Field of: Field `code`
+ * @property string activationCode
+ * @method static EntityFieldSignature F_activationCode() The Signature of: Field `activationCode`
+ * @method static ConditionField C_activationCode() The Condition Field of: Field `activationCode`
  * @property \Services\XUA\DateTimeInstance codeSentAt
  * @method static EntityFieldSignature F_codeSentAt() The Signature of: Field `codeSentAt`
  * @method static ConditionField C_codeSentAt() The Condition Field of: Field `codeSentAt`
@@ -38,7 +38,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string ip
  * @method static EntityFieldSignature F_ip() The Signature of: Field `ip`
  * @method static ConditionField C_ip() The Condition Field of: Field `ip`
- * @property \Services\XUA\DateTimeInstance lastOnline
+ * @property null|\Services\XUA\DateTimeInstance lastOnline
  * @method static EntityFieldSignature F_lastOnline() The Signature of: Field `lastOnline`
  * @method static ConditionField C_lastOnline() The Condition Field of: Field `lastOnline`
  */
@@ -64,7 +64,7 @@ class Session extends Entity
                 new Text(['maxLength' => 255]),
                 ''
             ),
-            'code' => new EntityFieldSignature(
+            'activationCode' => new EntityFieldSignature(
                 static::class, 'activationCode',
                 new Text(['minLength' => 6, 'maxLength' => 6]),
                 null
@@ -75,7 +75,7 @@ class Session extends Entity
                 null
             ),
             'codeSentVia' => new EntityFieldSignature(
-                static::class, 'activationCode',
+                static::class, 'codeSentVia',
                 new Enum(['values' => ['sms', 'email']]),
                 null
             ),

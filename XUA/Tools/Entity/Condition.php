@@ -80,22 +80,25 @@ final class Condition
         $condition->template = str_replace('$', $field->name(), $relation);
         $condition->joins = $field->joins();
 
+        $fieldType = $field->signature->type;
+
         if ($relation == self::BETWEEN or $relation == self::NBETWEEN) {
             if ((new Sequence(['minLength' => 2, 'maxLength' => 2]))->accepts($value, $message)) {
                 throw new EntityConditionException('When using BETWEEN or NBETWEEN, the provided value must be an array of length 2.' . PHP_EOL . $message);
             }
-            $condition->parameters = [$value[0], $value[1]];
+            $condition->parameters = [$fieldType->marshalDatabase($value[0]), $fieldType->marshalDatabase($value[1])];
         } elseif ($relation == self::IN or $relation == self::NIN) {
             if ((new Sequence([]))->accepts($value, $message)) {
                 throw new EntityConditionException('When using IN or NIN, the provided value must be an array.' . PHP_EOL . $message);
             }
-            $condition->parameters[] = $value;
+            $condition->parameters = [$fieldType->marshalDatabase($value)];
         } elseif ($relation == self::ISNULL or $relation == self::NISNULL) {
             if ($value !== null) {
                 throw new EntityConditionException('When using ISNULL or NISNULL, the provided value must be null.');
             }
+            $condition->parameters = [];
         } else {
-            $condition->parameters[] = $value;
+            $condition->parameters = [$fieldType->marshalDatabase($value)];
         }
 
         return $condition;
@@ -117,28 +120,19 @@ final class Condition
         return $condition;
     }
 
-    public function and(Condition $condition) : Condition
+    public function and(ConditionField $field, string $relation, mixed $value = null) : Condition
     {
-        $this->template = "($this->template) AND ($condition->template)";
-        $this->parameters = array_merge($this->parameters, $condition->parameters);
-        $this->joins = array_merge($this->joins, $condition->joins);
-        return $this;
+        return $this->andC(Condition::leaf($field, $relation, $value));
     }
 
-    public function or(Condition $condition) : Condition
+    public function or(ConditionField $field, string $relation, mixed $value = null) : Condition
     {
-        $this->template = "($this->template) OR ($condition->template)";
-        $this->parameters = array_merge($this->parameters, $condition->parameters);
-        $this->joins = array_merge($this->joins, $condition->joins);
-        return $this;
+        return $this->orC(Condition::leaf($field, $relation, $value));
     }
 
-    public function xor(Condition $condition) : Condition
+    public function xor(ConditionField $field, string $relation, mixed $value = null) : Condition
     {
-        $this->template = "($this->template) XOR ($condition->template)";
-        $this->parameters = array_merge($this->parameters, $condition->parameters);
-        $this->joins = array_merge($this->joins, $condition->joins);
-        return $this;
+        return $this->xorC(Condition::leaf($field, $relation, $value));
     }
 
     public function not() : Condition
@@ -147,19 +141,43 @@ final class Condition
         return $this;
     }
 
+    public function andC(Condition $condition) : Condition
+    {
+        $this->template = "($this->template) AND ($condition->template)";
+        $this->parameters = array_merge($this->parameters, $condition->parameters);
+        $this->joins = array_merge($this->joins, $condition->joins);
+        return $this;
+    }
+
+    public function orC(Condition $condition) : Condition
+    {
+        $this->template = "($this->template) OR ($condition->template)";
+        $this->parameters = array_merge($this->parameters, $condition->parameters);
+        $this->joins = array_merge($this->joins, $condition->joins);
+        return $this;
+    }
+
+    public function xorC(Condition $condition) : Condition
+    {
+        $this->template = "($this->template) XOR ($condition->template)";
+        $this->parameters = array_merge($this->parameters, $condition->parameters);
+        $this->joins = array_merge($this->joins, $condition->joins);
+        return $this;
+    }
+
     public static function _and_(Condition $leftCondition, Condition $rightCondition) : Condition
     {
-        return $leftCondition->and($rightCondition);
+        return $leftCondition->andC($rightCondition);
     }
 
     public static function _or_(Condition $leftCondition, Condition $rightCondition) : Condition
     {
-        return $leftCondition->or($rightCondition);
+        return $leftCondition->orC($rightCondition);
     }
 
     public static function _xor_(Condition $leftCondition, Condition $rightCondition) : Condition
     {
-        return $leftCondition->xor($rightCondition);
+        return $leftCondition->xorC($rightCondition);
     }
 
     public static function _not_(Condition $condition) : Condition
@@ -176,5 +194,10 @@ final class Condition
         return implode(PHP_EOL, array_map(function (Join $join) {
             return $join->expression();
         }, $joins));
+    }
+
+    public function render(): string
+    {
+        return QueryBinder::bind($this->template, $this->parameters);
     }
 }

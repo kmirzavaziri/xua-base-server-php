@@ -10,6 +10,8 @@ use XUA\Tools\Signature\MethodItemSignature;
 
 abstract class Method extends XUA
 {
+    protected MethodRequestException $error;
+
     # Magics
     /**
      * @var MethodItemSignature[][]
@@ -34,6 +36,7 @@ abstract class Method extends XUA
      */
     final public function __construct(array $request)
     {
+        $this->error = new MethodRequestException();
         $this->_x_request = $request;
         MethodItemSignature::processRequest(static::requestSignatures(), $this->_x_request);
         MethodItemSignature::preprocessResponse(static::responseSignatures(), $this->_x_response);
@@ -151,5 +154,20 @@ abstract class Method extends XUA
     public function toArray(): array
     {
         return $this->_x_response;
+    }
+
+    protected function addError(string $key, string $message): void
+    {
+        $this->error->setError($key, $message);
+    }
+
+    protected function throwError(): void
+    {
+        throw $this->error;
+    }
+
+    protected function addAndThrowError(string $key, string $message): void
+    {
+        throw $this->error->setError($key, $message);
     }
 }

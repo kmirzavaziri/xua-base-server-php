@@ -34,7 +34,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
                             $response['response'] = (new $class($_POST))->toArray();
                         } catch (Throwable $e) {
                             if (is_a($e, MethodRequestException::class)) {
-                                $unknownKeys = array_diff(array_keys($e->getErrors()), array_keys($class::requestSignatures()));
+                                $unknownKeys = array_diff(array_keys($e->getErrors()), ['', ...array_keys($class::requestSignatures())]);
                                 if ($unknownKeys) {
                                     $e = new UrpiException();
                                     foreach ($unknownKeys as $unknownKey) {
