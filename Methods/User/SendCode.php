@@ -83,13 +83,13 @@ class SendCode extends Method
         if ($isEmail) {
             EmailService::send(
                 $user->email,
-                ExpressionService::get('verification.code'),
-                ExpressionService::get('your.code.is.code', ['code' => $session->activationCode])
+                ExpressionService::get('activation.code'),
+                ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode])
             );
         } else {
             SmsService::send(
                 $user->cellphoneNumber,
-                ExpressionService::get('your.code.is.code', ['code' => $session->activationCode])
+                ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode])
             );
         }
     }
