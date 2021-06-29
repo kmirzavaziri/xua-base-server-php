@@ -72,7 +72,7 @@ abstract class UserService extends Service
         return self::$session->user ?? new User();
     }
 
-    public static function generateCode() : int
+    public static function generateActivationCode() : int
     {
         return rand(100000, 999999);
     }

@@ -48,7 +48,7 @@ class IranPhone extends Text
         switch ($this->type) {
             case 'cellphone':
                 $message = ExpressionService::get('errormessage.cellphone.format.is.not.valid');
-                return strlen($input) == 13 and str_starts_with($input, '+989');
+                return strlen($input) == 13 and str_starts_with($input, '+989') and !preg_match('/[^0-9+\- ()]/', $input);
             case 'landline':
             case 'fax':
             default:

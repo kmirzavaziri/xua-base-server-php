@@ -4,9 +4,9 @@
 
 spl_autoload_register(function ($class) {
     $fileName = str_replace("\\", DIRECTORY_SEPARATOR, "$class.php");
-    if(file_exists(stream_resolve_include_path($fileName))) {
+    if(stream_resolve_include_path($fileName) !== false) {
         include_once $fileName;
-    } elseif(file_exists(stream_resolve_include_path('Libraries' . DIRECTORY_SEPARATOR . $fileName))) {
+    } elseif(stream_resolve_include_path('Libraries' . DIRECTORY_SEPARATOR . $fileName) !== false) {
         include_once 'Libraries' . DIRECTORY_SEPARATOR . $fileName;
     }
 

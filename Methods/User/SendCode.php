@@ -5,6 +5,7 @@ namespace Methods\User;
 use Entities\User;
 use Entities\User\Session;
 use Services\EmailService;
+use Services\EmailUser;
 use Services\SmsService;
 use Services\UserService;
 use Services\XUA\DateTimeInstance;
@@ -12,8 +13,6 @@ use Services\XUA\ExpressionService;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\Email;
 use Supers\Customs\IranPhone;
-use XUA\Entity;
-use XUA\Exceptions\MethodRequestException;
 use XUA\Method;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -73,18 +72,14 @@ class SendCode extends Method
             $user->store();
         }
 
-        $session = new Session();
-        $session->user = $user;
-        $session->activationCode = UserService::generateCode();
-        $session->codeSentAt = new DateTimeInstance();
-        $session->codeSentVia = $isEmail ? 'email' : 'sms';
-        $session->store();
+        $activationCode = UserService::generateActivationCode();
 
         if ($isEmail) {
             EmailService::send(
-                $user->email,
+                [new EmailUser($user->email)],
                 ExpressionService::get('activation.code'),
-                ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode])
+                ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode]),
+                'hello',
             );
         } else {
             SmsService::send(
@@ -92,5 +87,12 @@ class SendCode extends Method
                 ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode])
             );
         }
+
+        $session = new Session();
+        $session->user = $user;
+        $session->activationCode = $activationCode;
+        $session->codeSentAt = new DateTimeInstance();
+        $session->codeSentVia = $isEmail ? 'email' : 'sms';
+        $session->store();
     }
 }

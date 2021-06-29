@@ -4,7 +4,6 @@
 namespace Services\XUA;
 
 
-use Exception;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use XUA\Exceptions\InstantiationException;
