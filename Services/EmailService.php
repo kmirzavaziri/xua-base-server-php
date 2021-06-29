@@ -24,6 +24,7 @@ abstract class EmailService extends Service
     ) : void
     {
         $mail = new PHPMailer(true);
+
         $from = $from ?? 'support';
         $fromName = ConstantService::get('config/XUA/general', 'title') . ($fromName ?? 'Support');
 
