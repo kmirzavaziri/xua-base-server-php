@@ -10,6 +10,7 @@ use Services\SmsService;
 use Services\UserService;
 use Services\XUA\DateTimeInstance;
 use Services\XUA\ExpressionService;
+use Services\XUA\TemplateService;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\Email;
 use Supers\Customs\IranPhone;
@@ -21,7 +22,7 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @property string Q_emailOrPhone
  * @method static MethodItemSignature Q_emailOrPhone() The Signature of: Request Item `emailOrPhone`
  */
-class SendCode extends Method
+class SendVerificationCode extends Method
 {
     protected static function _requestSignatures(): array
     {
@@ -52,16 +53,6 @@ class SendCode extends Method
             $this->addAndThrowError('emailOrPhone', ExpressionService::get('errormessage.email.or.cellphone.is.not.valid'));
         }
 
-
-        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(2 * DateTimeInstance::MINUTE));
-        $session = Session::getOne(
-            Condition::leaf(Session::C_codeSentAt(), Condition::GRATER, $secondsAgo)
-        );
-
-        if ($session->id) {
-            $this->addAndThrowError('', ExpressionService::get('errormessage.wait.seconds.to.send.activation.code', ['seconds' => $session->codeSentAt->dist($secondsAgo)->getTimestamp()]));
-        }
-
         $user = User::getOne($condition);
         if (!$user->id) {
             if ($isEmail) {
@@ -72,25 +63,39 @@ class SendCode extends Method
             $user->store();
         }
 
-        $activationCode = UserService::generateActivationCode();
+        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(2 * DateTimeInstance::MINUTE));
+        $session = Session::getOne(
+            Condition::leaf(Session::C_codeSentAt(), Condition::GRATER, $secondsAgo)
+// @TODO
+//                ->and(Session::C_user(), Condition::EQ, $user->id)
+        );
+        if ($session->id) {
+            $this->addAndThrowError('', ExpressionService::get('errormessage.wait.seconds.to.send.verification.code', ['seconds' => $session->codeSentAt->dist($secondsAgo)->getTimestamp()]));
+        }
+
+
+        $verificationCode = UserService::generateVerificationCode();
 
         if ($isEmail) {
             EmailService::send(
                 [new EmailUser($user->email)],
-                ExpressionService::get('activation.code'),
-                ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode]),
+                ExpressionService::get('verification.code'),
+                ExpressionService::get('your.verification.code.is.code', ['verificationCode' => $verificationCode]),
+                TemplateService::render('emails/verificationCodeEmail.twig', ['verificationCode' => $verificationCode]),
                 'hello',
+                ExpressionService::get('verification.code.email.from.name'),
             );
         } else {
-            SmsService::send(
+            SmsService::sendTemplate(
                 $user->cellphoneNumber,
-                ExpressionService::get('your.activation.code.is.code', ['code' => $session->activationCode])
+                SmsService::SMS_IR_VERIFICATION_TEMPLATE_ID,
+                ['VerificationCode' => $verificationCode]
             );
         }
 
         $session = new Session();
         $session->user = $user;
-        $session->activationCode = $activationCode;
+        $session->verificationCode = $verificationCode;
         $session->codeSentAt = new DateTimeInstance();
         $session->codeSentVia = $isEmail ? 'email' : 'sms';
         $session->store();

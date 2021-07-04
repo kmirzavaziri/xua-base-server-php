@@ -1,12 +1,12 @@
 █   XUA/
 █       Me/
-5           Read DB credentials from db.yml
+█           Read DB credentials from db.yml
 █           Expression Service
 █           Validate method exception to have only request item names and empty string as keys
 █           Add DateTime service and complete the super
-1           Add a Super for field ID
-2           Date service and Super
-6           Deploy procedure
+!           Add a Super for field ID
+█           Date service and Super
+█           Deploy procedure
 7           Copy Prod DB to Local by a command or on a weekly basis
 a           Add fields array to _x_getMany
 b           Efficient IN (fetch all possible data) ?
@@ -23,8 +23,6 @@ s           Add file upload procedure
 !           Make ColumnType handling better than string
 █       Keram/
 !           Fix read&parse routes algorithm
-█       AM/
-1           Expression Service: translate all super errors
 █       Later/
 !           Entity Lock
 !           Entity Cache
@@ -33,7 +31,7 @@ s           Add file upload procedure
 █       Entities/
 4           User
 █           User/
-3               Session
+█               Session
 █               Info/
 j                   Owner
 0                   Farmer
@@ -56,7 +54,7 @@ k           Farm
 0           ContactUsFields
 █       Methods/
 █           User/
-8               SendCode
+8               SendVerificationCode
 9               GetAccessToken
 g               GetMinimal
 f               GetBasics

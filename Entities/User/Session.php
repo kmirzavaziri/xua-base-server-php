@@ -23,9 +23,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string accessToken
  * @method static EntityFieldSignature F_accessToken() The Signature of: Field `accessToken`
  * @method static ConditionField C_accessToken() The Condition Field of: Field `accessToken`
- * @property string activationCode
- * @method static EntityFieldSignature F_activationCode() The Signature of: Field `activationCode`
- * @method static ConditionField C_activationCode() The Condition Field of: Field `activationCode`
+ * @property string verificationCode
+ * @method static EntityFieldSignature F_verificationCode() The Signature of: Field `verificationCode`
+ * @method static ConditionField C_verificationCode() The Condition Field of: Field `verificationCode`
  * @property \Services\XUA\DateTimeInstance codeSentAt
  * @method static EntityFieldSignature F_codeSentAt() The Signature of: Field `codeSentAt`
  * @method static ConditionField C_codeSentAt() The Condition Field of: Field `codeSentAt`
@@ -64,8 +64,8 @@ class Session extends Entity
                 new Text(['maxLength' => 255]),
                 ''
             ),
-            'activationCode' => new EntityFieldSignature(
-                static::class, 'activationCode',
+            'verificationCode' => new EntityFieldSignature(
+                static::class, 'verificationCode',
                 new Text(['minLength' => 6, 'maxLength' => 6]),
                 null
             ),

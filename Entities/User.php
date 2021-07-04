@@ -106,7 +106,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string referral
  * @method static EntityFieldSignature F_referral() The Signature of: Field `referral`
  * @method static ConditionField C_referral() The Condition Field of: Field `referral`
- * @property \Entities\User\Session[] sessions
+ * @property Session[] sessions
  * @method static EntityFieldSignature F_sessions() The Signature of: Field `sessions`
  * @method static ConditionField C_sessions() The Condition Field of: Field `sessions`
  */
