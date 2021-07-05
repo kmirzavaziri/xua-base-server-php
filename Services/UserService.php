@@ -5,11 +5,20 @@ namespace Services;
 use Entities\User;
 use Entities\User\Session;
 use Services\XUA\DateTimeInstance;
+use Supers\Basics\Numerics\DecimalRange;
+use Supers\Basics\Numerics\Integer;
+use Supers\Customs\Email;
+use Supers\Customs\IranPhone;
 use XUA\Service;
 use XUA\Tools\Entity\Condition;
 
 abstract class UserService extends Service
 {
+    // @TODO use this
+    const VERIFICATION_CODE_LENGTH = 6;
+    // @TODO use this
+    const VERIFICATION_CODE_EXPIRATION_TIME = DateTimeInstance::MINUTE;
+
     const REGEX_OS_MAP = [
         '/windows phone 8/i'    =>  'Windows Phone 8',
         '/windows phone os 7/i' =>  'Windows Phone 7',
@@ -43,23 +52,36 @@ abstract class UserService extends Service
     {
         self::$session = new Session();
 
-        if (isset($_SERVER['USER_ACCESS_TOKEN'])) {
-            $pos = strpos($_SERVER['USER_ACCESS_TOKEN'], ':');
-            if ($pos and $pos != strlen($_SERVER['USER_ACCESS_TOKEN'])) {
-                $userId = substr($_SERVER['USER_ACCESS_TOKEN'], 0, $pos);
-                $accessToken = substr($_SERVER['USER_ACCESS_TOKEN'], $pos + 1, strlen($_SERVER['USER_ACCESS_TOKEN']) - ($pos + 1));
-                self::$session = Session::getOne(
-                    Condition::leaf(Session::C_user()->rel(User::F_id()), Condition::EQ, $userId)
-                        ->and(Condition::leaf(Session::C_accessToken(), Condition::EQ, $accessToken))
-                );
-                if (self::$session->id) {
-                    self::$session->systemInfo = UserService::getSystemInfo();
-                    self::$session->ip = $_SERVER['REMOTE_ADDR'];
-                    self::$session->lastOnline = new DateTimeInstance();
-                    self::$session->store();
-                }
-            }
+        if (!isset($_SERVER['HTTP_USER_ACCESS_TOKEN'])) {
+            return;
         }
+        $fullAccessToken = $_SERVER['HTTP_USER_ACCESS_TOKEN'];
+
+        $pos = strpos($fullAccessToken, ':');
+        if (! $pos or $pos == strlen($fullAccessToken)) {
+            return;
+        }
+
+        $userId = substr($fullAccessToken, 0, $pos);
+        $accessToken = substr($fullAccessToken, $pos + 1, strlen($fullAccessToken) - ($pos + 1));
+
+        if (!(new Integer(['unsigned' => true]))->accepts($userId)) {
+            return;
+        }
+
+        self::$session = Session::getOne(
+            Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $userId)
+                ->and(Session::C_accessToken(), Condition::EQ, $accessToken)
+        );
+        if (!self::$session->id) {
+            return;
+        }
+
+        self::$session->systemInfo = UserService::getSystemInfo();
+        self::$session->ip = $_SERVER['REMOTE_ADDR'];
+        self::$session->lastOnline = new DateTimeInstance();
+        self::$session->store();
+
     }
 
     public static function session(): Session
@@ -74,7 +96,10 @@ abstract class UserService extends Service
 
     public static function generateVerificationCode() : int
     {
-        return rand(100000, 999999);
+        return rand(
+            pow(10, self::VERIFICATION_CODE_LENGTH - 1),
+            pow(10, self::VERIFICATION_CODE_LENGTH) - 1
+        );
     }
 
     public static function getSystemInfo() : string
@@ -99,4 +124,36 @@ abstract class UserService extends Service
         return $device . ' | ' . $os;
     }
 
+    public static function getUserByEmailOrPhone(string &$emailOrPhone, ?bool &$isEmail): User
+    {
+        $cellphoneType = new IranPhone(['type' => 'cellphone']);
+        $EmailType = new Email([]);
+        $isEmail = false;
+        $condition = Condition::falseLeaf();
+        if ($cellphoneType->accepts($emailOrPhone)) {
+            $condition = Condition::leaf(User::C_cellphoneNumber(), Condition::EQ, $emailOrPhone);
+        } elseif ($EmailType->accepts($emailOrPhone)) {
+            $condition = Condition::leaf(User::C_email(), Condition::EQ, $emailOrPhone);
+            $isEmail = true;
+        }
+        return User::getOne($condition);
+    }
+
+    public static function generateAccessToken(Session $session): string
+    {
+        return password_hash($session->id . '|' . static::getRandomSalt(32), PASSWORD_DEFAULT);
+    }
+
+    public static function getRandomSalt(int $length) {
+        if (!(new DecimalRange(['min' => 1, 'max' => 100]))->accepts($length)) {
+            $length = 32;
+        }
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randMax = strlen($chars) - 1;
+        $result = [];
+        for ($i = 0; $i < $length; $i++) {
+            $result[] = $chars[rand(0, $randMax)];
+        }
+        return implode('', $result);
+    }
 }

@@ -12,8 +12,6 @@ use Services\XUA\DateTimeInstance;
 use Services\XUA\ExpressionService;
 use Services\XUA\TemplateService;
 use Supers\Basics\Strings\Text;
-use Supers\Customs\Email;
-use Supers\Customs\IranPhone;
 use XUA\Method;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -41,19 +39,7 @@ class SendVerificationCode extends Method
     protected function execute(): void
     {
         $emailOrPhone = $this->Q_emailOrPhone;
-        $cellphoneType = new IranPhone(['type' => 'cellphone']);
-        $EmailType = new Email([]);
-        $isEmail = false;
-        if ($cellphoneType->accepts($emailOrPhone)) {
-            $condition = Condition::leaf(User::C_cellphoneNumber(), Condition::EQ, $emailOrPhone);
-        } elseif ($EmailType->accepts($emailOrPhone)) {
-            $condition = Condition::leaf(User::C_email(), Condition::EQ, $emailOrPhone);
-            $isEmail = true;
-        } else {
-            $this->addAndThrowError('emailOrPhone', ExpressionService::get('errormessage.email.or.cellphone.is.not.valid'));
-        }
-
-        $user = User::getOne($condition);
+        $user = UserService::getUserByEmailOrPhone($emailOrPhone, $isEmail);
         if (!$user->id) {
             if ($isEmail) {
                 $user->email = $emailOrPhone;
@@ -63,11 +49,10 @@ class SendVerificationCode extends Method
             $user->store();
         }
 
-        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(2 * DateTimeInstance::MINUTE));
+        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(UserService::VERIFICATION_CODE_EXPIRATION_TIME));
         $session = Session::getOne(
-            Condition::leaf(Session::C_codeSentAt(), Condition::GRATER, $secondsAgo)
-// @TODO
-//                ->and(Session::C_user(), Condition::EQ, $user->id)
+            Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
+                ->and(Session::C_codeSentAt(), Condition::GRATER, $secondsAgo)
         );
         if ($session->id) {
             $this->addAndThrowError('', ExpressionService::get('errormessage.wait.seconds.to.send.verification.code', ['seconds' => $session->codeSentAt->dist($secondsAgo)->getTimestamp()]));

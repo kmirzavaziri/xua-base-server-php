@@ -1,5 +1,7 @@
 █   XUA/
 █       Me/
+1           Set Index for session user id (or all relations)
+1?          Make it possible to set condition on relational id without using rel() method and join
 █           Read DB credentials from db.yml
 █           Expression Service
 █           Validate method exception to have only request item names and empty string as keys

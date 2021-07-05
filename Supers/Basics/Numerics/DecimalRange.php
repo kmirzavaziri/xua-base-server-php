@@ -6,8 +6,6 @@ namespace Supers\Basics\Numerics;
 
 use Supers\Basics\Boolean;
 use XUA\Exceptions\SuperValidationException;
-use XUA\Tools\ColumnType;
-use XUA\Tools\Entity\Dialect;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -66,7 +64,7 @@ class DecimalRange extends Decimal
         return true;
     }
 
-    protected function _databaseType(): ?ColumnType
+    protected function _databaseType(): ?string
     {
         $min = $this->min;
         $max = min($this->max, pow($this->base, $this->integerLength));

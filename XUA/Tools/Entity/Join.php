@@ -4,7 +4,6 @@
 namespace XUA\Tools\Entity;
 
 
-use Exception;
 use Supers\Basics\EntitySupers\EntityRelation;
 use XUA\Exceptions\EntityJoinException;
 use XUA\Tools\Signature\EntityFieldSignature;
@@ -42,10 +41,10 @@ class Join
         $rightTableName = $type->relatedEntity::table();
         $rightTableNameAlias = $this->rightTableNameAlias();
 
-        if (($type->relation == 'II' and $type->definedOn == 'here') or $type->relation == 'IN') {
+        if (($type->relation == 'II' and $type->definedOn == 'here') or $type->relation == 'NI') {
             $name = $this->joiningField->name;
             return "$this->type JOIN $rightTableName $rightTableNameAlias ON $this->leftTableNameAlias.$name = $rightTableNameAlias.id";
-        } elseif (($type->relation == 'II' and $type->definedOn == 'there') or $type->relation == 'NI') {
+        } elseif (($type->relation == 'II' and $type->definedOn == 'there') or $type->relation == 'IN') {
             $name = $type->invName;
             return "$this->type JOIN $rightTableName $rightTableNameAlias ON $this->leftTableNameAlias.id = $rightTableNameAlias.$name";
         } else { // NN

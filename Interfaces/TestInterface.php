@@ -2,17 +2,13 @@
 
 namespace Interfaces;
 
-use Services\XUA\ConstantService;
-use Services\XUA\DateTimeInstance;
 use XUA\InterfaceEve;
 
 class TestInterface extends InterfaceEve
 {
     public static function execute(): string
     {
-
-
-        var_dump(DateTimeInstance::fromLocalYmdHis('1400-3-15 0:0:0')->formatJalali('r'));
+//        var_dump(DateTimeInstance::fromLocalYmdHis('1400-3-15 0:0:0')->formatJalali('r'));
 
 //        $super = new Integer([]);
 //

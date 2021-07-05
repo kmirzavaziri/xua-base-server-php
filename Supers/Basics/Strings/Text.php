@@ -50,12 +50,12 @@ class Text extends Super
         $length = strlen($input);
 
         if ($this->minLength !== null and $length < $this->minLength) {
-            $message = "Length of $input ($length) must be at least $this->minLength.";
+            $message = "Length of '$input' ($length) must be at least $this->minLength.";
             return false;
         }
 
         if ($this->maxLength !== null and $length > $this->maxLength) {
-            $message = "Length of $input ($length) must be at most $this->maxLength.";
+            $message = "Length of '$input' ($length) must be at most $this->maxLength.";
             return false;
         }
 

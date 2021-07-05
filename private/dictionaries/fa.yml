@@ -13,3 +13,4 @@ verification.code: کد تأییدیه مزرعه من
 your.verification.code.is.code: "‏به مرزعه من خوش آمدید: $verificationCode"
 email.from.name.support: پشتیبانی مزرعه من
 verification.code.email.from.name: مزرعه من
+errormessage.verification.code.is.invalid: کد تأییدیه نادرست است.

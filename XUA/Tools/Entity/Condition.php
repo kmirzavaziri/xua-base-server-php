@@ -5,7 +5,6 @@ namespace XUA\Tools\Entity;
 
 
 
-use Exception;
 use ReflectionClass;
 use ReflectionException;
 use Supers\Basics\EntitySupers\EntityRelation;
@@ -71,7 +70,7 @@ final class Condition
         }
 
         if (is_a($field->signature->type, EntityRelation::class)) {
-            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use relIf or relMust function on the CF.');
+            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use rel function on the it.');
         }
 
         /** @var Condition $condition */
