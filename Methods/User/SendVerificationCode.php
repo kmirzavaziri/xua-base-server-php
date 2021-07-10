@@ -32,7 +32,6 @@ class SendVerificationCode extends Method
     protected static function _responseSignatures(): array
     {
         return array_merge(parent::_responseSignatures(), [
-
         ]);
     }
 

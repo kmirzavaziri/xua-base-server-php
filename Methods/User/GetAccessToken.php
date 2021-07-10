@@ -26,7 +26,7 @@ class GetAccessToken extends Method
     {
         return array_merge(parent::_requestSignatures(), [
             'emailOrPhone' => new MethodItemSignature(new Text([]), true, null, false),
-            'verificationCode' => new MethodItemSignature(new Text(['minLength' => UserService::VERIFICATION_CODE_LENGTH, 'maxLength' => UserService::VERIFICATION_CODE_LENGTH]), true, null, false),
+            'verificationCode' => new MethodItemSignature(Session::F_verificationCode()->type, true, null, false),
         ]);
     }
 
