@@ -4,7 +4,7 @@ namespace Entities\User;
 
 
 use Entities\User;
-use Services\UserService;
+use Services\XUA\ConstantService;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\DateTime;
 use Supers\Basics\Strings\Enum;
@@ -67,7 +67,7 @@ class Session extends Entity
             ),
             'verificationCode' => new EntityFieldSignature(
                 static::class, 'verificationCode',
-                new Text(['minLength' => UserService::VERIFICATION_CODE_LENGTH, 'maxLength' => UserService::VERIFICATION_CODE_LENGTH]),
+                new Text(['minLength' => ConstantService::VERIFICATION_CODE_LENGTH, 'maxLength' => ConstantService::VERIFICATION_CODE_LENGTH]),
                 null
             ),
             'codeSentAt' => new EntityFieldSignature(

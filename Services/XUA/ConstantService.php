@@ -23,6 +23,12 @@ final class ConstantService extends Service
 
     const DEFAULT_LANG = 'fa';
 
+    // @TODO use this
+    const VERIFICATION_CODE_LENGTH = 6;
+    // @TODO use this
+    const VERIFICATION_CODE_EXPIRATION_TIME = DateTimeInstance::MINUTE;
+
+
     private static array $cache = [];
 
     /**

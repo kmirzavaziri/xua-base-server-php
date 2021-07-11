@@ -4,6 +4,7 @@ namespace Services;
 
 use Entities\User;
 use Entities\User\Session;
+use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
 use Supers\Basics\Numerics\DecimalRange;
 use Supers\Basics\Numerics\Integer;
@@ -14,11 +15,6 @@ use XUA\Tools\Entity\Condition;
 
 abstract class UserService extends Service
 {
-    // @TODO use this
-    const VERIFICATION_CODE_LENGTH = 6;
-    // @TODO use this
-    const VERIFICATION_CODE_EXPIRATION_TIME = DateTimeInstance::MINUTE;
-
     const REGEX_OS_MAP = [
         '/windows phone 8/i'    =>  'Windows Phone 8',
         '/windows phone os 7/i' =>  'Windows Phone 7',
@@ -97,8 +93,8 @@ abstract class UserService extends Service
     public static function generateVerificationCode() : int
     {
         return rand(
-            pow(10, self::VERIFICATION_CODE_LENGTH - 1),
-            pow(10, self::VERIFICATION_CODE_LENGTH) - 1
+            pow(10, ConstantService::VERIFICATION_CODE_LENGTH - 1),
+            pow(10, ConstantService::VERIFICATION_CODE_LENGTH) - 1
         );
     }
 

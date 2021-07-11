@@ -3,7 +3,7 @@
 namespace Methods\User;
 
 use Entities\User\Session;
-use Services\UserService;
+use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
 use Supers\Basics\Numerics\Integer;
 use XUA\Method;
@@ -39,7 +39,7 @@ class RemoveExpiredSessions extends Method
         $this->count = Session::deleteMany(
             Condition::leaf(Session::C_accessToken(), Condition::ISNULL)
                 ->or(Session::C_accessToken(), Condition::EQ, '')
-                ->and(Session::C_codeSentAt(), Condition::LESSEQ, (new DateTimeInstance())->dist(new DateTimeInstance(UserService::VERIFICATION_CODE_EXPIRATION_TIME)))
+                ->and(Session::C_codeSentAt(), Condition::LESSEQ, (new DateTimeInstance())->dist(new DateTimeInstance(ConstantService::VERIFICATION_CODE_EXPIRATION_TIME)))
         );
     }
 }

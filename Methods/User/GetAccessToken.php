@@ -5,6 +5,7 @@ namespace Methods\User;
 use Entities\User;
 use Entities\User\Session;
 use Services\UserService;
+use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
 use Services\XUA\ExpressionService;
 use Supers\Basics\Strings\Text;
@@ -49,7 +50,7 @@ class GetAccessToken extends Method
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
                 ->and(Session::C_verificationCode(), Condition::EQ, $this->Q_verificationCode)
                 ->and(Session::C_accessToken(), Condition::EQ, '')
-                ->and(Session::C_codeSentAt(), Condition::GRATER, (new DateTimeInstance())->dist(new DateTimeInstance(UserService::VERIFICATION_CODE_EXPIRATION_TIME)))
+                ->and(Session::C_codeSentAt(), Condition::GRATER, (new DateTimeInstance())->dist(new DateTimeInstance(ConstantService::VERIFICATION_CODE_EXPIRATION_TIME)))
         );
         if (!$session->id) {
             $this->addAndThrowError('emailOrPhone', ExpressionService::get('errormessage.verification.code.is.invalid'));

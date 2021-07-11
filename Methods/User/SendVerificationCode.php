@@ -8,6 +8,7 @@ use Services\EmailService;
 use Services\EmailUser;
 use Services\SmsService;
 use Services\UserService;
+use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
 use Services\XUA\ExpressionService;
 use Services\XUA\TemplateService;
@@ -48,7 +49,7 @@ class SendVerificationCode extends Method
             $user->store();
         }
 
-        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(UserService::VERIFICATION_CODE_EXPIRATION_TIME));
+        $secondsAgo = (new DateTimeInstance())->dist(new DateTimeInstance(ConstantService::VERIFICATION_CODE_EXPIRATION_TIME));
         $session = Session::getOne(
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
                 ->and(Session::C_codeSentAt(), Condition::GRATER, $secondsAgo)
