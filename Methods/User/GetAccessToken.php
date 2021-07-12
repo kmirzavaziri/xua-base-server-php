@@ -56,7 +56,7 @@ class GetAccessToken extends Method
             $this->addAndThrowError('emailOrPhone', ExpressionService::get('errormessage.verification.code.is.invalid'));
         }
 
-        $session->verificationCode = '';
+        $session->verificationCode = null;
         $session->accessToken = UserService::generateAccessToken($session);
         $session->store();
 
