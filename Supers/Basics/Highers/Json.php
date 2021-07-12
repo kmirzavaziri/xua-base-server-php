@@ -40,7 +40,7 @@ class Json extends Super
 
     protected function _marshal($input): mixed
     {
-        return json_encode(JsonService::marshalItems($input, $this));
+        return json_encode($input ? JsonService::marshalItems($input, $this) : $input);
     }
 
     protected function _marshalDatabase($input): mixed
