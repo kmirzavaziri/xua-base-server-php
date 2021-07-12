@@ -103,6 +103,9 @@ final class EntityExtractService extends Service
     private static function validateFieldsOnEntity(string $entityName, array $fields): void
     {
         foreach ($fields as $field) {
+            if (!is_a($field, EntityFieldSignature::class)) {
+                throw new Exception("Field given is not an instance of `EntityFieldSignature`.");
+            }
             if ($field->entity != $entityName) {
                 throw new Exception("Field '$field->name' entity '$field->entity' is not equal to '$entityName'.");
             }

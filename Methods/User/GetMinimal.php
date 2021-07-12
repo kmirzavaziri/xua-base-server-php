@@ -35,6 +35,6 @@ class GetMinimal extends Method
         if (!$user->id) {
             $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
         }
-        $this->user = EntityExtractService::fields($user, [User::C_profilePicture(), User::C_firstNameFa(), User::C_lastNameFa()]);
+        $this->user = EntityExtractService::fields($user, [User::F_profilePicture(), User::F_firstNameFa(), User::F_lastNameFa()]);
     }
 }
