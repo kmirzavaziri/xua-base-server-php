@@ -54,7 +54,6 @@ abstract class SmsService extends Service
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-//        curl_setopt($ch, CURLOPT_POST, count(json_encode($data)));
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         $response = curl_exec($ch);
         curl_close($ch);
