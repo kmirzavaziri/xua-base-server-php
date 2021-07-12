@@ -14,3 +14,6 @@ your.verification.code.is.code: "‏به مرزعه من خوش آمدید: $ver
 email.from.name.support: پشتیبانی مزرعه من
 verification.code.email.from.name: مزرعه من
 errormessage.verification.code.is.invalid: کد تأییدیه نادرست است.
+errormessage.session.id.not.found: سشن مورد نظر یافت نشد.
+errormessage.cannot.remove.current.session: سشن کنونی را نمی‌توانید پایان دهید، برای این منظور از لاگ‌اوت استفاده کنید.
+errormessage.access.denied: خطای عدم دسترسی.
