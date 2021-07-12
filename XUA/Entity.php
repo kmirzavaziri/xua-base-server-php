@@ -85,7 +85,7 @@ abstract class Entity extends XUA
     private ?int $_x_given_id;
 
     /**
-     * @throws SuperValidationException
+     * @throws SuperValidationException|EntityException
      */
     final public static function _init() : void
     {
