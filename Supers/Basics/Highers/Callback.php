@@ -5,6 +5,7 @@ namespace Supers\Basics\Highers;
 
 
 
+use Closure;
 use ReflectionFunction;
 use Supers\Basics\Boolean;
 use Supers\Basics\Strings\Symbol;
@@ -57,7 +58,7 @@ class Callback extends Super
             return false;
         }
 
-        $function = new ReflectionFunction($input);
+        $function = new ReflectionFunction(Closure::fromCallable($input));
 
         $returnType = $function->getReturnType();
 

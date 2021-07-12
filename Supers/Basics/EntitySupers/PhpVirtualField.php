@@ -4,6 +4,8 @@
 namespace Supers\Basics\EntitySupers;
 
 
+use Closure;
+use ReflectionFunction;
 use Supers\Basics\Highers\Callback;
 use XUA\Entity;
 use XUA\Super;
@@ -21,18 +23,11 @@ class PhpVirtualField extends Super
     {
         return array_merge(parent::_argumentSignatures(), [
             'getter' => new SuperArgumentSignature(new Callback([
+                'nullable' => false,
                 'parameters' => [
                     [
                         'name' => 'entity',
                         'type' => Entity::class,
-                        'required' => true,
-                        'checkDefault' => false,
-                        'default' => null,
-                        'passByReference' => false,
-                    ],
-                    [
-                        'name' => 'param',
-                        'type' => 'array',
                         'required' => true,
                         'checkDefault' => false,
                         'default' => null,
@@ -50,14 +45,6 @@ class PhpVirtualField extends Super
                         'checkDefault' => false,
                         'default' => null,
                         'passByReference' => true,
-                    ],
-                    [
-                        'name' => 'param',
-                        'type' => 'array',
-                        'required' => true,
-                        'checkDefault' => false,
-                        'default' => null,
-                        'passByReference' => false,
                     ],
                     [
                         'name' => 'value',
@@ -80,5 +67,10 @@ class PhpVirtualField extends Super
     protected function _databaseType(): ?string
     {
         return 'DONT STORE';
+    }
+
+    protected function _phpType(): string
+    {
+        return (new ReflectionFunction(Closure::fromCallable($this->getter)))->getReturnType();
     }
 }
