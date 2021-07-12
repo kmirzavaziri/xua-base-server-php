@@ -78,16 +78,4 @@ class Map extends Json
 
         return true;
     }
-
-    protected function _unmarshal($input): mixed
-    {
-        if (is_string($input)) {
-            $data = json_decode($input, true);
-            if ($data !== null) {
-                return $data;
-            }
-        }
-
-        return $input;
-    }
 }

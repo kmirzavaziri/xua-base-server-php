@@ -5,6 +5,7 @@ namespace Supers\Basics\Highers;
 
 
 
+use Services\XUA\JsonService;
 use Supers\Basics\Boolean;
 use Supers\Basics\Strings\Text;
 use XUA\Super;
@@ -29,8 +30,8 @@ class Json extends Super
             return true;
         }
 
-        if (!is_array($input) and !is_object($input)) {
-            $message = gettype($input) . " is neither array nor object.";
+        if (!is_array($input)) {
+            $message = gettype($input) . " is not an array.";
             return false;
         }
 
@@ -39,7 +40,7 @@ class Json extends Super
 
     protected function _marshal($input): mixed
     {
-        return json_encode($input);
+        return json_encode(JsonService::marshalItems($input, $this));
     }
 
     protected function _marshalDatabase($input): mixed
@@ -50,12 +51,17 @@ class Json extends Super
     protected function _unmarshal($input): mixed
     {
         if (is_string($input)) {
-            $data = json_decode($input);
+            $data = json_decode($input, true);
             if ($data !== null) {
-                return $data;
+                $output = $data;
             }
+        } elseif (is_object($input)) {
+            $output = (array)$input;
         }
 
+        if (isset($output)) {
+            return JsonService::unmarshalItems($output, $this);
+        }
         return $input;
     }
 
@@ -71,6 +77,6 @@ class Json extends Super
 
     protected function _phpType(): string
     {
-        return ($this->nullable ? 'null|' : '') . 'array|object';
+        return ($this->nullable ? '?' : '') . 'array';
     }
 }
