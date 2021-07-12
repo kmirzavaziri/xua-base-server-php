@@ -6,12 +6,16 @@ use Services\XUA\Dev\Credentials;
 use Services\XUA\ExpressionService;
 use Services\XUA\RouteService;
 use Services\XUA\SecurityService;
+use Supers\Basics\Highers\Map;
+use Supers\Basics\Highers\StructuredMap;
+use Supers\Basics\Strings\Symbol;
 use Throwable;
 use XUA\Entity;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\UrpiException;
 use XUA\InterfaceEve;
 use XUA\Method;
+use XUA\Tools\Signature\MethodItemSignature;
 
 class UniversalResourcePoolInterface extends InterfaceEve
 {
@@ -19,6 +23,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
     {
         header('Content-Type: application/json');
 
+        $mapType = new Map(['keyType' => new Symbol([])]);
         $response = [
             'errors' => [],
             'response' => (object)[]
@@ -32,6 +37,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
                     if ($class::isPublic() or SecurityService::verifyPrivateMethodAccess()) {
                         try {
                             $response['response'] = (new $class($_POST))->toArray();
+                            $responseType = new StructuredMap(['structure' => array_map(function (MethodItemSignature $signature) { return $signature->type; }, $class::responseSignatures())]);
                         } catch (Throwable $e) {
                             if (is_a($e, MethodRequestException::class)) {
                                 $unknownKeys = array_diff(array_keys($e->getErrors()), ['', ...array_keys($class::requestSignatures())]);
@@ -67,11 +73,10 @@ class UniversalResourcePoolInterface extends InterfaceEve
             }
         }
 
-        if (Credentials::developer()) {
-            return json_encode($response, JSON_PRETTY_PRINT);
-        } else {
-            return json_encode($response);
-        }
+        return (new StructuredMap(['structure' => [
+            'errors' => $mapType,
+            'response' => $responseType ?? $mapType
+        ]]))->marshal($response);
 
     }
 }
