@@ -65,6 +65,10 @@ abstract class UserService extends Service
             return;
         }
 
+        if (!$accessToken) {
+            return;
+        }
+
         self::$session = Session::getOne(
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $userId)
                 ->and(Session::C_accessToken(), Condition::EQ, $accessToken)
