@@ -3,6 +3,7 @@
 namespace XUA;
 
 
+use ReflectionClass;
 use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
@@ -26,8 +27,10 @@ abstract class Method extends XUA
 
     protected static function _init(): void
     {
-        self::$_x_request_signatures[static::class] = static::requestSignaturesCalculator();
-        self::$_x_response_signatures[static::class] = static::responseSignaturesCalculator();
+        if (!(new ReflectionClass(static::class))->isAbstract()) {
+            self::$_x_request_signatures[static::class] = static::requestSignaturesCalculator();
+            self::$_x_response_signatures[static::class] = static::responseSignaturesCalculator();
+        }
     }
 
     /**
