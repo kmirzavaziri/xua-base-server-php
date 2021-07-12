@@ -56,8 +56,12 @@ k           Farm
 0           ContactUsFields
 █       Methods/
 █           User/
-8               SendVerificationCode
-9               GetAccessToken
+                Session/
+                    GetAll
+                    Terminate
+                    TerminateAllOthers
+█               SendVerificationCode
+█               GetAccessToken
 g               GetMinimal
 f               GetBasics
 e               SetBasics
