@@ -85,7 +85,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string address
  * @method static EntityFieldSignature F_address() The Signature of: Field `address`
  * @method static ConditionField C_address() The Condition Field of: Field `address`
- * @property null|array|object geolocation
+ * @property ?array geolocation
  * @method static EntityFieldSignature F_geolocation() The Signature of: Field `geolocation`
  * @method static ConditionField C_geolocation() The Condition Field of: Field `geolocation`
  * @property ?string postalCode
@@ -106,7 +106,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string referral
  * @method static EntityFieldSignature F_referral() The Signature of: Field `referral`
  * @method static ConditionField C_referral() The Condition Field of: Field `referral`
- * @property Session[] sessions
+ * @property \Entities\User\Session[] sessions
  * @method static EntityFieldSignature F_sessions() The Signature of: Field `sessions`
  * @method static ConditionField C_sessions() The Condition Field of: Field `sessions`
  */
