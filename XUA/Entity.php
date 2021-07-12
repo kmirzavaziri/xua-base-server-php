@@ -497,8 +497,8 @@ abstract class Entity extends XUA
 
     final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager) : int
     {
-        [$columnsExpression, $keys] = self::columnsExpression();
-        return self::execute("DELETE FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
+        // @TODO remove relatives or raise error, just like delete
+        return self::execute("DELETE " . static::table() . " FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
     }
 
     # Predefined Methods (Array-Entity Conversations)
