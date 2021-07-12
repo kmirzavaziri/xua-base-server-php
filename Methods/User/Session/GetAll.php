@@ -7,7 +7,7 @@ use Entities\User\Session;
 use Services\UserService;
 
 use Services\XUA\ExpressionService;
-use XUA\ReadMethod;
+use XUA\CRUD\GetAllMethod;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
 
@@ -15,7 +15,7 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @property array sessions
  * @method static MethodItemSignature R_sessions() The Signature of: Response Item `sessions`
  */
-class GetAll extends ReadMethod
+class GetAll extends GetAllMethod
 {
     protected static function resultName(): string
     {
@@ -33,7 +33,7 @@ class GetAll extends ReadMethod
         ];
     }
 
-    protected function entityItems(): array
+    protected function all(): array
     {
         $user = UserService::user();
         if (!$user->id) {
