@@ -35,7 +35,7 @@ class DateTime extends Instance
     protected function _marshal($input): mixed
     {
         /** @var DateTimeInstance $input */
-        return $input->formatLocal('Y-m-d H:i:s');
+        return $input ? $input->formatLocal('Y-m-d H:i:s') : $input;
     }
 
     protected function _unmarshal($input): mixed
