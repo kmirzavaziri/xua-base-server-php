@@ -6,6 +6,7 @@ use Entities\User;
 use Entities\User\Session;
 use Services\UserService;
 
+use Services\XUA\ExpressionService;
 use XUA\ReadMethod;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -36,7 +37,7 @@ class GetAll extends ReadMethod
     {
         $user = UserService::user();
         if (!$user->id) {
-            $this->addAndThrowError('', 'errormessage.access.denied');
+            $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
         }
         return Session::getMany(
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
