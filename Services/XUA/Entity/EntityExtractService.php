@@ -104,7 +104,7 @@ final class EntityExtractService extends Service
     {
         foreach ($fields as $field) {
             if ($field->entity != $entityName) {
-                throw new Exception("Field's entity '$field->entity' is not equal to '$entityName'.");
+                throw new Exception("Field '$field->name' entity '$field->entity' is not equal to '$entityName'.");
             }
             if (!in_array($field->name, array_keys($entityName::fieldSignatures()))) {
                 throw new Exception("Field '$field->name' does not exist in entity '$field->entity'.");

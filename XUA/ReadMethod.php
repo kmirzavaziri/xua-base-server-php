@@ -3,6 +3,7 @@
 namespace XUA;
 
 use Services\XUA\Entity\EntityExtractService;
+use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\MethodItemSignature;
 
 abstract class ReadMethod extends Method
@@ -20,8 +21,15 @@ abstract class ReadMethod extends Method
     }
 
     // Newly added methods
+
+    /**
+     * @return EntityFieldSignature[]
+     */
     abstract protected static function entityFields(): array;
 
+    /**
+     * @return Entity[]
+     */
     abstract protected function entityItems(): array;
 
     abstract protected static function resultName(): string;
