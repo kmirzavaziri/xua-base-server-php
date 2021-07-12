@@ -4,6 +4,7 @@
 namespace Supers\Basics\Strings;
 
 
+use Supers\Basics\Boolean;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -15,13 +16,24 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property string pattern
  * @method static SuperArgumentSignature A_pattern() The Signature of: Argument `pattern`
+ * @property bool allowEmpty
+ * @method static SuperArgumentSignature A_allowEmpty() The Signature of: Argument `allowEmpty`
  */
 class Symbol extends Regex
 {
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
+            'allowEmpty' => new SuperArgumentSignature(new Boolean([]), false, false, false),
             'pattern' => new SuperArgumentSignature(new Text([]), false, '/^[a-zA-Z_][a-zA-Z_0-9]*$/', true)
         ]);
+    }
+
+    protected function _predicate($input, string &$message = null): bool
+    {
+        if ($input === '' and $this->allowEmpty) {
+            return true;
+        }
+        return parent::_predicate($input, $message);
     }
 }

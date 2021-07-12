@@ -23,7 +23,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
     {
         header('Content-Type: application/json');
 
-        $mapType = new Map(['keyType' => new Symbol([])]);
+        $mapType = new Map(['keyType' => new Symbol(['allowEmpty' => true])]);
         $response = [
             'errors' => [],
             'response' => (object)[]
