@@ -1,6 +1,6 @@
 <?php
 
-namespace Methods\User;
+namespace Methods\User\Session;
 
 use Entities\User\Session;
 use Services\XUA\ConstantService;

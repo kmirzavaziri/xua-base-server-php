@@ -1,6 +1,6 @@
 <?php
 
-namespace Methods\User;
+namespace Methods\User\Access;
 
 use Entities\User;
 use Entities\User\Session;
