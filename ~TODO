@@ -56,10 +56,10 @@ k           Farm
 0           ContactUsFields
 █       Methods/
 █           User/
-                Session/
-                    GetAll
-                    Terminate
-                    TerminateAllOthers
+█               Session/
+█                   GetAll
+█                   Terminate
+█                   TerminateAllOthers
 █               SendVerificationCode
 █               GetAccessToken
 g               GetMinimal
