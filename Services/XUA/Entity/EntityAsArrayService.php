@@ -14,7 +14,7 @@ use XUA\Service;
 use XUA\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
 
-final class EntityExtractService extends Service
+final class EntityAsArrayService extends Service
 {
     /**
      * @throws InstantiationException
@@ -30,7 +30,7 @@ final class EntityExtractService extends Service
      * @return mixed
      * @throws Exception
      */
-    public static function field(Entity $entity, EntityFieldSignature $field): mixed
+    public static function getField(Entity $entity, EntityFieldSignature $field): mixed
     {
         self::validateFieldsOnEntity($entity::class, [$field]);
         return $entity->{$field->name};
@@ -42,9 +42,9 @@ final class EntityExtractService extends Service
      * @return array
      * @throws Exception
      */
-    public static function fields(Entity $entity, array $fields): array
+    public static function getFields(Entity $entity, array $fields): array
     {
-        return self::fieldsArray([$entity], $fields, null)[0];
+        return self::getFieldsArray([$entity], $fields, null)[0];
     }
 
     /**
@@ -54,13 +54,12 @@ final class EntityExtractService extends Service
      * @return array
      * @throws Exception
      */
-    public static function fieldArray(array $entities, EntityFieldSignature $field, ?EntityFieldSignature $associationField = null): array
+    public static function getFieldArray(array $entities, EntityFieldSignature $field, ?EntityFieldSignature $associationField = null): array
     {
         return array_map(function (array $entityData) use ($field) {
             return $entityData[$field->name];
-        }, self::fieldsArray($entities, [$field], $associationField));
+        }, self::getFieldsArray($entities, [$field], $associationField));
     }
-
 
     /**
      * @param Entity[] $entities
@@ -69,7 +68,7 @@ final class EntityExtractService extends Service
      * @return array[]
      * @throws Exception
      */
-    public static function fieldsArray(array $entities, array $fields, ?EntityFieldSignature $associationField = null): array
+    public static function getFieldsArray(array $entities, array $fields, ?EntityFieldSignature $associationField = null): array
     {
         $fieldsToValidate = $associationField ? [...$fields, $associationField] : $fields;
         $validatedEntities = [];
