@@ -7,7 +7,7 @@ use Entities\User\Session;
 use Services\UserService;
 
 use Services\XUA\ExpressionService;
-use XUA\CRUD\GetAllMethod;
+use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
 
@@ -15,14 +15,14 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @property array sessions
  * @method static MethodItemSignature R_sessions() The Signature of: Response Item `sessions`
  */
-class GetAll extends GetAllMethod
+class GetAll extends MethodQuery
 {
-    protected static function resultName(): string
+    protected static function entity(): string
     {
-        return 'sessions';
+        return Session::class;
     }
 
-    protected static function entityFields(): array
+    protected static function fields(): array
     {
         return [
             Session::F_id(),
@@ -33,7 +33,7 @@ class GetAll extends GetAllMethod
         ];
     }
 
-    protected function all(): array
+    protected function feed(): array
     {
         $user = UserService::user();
         if (!$user->id) {
@@ -43,5 +43,10 @@ class GetAll extends GetAllMethod
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
                 ->and(Session::C_accessToken(), Condition::NEQ, '')
         );
+    }
+
+    protected static function fieldsWrapper(): string
+    {
+        return 'sessions';
     }
 }
