@@ -35,7 +35,7 @@ abstract class MethodQuery extends MethodEve
         ]);
     }
 
-    final protected function execute(): void
+    protected function body(): void
     {
         $feed = $this->feed();
         $fields = static::fields();

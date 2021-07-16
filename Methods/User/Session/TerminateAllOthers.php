@@ -23,7 +23,7 @@ class TerminateAllOthers extends Method
         ]);
     }
 
-    protected function execute(): void
+    protected function body(): void
     {
         $user = UserService::user();
         if (!$user->id) {

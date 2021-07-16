@@ -42,7 +42,7 @@ abstract class MethodEve extends XUA
         $this->_x_request = $request;
         MethodItemSignature::processRequest(static::requestSignatures(), $this->_x_request);
         MethodItemSignature::preprocessResponse(static::responseSignatures(), $this->_x_response);
-        $this->execute();
+        $this->body();
         MethodItemSignature::processResponse(static::responseSignatures(), $this->_x_response);
     }
 
@@ -139,7 +139,7 @@ abstract class MethodEve extends XUA
         return [];
     }
 
-    abstract protected function execute() : void;
+    abstract protected function body() : void;
 
     # Overridable Method Wrappers
     static protected function requestSignaturesCalculator() : array

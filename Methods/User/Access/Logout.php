@@ -20,7 +20,7 @@ class Logout extends Method
         ]);
     }
 
-    protected function execute(): void
+    protected function body(): void
     {
         $session = UserService::session();
         if (!$session->id) {

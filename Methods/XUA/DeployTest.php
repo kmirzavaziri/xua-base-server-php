@@ -31,7 +31,7 @@ class DeployTest extends Method
         ]);
     }
 
-    protected function execute(): void
+    protected function body(): void
     {
         $entitiesIterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(ConstantService::ENTITIES_NAMESPACE));
         $alters = [];

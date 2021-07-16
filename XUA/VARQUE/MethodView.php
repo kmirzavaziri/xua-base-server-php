@@ -25,7 +25,7 @@ abstract class MethodView extends MethodEve
         return $response;
     }
 
-    final protected function execute(): void
+    protected function body(): void
     {
         $feed = $this->feed();
         $fields = static::fields();

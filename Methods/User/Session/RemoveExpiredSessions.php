@@ -34,7 +34,7 @@ class RemoveExpiredSessions extends Method
         ]);
     }
 
-    protected function execute(): void
+    protected function body(): void
     {
         $this->count = Session::deleteMany(
             Condition::leaf(Session::C_accessToken(), Condition::ISNULL)

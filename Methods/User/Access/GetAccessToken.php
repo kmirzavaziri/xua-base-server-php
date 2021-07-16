@@ -38,7 +38,7 @@ class GetAccessToken extends Method
         ]);
     }
 
-    protected function execute(): void
+    protected function body(): void
     {
         $emailOrPhone = $this->Q_emailOrPhone;
         $user = UserService::getUserByEmailOrPhone($emailOrPhone, $isEmail);
