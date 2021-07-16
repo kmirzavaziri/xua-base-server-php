@@ -46,8 +46,8 @@ class MethodItemSignature
                 }
             }
 
-            if (!$signature->type->accepts($request[$key], $messages, [Super::METHOD_UNMARSHAL_DATABASE])) {
-                $exception->setError($key, $messages[Super::METHOD_UNMARSHAL_DATABASE]);
+            if (!$signature->type->accepts($request[$key], $messages, [Super::METHOD_UNMARSHAL])) {
+                $exception->setError($key, $messages[Super::METHOD_UNMARSHAL]);
             }
 
             $newRequest[$key] = $request[$key];
