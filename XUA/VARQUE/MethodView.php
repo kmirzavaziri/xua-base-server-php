@@ -12,7 +12,7 @@ abstract class MethodView extends MethodEve
 {
     final protected static function requestSignaturesCalculator(): array
     {
-        return static::_requestSignatures();
+        return parent::requestSignaturesCalculator();
     }
 
     final protected static function responseSignaturesCalculator(): array
