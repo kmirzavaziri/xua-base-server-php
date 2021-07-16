@@ -2,7 +2,7 @@
 
 use Supers\Basics\EntitySupers\EntityRelation;
 use XUA\Entity;
-use XUA\Method;
+use XUA\MethodEve;
 use XUA\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\XUAException;
@@ -63,7 +63,7 @@ function getClassParameters(string $class) : object
         if ($result->result) {
             $result->result = "/**" . PHP_EOL . $result->result . " */" . PHP_EOL;
         }
-    } elseif (is_a($class, Method::class, true)) {
+    } elseif (is_a($class, MethodEve::class, true)) {
         foreach ($class::requestSignatures() as $key => $signature) {
             $result->result .= " * @property " . $signature->type->phpType() . " Q_$key" . PHP_EOL;
             $result->result .= " * @method static MethodItemSignature Q_$key() The Signature of: Request Item `$key`" . PHP_EOL;
@@ -122,7 +122,7 @@ function getMethodExecuteVars(string $class) : object
 {
     $result = new Result(true, '');
 
-    if (is_a($class, Method::class, true)) {
+    if (is_a($class, MethodEve::class, true)) {
         foreach ($class::requestSignatures() as $key => $signature) {
             $result->result .= '         * @var ' . $signature->type->phpType() . ' $' . $key . PHP_EOL;
         }

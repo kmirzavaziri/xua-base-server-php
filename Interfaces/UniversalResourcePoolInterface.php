@@ -14,7 +14,7 @@ use XUA\Entity;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\UrpiException;
 use XUA\InterfaceEve;
-use XUA\Method;
+use XUA\MethodEve;
 use XUA\Tools\Signature\MethodItemSignature;
 
 class UniversalResourcePoolInterface extends InterfaceEve
@@ -33,7 +33,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
         } else {
             $class = str_replace('/', "\\", RouteService::$routeArgs['methodOrEntityPath']);
             if (class_exists($class)) {
-                if (is_a($class, Method::class, true)) {
+                if (is_a($class, MethodEve::class, true)) {
                     if ($class::isPublic() or SecurityService::verifyPrivateMethodAccess()) {
                         try {
                             $response['response'] = (new $class($_POST))->toArray();
@@ -67,7 +67,6 @@ class UniversalResourcePoolInterface extends InterfaceEve
                 } else {
                     $response['errors'] = ['' => 'Invalid path'];
                 }
-
             } else {
                 $response['errors'] = ['' => 'Invalid path'];
             }
