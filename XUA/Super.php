@@ -10,6 +10,10 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 
 abstract class Super extends XUA
 {
+    # Constants
+    const METHOD_UNMARSHAL = 'unmarshal';
+    const METHOD_UNMARSHAL_DATABASE = 'unmarshalDatabase';
+
     # Magics
     /**
      * @var SuperArgumentSignature[][]
@@ -232,13 +236,13 @@ abstract class Super extends XUA
         return $result;
     }
 
-    final public function implicitlyAccepts($input, array &$messages = null, array $tryMethods = ['unmarshal', 'unmarshalDatabase']) : bool
+    final public function implicitlyAccepts($input, array &$messages = null, array $tryMethods = [self::METHOD_UNMARSHAL, self::METHOD_UNMARSHAL_DATABASE]) : bool
     {
         # This way we do not change the real value of $input
         return $this->accepts($input, $messages, $tryMethods);
     }
 
-    final public function accepts(&$input, array &$messages = null, array $tryMethods = ['unmarshal', 'unmarshalDatabase']) : bool
+    final public function accepts(&$input, array &$messages = null, array $tryMethods = [self::METHOD_UNMARSHAL, self::METHOD_UNMARSHAL_DATABASE]) : bool
     {
         $messages = ['identity' => null];
         foreach ($tryMethods as $tryMethod) {
