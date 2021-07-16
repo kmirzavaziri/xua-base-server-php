@@ -2,14 +2,13 @@
 
 namespace XUA;
 
-
 use ReflectionClass;
 use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
 use XUA\Tools\Signature\MethodItemSignature;
 
-abstract class Method extends XUA
+abstract class MethodEve extends XUA
 {
     protected MethodRequestException $error;
 
@@ -143,12 +142,12 @@ abstract class Method extends XUA
     abstract protected function execute() : void;
 
     # Overridable Method Wrappers
-    static private function requestSignaturesCalculator() : array
+    static protected function requestSignaturesCalculator() : array
     {
         return static::_requestSignatures();
     }
 
-    static private function responseSignaturesCalculator() : array
+    static protected function responseSignaturesCalculator() : array
     {
         return static::_responseSignatures();
     }
