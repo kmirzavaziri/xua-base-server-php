@@ -5,7 +5,7 @@ namespace Methods\User;
 use Entities\User;
 use Services\UserService;
 use Services\XUA\ExpressionService;
-use XUA\CRUD\GetOneMethod;
+use XUA\VARQUE\MethodView;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 
@@ -13,9 +13,14 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @property array user
  * @method static MethodItemSignature R_user() The Signature of: Response Item `user`
  */
-class GetMinimal extends GetOneMethod
+class GetMinimal extends MethodView
 {
-    protected static function entityFields(): array
+    protected static function entity(): string
+    {
+        return User::class;
+    }
+
+    protected static function fields(): array
     {
         return [
             User::F_profilePicture(),
@@ -24,7 +29,7 @@ class GetMinimal extends GetOneMethod
         ];
     }
 
-    protected function one(): Entity
+    protected function feed(): Entity
     {
         $user = UserService::user();
         if (!$user->id) {
@@ -33,7 +38,7 @@ class GetMinimal extends GetOneMethod
         return $user;
     }
 
-    protected static function resultName(): string
+    protected static function fieldsWrapper(): string
     {
         return 'user';
     }
