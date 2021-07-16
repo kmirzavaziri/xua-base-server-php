@@ -10,8 +10,12 @@ use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
- * @property array user
- * @method static MethodItemSignature R_user() The Signature of: Response Item `user`
+ * @property mixed profilePicture
+ * @method static MethodItemSignature R_profilePicture() The Signature of: Response Item `profilePicture`
+ * @property ?string firstNameFa
+ * @method static MethodItemSignature R_firstNameFa() The Signature of: Response Item `firstNameFa`
+ * @property ?string lastNameFa
+ * @method static MethodItemSignature R_lastNameFa() The Signature of: Response Item `lastNameFa`
  */
 class GetMinimal extends MethodView
 {
@@ -36,10 +40,5 @@ class GetMinimal extends MethodView
             $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
         }
         return $user;
-    }
-
-    protected static function fieldsWrapper(): string
-    {
-        return 'user';
     }
 }
