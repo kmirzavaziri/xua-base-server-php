@@ -1,5 +1,6 @@
 █   XUA/
 █       Me/
+?           Remove users who never activated their account after reasonable amount of time.
 1           Set Index for session user id (or all relations)
 1?          Make it possible to set condition on relational id without using rel() method and join
 █           Read DB credentials from db.yml
