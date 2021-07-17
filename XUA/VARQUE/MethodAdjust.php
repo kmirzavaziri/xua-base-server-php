@@ -30,7 +30,7 @@ abstract class MethodAdjust extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         foreach ($fields as $field) {
-            if ($field->required or ($this->{'Q_' . $field->signature->name} ?? false)) {
+            if ($this->{'Q_' . $field->signature->name} ?? false) {
                 $feed->{$field->signature->name} = $this->{'Q_' . $field->signature->name};
             }
         }
