@@ -4,6 +4,7 @@
 namespace Services\XUA;
 
 
+use Supers\Basics\Numerics\DecimalRange;
 use XUA\Exceptions\InstantiationException;
 use XUA\Service;
 
@@ -27,4 +28,19 @@ final class SecurityService extends Service
     {
         return self::$hasPrivateMethodAccess;
     }
+
+    public static function getRandomSalt(int $length): string
+    {
+        if (!(new DecimalRange(['min' => 1, 'max' => 100]))->accepts($length)) {
+            $length = 32;
+        }
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randMax = strlen($chars) - 1;
+        $result = [];
+        for ($i = 0; $i < $length; $i++) {
+            $result[] = $chars[rand(0, $randMax)];
+        }
+        return implode('', $result);
+    }
+
 }

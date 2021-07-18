@@ -6,7 +6,7 @@ use Entities\User;
 use Entities\User\Session;
 use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
-use Supers\Basics\Numerics\DecimalRange;
+use Services\XUA\SecurityService;
 use Supers\Basics\Numerics\Integer;
 use Supers\Customs\Email;
 use Supers\Customs\IranPhone;
@@ -141,19 +141,6 @@ abstract class UserService extends Service
 
     public static function generateAccessToken(Session $session): string
     {
-        return password_hash($session->id . '|' . static::getRandomSalt(32), PASSWORD_DEFAULT);
-    }
-
-    public static function getRandomSalt(int $length) {
-        if (!(new DecimalRange(['min' => 1, 'max' => 100]))->accepts($length)) {
-            $length = 32;
-        }
-        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randMax = strlen($chars) - 1;
-        $result = [];
-        for ($i = 0; $i < $length; $i++) {
-            $result[] = $chars[rand(0, $randMax)];
-        }
-        return implode('', $result);
+        return password_hash($session->id . '|' . SecurityService::getRandomSalt(32), PASSWORD_DEFAULT);
     }
 }
