@@ -24,7 +24,26 @@ class IranNationalCode extends Text
             return true;
         }
 
-        $message = ExpressionService::get('errormessage.not.implemented.yet');
-        return false;
+        $message = ExpressionService::get('errormessage.incorrect.national.code');
+
+        if(!preg_match('/^[0-9]{10}$/', $input)) {
+            return false;
+        }
+        for ($i = 0; $i < 10; $i++) {
+            if(preg_match('/^'.$i.'{10}$/', $input)) {
+                return false;
+            }
+        }
+        $sum = 0;
+        for ($i = 0; $i < 9; $i++) {
+            $sum += ((10-$i) * $input[$i]) % 11;
+        }
+        $sum = $sum % 11;
+
+        if($sum != ($sum < 2 ? $input[9] : 11- $input[9])) {
+            return false;
+        }
+
+        return true;
     }
 }

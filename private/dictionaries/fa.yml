@@ -20,3 +20,4 @@ errormessage.access.denied: خطای عدم دسترسی.
 errormessage.invalid.file: فایل نامعتبر
 errormessage.invalid.file.format: فرمت فایل نادرست است.
 errormessage.invalid.file.size: حداکثر حجم مجاز $maxSize می‌باشد اما حجم این فایل $size است.
+errormessage.incorrect.national.code: فرمت کد ملی صحیح نیست.
