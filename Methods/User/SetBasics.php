@@ -4,14 +4,16 @@ namespace Methods\User;
 
 use Entities\User;
 use Services\UserService;
+use Services\XUA\ConstantService;
 use Services\XUA\ExpressionService;
+use Services\XUA\FileInstance;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodAdjust;
 
 /**
- * @property mixed Q_profilePicture
+ * @property ?FileInstance Q_profilePicture
  * @method static MethodItemSignature Q_profilePicture() The Signature of: Request Item `profilePicture`
  * @property ?string Q_firstNameFa
  * @method static MethodItemSignature Q_firstNameFa() The Signature of: Request Item `firstNameFa`
@@ -50,5 +52,21 @@ class SetBasics extends MethodAdjust
             $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
         }
         return $user;
+    }
+
+    protected function body(): void
+    {
+        /** @var User $user */
+        $user = $this->feed();
+
+        if ($this->Q_profilePicture) {
+            if ($user->profilePicture and file_exists($user->profilePicture->path)) {
+                unlink($user->profilePicture->path);
+            }
+            $user->profilePicture = null;
+            $this->Q_profilePicture->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . $user->id);
+        }
+
+        parent::body();
     }
 }

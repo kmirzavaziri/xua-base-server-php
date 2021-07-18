@@ -3,6 +3,9 @@
 namespace Entities;
 
 use Entities\User\Session;
+use Services\Mime;
+use Services\Size;
+use Services\XUA\FileInstance;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Date;
 use Supers\Basics\Highers\File;
@@ -58,13 +61,13 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string job
  * @method static EntityFieldSignature F_job() The Signature of: Field `job`
  * @method static ConditionField C_job() The Condition Field of: Field `job`
- * @property mixed profilePicture
+ * @property ?FileInstance profilePicture
  * @method static EntityFieldSignature F_profilePicture() The Signature of: Field `profilePicture`
  * @method static ConditionField C_profilePicture() The Condition Field of: Field `profilePicture`
- * @property mixed nationalCardPicture
+ * @property ?FileInstance nationalCardPicture
  * @method static EntityFieldSignature F_nationalCardPicture() The Signature of: Field `nationalCardPicture`
  * @method static ConditionField C_nationalCardPicture() The Condition Field of: Field `nationalCardPicture`
- * @property mixed birthCertificatePicture
+ * @property ?FileInstance birthCertificatePicture
  * @method static EntityFieldSignature F_birthCertificatePicture() The Signature of: Field `birthCertificatePicture`
  * @method static ConditionField C_birthCertificatePicture() The Condition Field of: Field `birthCertificatePicture`
  * @property ?string organizationName
@@ -173,17 +176,17 @@ class User extends Entity
             ),
             'profilePicture' => new EntityFieldSignature(
                 static::class, 'profilePicture',
-                new File(['nullable' => true, 'type' => 'image', 'storeExtension' => 'jpg', 'compress' => true, 'maxSize' => '2MB']),
+                new File(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
                 null
             ),
             'nationalCardPicture' => new EntityFieldSignature(
                 static::class, 'nationalCardPicture',
-                new File(['nullable' => true, 'type' => 'image', 'storeExtension' => 'jpg', 'compress' => true, 'maxSize' => '2MB']),
+                new File(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
                 null
             ),
             'birthCertificatePicture' => new EntityFieldSignature(
                 static::class, 'birthCertificatePicture',
-                new File(['nullable' => true, 'type' => 'image', 'storeExtension' => 'jpg', 'compress' => true, 'maxSize' => '2MB']),
+                new File(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
                 null
             ),
             # Organization Information

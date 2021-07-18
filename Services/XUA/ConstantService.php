@@ -21,6 +21,8 @@ final class ConstantService extends Service
 
     const DICTIONARIES_PATH = 'private/dictionaries';
 
+    const STORAGE_PATH = 'public/storage';
+
     const DEFAULT_LANG = 'fa';
 
     // @TODO use this
