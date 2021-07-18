@@ -76,7 +76,7 @@ class File extends Super
         if (!is_string($input)) {
             return $input;
         }
-        if ($_FILES[$input] ?? false) {
+        if (isset($_FILES[$input]) and !$_FILES[$input]['error']) {
             return new FileInstance($_FILES[$input]['tmp_name'],  pathinfo($_FILES[$input]['name'], PATHINFO_EXTENSION), $this->unifiers, false, false);
         }
         return $input;
