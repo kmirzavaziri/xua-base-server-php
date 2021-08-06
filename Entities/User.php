@@ -195,7 +195,7 @@ class User extends Entity
             ),
             # Organization Information
             'organizationNameFa' => new EntityFieldSignature(
-                static::class, 'organizationName',
+                static::class, 'organizationNameFa',
                 new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
                 null
             ),
