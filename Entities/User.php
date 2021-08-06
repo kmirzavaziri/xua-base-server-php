@@ -6,10 +6,10 @@ use Entities\User\Session;
 use Services\Mime;
 use Services\Size;
 use Services\XUA\FileInstance;
+use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Date;
 use Supers\Basics\Highers\File;
-use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
@@ -19,6 +19,7 @@ use Supers\Customs\IranNationalCode;
 use Supers\Customs\IranNationalId;
 use Supers\Customs\IranPhone;
 use Supers\Customs\IranPostalCode;
+use Supers\Customs\Name;
 use Supers\Customs\Url;
 use XUA\Entity;
 use XUA\Tools\Entity\ConditionField;
@@ -118,30 +119,25 @@ class User extends Entity
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
-            'personType' => new EntityFieldSignature(
-                static::class, 'personType',
-                new Enum(['nullable' => true, 'values' => ['juridical', 'natural']]),
-                null
-            ),
             # Natural Person / Juridical Person Agent Information
             'firstNameFa' => new EntityFieldSignature(
                 static::class, 'firstNameFa',
-                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
                 null
             ),
             'firstNameEn' => new EntityFieldSignature(
                 static::class, 'firstNameEn',
-                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
                 null
             ),
             'lastNameFa' => new EntityFieldSignature(
                 static::class, 'lastNameFa',
-                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
                 null
             ),
             'lastNameEn' => new EntityFieldSignature(
                 static::class, 'lastNameEn',
-                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
                 null
             ),
             'nationalCode' => new EntityFieldSignature(
@@ -176,28 +172,28 @@ class User extends Entity
             ),
             'profilePicture' => new EntityFieldSignature(
                 static::class, 'profilePicture',
-                new File(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
+                new Generic(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
                 null
             ),
             'nationalCardPicture' => new EntityFieldSignature(
                 static::class, 'nationalCardPicture',
-                new File(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
+                new Generic(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
                 null
             ),
             'birthCertificatePicture' => new EntityFieldSignature(
                 static::class, 'birthCertificatePicture',
-                new File(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
+                new Generic(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
                 null
             ),
             # Organization Information
-            'organizationName' => new EntityFieldSignature(
+            'organizationNameFa' => new EntityFieldSignature(
                 static::class, 'organizationName',
-                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
                 null
             ),
             'organizationNameEn' => new EntityFieldSignature(
                 static::class, 'organizationNameEn',
-                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
                 null
             ),
             'organizationNationalId' => new EntityFieldSignature(
@@ -221,16 +217,14 @@ class User extends Entity
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 500]),
                 null
             ),
-            // @TODO maybe it's better to separate
-            'geolocation' => new EntityFieldSignature(
-                static::class, 'geolocation',
-                new StructuredMap([
-                    'nullable' => true,
-                    'structure' => [
-                        'lat' => new Decimal(['integerLength' => 2, 'fractionalLength' => 10]),
-                        'long' => new Decimal(['integerLength' => 3, 'fractionalLength' => 10]),
-                    ]
-                ]),
+            'geolocationLat' => new EntityFieldSignature(
+                static::class, 'geolocationLat',
+                new Decimal(['nullable' => true, 'integerLength' => 2, 'fractionalLength' => 10]),
+                null
+            ),
+            'geolocationLong' => new EntityFieldSignature(
+                static::class, 'geolocationLong',
+                new Decimal(['nullable' => true, 'integerLength' => 2, 'fractionalLength' => 10]),
                 null
             ),
             'postalCode' => new EntityFieldSignature(
@@ -248,22 +242,28 @@ class User extends Entity
                 new IranPhone(['nullable' => true, 'type' => 'fax']),
                 null
             ),
-            'iban' => new EntityFieldSignature(
-                static::class, 'iban',
-                new Iban(['nullable' => true]),
-                null
-            ),
             'website' => new EntityFieldSignature(
                 static::class, 'website',
                 new Url(['nullable' => true]),
                 null
             ),
-            # Other Data
+            # Other Information
+            'personType' => new EntityFieldSignature(
+                static::class, 'personType',
+                new Enum(['nullable' => true, 'values' => ['juridical', 'natural']]),
+                null
+            ),
+            'iban' => new EntityFieldSignature(
+                static::class, 'iban',
+                new Iban(['nullable' => true]),
+                null
+            ),
             'referral' => new EntityFieldSignature(
                 static::class, 'referral',
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
                 null
             ),
+            # Security Information
             'sessions' => new EntityFieldSignature(
                 static::class, 'sessions',
                 new EntityRelation([
