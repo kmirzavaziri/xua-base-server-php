@@ -14,9 +14,7 @@ class FileInstance extends Service
     public function __construct(
         public string $path,
         public ?string $extension = null,
-        public array $unifiers = [],
         public bool $stored = true,
-        public bool $unified = true,
     )
     {
         $this->mime = mime_content_type($this->path);
@@ -41,15 +39,6 @@ class FileInstance extends Service
 
     public function store(string $dir, ?string $seed = null)
     {
-        if (!$this->unified) {
-            $this->unified = true;
-            foreach ($this->unifiers as $unifier) {
-                if ($extension = Mime::unify($this->mime, $unifier, $this->path)) {
-                    $this->extension = $extension;
-                    break;
-                }
-            }
-        }
         if (!$this->stored) {
             $this->stored = true;
             $newName = $this->newName($dir, $seed);

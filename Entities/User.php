@@ -8,8 +8,8 @@ use Services\Size;
 use Services\XUA\FileInstance;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
+use Supers\Basics\Files\Image;
 use Supers\Basics\Highers\Date;
-use Supers\Basics\Highers\File;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
@@ -172,17 +172,25 @@ class User extends Entity
             ),
             'profilePicture' => new EntityFieldSignature(
                 static::class, 'profilePicture',
-                new Generic(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
+                new Image([
+                    'nullable' => true,
+                    'unifier' => Mime::MIME_IMAGE_JPEG,
+                    'maxSize' => 2 * Size::MB,
+                    'maxWidth' => 1080,
+                    'maxHeight' => 1080,
+                    'ratioWidth' => 1,
+                    'ratioHeight' => 1
+                ]),
                 null
             ),
             'nationalCardPicture' => new EntityFieldSignature(
                 static::class, 'nationalCardPicture',
-                new Generic(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
+                new Image(['nullable' => true, 'unifier' => Mime::MIME_IMAGE_JPEG, 'maxSize' => 2 * Size::MB]),
                 null
             ),
             'birthCertificatePicture' => new EntityFieldSignature(
                 static::class, 'birthCertificatePicture',
-                new Generic(['nullable' => true, 'allowedMimeTypes' => Mime::MIME_IMAGE, 'unifiers' => [Mime::MIME_IMAGE_JPEG], 'maxSize' => 2 * Size::MB]),
+                new Image(['nullable' => true, 'unifier' => Mime::MIME_IMAGE_JPEG, 'maxSize' => 2 * Size::MB]),
                 null
             ),
             # Organization Information

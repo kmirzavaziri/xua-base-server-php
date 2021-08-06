@@ -1,33 +1,30 @@
 <?php
 
 
-namespace Supers\Basics\Highers;
-
-
+namespace Supers\Basics\Files;
 
 use Services\Size;
 use Services\XUA\ConstantService;
 use Services\XUA\ExpressionService;
 use Services\XUA\FileInstance;
 use Supers\Basics\Boolean;
+use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Text;
 use XUA\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
- * @property array allowedMimeTypes
+ * @property ?array allowedMimeTypes
  * @method static SuperArgumentSignature A_allowedMimeTypes() The Signature of: Argument `allowedMimeTypes`
- * @property string storageDir
- * @method static SuperArgumentSignature A_storageDir() The Signature of: Argument `storageDir`
- * @property array unifiers
- * @method static SuperArgumentSignature A_unifiers() The Signature of: Argument `unifiers`
- * @property ?string maxSize
+ * @property ?int maxSize
  * @method static SuperArgumentSignature A_maxSize() The Signature of: Argument `maxSize`
+ * @property ?string storageDir
+ * @method static SuperArgumentSignature A_storageDir() The Signature of: Argument `storageDir`
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
-class File extends Super
+class Generic extends Super
 {
     protected static function _argumentSignatures(): array
     {
@@ -35,7 +32,6 @@ class File extends Super
             'allowedMimeTypes' => new SuperArgumentSignature(new Sequence(['type' => new Text([]), 'nullable' => true]), false, null, false),
             'maxSize' => new SuperArgumentSignature(new Integer(['nullable' => true]), false, null, false),
             'storageDir' => new SuperArgumentSignature(new Text(['nullable' => true]), false, null, false),
-            'unifiers' => new SuperArgumentSignature(new Sequence(['type' => new Text([])]), false, null, false),
             'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
         ]);
     }
@@ -77,7 +73,7 @@ class File extends Super
             return $input;
         }
         if (isset($_FILES[$input]) and !$_FILES[$input]['error']) {
-            return new FileInstance($_FILES[$input]['tmp_name'],  pathinfo($_FILES[$input]['name'], PATHINFO_EXTENSION), $this->unifiers, false, false);
+            return new FileInstance($_FILES[$input]['tmp_name'],  pathinfo($_FILES[$input]['name'], PATHINFO_EXTENSION), false);
         }
         return $input;
     }
