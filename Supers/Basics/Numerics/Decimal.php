@@ -115,9 +115,9 @@ class Decimal extends Number
         } else {
             $length = $this->integerLength + $this->fractionalLength;
             if ($length <= 65 and $this->fractionalLength <= 30) {
-                $type = "DECIMAL($length, $this->fractionalLength)";
+                $type = "DECIMAL($length,$this->fractionalLength)";
             } elseif ($length <= 255 and $this->fractionalLength <= 30) {
-                $type = "DOUBLE($length, $this->fractionalLength)";
+                $type = "DOUBLE($length,$this->fractionalLength)";
             } else {
                 return null;
             }
