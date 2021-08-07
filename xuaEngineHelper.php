@@ -10,7 +10,7 @@ use XUA\XUAException;
 require 'magic.php';
 require 'autoload.php';
 
-chdir('/urpi');
+chdir('/var/www');
 
 $result = new Result(true, '');
 try {
