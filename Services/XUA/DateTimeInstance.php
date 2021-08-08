@@ -14,7 +14,6 @@ class DateTimeInstance extends Service
     protected int $timestamp;
 
     // Constructor
-
     public function __construct(float $timestamp = null)
     {
         $this->timestamp = $timestamp ?? microtime(true);
