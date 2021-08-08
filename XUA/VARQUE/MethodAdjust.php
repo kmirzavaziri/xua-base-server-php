@@ -15,7 +15,7 @@ abstract class MethodAdjust extends MethodEve
         $request = parent::requestSignaturesCalculator();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $request[$field->signature->name] = new MethodItemSignature($field->signature->type, $field->required, null, false);
+            $request[$field->signature->name] = new MethodItemSignature($field->signature->type, $field->required, $field->default, $field->const);
         }
         return $request;
     }
@@ -30,9 +30,7 @@ abstract class MethodAdjust extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         foreach ($fields as $field) {
-            if ($this->{'Q_' . $field->signature->name} ?? false) {
-                $feed->{$field->signature->name} = $this->{'Q_' . $field->signature->name};
-            }
+            $feed->{$field->signature->name} = $this->{'Q_' . $field->signature->name};
         }
         $feed->store();
     }
