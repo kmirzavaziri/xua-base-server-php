@@ -259,7 +259,7 @@ class User extends Entity
             ),
             'faxNumber' => new EntityFieldSignature(
                 static::class, 'faxNumber',
-                new IranPhone(['nullable' => true, 'type' => 'fax']),
+                new IranPhone(['nullable' => true, 'type' => 'landline']),
                 null
             ),
             'website' => new EntityFieldSignature(

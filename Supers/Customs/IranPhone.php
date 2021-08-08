@@ -26,23 +26,10 @@ class IranPhone extends Text
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'type' => new SuperArgumentSignature(new Enum(['values' => ['cellphone', 'landline', 'fax']]), true, null, false),
-            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
-            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 65_535, true),
+            'type' => new SuperArgumentSignature(new Enum(['values' => ['cellphone', 'landline']]), true, null, false),
+            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 13, true),
+            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 13, true),
         ]);
-    }
-
-    protected function _validation(SuperValidationException $exception): void
-    {
-        switch ($this->type) {
-            case 'cellphone':
-            case 'landline':
-                $this->maxLength = 13;
-                break;
-            case 'fax':
-            default:
-                break;
-        }
     }
 
     protected function _predicate($input, string &$message = null): bool
@@ -78,7 +65,6 @@ class IranPhone extends Text
                 $validPrefixesPattern = implode('|', $validPrefixes);
                 $message = ExpressionService::get('errormessage.landline.format.is.not.valid');
                 return preg_match('/^\+98(' . $validPrefixesPattern . ')[0-9]{8}$/', $input);
-            case 'fax':
             default:
                 $message = ExpressionService::get('errormessage.not.implemented.yet');
                 return false;
@@ -91,7 +77,6 @@ class IranPhone extends Text
         return match ($this->type) {
             'cellphone' => strlen($input) < 9 ? $input : '+989' . substr($input, -9),
             'landline' => strlen($input) < 10 ? $input : '+98' . substr($input, -10),
-            'fax' => $input,
             default => $input,
         };
     }

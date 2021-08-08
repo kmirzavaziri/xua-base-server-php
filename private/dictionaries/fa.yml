@@ -24,6 +24,7 @@ errormessage.invalid.file.size: حداکثر حجم مجاز $maxSize می‌ب�
 errormessage.incorrect.national.code: فرمت کد ملی صحیح نیست.
 errormessage.incorrect.organization.national.id: فرمت شناسه ملی صحیح نیست.
 errormessage.incorrect.postal.code: فرمت کد پستی صحیح نیست.
+errormessage.incorrect.iban: فرمت شبا صحیح نیست.
 errormessage.invalid.character.character: کاراکتر $character پذیرفته نیست.
 errormessage.image.min.width.violated: عرض تصویر $width است در حالی که باید حداقل $minWidth باشد.
 errormessage.image.max.width.violated: عرض تصویر $width است در حالی که باید حداکثر $maxWidth باشد.
