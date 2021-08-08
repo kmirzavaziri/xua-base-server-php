@@ -53,9 +53,17 @@ class DateTimeInstance extends Service
         return $dt ? static::fromNativeDateTime($dt) : null;
     }
 
+    public static function fromGregorianYmd(string $datetime): ?DateTimeInstance
+    {
+        return static::fromGregorianYmdHis($datetime . ' 00:00:00');
+    }
+
     public static function fromJalaliYmdHis(string $datetime): ?DateTimeInstance
     {
         preg_match('/\s*([0-9]+)-([0-9]+)-([0-9]+)\s+([0-9]+):([0-9]+):([0-9]+)\s*/', $datetime, $matches);
+        if (count($matches) != 7) {
+            return null;
+        }
         [, $Y, $m, $d, $H, $i, $s] = $matches;
         [$Y, $m, $d] = self::jalaliToGregorian($Y, $m, $d);
         return static::fromGregorianYmdHis("$Y-$m-$d $H:$i:$s");
@@ -70,12 +78,17 @@ class DateTimeInstance extends Service
         }
     }
 
-    public function formatGregorian(string $format, ?string $numericsLang = null): string
+    public static function fromLocalYmd(string $datetime): ?DateTimeInstance
     {
-        return PersianExpressionService::changeNumerics(date($format, $this->timestamp), $numericsLang);
+        return self::fromLocalYmdHis($datetime . ' 00:00:00');
     }
 
-    public function formatJalali(string $format, ?string $numericsLang = null): string
+    public function formatGregorian(string $format): string
+    {
+        return date($format, $this->timestamp);
+    }
+
+    public function formatJalali(string $format): string
     {
         [$Y, $m, $d] = self::gregorianToJalali($this->YmdHis['Y'], $this->YmdHis['m'], $this->YmdHis['d']);
         $H = $this->YmdHis['h'];
@@ -238,15 +251,15 @@ class DateTimeInstance extends Service
                     $result .= $parameter;
             }
         }
-        return PersianExpressionService::changeNumerics($result, $numericsLang);
+        return $result;
     }
 
-    public function formatLocal(string $format, ?string $numericsLang = null): string
+    public function formatLocal(string $format): string
     {
         if (LocaleLanguage::getLocale() == LocaleLanguage::LOC_IR) {
-            return $this->formatJalali($format, $numericsLang);
+            return $this->formatJalali($format);
         } else {
-            return $this->formatGregorian($format, $numericsLang);
+            return $this->formatGregorian($format);
         }
     }
 
