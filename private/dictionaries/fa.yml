@@ -6,6 +6,7 @@ errormessage.value.input.is.not.an.integer: مقدار $input عددی صحیح 
 errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $input کمتر از صفر است و لذا بی‌علامت نیست.
 errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
 errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.
+errormessage.landline.format.is.not.valid: فرمت شماره تلفن ثابت صحیح نیست.
 errormessage.not.implemented.yet: هنوز پیاده‌سازی نشده.
 errormessage.email.or.cellphone.is.not.valid: فرمت ایمیل یا شماره تلفن همراه صحیح نیست.
 errormessage.wait.seconds.to.send.verification.code: برای ارسال کد تأییدیه، $seconds ثانیه دیگر درخواست دهید.
