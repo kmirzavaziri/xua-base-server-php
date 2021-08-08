@@ -30,8 +30,8 @@ class DecimalRange extends Decimal
     {
         return array_merge(parent::_argumentSignatures(), [
             'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'min' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), false, null, false),
-            'max' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), false, null, false),
+            'min' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), true, null, false),
+            'max' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), true, null, false),
         ]);
     }
 

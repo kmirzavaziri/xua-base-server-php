@@ -264,7 +264,7 @@ class User extends Entity
             ),
             'website' => new EntityFieldSignature(
                 static::class, 'website',
-                new Url(['nullable' => true]),
+                new Url(['nullable' => true, 'schemes' => ['http://', 'https://']]),
                 null
             ),
             # Other Information
