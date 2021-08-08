@@ -16,7 +16,8 @@ use Supers\Basics\Strings\Text;
 use Supers\Customs\Email;
 use Supers\Customs\Iban;
 use Supers\Customs\IranNationalCode;
-use Supers\Customs\IranNationalId;
+use Supers\Customs\IranOrganizationNationalId;
+use Supers\Customs\IranOrganizationRegistrationId;
 use Supers\Customs\IranPhone;
 use Supers\Customs\IranPostalCode;
 use Supers\Customs\Name;
@@ -29,9 +30,6 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property ?string personType
- * @method static EntityFieldSignature F_personType() The Signature of: Field `personType`
- * @method static ConditionField C_personType() The Condition Field of: Field `personType`
  * @property ?string firstNameFa
  * @method static EntityFieldSignature F_firstNameFa() The Signature of: Field `firstNameFa`
  * @method static ConditionField C_firstNameFa() The Condition Field of: Field `firstNameFa`
@@ -62,24 +60,27 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string job
  * @method static EntityFieldSignature F_job() The Signature of: Field `job`
  * @method static ConditionField C_job() The Condition Field of: Field `job`
- * @property ?FileInstance profilePicture
+ * @property ?\Services\XUA\FileInstance profilePicture
  * @method static EntityFieldSignature F_profilePicture() The Signature of: Field `profilePicture`
  * @method static ConditionField C_profilePicture() The Condition Field of: Field `profilePicture`
- * @property ?FileInstance nationalCardPicture
+ * @property ?\Services\XUA\FileInstance nationalCardPicture
  * @method static EntityFieldSignature F_nationalCardPicture() The Signature of: Field `nationalCardPicture`
  * @method static ConditionField C_nationalCardPicture() The Condition Field of: Field `nationalCardPicture`
- * @property ?FileInstance birthCertificatePicture
+ * @property ?\Services\XUA\FileInstance birthCertificatePicture
  * @method static EntityFieldSignature F_birthCertificatePicture() The Signature of: Field `birthCertificatePicture`
  * @method static ConditionField C_birthCertificatePicture() The Condition Field of: Field `birthCertificatePicture`
- * @property ?string organizationName
- * @method static EntityFieldSignature F_organizationName() The Signature of: Field `organizationName`
- * @method static ConditionField C_organizationName() The Condition Field of: Field `organizationName`
+ * @property ?string organizationNameFa
+ * @method static EntityFieldSignature F_organizationNameFa() The Signature of: Field `organizationNameFa`
+ * @method static ConditionField C_organizationNameFa() The Condition Field of: Field `organizationNameFa`
  * @property ?string organizationNameEn
  * @method static EntityFieldSignature F_organizationNameEn() The Signature of: Field `organizationNameEn`
  * @method static ConditionField C_organizationNameEn() The Condition Field of: Field `organizationNameEn`
  * @property ?string organizationNationalId
  * @method static EntityFieldSignature F_organizationNationalId() The Signature of: Field `organizationNationalId`
  * @method static ConditionField C_organizationNationalId() The Condition Field of: Field `organizationNationalId`
+ * @property ?string organizationRegistrationId
+ * @method static EntityFieldSignature F_organizationRegistrationId() The Signature of: Field `organizationRegistrationId`
+ * @method static ConditionField C_organizationRegistrationId() The Condition Field of: Field `organizationRegistrationId`
  * @property ?string cellphoneNumber
  * @method static EntityFieldSignature F_cellphoneNumber() The Signature of: Field `cellphoneNumber`
  * @method static ConditionField C_cellphoneNumber() The Condition Field of: Field `cellphoneNumber`
@@ -89,9 +90,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string address
  * @method static EntityFieldSignature F_address() The Signature of: Field `address`
  * @method static ConditionField C_address() The Condition Field of: Field `address`
- * @property ?array geolocation
- * @method static EntityFieldSignature F_geolocation() The Signature of: Field `geolocation`
- * @method static ConditionField C_geolocation() The Condition Field of: Field `geolocation`
+ * @property null|int|float geolocationLat
+ * @method static EntityFieldSignature F_geolocationLat() The Signature of: Field `geolocationLat`
+ * @method static ConditionField C_geolocationLat() The Condition Field of: Field `geolocationLat`
+ * @property null|int|float geolocationLong
+ * @method static EntityFieldSignature F_geolocationLong() The Signature of: Field `geolocationLong`
+ * @method static ConditionField C_geolocationLong() The Condition Field of: Field `geolocationLong`
  * @property ?string postalCode
  * @method static EntityFieldSignature F_postalCode() The Signature of: Field `postalCode`
  * @method static ConditionField C_postalCode() The Condition Field of: Field `postalCode`
@@ -101,12 +105,15 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string faxNumber
  * @method static EntityFieldSignature F_faxNumber() The Signature of: Field `faxNumber`
  * @method static ConditionField C_faxNumber() The Condition Field of: Field `faxNumber`
- * @property ?string iban
- * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
- * @method static ConditionField C_iban() The Condition Field of: Field `iban`
  * @property ?string website
  * @method static EntityFieldSignature F_website() The Signature of: Field `website`
  * @method static ConditionField C_website() The Condition Field of: Field `website`
+ * @property ?string personType
+ * @method static EntityFieldSignature F_personType() The Signature of: Field `personType`
+ * @method static ConditionField C_personType() The Condition Field of: Field `personType`
+ * @property ?string iban
+ * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
+ * @method static ConditionField C_iban() The Condition Field of: Field `iban`
  * @property ?string referral
  * @method static EntityFieldSignature F_referral() The Signature of: Field `referral`
  * @method static ConditionField C_referral() The Condition Field of: Field `referral`
@@ -206,7 +213,12 @@ class User extends Entity
             ),
             'organizationNationalId' => new EntityFieldSignature(
                 static::class, 'organizationNationalId',
-                new IranNationalId(['nullable' => true]),
+                new IranOrganizationNationalId(['nullable' => true]),
+                null
+            ),
+            'organizationRegistrationId' => new EntityFieldSignature(
+                static::class, 'organizationRegistrationId',
+                new IranOrganizationRegistrationId(['nullable' => true]),
                 null
             ),
             # Contact Information

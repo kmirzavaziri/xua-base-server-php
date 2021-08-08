@@ -17,13 +17,13 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
-class IranNationalCode extends Text
+class IranOrganizationNationalId extends Text
 {
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 10, true),
-            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 10, true),
+            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 11, true),
+            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 11, true),
         ]);
     }
 
@@ -33,29 +33,30 @@ class IranNationalCode extends Text
             return true;
         }
 
-        $message = ExpressionService::get('errormessage.incorrect.national.code');
+        $message = ExpressionService::get('errormessage.incorrect.organization.national.id');
 
-        if(!preg_match('/^[0-9]{10}$/', $input)) {
+        if(!preg_match('/^[0-9]{11}$/', $input)) {
             return false;
         }
 
-        for ($i = 0; $i < 10; $i++) {
-            if(preg_match('/^'.$i.'{10}$/', $input)) {
-                return false;
-            }
+        if(substr($input, 3, 6) == 0) {
+            return false;
         }
 
+        $addend = $input[9] + 2;
+        $coefficient = [29, 27, 23, 19, 17, 29, 27, 23, 19, 17];
+
         $sum = 0;
-        for ($i = 0; $i < 9; $i++) {
-            $sum += ((10-$i) * $input[$i]) % 11;
+        for ($i = 0; $i < 10; $i++) {
+            $sum += (($addend + $input[$i]) * $coefficient[$i]) % 11;
         }
         $sum = $sum % 11;
 
-        if ($sum >= 2) {
-            $sum = 11 - $sum;
+        if($sum == 10) {
+            $sum = 0;
         }
 
-        if($sum != $input[9]) {
+        if($sum != $input[10]) {
             return false;
         }
 

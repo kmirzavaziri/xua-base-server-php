@@ -21,6 +21,7 @@ errormessage.invalid.file: فایل نامعتبر
 errormessage.invalid.file.format: فرمت فایل نادرست است.
 errormessage.invalid.file.size: حداکثر حجم مجاز $maxSize می‌باشد اما حجم این فایل $size است.
 errormessage.incorrect.national.code: فرمت کد ملی صحیح نیست.
+errormessage.incorrect.organization.national.id: فرمت شناسه ملی صحیح نیست.
 errormessage.invalid.character.character: کاراکتر $character پذیرفته نیست.
 errormessage.image.min.width.violated: عرض تصویر $width است در حالی که باید حداقل $minWidth باشد.
 errormessage.image.max.width.violated: عرض تصویر $width است در حالی که باید حداکثر $maxWidth باشد.
