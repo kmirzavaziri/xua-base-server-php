@@ -5,7 +5,6 @@ namespace Entities;
 use Entities\User\Session;
 use Services\Mime;
 use Services\Size;
-use Services\XUA\FileInstance;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Files\Image;
@@ -48,7 +47,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string gender
  * @method static EntityFieldSignature F_gender() The Signature of: Field `gender`
  * @method static ConditionField C_gender() The Condition Field of: Field `gender`
- * @property mixed birthDate
+ * @property null|\Services\XUA\DateTimeInstance birthDate
  * @method static EntityFieldSignature F_birthDate() The Signature of: Field `birthDate`
  * @method static ConditionField C_birthDate() The Condition Field of: Field `birthDate`
  * @property ?string nationality
@@ -114,9 +113,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string iban
  * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
  * @method static ConditionField C_iban() The Condition Field of: Field `iban`
- * @property ?string referral
- * @method static EntityFieldSignature F_referral() The Signature of: Field `referral`
- * @method static ConditionField C_referral() The Condition Field of: Field `referral`
+ * @property ?string referralMethod
+ * @method static EntityFieldSignature F_referralMethod() The Signature of: Field `referralMethod`
+ * @method static ConditionField C_referralMethod() The Condition Field of: Field `referralMethod`
+ * @property ?string referralDetails
+ * @method static EntityFieldSignature F_referralDetails() The Signature of: Field `referralDetails`
+ * @method static ConditionField C_referralDetails() The Condition Field of: Field `referralDetails`
  * @property \Entities\User\Session[] sessions
  * @method static EntityFieldSignature F_sessions() The Signature of: Field `sessions`
  * @method static ConditionField C_sessions() The Condition Field of: Field `sessions`
@@ -278,8 +280,13 @@ class User extends Entity
                 new Iban(['nullable' => true]),
                 null
             ),
-            'referral' => new EntityFieldSignature(
-                static::class, 'referral',
+            'referralMethod' => new EntityFieldSignature(
+                static::class, 'referralMethod',
+                new Enum(['nullable' => true, 'values' => ['website', 'socialMedia', 'referralUser', 'other']]),
+                null
+            ),
+            'referralDetails' => new EntityFieldSignature(
+                static::class, 'referralDetails',
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
                 null
             ),
