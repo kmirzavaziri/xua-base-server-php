@@ -20,11 +20,24 @@ class IranPostalCode extends Text
 {
     protected function _predicate($input, string &$message = null): bool
     {
+        if (!parent::_predicate($input, $message)) {
+            return false;
+        }
+
         if ($this->nullable and $input === null) {
             return true;
         }
 
-        $message = ExpressionService::get('errormessage.not.implemented.yet');
-        return false;
+        $message = ExpressionService::get('errormessage.incorrect.postal.code');
+
+        if(!preg_match('/^[0-9]{10}$/', $input)) {
+            return false;
+        }
+
+        if (!preg_match('/^(?!(\d)\1{3})[13-9]{4}[1346-9][013-9]{5}\b$/', $input)) {
+            return false;
+        }
+
+        return true;
     }
 }
