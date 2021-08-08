@@ -32,11 +32,11 @@ class SetBasics extends MethodAdjust
     protected static function fields(): array
     {
         return [
-            new VarqueMethodFieldSignature(User::F_firstNameFa(), true, null, false),
-            new VarqueMethodFieldSignature(User::F_lastNameFa(), true, null, false),
-            new VarqueMethodFieldSignature(User::F_nationalCode(), true, null, false),
-            new VarqueMethodFieldSignature(User::F_cellphoneNumber(), true, null, false),
-            new VarqueMethodFieldSignature(User::F_email(), true, null, false),
+            new VarqueMethodFieldSignature(User::F_firstNameFa(), false, null, false),
+            new VarqueMethodFieldSignature(User::F_lastNameFa(), false, null, false),
+            new VarqueMethodFieldSignature(User::F_nationalCode(), false, null, false),
+            new VarqueMethodFieldSignature(User::F_cellphoneNumber(), false, null, false),
+            new VarqueMethodFieldSignature(User::F_email(), false, null, false),
         ];
     }
 
