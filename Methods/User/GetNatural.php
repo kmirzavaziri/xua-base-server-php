@@ -58,6 +58,8 @@ class GetNatural extends MethodView
             User::F_education(),
             User::F_job(),
             User::F_website(),
+            User::F_nationalCardPicture(),
+            User::F_birthCertificatePicture(),
         ];
     }
 
