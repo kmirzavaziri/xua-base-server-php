@@ -87,8 +87,8 @@ class Generic extends Super
     protected function _marshalDatabase(mixed $input): mixed
     {
         /** @var FileInstance $input */
-        $input->store($this->storageDir ?? ConstantService::STORAGE_PATH);
-        return $input->path;
+        $input?->store($this->storageDir ?? ConstantService::STORAGE_PATH);
+        return $input?->path;
     }
 
     protected function _unmarshalDatabase(mixed $input): mixed

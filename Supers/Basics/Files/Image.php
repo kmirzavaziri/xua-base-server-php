@@ -125,7 +125,10 @@ class Image extends Generic
     protected function _unmarshal(mixed $input): mixed
     {
         $input = parent::_unmarshal($input);
-        if ($this->unifier and $input->mime != $this->unifier) {
+        if(!is_a($input, FileInstance::class)) {
+            return $input;
+        }
+        if ($this->unifier) {
             $image = match ($input->mime) {
                 Mime::MIME_IMAGE_PNG => imagecreatefrompng($input->path),
                 Mime::MIME_IMAGE_JPEG => imagecreatefromjpeg($input->path),
