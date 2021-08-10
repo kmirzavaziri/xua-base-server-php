@@ -24,11 +24,12 @@ abstract class MethodQuery extends MethodEve
         foreach ($fields as $field) {
             $fieldsType[$field->name] = $field->type;
         }
+        $fieldsType = new StructuredMap(['structure' => $fieldsType]);
         $association = static::association();
         return array_merge(parent::responseSignaturesCalculator(), [
             static::wrapper() => new MethodItemSignature(
                 $association
-                    ? new Map(['keyType' => $association->type, 'valueType' => new StructuredMap(['structure' => $fieldsType])])
+                    ? new Map(['keyType' => $association->type, 'valueType' => $fieldsType])
                     : new Sequence(['type' => $fieldsType]),
                 true, null, false
             ),
@@ -70,7 +71,7 @@ abstract class MethodQuery extends MethodEve
 
     protected static function wrapper(): string
     {
-        return lcfirst(static::entity()) . 's';
+        return lcfirst(static::entity()::table()) . 's';
     }
 
     protected static function association(): ?EntityFieldSignature
