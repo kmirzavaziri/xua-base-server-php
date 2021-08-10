@@ -42,14 +42,9 @@ class ProductCategory extends Entity
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
-            'titleFa' => new EntityFieldSignature(
+            'title' => new EntityFieldSignature(
                 static::class, 'titleFa',
                 new Name(['nullable' => false, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
-                null
-            ),
-            'titleEn' => new EntityFieldSignature(
-                static::class, 'titleEn',
-                new Name(['nullable' => false, 'minLength' => 0, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
                 null
             ),
         ]);
