@@ -24,6 +24,7 @@ errormessage.invalid.file.format: فرمت فایل نادرست است.
 errormessage.invalid.file.size: حداکثر حجم مجاز $maxSize می‌باشد اما حجم این فایل $size است.
 errormessage.incorrect.national.code: فرمت کد ملی صحیح نیست.
 errormessage.incorrect.organization.national.id: فرمت شناسه ملی صحیح نیست.
+errormessage.incorrect.organization.registration.id: فرمت شماره ثبت صحیح نیست.
 errormessage.incorrect.postal.code: فرمت کد پستی صحیح نیست.
 errormessage.incorrect.iban: فرمت شبا صحیح نیست.
 errormessage.invalid.character.character: کاراکتر $character پذیرفته نیست.
