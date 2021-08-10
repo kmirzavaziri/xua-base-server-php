@@ -1,42 +1,30 @@
 █   XUA/
-█       Me/
-?           Remove users who never activated their account after reasonable amount of time.
-1           Set Index for session user id (or all relations)
-1?          Make it possible to set condition on relational id without using rel() method and join
-█           Read DB credentials from db.yml
-█           Expression Service
-█           Validate method exception to have only request item names and empty string as keys
-█           Add DateTime service and complete the super
-!           Add a Super for field ID
-█           Date service and Super
-█           Deploy procedure
-7           Copy Prod DB to Local by a command or on a weekly basis
-a           Add fields array to _x_getMany
-b           Efficient IN (fetch all possible data) ?
-c           Entity toArray & fromArray on http
-s           Add file upload procedure
-!           Time service and Super
-!           Method document generator
+█       Sooner/
+1           Remove users who never activated their account after reasonable amount of time.
+1           Add a Super for field ID
+2           Set Index for session user id (or all relations)
+2           Indexes
+2           Make it possible to set condition on relational id without using rel() method and join
+3           Method document generator
+!           Copy Prod DB to Local by a command or on a weekly basis
 !           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
 !           Default value for both sides of relation
-!           Check route doesn't contain public
-!           Error Log
-!           Add a Language Service with all constants
 !           Index Type Ability
-!           Make ColumnType handling better than string
-█       Keram/
+!           Make column type handling better than string (using class ColumnType)
 !           Fix read&parse routes algorithm
+!           Check route doesn't contain public
+?           Add fields array to _x_getMany
+?           Efficient IN (fetch all possible data) ?
 █       Later/
+!           Error Log
 !           Entity Lock
 !           Entity Cache
 !           Entity Log
 █   MyFarm/
 █       Entities/
-4           User
 █           User/
-█               Session
 █               Info/
-j                   Owner
+0                   Owner
 0                   Farmer
 0                   Agent
 0                   Operator
@@ -46,8 +34,9 @@ j                   Owner
 0                   Researcher
 0                   Employee
 0                   Worker
-k           Farm
+0           Farm
 0           Product
+0           ProductCategory
 0           Order
 0           Transaction
 0           Report
@@ -56,19 +45,6 @@ k           Farm
 0           Post
 0           ContactUsFields
 █       Methods/
-█           User/
-█               Session/
-█                   GetAll
-█                   Terminate
-█                   TerminateAllOthers
-█               SendVerificationCode
-█               GetAccessToken
-g               GetMinimal
-f               GetBasics
-e               SetBasics
-i               GetFull
-h               SetFull
-l               SetInfo
 █               CapitalBasket/
 0                   Get
 █               Cart/
@@ -80,8 +56,8 @@ l               SetInfo
 0               GetMany
 0               GetOne
 █           Farms/
-p               GetMany
-q               GetOne
+0               GetMany
+0               GetOne
 █           Farmers/
 0               GetMany
 0               GetOne
@@ -102,17 +78,21 @@ q               GetOne
 0               GetOne
 █           Admin/
 █               User/
-m                   GetMany
-n                   GetOne
-o                   SetOne
+0                   GetMany
+0                   GetOne
+0                   SetOne
 █               Product/
 0                   GetMany
 0                   GetOne
 0                   SetOne
+█               ProductCategory/
+0                   GetMany
+0                   GetOne
+0                   SetOne
 █               Farm/
-r                   GetMany
-s                   GetOne
-t                   SetOne
+0                   GetMany
+0                   GetOne
+0                   SetOne
 █               Order/
 0                   GetMany
 0                   GetOne
