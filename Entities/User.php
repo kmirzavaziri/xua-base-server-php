@@ -6,6 +6,7 @@ use Entities\User\Session;
 use Services\Mime;
 use Services\Size;
 use Services\XUA\LocaleLanguage;
+use Supers\Basics\Boolean;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Files\Image;
 use Supers\Basics\Highers\Date;
@@ -119,6 +120,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string referralDetails
  * @method static EntityFieldSignature F_referralDetails() The Signature of: Field `referralDetails`
  * @method static ConditionField C_referralDetails() The Condition Field of: Field `referralDetails`
+ * @property bool verified
+ * @method static EntityFieldSignature F_verified() The Signature of: Field `verified`
+ * @method static ConditionField C_verified() The Condition Field of: Field `verified`
  * @property \Entities\User\Session[] sessions
  * @method static EntityFieldSignature F_sessions() The Signature of: Field `sessions`
  * @method static ConditionField C_sessions() The Condition Field of: Field `sessions`
@@ -291,6 +295,11 @@ class User extends Entity
                 null
             ),
             # Security Information
+            'verified' => new EntityFieldSignature(
+                static::class, 'verified',
+                new Boolean([]),
+                false
+            ),
             'sessions' => new EntityFieldSignature(
                 static::class, 'sessions',
                 new EntityRelation([
