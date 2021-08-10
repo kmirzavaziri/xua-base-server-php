@@ -5,13 +5,12 @@ namespace Methods\User;
 use Entities\User;
 use Services\UserService;
 use Services\XUA\ExpressionService;
-use Services\XUA\FileInstance;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\VARQUE\MethodView;
 
 /**
- * @property ?FileInstance profilePicture
+ * @property ?\Services\XUA\FileInstance profilePicture
  * @method static MethodItemSignature R_profilePicture() The Signature of: Response Item `profilePicture`
  * @property ?string firstNameFa
  * @method static MethodItemSignature R_firstNameFa() The Signature of: Response Item `firstNameFa`
