@@ -48,7 +48,7 @@ class ProductCategory extends Entity
                 null
             ),
             'titleEn' => new EntityFieldSignature(
-                static::class, 'firstNameEn',
+                static::class, 'titleEn',
                 new Name(['nullable' => false, 'minLength' => 0, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
                 null
             ),
