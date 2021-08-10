@@ -16,7 +16,7 @@ class Boolean extends Super
 
     protected function _databaseType(): ?string
     {
-        return 'BOOL NOT NULL';
+        return 'TINYINT(1) NOT NULL';
     }
 
     protected function _phpType(): string
