@@ -17,6 +17,10 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @method static MethodItemSignature R_lastNameEn() The Signature of: Response Item `lastNameEn`
  * @property ?string address
  * @method static MethodItemSignature R_address() The Signature of: Response Item `address`
+ * @property null|int|float geolocationLat
+ * @method static MethodItemSignature R_geolocationLat() The Signature of: Response Item `geolocationLat`
+ * @property null|int|float geolocationLong
+ * @method static MethodItemSignature R_geolocationLong() The Signature of: Response Item `geolocationLong`
  * @property ?string postalCode
  * @method static MethodItemSignature R_postalCode() The Signature of: Response Item `postalCode`
  * @property ?string landlinePhoneNumber
@@ -25,7 +29,7 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @method static MethodItemSignature R_iban() The Signature of: Response Item `iban`
  * @property ?string nationality
  * @method static MethodItemSignature R_nationality() The Signature of: Response Item `nationality`
- * @property mixed birthDate
+ * @property null|\Services\XUA\DateTimeInstance birthDate
  * @method static MethodItemSignature R_birthDate() The Signature of: Response Item `birthDate`
  * @property ?string gender
  * @method static MethodItemSignature R_gender() The Signature of: Response Item `gender`
@@ -35,6 +39,10 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @method static MethodItemSignature R_job() The Signature of: Response Item `job`
  * @property ?string website
  * @method static MethodItemSignature R_website() The Signature of: Response Item `website`
+ * @property ?\Services\XUA\FileInstance nationalCardPicture
+ * @method static MethodItemSignature R_nationalCardPicture() The Signature of: Response Item `nationalCardPicture`
+ * @property ?\Services\XUA\FileInstance birthCertificatePicture
+ * @method static MethodItemSignature R_birthCertificatePicture() The Signature of: Response Item `birthCertificatePicture`
  */
 class GetNatural extends MethodView
 {
@@ -49,6 +57,8 @@ class GetNatural extends MethodView
             User::F_firstNameEn(),
             User::F_lastNameEn(),
             User::F_address(),
+            User::F_geolocationLat(),
+            User::F_geolocationLong(),
             User::F_postalCode(),
             User::F_landlinePhoneNumber(),
             User::F_iban(),

@@ -18,6 +18,10 @@ use XUA\VARQUE\MethodAdjust;
  * @method static MethodItemSignature Q_lastNameEn() The Signature of: Request Item `lastNameEn`
  * @property ?string Q_address
  * @method static MethodItemSignature Q_address() The Signature of: Request Item `address`
+ * @property null|int|float Q_geolocationLat
+ * @method static MethodItemSignature Q_geolocationLat() The Signature of: Request Item `geolocationLat`
+ * @property null|int|float Q_geolocationLong
+ * @method static MethodItemSignature Q_geolocationLong() The Signature of: Request Item `geolocationLong`
  * @property ?string Q_postalCode
  * @method static MethodItemSignature Q_postalCode() The Signature of: Request Item `postalCode`
  * @property ?string Q_landlinePhoneNumber
@@ -26,7 +30,7 @@ use XUA\VARQUE\MethodAdjust;
  * @method static MethodItemSignature Q_iban() The Signature of: Request Item `iban`
  * @property ?string Q_nationality
  * @method static MethodItemSignature Q_nationality() The Signature of: Request Item `nationality`
- * @property mixed Q_birthDate
+ * @property null|\Services\XUA\DateTimeInstance Q_birthDate
  * @method static MethodItemSignature Q_birthDate() The Signature of: Request Item `birthDate`
  * @property ?string Q_gender
  * @method static MethodItemSignature Q_gender() The Signature of: Request Item `gender`
@@ -50,6 +54,8 @@ class SetNatural extends MethodAdjust
             new VarqueMethodFieldSignature(User::F_firstNameEn(), false, null, false),
             new VarqueMethodFieldSignature(User::F_lastNameEn(), false, null, false),
             new VarqueMethodFieldSignature(User::F_address(), false, null, false),
+            new VarqueMethodFieldSignature(User::F_geolocationLat(), false, null, false),
+            new VarqueMethodFieldSignature(User::F_geolocationLong(), false, null, false),
             new VarqueMethodFieldSignature(User::F_postalCode(), false, null, false),
             new VarqueMethodFieldSignature(User::F_landlinePhoneNumber(), false, null, false),
             new VarqueMethodFieldSignature(User::F_iban(), false, null, false),
@@ -82,6 +88,12 @@ class SetNatural extends MethodAdjust
         }
         if ($this->Q_address === null) {
             $this->addAndThrowError('address', $errorMessage);
+        }
+        if ($this->Q_geolocationLat === null) {
+            $this->addAndThrowError('geolocationLat', $errorMessage);
+        }
+        if ($this->Q_geolocationLong === null) {
+            $this->addAndThrowError('geolocationLong', $errorMessage);
         }
         if ($this->Q_postalCode === null) {
             $this->addAndThrowError('postalCode', $errorMessage);
