@@ -24,4 +24,14 @@ class Boolean extends Super
         return 'bool';
     }
 
+    protected function _unmarshal(mixed $input): mixed
+    {
+        return (bool)$input;
+    }
+
+    protected function _unmarshalDatabase(mixed $input): mixed
+    {
+        return self::_unmarshal($input);
+    }
+
 }

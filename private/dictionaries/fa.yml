@@ -33,3 +33,4 @@ errormessage.image.max.width.violated: عرض تصویر $width است در حا
 errormessage.image.min.height.violated: عرض تصویر $height است در حالی که باید حداقل $minHeight باشد.
 errormessage.image.max.height.violated: عرض تصویر $height است در حالی که باید حداکثر $maxHeight باشد.
 errormessage.image.ratio.violated: نسبت ابعاد تصویر باید $formalRatio باشد اما $actualRatio است.
+errormessage.invalid.id: آی‌دی نادرست می‌باشد.
