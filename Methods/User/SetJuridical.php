@@ -45,7 +45,7 @@ class SetJuridical extends MethodAdjust
         return UserService::verifyUser($this->error);
     }
 
-    protected function body(): void
+    protected function validations(): void
     {
         $errorMessage = ExpressionService::get('errormessage.required.request.item.not.provided');
         if ($this->Q_organizationNameFa === null) {
@@ -63,6 +63,5 @@ class SetJuridical extends MethodAdjust
         if ($this->Q_faxNumber === null) {
             $this->addAndThrowError('faxNumber', $errorMessage);
         }
-        parent::body();
     }
 }
