@@ -22,8 +22,7 @@ class GetAll extends MethodQuery
     {
         return [
             ProductCategory::F_id(),
-            ProductCategory::F_titleFa(),
-            ProductCategory::F_titleEn(),
+            ProductCategory::F_title(),
         ];
     }
 

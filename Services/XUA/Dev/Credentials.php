@@ -31,8 +31,8 @@ final class Credentials extends Service
 
     protected static function _init(): void
     {
-        if (isset($_SERVER['HTTP_XUA_CREDENTIALS'])){
-            $headerStringValue = explode(':', $_SERVER['HTTP_XUA_CREDENTIALS']);
+        if (isset($_SERVER['HTTP_XUA_DEV_CREDENTIALS'])){
+            $headerStringValue = explode(':', $_SERVER['HTTP_XUA_DEV_CREDENTIALS']);
             if (count($headerStringValue) == 2
                 and isset(Credentials::DEVS[$headerStringValue[0]])
                 and password_verify($headerStringValue[1], Credentials::DEVS[$headerStringValue[0]])

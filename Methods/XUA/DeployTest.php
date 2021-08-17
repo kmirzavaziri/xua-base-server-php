@@ -18,6 +18,12 @@ use XUA\Tools\Signature\MethodItemSignature;
  */
 class DeployTest extends Method
 {
+
+    public static function isPublic(): bool
+    {
+        return false;
+    }
+
     protected static function _requestSignatures(): array
     {
         return array_merge(parent::_requestSignatures(), [

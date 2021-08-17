@@ -10,8 +10,11 @@ use Supers\Basics\Boolean;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Files\Image;
 use Supers\Basics\Highers\Date;
+use Supers\Basics\Highers\Sequence;
+use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
+use Supers\Basics\Strings\Symbol;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\Email;
 use Supers\Customs\Iban;
@@ -30,12 +33,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property string titleFa
- * @method static EntityFieldSignature F_titleFa() The Signature of: Field `titleFa`
- * @method static ConditionField C_titleFa() The Condition Field of: Field `titleFa`
- * @property string titleEn
- * @method static EntityFieldSignature F_titleEn() The Signature of: Field `titleEn`
- * @method static ConditionField C_titleEn() The Condition Field of: Field `titleEn`
+ * @property string title
+ * @method static EntityFieldSignature F_title() The Signature of: Field `title`
+ * @method static ConditionField C_title() The Condition Field of: Field `title`
+ * @property array detailsFields
+ * @method static EntityFieldSignature F_detailsFields() The Signature of: Field `detailsFields`
+ * @method static ConditionField C_detailsFields() The Condition Field of: Field `detailsFields`
  */
 class ProductCategory extends Entity
 {
@@ -45,6 +48,18 @@ class ProductCategory extends Entity
             'title' => new EntityFieldSignature(
                 static::class, 'title',
                 new Name(['nullable' => false, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
+                null
+            ),
+            'detailsFields' => new EntityFieldSignature(
+                static::class, 'title',
+                new Sequence([
+                    'type' => new StructuredMap([
+                        'structure' => [
+                            'key' => new Symbol(['nullable' => false, 'minLength' => 1, 'maxLength' => 200]),
+                            'title' => new Name(['nullable' => false, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
+                        ]
+                    ])
+                ]),
                 null
             ),
         ]);
