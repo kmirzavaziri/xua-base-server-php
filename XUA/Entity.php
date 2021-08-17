@@ -47,7 +47,6 @@ abstract class Entity extends XUA
         [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
         try {
             $statement = self::connection()->prepare($query);
-            $statement = self::connection()->prepare($query);
             $statement->execute($bind);
         } catch (PDOException $e) {
             $boundQuery = '';
