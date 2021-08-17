@@ -154,4 +154,14 @@ abstract class UserService extends Service
         }
         return $user;
     }
+
+    public static function verifyAdmin(MethodRequestException $error): User
+    {
+        $user = self::verifyUser();
+        if (!$user->admin) {
+            throw ($error ?? new MethodRequestException())->setError('', ExpressionService::get('errormessage.access.denied'));
+        }
+        return $user;
+    }
+
 }

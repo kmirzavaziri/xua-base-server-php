@@ -126,6 +126,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property \Entities\User\Session[] sessions
  * @method static EntityFieldSignature F_sessions() The Signature of: Field `sessions`
  * @method static ConditionField C_sessions() The Condition Field of: Field `sessions`
+ * @property bool admin
+ * @method static EntityFieldSignature F_admin() The Signature of: Field `admin`
+ * @method static ConditionField C_admin() The Condition Field of: Field `admin`
  */
 class User extends Entity
 {
@@ -311,6 +314,11 @@ class User extends Entity
                     'definedOn' => 'there',
                 ]),
                 []
+            ),
+            'admin' => new EntityFieldSignature(
+                static::class, 'admin',
+                new Boolean([]),
+                false
             ),
         ]);
     }
