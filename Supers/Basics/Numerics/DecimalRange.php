@@ -30,8 +30,8 @@ class DecimalRange extends Decimal
     {
         return array_merge(parent::_argumentSignatures(), [
             'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'min' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), true, null, false),
-            'max' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30]), true, null, false),
+            'min' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30, 'nullable' => true]), false, null, false),
+            'max' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30, 'nullable' => true]), false, null, false),
         ]);
     }
 
@@ -51,12 +51,12 @@ class DecimalRange extends Decimal
             return false;
         }
 
-        if ($input < $this->min) {
+        if ($this->min !== null and $input < $this->min) {
             $message = "Value $input must be at least $this->min.";
             return false;
         }
 
-        if ($input > $this->max) {
+        if ($this->max !== null and $input > $this->max) {
             $message = "Value $input must be at most $this->max.";
             return false;
         }
@@ -66,6 +66,10 @@ class DecimalRange extends Decimal
 
     protected function _databaseType(): ?string
     {
+        if ($this->min === null or $this->max === null) {
+            return null;
+        }
+
         $min = $this->min;
         $max = min($this->max, pow($this->base, $this->integerLength));
         $this->integerLength = floor(log(max(abs($min), abs($max)), $this->base) + 1);
