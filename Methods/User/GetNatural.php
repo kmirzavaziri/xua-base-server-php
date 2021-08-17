@@ -4,7 +4,6 @@ namespace Methods\User;
 
 use Entities\User;
 use Services\UserService;
-use Services\XUA\ExpressionService;
 use XUA\VARQUE\MethodView;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;

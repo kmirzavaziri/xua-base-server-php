@@ -5,7 +5,6 @@ namespace Methods\User\Session;
 use Entities\User;
 use Entities\User\Session;
 use Services\UserService;
-use Services\XUA\ExpressionService;
 use XUA\Method;
 use XUA\Tools\Entity\Condition;
 
@@ -25,11 +24,7 @@ class TerminateAllOthers extends Method
 
     protected function body(): void
     {
-        $user = UserService::user();
-        if (!$user->id) {
-            $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
-        }
-
+        $user = UserService::verifyUser($this->error);
         Session::deleteMany(
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
                 ->and(Session::C_id(), Condition::NEQ, UserService::session()->id)

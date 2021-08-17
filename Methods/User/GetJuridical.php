@@ -4,7 +4,6 @@ namespace Methods\User;
 
 use Entities\User;
 use Services\UserService;
-use Services\XUA\ExpressionService;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\VARQUE\MethodView;
@@ -42,10 +41,6 @@ class GetJuridical extends MethodView
 
     protected function feed(): Entity
     {
-        $user = UserService::user();
-        if (!$user->id) {
-            $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
-        }
-        return $user;
+        return UserService::verifyUser($this->error);
     }
 }

@@ -29,10 +29,7 @@ class Terminate extends Method
 
     protected function body(): void
     {
-        $user = UserService::user();
-        if (!$user->id) {
-            $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
-        }
+        $user = UserService::verifyUser($this->error);
 
         $session = new Session($this->Q_sessionId);
         if (!$session->id or $session->user->id != $user->id) {

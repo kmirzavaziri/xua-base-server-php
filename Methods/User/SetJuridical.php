@@ -42,11 +42,7 @@ class SetJuridical extends MethodAdjust
 
     protected function feed(): Entity
     {
-        $user = UserService::user();
-        if (!$user->id) {
-            $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
-        }
-        return $user;
+        return UserService::verifyUser($this->error);
     }
 
     protected function body(): void

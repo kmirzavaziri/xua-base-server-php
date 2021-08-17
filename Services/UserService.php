@@ -6,10 +6,12 @@ use Entities\User;
 use Entities\User\Session;
 use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
+use Services\XUA\ExpressionService;
 use Services\XUA\SecurityService;
 use Supers\Basics\Numerics\Integer;
 use Supers\Customs\Email;
 use Supers\Customs\IranPhone;
+use XUA\Exceptions\MethodRequestException;
 use XUA\Service;
 use XUA\Tools\Entity\Condition;
 
@@ -142,5 +144,14 @@ abstract class UserService extends Service
     public static function generateAccessToken(Session $session): string
     {
         return password_hash($session->id . '|' . SecurityService::getRandomSalt(32), PASSWORD_DEFAULT);
+    }
+
+    public static function verifyUser(MethodRequestException $error = null): User
+    {
+        $user = UserService::user();
+        if (!$user->id) {
+            throw ($error ?? new MethodRequestException())->setError('', ExpressionService::get('errormessage.access.denied'));
+        }
+        return $user;
     }
 }

@@ -5,8 +5,6 @@ namespace Methods\User\Session;
 use Entities\User;
 use Entities\User\Session;
 use Services\UserService;
-
-use Services\XUA\ExpressionService;
 use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -34,10 +32,7 @@ class GetAll extends MethodQuery
 
     protected function feed(): array
     {
-        $user = UserService::user();
-        if (!$user->id) {
-            $this->addAndThrowError('', ExpressionService::get('errormessage.access.denied'));
-        }
+        $user = UserService::verifyUser($this->error);
         return Session::getMany(
             Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
                 ->and(Session::C_accessToken(), Condition::NEQ, '')
