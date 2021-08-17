@@ -30,13 +30,12 @@ class GetAll extends MethodQuery
         ];
     }
 
-    protected function feed(): array
+    protected function condition(): Condition
     {
         $user = UserService::verifyUser($this->error);
-        return Session::getMany(
-            Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
-                ->and(Session::C_accessToken(), Condition::NEQ, '')
-        );
+        return Condition::leaf(Session::C_user()->rel(User::C_id()), Condition::EQ, $user->id)
+            ->and(Session::C_accessToken(), Condition::NEQ, '')
+        ;
     }
 
     protected static function wrapper(): string

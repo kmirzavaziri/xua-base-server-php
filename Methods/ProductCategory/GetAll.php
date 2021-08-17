@@ -26,11 +26,6 @@ class GetAll extends MethodQuery
         ];
     }
 
-    protected function feed(): array
-    {
-        return ProductCategory::getMany();
-    }
-
     protected static function wrapper(): string
     {
         return 'productCategories';

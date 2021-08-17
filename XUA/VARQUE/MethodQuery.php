@@ -7,6 +7,9 @@ use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Highers\StructuredMap;
 use XUA\Entity;
 use XUA\MethodEve;
+use XUA\Tools\Entity\Condition;
+use XUA\Tools\Entity\Order;
+use XUA\Tools\Entity\Pager;
 use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\MethodItemSignature;
 
@@ -64,10 +67,24 @@ abstract class MethodQuery extends MethodEve
      */
     abstract protected static function fields(): array;
 
+    protected function condition(): Condition {
+        return Condition::trueLeaf();
+    }
+
+    protected function order(): Order {
+        return Order::noOrder();
+    }
+
+    protected function pager(): Pager {
+        return Pager::unlimited();
+    }
+
     /**
      * @return Entity[]
      */
-    abstract protected function feed(): array;
+    protected function feed(): array {
+        return static::entity()::getMany(static::condition(), static::order(), static::pager());
+    }
 
     protected static function wrapper(): string
     {
