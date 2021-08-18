@@ -40,7 +40,7 @@ class Category extends Entity
                     'invNullable' => false,
                     'definedOn' => 'here',
                 ]),
-                null
+                []
             ),
         ]);
     }
