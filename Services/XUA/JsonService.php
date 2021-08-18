@@ -8,6 +8,7 @@ use Supers\Basics\Highers\Json;
 use Supers\Basics\Highers\Map;
 use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Highers\StructuredMap;
+use Supers\Basics\Universal;
 use XUA\Service;
 use XUA\Super;
 
@@ -34,6 +35,7 @@ abstract class JsonService extends Service
                 StructuredMap::class => $type->structure[$key] ?? null,
                 Map::class => $type->valueType,
                 Sequence::class => $type->type,
+                default => new Universal([])
             };
             if ($itemType) {
                 $input[$key] = is_a($itemType, Json::class) ? static::unmarshalItems($value, $itemType) : $itemType->unmarshal($value);
