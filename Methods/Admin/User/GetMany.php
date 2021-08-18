@@ -17,9 +17,11 @@ class GetMany extends GetManyPagerAdmin
     {
         return [
             User::F_id(),
-            User::F_profilePicture(),
             User::F_firstNameFa(),
-            User::F_lastNameFa()
+            User::F_lastNameFa(),
+            User::F_cellphoneNumber(),
+            User::F_nationalCode(),
+            User::F_email(),
         ];
     }
 
