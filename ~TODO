@@ -50,8 +50,6 @@
 █               Cart/
 0                   Get
 0                   GetPaymentLink
-█           ProductCategory/
-0               GetAll
 █           Product/
 0               GetMany
 0               GetOne
@@ -77,10 +75,6 @@
 0               GetMany
 0               GetOne
 █           Admin/
-█               User/
-0                   GetMany
-0                   GetOne
-0                   SetOne
 █               Product/
 0                   GetMany
 0                   GetOne
