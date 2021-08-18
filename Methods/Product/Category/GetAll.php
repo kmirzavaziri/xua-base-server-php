@@ -1,8 +1,8 @@
 <?php
 
-namespace Methods\ProductCategory;
+namespace Methods\Product\Category;
 
-use Entities\ProductCategory;
+use Entities\Product\Category;
 use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -15,14 +15,14 @@ class GetAll extends MethodQuery
 {
     protected static function entity(): string
     {
-        return ProductCategory::class;
+        return Category::class;
     }
 
     protected static function fields(): array
     {
         return [
-            ProductCategory::F_id(),
-            ProductCategory::F_title(),
+            Category::F_id(),
+            Category::F_title(),
         ];
     }
 
