@@ -23,9 +23,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property string key
- * @method static EntityFieldSignature F_key() The Signature of: Field `key`
- * @method static ConditionField C_key() The Condition Field of: Field `key`
+ * @property string name
+ * @method static EntityFieldSignature F_name() The Signature of: Field `name`
+ * @method static ConditionField C_name() The Condition Field of: Field `name`
  * @property string title
  * @method static EntityFieldSignature F_title() The Signature of: Field `title`
  * @method static ConditionField C_title() The Condition Field of: Field `title`
@@ -45,7 +45,7 @@ class FieldSignature extends Entity
     {
         return array_merge(parent::_fieldSignatures(), [
             'name' => new EntityFieldSignature(
-                static::class, 'key',
+                static::class, 'name',
                 new Symbol(['nullable' => false, 'minLength' => 1, 'maxLength' => 200]),
                 null
             ),
