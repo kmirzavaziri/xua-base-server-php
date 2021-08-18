@@ -34,4 +34,8 @@ class Boolean extends Super
         return self::_unmarshal($input);
     }
 
+    protected function _marshalDatabase(mixed $input): mixed
+    {
+        return (int)$input;
+    }
 }

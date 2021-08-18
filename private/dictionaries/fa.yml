@@ -34,3 +34,4 @@ errormessage.image.min.height.violated: عرض تصویر $height است در ح
 errormessage.image.max.height.violated: عرض تصویر $height است در حالی که باید حداکثر $maxHeight باشد.
 errormessage.image.ratio.violated: نسبت ابعاد تصویر باید $formalRatio باشد اما $actualRatio است.
 errormessage.invalid.id: آی‌دی نادرست می‌باشد.
+errormessage.cannot.degrade.yourself: نمی‌توانید خودتان را از حالت ادمین خارج کنید.
