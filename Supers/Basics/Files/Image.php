@@ -81,7 +81,7 @@ class Image extends Generic
         }
 
         if ($this->maxWidth !== null and $width > $this->maxWidth) {
-            $message = ExpressionService::get('errormessage.image.max.width.violated', ['maxWidth' => $this->minWidth, 'width' => $width]);
+            $message = ExpressionService::get('errormessage.image.max.width.violated', ['maxWidth' => $this->maxWidth, 'width' => $width]);
             return false;
         }
 
