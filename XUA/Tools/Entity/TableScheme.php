@@ -27,7 +27,7 @@ final class TableScheme
             return $index->toQuery();
         }, $this->indexes));
 
-        Entity::connection()->query("CREATE TABLE $this->tableName ($columns,\n\t$indexes)");
+        Entity::execute("CREATE TABLE $this->tableName ($columns,\n\t$indexes)");
     }
 
     private function columnsAlter(false|PDOStatement $rawOldColumns): string
