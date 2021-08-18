@@ -5,7 +5,6 @@ namespace Supers\Customs;
 
 
 use Services\XUA\ExpressionService;
-use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\DecimalRange;
 use Supers\Basics\Strings\Text;
 use XUA\Tools\Signature\SuperArgumentSignature;
@@ -23,8 +22,8 @@ class Email extends Text
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'minLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 320]), false, 0, false),
-            'maxLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 320]), false, 320, false),
+            'minLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 320, 'fractionalLength' => 0]), false, 0, false),
+            'maxLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 320, 'fractionalLength' => 0]), false, 320, false),
         ]);
     }
 

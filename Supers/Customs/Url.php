@@ -26,8 +26,8 @@ class Url extends Text
     {
         return array_merge(parent::_argumentSignatures(), [
             'schemes' => new SuperArgumentSignature(new Sequence(['type' => new Text([])]), true, null, false),
-            'minLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 2083]), false, 0, false),
-            'maxLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 2083]), false, 2083, false),
+            'minLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 2083, 'fractionalLength' => 0]), false, 0, false),
+            'maxLength' => new SuperArgumentSignature(new DecimalRange(['nullable' => true, 'min' => 0, 'max' => 2083, 'fractionalLength' => 0]), false, 2083, false),
         ]);
     }
 

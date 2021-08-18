@@ -19,8 +19,8 @@ abstract class GetManyPagerAdmin extends MethodQuery
     protected static function _requestSignatures(): array
     {
         return array_merge(parent::_requestSignatures(), [
-            'pageSize' => new MethodItemSignature(new DecimalRange(['min' => 1, 'max' => 1_000]), false, 20, false),
-            'pageIndex' => new MethodItemSignature(new DecimalRange(['min' => 1]), false, 1, false),
+            'pageSize' => new MethodItemSignature(new DecimalRange(['min' => 1, 'max' => 1_000, 'fractionalLength' => 0]), false, 20, false),
+            'pageIndex' => new MethodItemSignature(new DecimalRange(['min' => 1, 'fractionalLength' => 0]), false, 1, false),
         ]);
     }
 
