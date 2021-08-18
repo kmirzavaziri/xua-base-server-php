@@ -4,7 +4,6 @@ namespace Methods\Admin\User;
 
 use Entities\User;
 use Methods\Abstraction\GetOneByIdAdmin;
-use Services\UserService;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
