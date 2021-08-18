@@ -72,7 +72,7 @@ class Json extends Super
 
     protected function _databaseType(): ?string
     {
-        return (new Text([]))->databaseType();
+        return (new Text(['nullable' => $this->nullable]))->databaseType();
     }
 
     protected function _phpType(): string
