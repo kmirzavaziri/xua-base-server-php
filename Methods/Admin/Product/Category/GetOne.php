@@ -7,6 +7,7 @@ use Entities\Product\FieldSignature;
 use Methods\Abstraction\GetOneByIdAdmin;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
 /**
  * @property int Q_id
@@ -27,7 +28,7 @@ class GetOne extends GetOneByIdAdmin
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             Category::F_id(),
             Category::F_title(),
             (new EntityFieldSignatureTree(Category::F_additionalFields()))->addChildren([
@@ -37,6 +38,6 @@ class GetOne extends GetOneByIdAdmin
                 FieldSignature::F_type(),
                 FieldSignature::F_typeParams(),
             ]),
-        ];
+        ]);
     }
 }

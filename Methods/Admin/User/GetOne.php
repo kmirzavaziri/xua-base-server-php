@@ -5,6 +5,7 @@ namespace Methods\Admin\User;
 use Entities\User;
 use Methods\Abstraction\GetOneByIdAdmin;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
 /**
  * @property int Q_id
@@ -89,6 +90,6 @@ class GetOne extends GetOneByIdAdmin
     {
         $fields = User::fieldSignatures();
         unset($fields['sessions']);
-        return $fields;
+        return VarqueMethodFieldSignature::fromList($fields);
     }
 }

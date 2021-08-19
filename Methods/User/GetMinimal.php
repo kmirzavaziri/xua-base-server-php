@@ -4,12 +4,13 @@ namespace Methods\User;
 
 use Entities\User;
 use Services\UserService;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodView;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
- * @property mixed profilePicture
+ * @property ?\Services\XUA\FileInstance profilePicture
  * @method static MethodItemSignature R_profilePicture() The Signature of: Response Item `profilePicture`
  * @property ?string firstNameFa
  * @method static MethodItemSignature R_firstNameFa() The Signature of: Response Item `firstNameFa`
@@ -25,11 +26,11 @@ class GetMinimal extends MethodView
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             User::F_profilePicture(),
             User::F_firstNameFa(),
             User::F_lastNameFa()
-        ];
+        ]);
     }
 
     protected function feed(): Entity

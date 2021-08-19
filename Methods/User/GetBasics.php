@@ -6,6 +6,7 @@ use Entities\User;
 use Services\UserService;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodView;
 
 /**
@@ -31,14 +32,14 @@ class GetBasics extends MethodView
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             User::F_profilePicture(),
             User::F_firstNameFa(),
             User::F_lastNameFa(),
             User::F_nationalCode(),
             User::F_cellphoneNumber(),
             User::F_email(),
-        ];
+        ]);
     }
 
     protected function feed(): Entity

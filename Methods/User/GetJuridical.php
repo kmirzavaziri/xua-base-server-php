@@ -6,6 +6,7 @@ use Entities\User;
 use Services\UserService;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodView;
 
 
@@ -30,13 +31,13 @@ class GetJuridical extends MethodView
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             User::F_organizationNameFa(),
             User::F_organizationNameEn(),
             User::F_organizationNationalId(),
             User::F_organizationRegistrationId(),
             User::F_faxNumber(),
-        ];
+        ]);
     }
 
     protected function feed(): Entity

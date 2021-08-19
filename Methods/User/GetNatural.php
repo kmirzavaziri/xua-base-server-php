@@ -4,6 +4,7 @@ namespace Methods\User;
 
 use Entities\User;
 use Services\UserService;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodView;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -52,7 +53,7 @@ class GetNatural extends MethodView
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             User::F_firstNameEn(),
             User::F_lastNameEn(),
             User::F_address(),
@@ -69,7 +70,7 @@ class GetNatural extends MethodView
             User::F_website(),
             User::F_nationalCardPicture(),
             User::F_birthCertificatePicture(),
-        ];
+        ]);
     }
 
     protected function feed(): Entity
