@@ -5,6 +5,7 @@ namespace Methods\User\Session;
 use Entities\User;
 use Entities\User\Session;
 use Services\UserService;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
@@ -22,12 +23,12 @@ class GetAll extends MethodQuery
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             Session::F_lastOnline(),
             Session::F_ip(),
             Session::F_location(),
             Session::F_systemInfo()
-        ];
+        ]);
     }
 
     protected function condition(): Condition

@@ -4,6 +4,7 @@ namespace Methods\Product\Category;
 
 use Entities\Product\Category;
 use XUA\Tools\Signature\EntityFieldSignature;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Signature\MethodItemSignature;
 
@@ -20,10 +21,10 @@ class GetAll extends MethodQuery
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             Category::F_id(),
             Category::F_title(),
-        ];
+        ]);
     }
 
     protected static function wrapper(): string

@@ -8,6 +8,7 @@ use Methods\Abstraction\GetManyPagerAdmin;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
 use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
 /**
  * @property int Q_pageSize
@@ -26,13 +27,13 @@ class GetMany extends GetManyPagerAdmin
 
     protected static function fields(): array
     {
-        return [
+        return VarqueMethodFieldSignature::fromList([
             Category::F_id(),
             Category::F_title(),
             (new EntityFieldSignatureTree(Category::F_additionalFields()))->addChildren([
                 FieldSignature::F_title(),
             ]),
-        ];
+        ]);
     }
 
     protected static function wrapper(): string
