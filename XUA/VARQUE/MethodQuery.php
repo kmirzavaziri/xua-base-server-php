@@ -15,6 +15,7 @@ use XUA\Tools\Signature\MethodItemSignature;
 
 abstract class MethodQuery extends MethodEve
 {
+    # Finalize Eve Methods
     final protected static function requestSignaturesCalculator(): array
     {
         return parent::requestSignaturesCalculator();
@@ -60,12 +61,17 @@ abstract class MethodQuery extends MethodEve
         $this->{static::wrapper()} = $result;
     }
 
+    # New Overridable Methods
     abstract protected static function entity(): string;
 
-    /**
-     * @return EntityFieldSignature[]
-     */
     abstract protected static function fields(): array;
+
+    /**
+     * @return Entity[]
+     */
+    protected function feed(): array {
+        return static::entity()::getMany(static::condition(), static::order(), static::pager());
+    }
 
     protected function condition(): Condition {
         return Condition::trueLeaf();
@@ -77,13 +83,6 @@ abstract class MethodQuery extends MethodEve
 
     protected function pager(): Pager {
         return Pager::unlimited();
-    }
-
-    /**
-     * @return Entity[]
-     */
-    protected function feed(): array {
-        return static::entity()::getMany(static::condition(), static::order(), static::pager());
     }
 
     protected static function wrapper(): string
