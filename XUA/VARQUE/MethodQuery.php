@@ -2,12 +2,14 @@
 
 namespace XUA\VARQUE;
 
+use Exception;
 use Supers\Basics\Highers\Map;
 use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Highers\StructuredMap;
 use XUA\Entity;
 use XUA\MethodEve;
 use XUA\Tools\Entity\Condition;
+use XUA\Tools\Entity\EntityFieldSignatureTree;
 use XUA\Tools\Entity\Order;
 use XUA\Tools\Entity\Pager;
 use XUA\Tools\Signature\EntityFieldSignature;
@@ -26,7 +28,13 @@ abstract class MethodQuery extends MethodEve
         $fields = static::fields();
         $fieldsType = [];
         foreach ($fields as $field) {
-            $fieldsType[$field->name] = $field->type;
+            if (is_a($field, EntityFieldSignature::class)) {
+                $fieldsType[$field->name] = $field->type;
+            } elseif (is_a($field, EntityFieldSignatureTree::class)) {
+                $fieldsType[$field->value->name] = $field->type();
+            } else {
+                throw new Exception('each field must be an instance of either EntityFieldSignature or EntityFieldSignatureTree');
+            }
         }
         $fieldsType = new StructuredMap(['structure' => $fieldsType]);
         $association = static::association();
@@ -49,7 +57,13 @@ abstract class MethodQuery extends MethodEve
         foreach ($feed as $entity) {
             $data = [];
             foreach ($fields as $field) {
-                $data[$field->name] = $entity->{$field->name};
+                if (is_a($field, EntityFieldSignature::class)) {
+                    $data[$field->name] = $entity->{$field->name};
+                } elseif (is_a($field, EntityFieldSignatureTree::class)) {
+                    $data[$field->value->name] = $field->value($entity);
+                } else {
+                    throw new Exception('each field must be an instance of either EntityFieldSignature or EntityFieldSignatureTree');
+                }
             }
             if ($association) {
                 $result[$entity->{$association->name}] = $data;
