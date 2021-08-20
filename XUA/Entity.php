@@ -294,6 +294,9 @@ abstract class Entity extends XUA
         return static::_x_getOne($condition, $order);
     }
 
+    /**
+     * @throws EntityFieldException
+     */
     protected function _store(string $caller) : Entity
     {
         return $this->_x_store();
@@ -372,6 +375,9 @@ abstract class Entity extends XUA
         return static::_getOne($condition, $order, $caller);
     }
 
+    /**
+     * @throws EntityFieldException
+     */
     final public function store(string $caller = Visibility::CALLER_PHP) : Entity
     {
         return $this->_store($caller);
@@ -432,6 +438,9 @@ abstract class Entity extends XUA
         return static::_x_getMany($condition, $order, new Pager(1, 0))[0] ?? new static();
     }
 
+    /**
+     * @throws EntityFieldException
+     */
     final protected function _x_store() : Entity
     {
         $this->_x_insert_or_update();
@@ -617,7 +626,11 @@ abstract class Entity extends XUA
 
         $query = '';
         $bind = [];
+        $insert = false;
         if ($this->_x_fields['id'] === null) {
+            if ($this->givenId() !== 0) {
+                throw (new EntityException())->setError('id', static::class . ' with id ' . $this->givenId() . ' does not exist, use 0 to insert.');
+            }
             $columnNames = [];
             $placeHolders = [];
             $values = [];
@@ -632,10 +645,7 @@ abstract class Entity extends XUA
 
             $query = "INSERT INTO " . static::table() . " ($columnNames) VALUES ($placeHolders)";
             $bind = $values;
-
-            $this->_x_fields['id'] = self::connection()->lastInsertId();
-            $this->_x_must_fetch['id'] = false;
-            $this->_x_must_store['id'] = false;
+            $insert = true;
         } else {
             $expressions = [];
             $values = [];
@@ -656,9 +666,13 @@ abstract class Entity extends XUA
         if ($query and $bind) {
             try {
                 self::execute($query, $bind);
+                if ($insert) {
+                    $this->_x_fields['id'] = self::connection()->lastInsertId();
+                    $this->_x_must_fetch['id'] = false;
+                    $this->_x_must_store['id'] = false;
+                }
             } catch (PDOException $e) {
-                // TODO check $e->getCode() instead of str_contains
-                if (str_contains($e->getMessage(), 'Duplicate entry')) {
+                if ($e->getCode() == 23000) {
                     $pattern = "/Duplicate entry '([^']*)' for key '([^.]*)\.([^']*)'/";
                     preg_match($pattern, $e->getMessage(), $matches);
                     $duplicateValues = explode('-', $matches[1]);
@@ -689,27 +703,41 @@ abstract class Entity extends XUA
             if (!is_a($signature->type, EntityRelation::class) or !$this->_x_must_store[$key]) {
                 continue;
             } elseif ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
-                $value->store();
+                $value->_x_fields[$signature->type->invName] = $this;
+                try {
+                    $value->store();
+                } catch (EntityFieldException $e) {
+                    throw (new EntityFieldException())->setError($key, $e->getErrors());
+                }
             } elseif ($signature->type->relation == 'IN') {
+                foreach ($this->_x_fields[$key] as $relatedEntityKey => $relatedEntity) {
+                    $relatedEntity->_x_fields[$signature->type->invName] = $this;
+                    try {
+                        $relatedEntity->store();
+                    } catch (EntityFieldException $e) {
+                        throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
+                    }
+                }
+
                 [$addingIds, $removingIds] = $this->getAddingRemovingIds($key);
 
-                // @TODO verify inverse is nullable if removing ids
-                $relINQuery = '';
-                $relINBind = [];
-                if ($addingIds) {
-                    $relINQuery .= "UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = ? WHERE id IN (?);";
-                    $relINBind[] = $this->_x_fields['id'];
-                    $relINBind[] = $addingIds;
-                }
                 if ($removingIds) {
-                    $relINQuery .= "UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = NULL WHERE id IN (?);";
-                    $relINBind[] = $removingIds;
+                    if ($signature->type->invNullable) {
+                        self::execute("UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = NULL WHERE id IN (?)", $removingIds);
+                    } else {
+                        self::execute("DELETE FROM " . $signature->type->relatedEntity::table() . " WHERE id IN (?)", $removingIds);
+                    }
                 }
 
-                if ($relINQuery) {
-                    self::execute($relINQuery, $relINBind);
-                }
             } elseif ($signature->type->relation == 'NN') {
+                foreach ($this->_x_fields[$key] as $relatedEntityKey => $relatedEntity) {
+                    try {
+                        $relatedEntity->store();
+                    } catch (EntityFieldException $e) {
+                        throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
+                    }
+                }
+
                 [$addingIds, $removingIds] = $this->getAddingRemovingIds($key);
                 $leftColumn = static::table();
                 $rightColumn = $signature->type->relatedEntity::table();

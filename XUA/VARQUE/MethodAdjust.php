@@ -3,6 +3,7 @@
 namespace XUA\VARQUE;
 
 use XUA\Entity;
+use XUA\Exceptions\EntityFieldException;
 use XUA\MethodEve;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
@@ -15,7 +16,7 @@ abstract class MethodAdjust extends MethodEve
         $request = parent::requestSignaturesCalculator();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $request[$field->signature->name] = new MethodItemSignature($field->signature->type, $field->required, $field->default, $field->const);
+            $request[$field->tree->value->name] = new MethodItemSignature($field->tree->type(), $field->required, $field->default, $field->const);
         }
         return $request;
     }
@@ -30,9 +31,13 @@ abstract class MethodAdjust extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $feed->{$field->signature->name} = $this->{'Q_' . $field->signature->name};
+            $feed->{$field->tree->value->name} = $field->tree->valueFromRequest($this->{'Q_' . $field->tree->value->name}, $field->tree->value->name);
         }
-        $feed->store();
+        try {
+            $feed->store();
+        } catch (EntityFieldException $e) {
+            throw $this->error->fromException($e);
+        }
     }
 
     # New Overridable Methods

@@ -61,7 +61,7 @@ class EntityRelation extends Super
             if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
-            if ($input !== null and $input->id === null) {
+            if ($input !== null and $input->id === null and $input->givenId() !== 0) {
                 if ($this->relation == 'II' and !$this->invNullable) {
                     if (!FlagService::get('force-store-II') and $this->definedOn == 'here') {
                         FlagService::set('force-store-II', true);
@@ -72,7 +72,7 @@ class EntityRelation extends Super
                         return true;
                     }
                 }
-                $message = "$this->relatedEntity with id " . ($input->givenId() === null ? 'NULL' : $input->givenId()) . " does not exist.";
+                $message = "$this->relatedEntity with id " . ($input->givenId() === null ? 'NULL' : $input->givenId()) . ' does not exist.';
                 return false;
             }
             return true;
@@ -81,8 +81,8 @@ class EntityRelation extends Super
                 return false;
             }
             foreach ($input as $item) {
-                if ($item->id === null) {
-                    $message = "$this->relatedEntity with id " . $item->givenId() . " does not exist.";
+                if ($item->id === null and $item->givenId() !== 0) {
+                    $message = "$this->relatedEntity with id " . $item->givenId() . ' does not exist.';
                     return false;
                 }
             }
