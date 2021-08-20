@@ -54,7 +54,7 @@ class StructuredMap extends Json
                     return false;
                 }
             } else {
-                $message = "Key $key is missing.";
+                $message = "Key '$key' is missing.";
                 return false;
             }
         }

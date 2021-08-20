@@ -69,8 +69,8 @@ class Sequence extends Json
 
         if ($this->type != null) {
             foreach ($input as $i => $item) {
-                if (!$this->type->accepts($item, $itemMessage)) {
-                    $message = "Type $this->type does not accept sequence item number $i (" . xua_var_dump($item) . "): " . xua_var_dump($itemMessage) . ".";
+                if (!$this->type->_predicate($item, $itemMessage)) {
+                    $message = "sequence item $i: $itemMessage";
                     return false;
                 }
             }
