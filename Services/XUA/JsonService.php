@@ -28,8 +28,12 @@ abstract class JsonService extends Service
         }
         return $input;
     }
-    public static function unmarshalItems(array $input, Super $type): array
+    public static function unmarshalItems(?array $input, Super $type): ?array
     {
+        if ($input === null) {
+            return null;
+        }
+
         foreach ($input as $key => $value) {
             $itemType = match (get_class($type)) {
                 StructuredMap::class => $type->structure[$key] ?? null,
