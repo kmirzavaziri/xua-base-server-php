@@ -50,17 +50,20 @@ class Json extends Super
 
     protected function _unmarshal($input): mixed
     {
+        $modified = false;
         if (is_string($input)) {
-            $data = json_decode($input, true);
-            if ($data !== null) {
-                $output = $data;
+            $data = @json_decode($input, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $input = $data;
+                $modified = true;
             }
         } elseif (is_object($input)) {
-            $output = (array)$input;
+            $input = (array)$input;
+            $modified = true;
         }
 
-        if (isset($output)) {
-            return JsonService::unmarshalItems($output, $this);
+        if ($modified) {
+            return JsonService::unmarshalItems($input, $this);
         }
         return $input;
     }
