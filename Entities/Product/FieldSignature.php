@@ -17,6 +17,7 @@ use Supers\Customs\Name;
 use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Entity\ConditionField;
+use XUA\Tools\Entity\Index;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 /**
@@ -85,6 +86,7 @@ class FieldSignature extends Entity
     protected static function _indexes(): array
     {
         return array_merge(parent::_indexes(), [
+            new Index(['category' => Index::ASC, 'name' => Index::ASC], true),
         ]);
     }
 
