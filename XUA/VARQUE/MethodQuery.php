@@ -50,7 +50,7 @@ abstract class MethodQuery extends MethodEve
         foreach ($feed as $entity) {
             $data = [];
             foreach ($fields as $field) {
-                $data[$field->tree->value->name] = $field->tree->value($entity);
+                $data[$field->tree->value->name] = $field->tree->valueFromEntity($entity);
             }
             if ($association) {
                 $result[$entity->{$association->name}] = $data;

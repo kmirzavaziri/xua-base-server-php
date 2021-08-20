@@ -65,29 +65,29 @@ final class EntityFieldSignatureTree
         }
     }
 
-    public function value(Entity $entity): mixed
+    public function valueFromEntity(Entity $entity): mixed
     {
         if (is_a($this->value->type, EntityRelation::class)) {
             if ($this->value->type->relation[1] == 'N') {
                 $return = [];
                 foreach ($entity->{$this->value->name} as $item) {
-                    $return[] = $this->oneItemValue($item);
+                    $return[] = $this->oneItemValueFromEntity($item);
                 }
                 return $return;
             } else {
-                return $this->oneItemValue($entity->{$this->value->name});
+                return $this->oneItemValueFromEntity($entity->{$this->value->name});
             }
         } else {
             return $entity->{$this->value->name};
         }
     }
 
-    private function oneItemValue(Entity $entity): array|int
+    private function oneItemValueFromEntity(Entity $entity): array|int
     {
         if ($this->children) {
             $return = [];
             foreach ($this->children as $child) {
-                $return[$child->value->name] = $child->value($entity);
+                $return[$child->value->name] = $child->valueFromEntity($entity);
             }
             return $return;
         } else {

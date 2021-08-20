@@ -30,7 +30,7 @@ abstract class MethodView extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $this->{$field->tree->value->name} = $field->tree->value($feed);
+            $this->{$field->tree->value->name} = $field->tree->valueFromEntity($feed);
         }
     }
 
