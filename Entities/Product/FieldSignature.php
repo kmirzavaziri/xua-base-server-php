@@ -140,7 +140,7 @@ class FieldSignature extends Entity
                 default:
                     $badType = true;
             }
-            if (!$badType and !(new StructuredMap(['nullable' => true, 'structure' => $typeParamsStructure]))->accepts($this->typeParams, $message)) {
+            if (!$badType and !(new StructuredMap(['nullable' => false, 'structure' => $typeParamsStructure]))->explicitlyAccepts($this->typeParams, $message)) {
                 $exception->setError('typeParams', $message);
             }
         }
