@@ -59,7 +59,7 @@ class FieldSignature extends Entity
                 static::class, 'type',
                 new Enum([
                     'nullable' => true,
-                    'values' => ['boolean', 'integer', 'decimal', 'string', 'sequence', 'enum', 'set', 'dateTime', 'date', 'time', 'timeInterval']
+                    'values' => ['boolean', 'integer', 'decimal', 'string', 'sequence', 'enum', 'set', 'dateTime', 'date', 'time']
                 ]),
                 null
             ),
@@ -102,7 +102,6 @@ class FieldSignature extends Entity
                 case 'dateTime':
                 case 'date':
                 case 'time':
-                case 'timeInterval':
                     $typeParamsStructure = array_merge($typeParamsStructure, [
                     ]);
                     break;
