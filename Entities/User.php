@@ -248,12 +248,12 @@ class User extends Entity
             ),
             'geolocationLat' => new EntityFieldSignature(
                 static::class, 'geolocationLat',
-                new Decimal(['nullable' => true, 'integerLength' => 2, 'fractionalLength' => 10]),
+                new Decimal(['nullable' => true, 'integerLength' => 2, 'fractionalLength' => 10, 'base' => 10]),
                 null
             ),
             'geolocationLong' => new EntityFieldSignature(
                 static::class, 'geolocationLong',
-                new Decimal(['nullable' => true, 'integerLength' => 2, 'fractionalLength' => 10]),
+                new Decimal(['nullable' => true, 'integerLength' => 2, 'fractionalLength' => 10, 'base' => 10]),
                 null
             ),
             'postalCode' => new EntityFieldSignature(
