@@ -6,6 +6,7 @@
 2           Indexes
 2           Make it possible to set condition on relational id without using rel() method and join
 3           Method document generator
+4           add super EfficientStructuredMapSequence and use it for method query, this way we only send keys once and values multiple times
 !           Copy Prod DB to Local by a command or on a weekly basis
 !           Handle Rel CF condition when rel is not used, for example condition where (User::C_workingFarms == [])
 !           Default value for both sides of relation
@@ -76,10 +77,6 @@
 0               GetOne
 █           Admin/
 █               Product/
-0                   GetMany
-0                   GetOne
-0                   SetOne
-█               ProductCategory/
 0                   GetMany
 0                   GetOne
 0                   SetOne
