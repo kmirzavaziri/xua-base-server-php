@@ -30,7 +30,6 @@ class SetOne extends SetOneByIdAdmin
             Category::F_title(),
             (new EntityFieldSignatureTree(Category::F_additionalFields()))->addChildren([
                 FieldSignature::F_id(),
-                FieldSignature::F_name(),
                 FieldSignature::F_title(),
                 FieldSignature::F_type(),
                 FieldSignature::F_typeParams(),
