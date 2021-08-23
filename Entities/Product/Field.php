@@ -21,7 +21,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property \Entities\Product\FieldSignature fieldSignature
+ * @property FieldSignature fieldSignature
  * @method static EntityFieldSignature F_fieldSignature() The Signature of: Field `fieldSignature`
  * @method static ConditionField C_fieldSignature() The Condition Field of: Field `fieldSignature`
  * @property ?string value

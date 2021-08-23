@@ -10,6 +10,7 @@ use Services\IranAdministrativeDivisionService;
 use Services\Mime;
 use Services\Size;
 use Services\XUA\ExpressionService;
+use Services\XUA\FileInstance;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
@@ -34,18 +35,54 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string description
  * @method static EntityFieldSignature F_description() The Signature of: Field `description`
  * @method static ConditionField C_description() The Condition Field of: Field `description`
- * @property \Entities\Product\Field[] additionalFields
+ * @property Field[] additionalFields
  * @method static EntityFieldSignature F_additionalFields() The Signature of: Field `additionalFields`
  * @method static ConditionField C_additionalFields() The Condition Field of: Field `additionalFields`
+ * @property ?string investmentTimespan
+ * @method static EntityFieldSignature F_investmentTimespan() The Signature of: Field `investmentTimespan`
+ * @method static ConditionField C_investmentTimespan() The Condition Field of: Field `investmentTimespan`
+ * @property ?FileInstance brochure
+ * @method static EntityFieldSignature F_brochure() The Signature of: Field `brochure`
+ * @method static ConditionField C_brochure() The Condition Field of: Field `brochure`
+ * @property int price
+ * @method static EntityFieldSignature F_price() The Signature of: Field `price`
+ * @method static ConditionField C_price() The Condition Field of: Field `price`
  * @property Media[] gallery
  * @method static EntityFieldSignature F_gallery() The Signature of: Field `gallery`
  * @method static ConditionField C_gallery() The Condition Field of: Field `gallery`
  * @property Category category
  * @method static EntityFieldSignature F_category() The Signature of: Field `category`
  * @method static ConditionField C_category() The Condition Field of: Field `category`
+ * @property array costsTable
+ * @method static EntityFieldSignature F_costsTable() The Signature of: Field `costsTable`
+ * @method static ConditionField C_costsTable() The Condition Field of: Field `costsTable`
+ * @property array predictionsTable
+ * @method static EntityFieldSignature F_predictionsTable() The Signature of: Field `predictionsTable`
+ * @method static ConditionField C_predictionsTable() The Condition Field of: Field `predictionsTable`
  * @property IranAdministrativeDivision geographicDivision
  * @method static EntityFieldSignature F_geographicDivision() The Signature of: Field `geographicDivision`
  * @method static ConditionField C_geographicDivision() The Condition Field of: Field `geographicDivision`
+ * @property IranAdministrativeDivision ostan
+ * @method static EntityFieldSignature F_ostan() The Signature of: Field `ostan`
+ * @method static ConditionField C_ostan() The Condition Field of: Field `ostan`
+ * @property IranAdministrativeDivision shahrestan
+ * @method static EntityFieldSignature F_shahrestan() The Signature of: Field `shahrestan`
+ * @method static ConditionField C_shahrestan() The Condition Field of: Field `shahrestan`
+ * @property IranAdministrativeDivision bakhsh
+ * @method static EntityFieldSignature F_bakhsh() The Signature of: Field `bakhsh`
+ * @method static ConditionField C_bakhsh() The Condition Field of: Field `bakhsh`
+ * @property IranAdministrativeDivision dehestan
+ * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
+ * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
+ * @property IranAdministrativeDivision abadi
+ * @method static EntityFieldSignature F_abadi() The Signature of: Field `abadi`
+ * @method static ConditionField C_abadi() The Condition Field of: Field `abadi`
+ * @property Farm farm
+ * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
+ * @method static ConditionField C_farm() The Condition Field of: Field `farm`
+ * @property ?array paymentPlan
+ * @method static EntityFieldSignature F_paymentPlan() The Signature of: Field `paymentPlan`
+ * @method static ConditionField C_paymentPlan() The Condition Field of: Field `paymentPlan`
  */
 class Product extends Entity
 {
@@ -138,7 +175,7 @@ class Product extends Entity
             'ostan' => new EntityFieldSignature(
                 static::class, 'ostan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity) {
+                    'getter' => function (Entity $entity): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'ostan');
                     }
                 ]),
@@ -147,7 +184,7 @@ class Product extends Entity
             'shahrestan' => new EntityFieldSignature(
                 static::class, 'shahrestan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity) {
+                    'getter' => function (Entity $entity): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'shahrestan');
                     }
                 ]),
@@ -156,7 +193,7 @@ class Product extends Entity
             'bakhsh' => new EntityFieldSignature(
                 static::class, 'bakhsh',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity) {
+                    'getter' => function (Entity $entity): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'bakhsh');
                     }
                 ]),
@@ -165,7 +202,7 @@ class Product extends Entity
             'dehestan' => new EntityFieldSignature(
                 static::class, 'dehestan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity) {
+                    'getter' => function (Entity $entity): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'dehestan');
                     }
                 ]),
@@ -174,7 +211,7 @@ class Product extends Entity
             'abadi' => new EntityFieldSignature(
                 static::class, 'abadi',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity) {
+                    'getter' => function (Entity $entity): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'abadi');
                     }
                 ]),
