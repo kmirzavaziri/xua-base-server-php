@@ -266,9 +266,8 @@ class Product extends Entity
         }
 
         if ($this->geographicDivision->type == 'ostan') {
-            $exception->setError('geographicDivision', ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
-                'entity' => ExpressionService::get('entityclass.' . IranAdministrativeDivision::table()),
-                'id' => $this->geographicDivision->id,
+            $exception->setError('geographicDivision', ExpressionService::get('errormessage.bad.geographic.division.with.title', [
+                'title' => $this->geographicDivision->title,
             ]));
         }
     }
