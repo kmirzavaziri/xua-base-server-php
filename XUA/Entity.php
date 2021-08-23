@@ -189,12 +189,14 @@ abstract class Entity extends XUA
 
         if (is_a($signature->type, EntityRelation::class)) {
             if ($signature->type->relation[1] == 'I') {
-                if ($value !== null) {
+                if ($value !== null and $signature->type->invName !== null) {
                     $this->addThisToAnotherEntity($value, $signature->type->invName);
                 }
             } elseif ($signature->type->relation[1] == 'N') {
-                foreach ($value as $item) {
-                    $this->addThisToAnotherEntity($item, $signature->type->invName);
+                if ($signature->type->invName !== null) {
+                    foreach ($value as $item) {
+                        $this->addThisToAnotherEntity($item, $signature->type->invName);
+                    }
                 }
             }
         }
