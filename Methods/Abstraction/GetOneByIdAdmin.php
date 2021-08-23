@@ -25,10 +25,6 @@ abstract class GetOneByIdAdmin extends MethodView
 
     protected function feed(): Entity
     {
-        if ($this->Q_id === 0) {
-            return new (static::entity())();
-        }
-
         $entity = (new (static::entity())($this->Q_id));
         if (!$entity->id) {
             $this->addAndThrowError('id', ExpressionService::get('errormessage.invalid.id'));

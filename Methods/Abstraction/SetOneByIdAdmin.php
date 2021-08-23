@@ -26,7 +26,7 @@ abstract class SetOneByIdAdmin extends MethodAdjust
     protected function feed(): Entity
     {
         $entity = (new (static::entity())($this->Q_id));
-        if (!$entity->id) {
+        if ($this->Q_id != $entity->id) {
             $this->addAndThrowError('id', ExpressionService::get('errormessage.invalid.id'));
         }
         return $entity;
