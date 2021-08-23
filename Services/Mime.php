@@ -21,6 +21,7 @@ abstract class Mime extends Service
 
     const MIME_VIDEO_X_FLV = 'video/x-flv';
     const MIME_VIDEO_QUICKTIME = 'video/quicktime';
+    const MIME_VIDEO_MP4 = 'video/mp4';
 
     const MIME_AUDIO_MPEG = 'audio/mpeg';
 
@@ -57,6 +58,7 @@ abstract class Mime extends Service
     const MIME_VIDEO = [
         self::MIME_VIDEO_X_FLV,
         self::MIME_VIDEO_QUICKTIME,
+        self::MIME_VIDEO_MP4,
     ];
 
     const MIME_AUDIO = [
