@@ -17,9 +17,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string title
  * @method static EntityFieldSignature F_title() The Signature of: Field `title`
  * @method static ConditionField C_title() The Condition Field of: Field `title`
- * @property \Entities\Product\FieldSignature[] additionalFields
+ * @property FieldSignature[] additionalFields
  * @method static EntityFieldSignature F_additionalFields() The Signature of: Field `additionalFields`
  * @method static ConditionField C_additionalFields() The Condition Field of: Field `additionalFields`
+ * @property Product[] products
+ * @method static EntityFieldSignature F_products() The Signature of: Field `products`
+ * @method static ConditionField C_products() The Condition Field of: Field `products`
  */
 class Category extends Entity
 {
