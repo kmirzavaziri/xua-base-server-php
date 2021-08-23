@@ -71,6 +71,7 @@ class PhpVirtualField extends Super
 
     protected function _phpType(): string
     {
-        return (new ReflectionFunction(Closure::fromCallable($this->getter)))->getReturnType();
+        $returnType = (new ReflectionFunction(Closure::fromCallable($this->getter)))->getReturnType();
+        return $returnType ? '\\' . $returnType : 'mixed';
     }
 }
