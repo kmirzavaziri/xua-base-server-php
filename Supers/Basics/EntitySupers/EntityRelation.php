@@ -4,6 +4,7 @@
 namespace Supers\Basics\EntitySupers;
 
 
+use Services\XUA\ExpressionService;
 use Services\XUA\FlagService;
 use Supers\Basics\Boolean;
 use Supers\Basics\Highers\Instance;
@@ -72,7 +73,10 @@ class EntityRelation extends Super
                         return true;
                     }
                 }
-                $message = "$this->relatedEntity with id " . ($input->givenId() === null ? 'NULL' : $input->givenId()) . ' does not exist.';
+                $message = ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
+                    'entity' => ExpressionService::get('entityclass.' . $this->relatedEntity::table()),
+                    'id' => ($input->givenId() === null ? 'NULL' : $input->givenId()),
+                ]);
                 return false;
             }
             return true;
