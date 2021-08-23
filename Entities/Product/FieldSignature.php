@@ -80,7 +80,7 @@ class FieldSignature extends Entity
     protected static function _indexes(): array
     {
         return array_merge(parent::_indexes(), [
-            new Index(['category' => Index::ASC, 'name' => Index::ASC], true),
+            new Index(['category' => Index::ASC, 'title' => Index::ASC], true),
         ]);
     }
 
