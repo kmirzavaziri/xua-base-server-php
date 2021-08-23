@@ -46,7 +46,7 @@ class FieldSignature extends Entity
         return array_merge(parent::_fieldSignatures(), [
             'title' => new EntityFieldSignature(
                 static::class, 'title',
-                new Name(['nullable' => false, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
+                new Text(['nullable' => false, 'minLength' => 1, 'maxLength' => 200]),
                 null
             ),
             'type' => new EntityFieldSignature(
