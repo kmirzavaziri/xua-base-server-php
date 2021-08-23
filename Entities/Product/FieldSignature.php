@@ -11,7 +11,6 @@ use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Enum;
-use Supers\Basics\Strings\Symbol;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\Name;
 use XUA\Entity;
@@ -36,7 +35,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?array typeParams
  * @method static EntityFieldSignature F_typeParams() The Signature of: Field `typeParams`
  * @method static ConditionField C_typeParams() The Condition Field of: Field `typeParams`
- * @property \Entities\Product\Category category
+ * @property Category category
  * @method static EntityFieldSignature F_category() The Signature of: Field `category`
  * @method static ConditionField C_category() The Condition Field of: Field `category`
  */
