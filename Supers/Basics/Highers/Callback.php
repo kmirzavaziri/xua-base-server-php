@@ -62,6 +62,7 @@ class Callback extends Super
 
         $returnType = $function->getReturnType();
 
+        // @TODO change to subclass instead of equal (if to-add field allow subclass is set)
         if ($this->returnType !== null and $this->returnType != $returnType) {
             $message = "Return type '$this->returnType' expected, got '$returnType'.";
             return false;
