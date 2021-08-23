@@ -168,7 +168,7 @@ abstract class MethodEve extends XUA
         return $this->_x_response;
     }
 
-    protected function addError(string $key, string $message): void
+    protected function addError(string $key, mixed $message): void
     {
         $this->error->setError($key, $message);
     }
@@ -178,7 +178,7 @@ abstract class MethodEve extends XUA
         throw $this->error;
     }
 
-    protected function addAndThrowError(string $key, string $message): void
+    protected function addAndThrowError(string $key, mixed $message): void
     {
         throw $this->error->setError($key, $message);
     }
