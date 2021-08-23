@@ -2,6 +2,7 @@
 
 namespace Entities\Product;
 
+use Entities\Product;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Customs\Name;
@@ -41,6 +42,18 @@ class Category extends Entity
                     'definedOn' => 'here',
                 ]),
                 []
+            ),
+            'products' => new EntityFieldSignature(
+                static::class, 'products',
+                new EntityRelation([
+                    'relatedEntity' => Product::class,
+                    'relation' => 'IN',
+                    'invName' => 'category',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'there',
+                ]),
+                null
             ),
         ]);
     }
