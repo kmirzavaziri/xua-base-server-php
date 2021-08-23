@@ -90,7 +90,7 @@ function getRelationInverseColumns(string $class) : object
     if (is_a($class, Entity::class, true)) {
         foreach ($class::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
-            if (is_a($signature->type, EntityRelation::class) and $signature->type->definedOn == 'here') {
+            if (is_a($signature->type, EntityRelation::class) and $signature->type->definedOn == 'here' and $signature->type->invName) {
                 $result->result[] = [
                     'new' => !in_array($signature->type->invName, array_keys($signature->type->relatedEntity::fieldSignatures())),
                     'name' => $signature->type->invName,
