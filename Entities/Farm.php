@@ -2,6 +2,7 @@
 
 namespace Entities;
 
+use Supers\Basics\EntitySupers\EntityRelation;
 use XUA\Entity;
 use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
@@ -16,6 +17,18 @@ class Farm extends Entity
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
+            'products' => new EntityFieldSignature(
+                static::class, 'products',
+                new EntityRelation([
+                    'relatedEntity' => Product::class,
+                    'relation' => 'IN',
+                    'invName' => 'farm',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'there',
+                ]),
+                null
+            ),
         ]);
     }
 
