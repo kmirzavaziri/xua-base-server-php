@@ -35,3 +35,7 @@ errormessage.image.max.height.violated: عرض تصویر $height است در ح
 errormessage.image.ratio.violated: نسبت ابعاد تصویر باید $formalRatio باشد اما $actualRatio است.
 errormessage.invalid.id: آی‌دی نادرست می‌باشد.
 errormessage.cannot.degrade.yourself: نمی‌توانید خودتان را از حالت ادمین خارج کنید.
+errormessage.invalid.field.title.title: فیلد $title برای دسته‌بندی این محصول معتبر نیست.
+errormessage.field.title.missing: فیلد $title ضروری است اما وارد نشده.
+errormessage.entity.with.id.does.not.exists: هیچ $entity‌ای با شناسه $id وجود ندارد.
+entityclass.Dataset_IranAdministrativeDivision: منطقه
