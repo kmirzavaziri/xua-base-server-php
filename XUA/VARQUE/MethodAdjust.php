@@ -31,7 +31,12 @@ abstract class MethodAdjust extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $feed->{$field->tree->value->name} = $field->tree->valueFromRequest($this->{'Q_' . $field->tree->value->name}, $field->tree->value->name);
+            try {
+                $feed->{$field->tree->value->name} = $field->tree->valueFromRequest($this->{'Q_' . $field->tree->value->name});
+            } catch (EntityFieldException $e) {
+                $this->error->fromException($e);
+                $this->throwError();
+            }
         }
         try {
             $feed->store();

@@ -9,7 +9,7 @@ use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Highers\StructuredMap;
 use XUA\Entity;
 use XUA\Exceptions\DefinitionException;
-use XUA\Exceptions\MethodRequestException;
+use XUA\Exceptions\EntityFieldException;
 use XUA\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
 
@@ -85,17 +85,25 @@ final class EntityFieldSignatureTree
         }
     }
 
-    public function valueFromRequest(mixed $value, string $keyName): mixed
+    public function valueFromRequest(mixed $value): mixed
     {
         if (is_a($this->value->type, EntityRelation::class)) {
             if ($this->value->type->relation[1] == 'N') {
                 $return = [];
-                foreach ($value as $item) {
-                    $return[] = $this->oneItemValueFromRequest($item, $keyName);
+                foreach ($value as $index => $item) {
+                    try {
+                        $return[] = $this->oneItemValueFromRequest($item);
+                    } catch (EntityFieldException $e) {
+                        throw (new EntityFieldException)->setError($this->value->name, [$index => $e->getErrors()]);
+                    }
                 }
                 return $return;
             } else {
-                return $this->oneItemValueFromRequest($value, $keyName);
+                try {
+                    return $this->oneItemValueFromRequest($value);
+                } catch (EntityFieldException $e) {
+                    throw (new EntityFieldException)->setError($this->value->name, $e->getErrors());
+                }
             }
         } else {
             return $value;
@@ -116,16 +124,24 @@ final class EntityFieldSignatureTree
         }
     }
 
-    private function oneItemValueFromRequest(array $value, string $keyName): entity
+    private function oneItemValueFromRequest(array|int $value): entity
     {
+        if (is_int($value)) {
+            $return = new ($this->value->type->relatedEntity)($value);
+            if ($value != $return->id) {
+                throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value]));
+            }
+            return $return;
+        }
+
         if (in_array('id', array_map(function (EntityFieldSignatureTree $tree) { return $tree->value->name; }, $this->children))) {
             $return = new ($this->value->type->relatedEntity)($value['id']);
             if ($value['id'] != $return->id) {
-                throw ($error ?? new MethodRequestException())->setError($keyName, ExpressionService::get('errormessage.invalid.id'));
+                throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value['id']]));
             }
             foreach ($this->children as $child) {
                 if ($child->value->name != 'id') {
-                    $return->{$child->value->name} = $child->valueFromRequest($value[$child->value->name], $keyName);
+                    $return->{$child->value->name} = $child->valueFromRequest($value[$child->value->name]);
                 }
             }
             return $return;
