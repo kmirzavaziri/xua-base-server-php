@@ -40,7 +40,7 @@ class SetNationalCardPicture extends MethodAdjust
         if ($user->nationalCardPicture and file_exists($user->nationalCardPicture->path)) {
             unlink($user->nationalCardPicture->path);
         }
-        $this->Q_nationalCardPicture?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . $user->id);
+        $this->Q_nationalCardPicture?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . 'users' . DIRECTORY_SEPARATOR . $user->id);
         $user->nationalCardPicture = $this->Q_nationalCardPicture;
         $user->store();
     }
