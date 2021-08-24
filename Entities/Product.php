@@ -62,19 +62,19 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property IranAdministrativeDivision geographicDivision
  * @method static EntityFieldSignature F_geographicDivision() The Signature of: Field `geographicDivision`
  * @method static ConditionField C_geographicDivision() The Condition Field of: Field `geographicDivision`
- * @property IranAdministrativeDivision ostan
+ * @property int ostan
  * @method static EntityFieldSignature F_ostan() The Signature of: Field `ostan`
  * @method static ConditionField C_ostan() The Condition Field of: Field `ostan`
- * @property IranAdministrativeDivision shahrestan
+ * @property int shahrestan
  * @method static EntityFieldSignature F_shahrestan() The Signature of: Field `shahrestan`
  * @method static ConditionField C_shahrestan() The Condition Field of: Field `shahrestan`
- * @property IranAdministrativeDivision bakhsh
+ * @property ?int bakhsh
  * @method static EntityFieldSignature F_bakhsh() The Signature of: Field `bakhsh`
  * @method static ConditionField C_bakhsh() The Condition Field of: Field `bakhsh`
- * @property IranAdministrativeDivision dehestan
+ * @property ?int dehestan
  * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
  * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
- * @property IranAdministrativeDivision abadi
+ * @property ?int abadi
  * @method static EntityFieldSignature F_abadi() The Signature of: Field `abadi`
  * @method static ConditionField C_abadi() The Condition Field of: Field `abadi`
  * @property Farm farm
@@ -184,8 +184,8 @@ class Product extends Entity
             'shahrestan' => new EntityFieldSignature(
                 static::class, 'shahrestan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): int {
-                        return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'shahrestan');
+                    'getter' => function (Product $product): int {
+                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'shahrestan');
                     }
                 ]),
                 null
@@ -211,7 +211,7 @@ class Product extends Entity
             'abadi' => new EntityFieldSignature(
                 static::class, 'abadi',
                 new PhpVirtualField([
-                    'getter' => function (Product $product): int {
+                    'getter' => function (Product $product): ?int {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'abadi');
                     }
                 ]),
