@@ -50,6 +50,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property Media[] gallery
  * @method static EntityFieldSignature F_gallery() The Signature of: Field `gallery`
  * @method static ConditionField C_gallery() The Condition Field of: Field `gallery`
+ * @property ?string image
+ * @method static EntityFieldSignature F_image() The Signature of: Field `image`
+ * @method static ConditionField C_image() The Condition Field of: Field `image`
  * @property Category category
  * @method static EntityFieldSignature F_category() The Signature of: Field `category`
  * @method static ConditionField C_category() The Condition Field of: Field `category`
@@ -137,6 +140,15 @@ class Product extends Entity
                     'definedOn' => 'here',
                 ]),
                 []
+            ),
+            'image' => new EntityFieldSignature(
+                static::class, 'image',
+                new PhpVirtualField([
+                    'getter' => function (Product $product): ?string {
+                        return $product->gallery ? (Media::F_source()->type)->marshal($product->gallery[0]->source) : null;
+                    }
+                ]),
+                null
             ),
             'category' => new EntityFieldSignature(
                 static::class, 'category',
