@@ -14,18 +14,23 @@ use XUA\VARQUE\MethodQuery;
  * @property int Q_pageIndex
  * @method static MethodItemSignature Q_pageIndex() The Signature of: Request Item `pageIndex`
  */
-abstract class GetManyPagerAdmin extends GetManyPager
+abstract class GetManyPager extends MethodQuery
 {
     protected static function _requestSignatures(): array
     {
         return array_merge(parent::_requestSignatures(), [
-            'pageSize' => new MethodItemSignature(new DecimalRange(['nullable' => false, 'min' => 1, 'max' => 1_000, 'fractionalLength' => 0]), false, 20, false),
+            'pageSize' => new MethodItemSignature(new DecimalRange(['nullable' => false, 'min' => 1, 'max' => 20, 'fractionalLength' => 0]), false, 5, false),
             'pageIndex' => new MethodItemSignature(new DecimalRange(['nullable' => false, 'min' => 1, 'fractionalLength' => 0]), false, 1, false),
         ]);
     }
 
+    protected function pager(): Pager
+    {
+        return new Pager($this->Q_pageSize, $this->Q_pageIndex);
+    }
+
     protected function validations(): void
     {
-        UserService::verifyAdmin($this->error);
+        UserService::verifyUser($this->error);
     }
 }
