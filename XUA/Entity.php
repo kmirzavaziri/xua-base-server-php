@@ -11,6 +11,7 @@ use Supers\Basics\EntitySupers\DatabaseVirtualField;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Numerics\Decimal;
+use Throwable;
 use XUA\Exceptions\EntityException;
 use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\EntityDeleteException;
@@ -82,6 +83,8 @@ abstract class Entity extends XUA
     private array $_x_must_store = [];
 
     private ?int $_x_given_id;
+
+    private static int $_x_lastSavepointNo = 0;
 
     /**
      * @throws SuperValidationException|EntityException
@@ -382,7 +385,13 @@ abstract class Entity extends XUA
      */
     final public function store(string $caller = Visibility::CALLER_PHP) : Entity
     {
-        return $this->_store($caller);
+        $savePoint = static::savePoint();
+        try {
+            return $this->_store($caller);
+        } catch (Throwable $t) {
+            static::rollbackToSavepoint($savePoint);
+            throw $t;
+        }
     }
 
     final public function delete(string $caller = Visibility::CALLER_PHP) : void
@@ -812,6 +821,27 @@ abstract class Entity extends XUA
             'tableNames' => $tableNames,
             'alters' => implode(PHP_EOL . PHP_EOL, $alters)
         ];
+    }
+
+    final public static function startTransaction() : void
+    {
+        static::execute("START TRANSACTION");
+    }
+
+    final public static function savePoint() : int
+    {
+        static::execute("SAVEPOINT savepoint" . ++self::$_x_lastSavepointNo);
+        return self::$_x_lastSavepointNo;
+    }
+
+    final public static function rollbackToSavepoint(int $savepointNo) : void
+    {
+        static::execute("ROLLBACK TO savepoint$savepointNo");
+    }
+
+    final public static function commit() : void
+    {
+        static::execute("COMMIT");
     }
 
     private static function columnsExpression(?Entity $entity = null) : array

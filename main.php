@@ -3,12 +3,9 @@ date_default_timezone_set('Asia/Tehran');
 
 require 'magic.php';
 
-use Interfaces\XUA\NotFoundInterface;
+use Services\MainService;
 use Services\XUA\Dev\Credentials;
 use Services\XUA\RouteService;
-use Services\XUA\TemplateService;
-use XUA\Exceptions\RouteException;
-use XUA\XUAException;
 
 require 'autoload.php';
 
@@ -23,20 +20,10 @@ if (Credentials::developer()) {
 }
 
 try {
-    echo RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
+    MainService::before();
+    $response = RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
+    MainService::after();
+    echo $response;
 } catch (Throwable $throwable) {
-    if (Credentials::developer()) {
-        echo
-            "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
-            (is_a($throwable, XUAException::class) ? xua_var_dump($throwable->getErrors()) : $throwable->getMessage()) . "\n\n" .
-            "Trace:\n" .
-            $throwable->getTraceAsString() .
-            "</pre>";
-    } else {
-        if ($throwable instanceof RouteException) {
-            echo NotFoundInterface::execute();
-        } else {
-            TemplateService::render('errors/500.twig', []);
-        }
-    }
+    MainService::catch($throwable);
 }
