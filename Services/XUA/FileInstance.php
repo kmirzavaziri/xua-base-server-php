@@ -2,7 +2,7 @@
 
 namespace Services\XUA;
 
-use Services\Mime;
+use Exception;
 use Services\UserService;
 use XUA\Service;
 
@@ -44,7 +44,10 @@ class FileInstance extends Service
             $newName = $this->newName($dir, $seed);
 
             if (!file_exists($dir)) {
-                mkdir($dir, 0666, true);
+                mkdir($dir, 0777, true);
+            }
+            if (!file_exists($dir)) {
+                throw new Exception('Somehow failed');
             }
             move_uploaded_file($this->path, $newName);
             $this->path = $newName;
