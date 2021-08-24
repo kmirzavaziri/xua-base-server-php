@@ -65,19 +65,19 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property IranAdministrativeDivision geographicDivision
  * @method static EntityFieldSignature F_geographicDivision() The Signature of: Field `geographicDivision`
  * @method static ConditionField C_geographicDivision() The Condition Field of: Field `geographicDivision`
- * @property int ostan
+ * @property IranAdministrativeDivision ostan
  * @method static EntityFieldSignature F_ostan() The Signature of: Field `ostan`
  * @method static ConditionField C_ostan() The Condition Field of: Field `ostan`
- * @property int shahrestan
+ * @property IranAdministrativeDivision shahrestan
  * @method static EntityFieldSignature F_shahrestan() The Signature of: Field `shahrestan`
  * @method static ConditionField C_shahrestan() The Condition Field of: Field `shahrestan`
- * @property ?int bakhsh
+ * @property ?IranAdministrativeDivision bakhsh
  * @method static EntityFieldSignature F_bakhsh() The Signature of: Field `bakhsh`
  * @method static ConditionField C_bakhsh() The Condition Field of: Field `bakhsh`
- * @property ?int dehestan
+ * @property ?IranAdministrativeDivision dehestan
  * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
  * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
- * @property ?int abadi
+ * @property ?IranAdministrativeDivision abadi
  * @method static EntityFieldSignature F_abadi() The Signature of: Field `abadi`
  * @method static ConditionField C_abadi() The Condition Field of: Field `abadi`
  * @property Farm farm
@@ -187,7 +187,7 @@ class Product extends Entity
             'ostan' => new EntityFieldSignature(
                 static::class, 'ostan',
                 new PhpVirtualField([
-                    'getter' => function (Product $product): int {
+                    'getter' => function (Product $product): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'ostan');
                     }
                 ]),
@@ -196,7 +196,7 @@ class Product extends Entity
             'shahrestan' => new EntityFieldSignature(
                 static::class, 'shahrestan',
                 new PhpVirtualField([
-                    'getter' => function (Product $product): int {
+                    'getter' => function (Product $product): IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'shahrestan');
                     }
                 ]),
@@ -205,7 +205,7 @@ class Product extends Entity
             'bakhsh' => new EntityFieldSignature(
                 static::class, 'bakhsh',
                 new PhpVirtualField([
-                    'getter' => function (Product $product): ?int {
+                    'getter' => function (Product $product): ?IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'bakhsh');
                     }
                 ]),
@@ -214,7 +214,7 @@ class Product extends Entity
             'dehestan' => new EntityFieldSignature(
                 static::class, 'dehestan',
                 new PhpVirtualField([
-                    'getter' => function (Product $product): ?int {
+                    'getter' => function (Product $product): ?IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'dehestan');
                     }
                 ]),
@@ -223,7 +223,7 @@ class Product extends Entity
             'abadi' => new EntityFieldSignature(
                 static::class, 'abadi',
                 new PhpVirtualField([
-                    'getter' => function (Product $product): ?int {
+                    'getter' => function (Product $product): ?IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'abadi');
                     }
                 ]),

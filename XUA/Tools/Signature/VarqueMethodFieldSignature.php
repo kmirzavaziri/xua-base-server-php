@@ -9,7 +9,7 @@ use XUA\Tools\Entity\EntityFieldSignatureTree;
 
 class VarqueMethodFieldSignature
 {
-    public EntityFieldSignatureTree $tree;
+    public EntityFieldSignatureTree $root;
     public bool $required;
     public mixed $default;
     public bool $const;
@@ -18,18 +18,20 @@ class VarqueMethodFieldSignature
         throw new InstantiationException('Use static method fromSignature or fromTree.');
     }
 
-    public static function fromSignature(EntityFieldSignature $signature, $required = true, $default = null, $const = false) {
+    public static function fromSignature(EntityFieldSignature $signature, $required = true, $default = null, $const = false): self
+    {
         $instance = static::instance();
-        $instance->tree = new EntityFieldSignatureTree($signature);
+        $instance->root = new EntityFieldSignatureTree($signature);
         $instance->required = $required;
         $instance->default = $default;
         $instance->const = $const;
         return $instance;
     }
 
-    public static function fromTree(EntityFieldSignatureTree $tree, $required = true, $default = null, $const = false) {
+    public static function fromTree(EntityFieldSignatureTree $tree, $required = true, $default = null, $const = false): self
+    {
         $instance = static::instance();
-        $instance->tree = $tree;
+        $instance->root = $tree;
         $instance->required = $required;
         $instance->default = $default;
         $instance->const = $const;

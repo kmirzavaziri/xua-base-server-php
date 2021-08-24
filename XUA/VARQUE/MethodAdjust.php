@@ -16,7 +16,7 @@ abstract class MethodAdjust extends MethodEve
         $request = parent::requestSignaturesCalculator();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $request[$field->tree->value->name] = new MethodItemSignature($field->tree->type(), $field->required, $field->default, $field->const);
+            $request[$field->root->name()] = new MethodItemSignature($field->root->type(), $field->required, $field->default, $field->const);
         }
         return $request;
     }
@@ -32,7 +32,7 @@ abstract class MethodAdjust extends MethodEve
         $fields = static::fields();
         foreach ($fields as $field) {
             try {
-                $feed->{$field->tree->value->name} = $field->tree->valueFromRequest($this->{'Q_' . $field->tree->value->name});
+                $feed->{$field->root->name()} = $field->root->valueFromRequest($this->{'Q_' . $field->root->name()});
             } catch (EntityFieldException $e) {
                 $this->error->fromException($e);
                 $this->throwError();

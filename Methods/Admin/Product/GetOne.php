@@ -8,6 +8,7 @@ use Entities\Product\Field;
 use Entities\Product\Media;
 use Methods\Abstraction\GetOneByIdAdmin;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
+use XUA\Tools\Entity\EntityInstantField;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
@@ -74,10 +75,10 @@ class GetOne extends GetOneByIdAdmin
             Product::F_category(),
             Product::F_costsTable(),
             Product::F_predictionsTable(),
-            Product::F_ostan(),
-            Product::F_shahrestan(),
-            Product::F_bakhsh(),
-            Product::F_dehestan(),
+            new EntityInstantField('ostan', function (Product $product) { return $product->ostan->id;}),
+            new EntityInstantField('shahrestan', function (Product $product) { return $product->shahrestan->id;}),
+            new EntityInstantField('bakhsh', function (Product $product) { return $product->bakhsh?->id;}),
+            new EntityInstantField('dehestan', function (Product $product) { return $product->dehestan?->id;}),
             Product::F_farm(),
             Product::F_paymentPlan(),
         ]);

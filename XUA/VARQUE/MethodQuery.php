@@ -27,7 +27,7 @@ abstract class MethodQuery extends MethodEve
         $fields = static::fields();
         $fieldsType = [];
         foreach ($fields as $field) {
-            $fieldsType[$field->tree->value->name] = $field->tree->type();
+            $fieldsType[$field->root->name()] = $field->root->type();
         }
         $fieldsType = new StructuredMap(['structure' => $fieldsType]);
         $association = static::association();
@@ -50,7 +50,7 @@ abstract class MethodQuery extends MethodEve
         foreach ($feed as $entity) {
             $data = [];
             foreach ($fields as $field) {
-                $data[$field->tree->value->name] = $field->tree->valueFromEntity($entity);
+                $data[$field->root->name()] = $field->root->valueFromEntity($entity);
             }
             if ($association) {
                 $result[$entity->{$association->name}] = $data;

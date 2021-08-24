@@ -2,7 +2,6 @@
 
 namespace XUA\Tools\Entity;
 
-use Exception;
 use Services\XUA\ExpressionService;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Sequence;
@@ -13,7 +12,7 @@ use XUA\Exceptions\EntityFieldException;
 use XUA\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
 
-final class EntityFieldSignatureTree
+class EntityFieldSignatureTree
 {
     /**
      * @var EntityFieldSignatureTree[]
@@ -21,7 +20,7 @@ final class EntityFieldSignatureTree
     public array $children = [];
 
     public function __construct(
-        public EntityFieldSignature $value
+        private ?EntityFieldSignature $value
     ){}
 
     public function addChild(EntityFieldSignatureTree|EntityFieldSignature $child): self
@@ -31,11 +30,11 @@ final class EntityFieldSignatureTree
         }
 
         if (!is_a($this->value->type, EntityRelation::class)) {
-            throw new Exception("Cannot append children to a non-relational field {$this->value->name}.");
+            throw new DefinitionException("Cannot append children to a non-relational field {$this->name()}.");
         }
 
         if ($this->value->type->relatedEntity != $child->value->entity) {
-            throw new Exception("Cannot append a child from entity {$child->value->entity} to a relational field on entity {$this->value->type->relatedEntity}.");
+            throw new DefinitionException("Cannot append a child from entity {$child->value->entity} to a relational field on entity {$this->value->type->relatedEntity}.");
         }
 
         $this->children[] = $child;
@@ -50,13 +49,18 @@ final class EntityFieldSignatureTree
         return $this;
     }
 
+    public function name(): string
+    {
+        return $this->value->name;
+    }
+
     public function type(): Super
     {
         if (is_a($this->value->type, EntityRelation::class)) {
             if ($this->children) {
                 $structure = [];
                 foreach ($this->children as $child) {
-                    $structure[$child->value->name] = $child->type();
+                    $structure[$child->name()] = $child->type();
                 }
                 $type = new StructuredMap(['structure' => $structure]);
             } else {
@@ -73,15 +77,15 @@ final class EntityFieldSignatureTree
         if (is_a($this->value->type, EntityRelation::class)) {
             if ($this->value->type->relation[1] == 'N') {
                 $return = [];
-                foreach ($entity->{$this->value->name} as $item) {
+                foreach ($entity->{$this->name()} as $item) {
                     $return[] = $this->oneItemValueFromEntity($item);
                 }
                 return $return;
             } else {
-                return $this->oneItemValueFromEntity($entity->{$this->value->name});
+                return $this->oneItemValueFromEntity($entity->{$this->name()});
             }
         } else {
-            return $entity->{$this->value->name};
+            return $entity->{$this->name()};
         }
     }
 
@@ -94,7 +98,7 @@ final class EntityFieldSignatureTree
                     try {
                         $return[] = $this->oneItemValueFromRequest($item);
                     } catch (EntityFieldException $e) {
-                        throw (new EntityFieldException)->setError($this->value->name, [$index => $e->getErrors()]);
+                        throw (new EntityFieldException)->setError($this->name(), [$index => $e->getErrors()]);
                     }
                 }
                 return $return;
@@ -102,7 +106,7 @@ final class EntityFieldSignatureTree
                 try {
                     return $this->oneItemValueFromRequest($value);
                 } catch (EntityFieldException $e) {
-                    throw (new EntityFieldException)->setError($this->value->name, $e->getErrors());
+                    throw (new EntityFieldException)->setError($this->name(), $e->getErrors());
                 }
             }
         } else {
@@ -116,7 +120,7 @@ final class EntityFieldSignatureTree
         if ($this->children) {
             $return = [];
             foreach ($this->children as $child) {
-                $return[$child->value->name] = $child->valueFromEntity($entity);
+                $return[$child->name()] = $child->valueFromEntity($entity);
             }
             return $return;
         } else {
@@ -134,19 +138,19 @@ final class EntityFieldSignatureTree
             return $return;
         }
 
-        if (in_array('id', array_map(function (EntityFieldSignatureTree $tree) { return $tree->value->name; }, $this->children))) {
+        if (in_array('id', array_map(function (EntityFieldSignatureTree $tree) { return $tree->name(); }, $this->children))) {
             $return = new ($this->value->type->relatedEntity)($value['id']);
             if ($value['id'] != $return->id) {
                 throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value['id']]));
             }
             foreach ($this->children as $child) {
-                if ($child->value->name != 'id') {
-                    $return->{$child->value->name} = $child->valueFromRequest($value[$child->value->name]);
+                if ($child->name() != 'id') {
+                    $return->{$child->name()} = $child->valueFromRequest($value[$child->name()]);
                 }
             }
             return $return;
         } else {
-            throw (new DefinitionException())->setError($this->value->name, 'All EntityRelation fields must include id.');
+            throw (new DefinitionException())->setError($this->name(), 'All EntityRelation fields must include id.');
         }
     }
 }

@@ -20,7 +20,7 @@ abstract class MethodView extends MethodEve
         $response = parent::responseSignaturesCalculator();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $response[$field->tree->value->name] = new MethodItemSignature($field->tree->type(), true, null, false);
+            $response[$field->root->name()] = new MethodItemSignature($field->root->type(), true, null, false);
         }
         return $response;
     }
@@ -30,7 +30,7 @@ abstract class MethodView extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $this->{$field->tree->value->name} = $field->tree->valueFromEntity($feed);
+            $this->{$field->root->name()} = $field->root->valueFromEntity($feed);
         }
     }
 
