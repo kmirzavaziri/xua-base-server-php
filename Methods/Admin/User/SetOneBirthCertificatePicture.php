@@ -24,7 +24,7 @@ class SetOneBirthCertificatePicture extends SetOneByIdAdmin
     protected static function fields(): array
     {
         return [
-            new VarqueMethodFieldSignature(User::F_birthCertificatePicture(), false, null, false),
+            VarqueMethodFieldSignature::fromSignature(User::F_birthCertificatePicture(), false, null, false),
         ];
     }
 

@@ -24,7 +24,7 @@ class SetNationalCardPicture extends MethodAdjust
     protected static function fields(): array
     {
         return [
-            new VarqueMethodFieldSignature(User::F_nationalCardPicture(), false, null, false),
+            VarqueMethodFieldSignature::fromSignature(User::F_nationalCardPicture(), false, null, false),
         ];
     }
 

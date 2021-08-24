@@ -31,13 +31,13 @@ class SetJuridical extends MethodAdjust
 
     protected static function fields(): array
     {
-        return [
-            new VarqueMethodFieldSignature(User::F_organizationNameFa(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_organizationNameEn(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_organizationNationalId(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_organizationRegistrationId(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_faxNumber(), false, null, false),
-        ];
+        return VarqueMethodFieldSignature::fromList([
+            User::F_organizationNameFa(),
+            User::F_organizationNameEn(),
+            User::F_organizationNationalId(),
+            User::F_organizationRegistrationId(),
+            User::F_faxNumber(),
+        ], false, null, false);
     }
 
     protected function feed(): Entity

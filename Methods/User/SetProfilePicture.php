@@ -24,7 +24,7 @@ class SetProfilePicture extends MethodAdjust
     protected static function fields(): array
     {
         return [
-            new VarqueMethodFieldSignature(User::F_profilePicture(), false, null, false),
+            VarqueMethodFieldSignature::fromSignature(User::F_profilePicture(), false, null, false),
         ];
     }
 

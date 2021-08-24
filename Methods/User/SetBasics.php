@@ -31,13 +31,13 @@ class SetBasics extends MethodAdjust
 
     protected static function fields(): array
     {
-        return [
-            new VarqueMethodFieldSignature(User::F_firstNameFa(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_lastNameFa(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_nationalCode(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_cellphoneNumber(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_email(), false, null, false),
-        ];
+        return VarqueMethodFieldSignature::fromList([
+            User::F_firstNameFa(),
+            User::F_lastNameFa(),
+            User::F_nationalCode(),
+            User::F_cellphoneNumber(),
+            User::F_email(),
+        ], false, null, false);
     }
 
     protected function feed(): Entity

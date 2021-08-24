@@ -86,12 +86,7 @@ class SetOne extends SetOneByIdAdmin
         unset($fields['nationalCardPicture']);
         unset($fields['birthCertificatePicture']);
         unset($fields['sessions']);
-
-        $return = [];
-        foreach ($fields as $field) {
-            $return[] = new VarqueMethodFieldSignature($field, false, null, false);
-        }
-        return $return;
+        return VarqueMethodFieldSignature::fromList($fields, false, null, false);
     }
 
     protected function validations(): void

@@ -50,22 +50,22 @@ class SetNatural extends MethodAdjust
 
     protected static function fields(): array
     {
-        return [
-            new VarqueMethodFieldSignature(User::F_firstNameEn(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_lastNameEn(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_address(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_geolocationLat(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_geolocationLong(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_postalCode(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_landlinePhoneNumber(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_iban(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_nationality(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_birthDate(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_gender(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_education(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_job(), false, null, false),
-            new VarqueMethodFieldSignature(User::F_website(), false, null, false),
-        ];
+        return VarqueMethodFieldSignature::fromList([
+            User::F_firstNameEn(),
+            User::F_lastNameEn(),
+            User::F_address(),
+            User::F_geolocationLat(),
+            User::F_geolocationLong(),
+            User::F_postalCode(),
+            User::F_landlinePhoneNumber(),
+            User::F_iban(),
+            User::F_nationality(),
+            User::F_birthDate(),
+            User::F_gender(),
+            User::F_education(),
+            User::F_job(),
+            User::F_website(),
+        ], false, null, false);
     }
 
     protected function feed(): Entity
