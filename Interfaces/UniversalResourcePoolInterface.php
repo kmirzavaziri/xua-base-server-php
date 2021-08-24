@@ -51,10 +51,11 @@ class UniversalResourcePoolInterface extends InterfaceEve
                             if (is_a($e, MethodRequestException::class)) {
                                 $response['errors'] = $e->getErrors();
                             } else {
+                                http_response_code(500);
                                 if (Credentials::developer()) {
                                     throw $e;
                                 } else {
-                                    $response['errors'] = ['' => 'Internal error'];
+                                    $response['errors'] = ['' => 'Internal Server Error'];
                                 }
                             }
                         }
