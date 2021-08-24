@@ -1,6 +1,7 @@
 █   XUA/
 █       Sooner/
 1           Remove users who never activated their account after reasonable amount of time.
+1           Cache feed for VARQUE
 1           Add a Super for field ID
 2           Set Index for session user id (or all relations)
 2           Indexes
@@ -22,6 +23,11 @@
 !           Entity Cache
 !           Entity Log
 █   MyFarm/
+█       Don't forget/
+-1          add delete methods
+-1          add stock and rate fields to product
+-1          add icon to farm
+-1          add isVerified field to farm
 █       Entities/
 █           User/
 █               Info/
