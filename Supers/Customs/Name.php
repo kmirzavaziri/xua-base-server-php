@@ -40,7 +40,7 @@ class Name extends Text
         }
 
         $validCharacters = preg_split('//u', match ($this->language) {
-            LocaleLanguage::LANG_FA => 'ابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی ءآأؤئًٌٍَُِّْٰ',
+            LocaleLanguage::LANG_FA => 'ابپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی ءٔآأؤئًٌٍَُِّْٰ',
             LocaleLanguage::LANG_EN => 'abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         }, -1, PREG_SPLIT_NO_EMPTY);
         $validCharactersMap = [];
