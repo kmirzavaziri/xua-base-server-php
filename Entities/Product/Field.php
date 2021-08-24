@@ -94,7 +94,7 @@ class Field extends Entity
                     $super = new DecimalRange(array_merge($this->fieldSignature->typeParams, ['fractionalLength' => 0]));
                     break;
                 case 'decimal':
-                    $super = new DecimalRange($this->fieldSignature->typeParams);
+                    $super = new DecimalRange(array_merge($this->fieldSignature->typeParams, ['fractionalLength' => 2]));
                     break;
                 case 'string':
                     $super = new Text($this->fieldSignature->typeParams);
