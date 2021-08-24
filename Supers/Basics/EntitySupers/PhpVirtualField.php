@@ -3,7 +3,6 @@
 
 namespace Supers\Basics\EntitySupers;
 
-
 use Closure;
 use ReflectionFunction;
 use Supers\Basics\Highers\Callback;
@@ -26,8 +25,9 @@ class PhpVirtualField extends Super
                 'nullable' => false,
                 'parameters' => [
                     [
-                        'name' => 'entity',
+                        'name' => null,
                         'type' => Entity::class,
+                        'allowSubtype' => true,
                         'required' => true,
                         'checkDefault' => false,
                         'default' => null,
@@ -37,18 +37,21 @@ class PhpVirtualField extends Super
             ]), true, null, false),
             'setter' => new SuperArgumentSignature(new Callback([
                 'nullable' => true,
+                // @TODO must set return to void
                 'parameters' => [
                     [
-                        'name' => 'entity',
+                        'name' => null,
                         'type' => Entity::class,
+                        'allowSubtype' => true,
                         'required' => true,
                         'checkDefault' => false,
                         'default' => null,
                         'passByReference' => true,
                     ],
                     [
-                        'name' => 'value',
-                        'type' => 'mixed',
+                        'name' => null,
+                        'type' => null,
+                        'allowSubtype' => true,
                         'required' => true,
                         'checkDefault' => false,
                         'default' => null,

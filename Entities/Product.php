@@ -175,8 +175,8 @@ class Product extends Entity
             'ostan' => new EntityFieldSignature(
                 static::class, 'ostan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): int {
-                        return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'ostan');
+                    'getter' => function (Product $product): int {
+                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'ostan');
                     }
                 ]),
                 null
@@ -193,8 +193,8 @@ class Product extends Entity
             'bakhsh' => new EntityFieldSignature(
                 static::class, 'bakhsh',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): ?int {
-                        return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'bakhsh');
+                    'getter' => function (Product $product): ?int {
+                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'bakhsh');
                     }
                 ]),
                 null
@@ -202,8 +202,8 @@ class Product extends Entity
             'dehestan' => new EntityFieldSignature(
                 static::class, 'dehestan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): ?int {
-                        return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'dehestan');
+                    'getter' => function (Product $product): ?int {
+                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'dehestan');
                     }
                 ]),
                 null
@@ -211,8 +211,8 @@ class Product extends Entity
             'abadi' => new EntityFieldSignature(
                 static::class, 'abadi',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): int {
-                        return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'abadi');
+                    'getter' => function (Product $product): int {
+                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'abadi');
                     }
                 ]),
                 null

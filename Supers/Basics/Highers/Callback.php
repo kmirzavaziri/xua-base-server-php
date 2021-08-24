@@ -3,8 +3,6 @@
 
 namespace Supers\Basics\Highers;
 
-
-
 use Closure;
 use ReflectionFunction;
 use Supers\Basics\Boolean;
@@ -20,6 +18,8 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  * @method static SuperArgumentSignature A_parameters() The Signature of: Argument `parameters`
  * @property ?string returnType
  * @method static SuperArgumentSignature A_returnType() The Signature of: Argument `returnType`
+ * @property bool allowSubtype
+ * @method static SuperArgumentSignature A_allowSubtype() The Signature of: Argument `allowSubtype`
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
@@ -28,22 +28,24 @@ class Callback extends Super
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                'parameters' => new SuperArgumentSignature(new Sequence([
-                    'type' => new StructuredMap([
-                        'structure' => [
-                            'name' => new Symbol(['nullable' => true]),
-                            'type' => new Text(['nullable' => true]),
-                            'required' => new Trilean([]),
-                            'checkDefault' => new Boolean([]),
-                            'default' => new Universal([]),
-                            'passByReference' => new Trilean([]),
-                        ],
-                        'nullable' => true
-                    ]),
-                    'nullable' => true,
-                ]), false, null, false),
-                'returnType' => new SuperArgumentSignature(new Text(['nullable' => true]), false, null, false),
-                'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            'parameters' => new SuperArgumentSignature(new Sequence([
+                'type' => new StructuredMap([
+                    'structure' => [
+                        'name' => new Symbol(['nullable' => true]),
+                        'type' => new Text(['nullable' => true]),
+                        'allowSubtype' => new Boolean([]),
+                        'required' => new Trilean([]),
+                        'checkDefault' => new Boolean([]),
+                        'default' => new Universal([]),
+                        'passByReference' => new Trilean([]),
+                    ],
+                    'nullable' => true
+                ]),
+                'nullable' => true,
+            ]), false, null, false),
+            'returnType' => new SuperArgumentSignature(new Text(['nullable' => true]), false, null, false),
+            'allowSubtype' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
             ]);
     }
 
@@ -61,9 +63,7 @@ class Callback extends Super
         $function = new ReflectionFunction(Closure::fromCallable($input));
 
         $returnType = $function->getReturnType();
-
-        // @TODO change to subclass instead of equal (if to-add field allow subclass is set)
-        if ($this->returnType !== null and $this->returnType != $returnType) {
+        if ($this->returnType !== null and ($this->allowSubtype ? (is_a($returnType, $this->returnType)) : ($this->returnType != $returnType))) {
             $message = "Return type '$this->returnType' expected, got '$returnType'.";
             return false;
         }
@@ -77,35 +77,50 @@ class Callback extends Super
             }
 
             for ($i = 0; $i < count($parameters); $i++) {
-                if ($this->parameters[$i]['name'] !== null and $this->parameters[$i]['name'] != $parameters[$i]->getName()) {
-                    $message = "The name of $i-th parameter must be '" . $this->parameters[$i]['name'] . "', but is '" . $parameters[$i]->getName() . "'.";
+                $expectedParameterName = $this->parameters[$i]['name'];
+                $gotParameterName = $parameters[$i]->getName();
+                if ($expectedParameterName !== null and $expectedParameterName != $gotParameterName) {
+                    $message = "The name of $i-th parameter must be '$expectedParameterName', but is '$gotParameterName'.";
                     return false;
                 }
-                if ($this->parameters[$i]['type'] !== null and $this->parameters[$i]['type'] != $parameters[$i]->getType()) {
-                    $message = "The type of $i-th parameter must be '" . $this->parameters[$i]['type'] . "', but is '" . $parameters[$i]->getType() . "'.";
+
+                $expectedParameterType = $this->parameters[$i]['type'];
+                $gotParameterType = $parameters[$i]->getType();
+                if ($expectedParameterType !== null and ($this->parameters[$i]['allowSubtype'] ? (is_a($gotParameterType, $expectedParameterType)) : ($expectedParameterType != $gotParameterType))) {
+                    $message = "The type of $i-th parameter must be '$expectedParameterType', but is '$gotParameterType'.";
                     return false;
                 }
-                if ($this->parameters[$i]['required'] !== null and $this->parameters[$i]['required'] != !$parameters[$i]->isDefaultValueAvailable()) {
-                    $message = $this->parameters[$i]['required']
+
+                $expectedParameterRequired = $this->parameters[$i]['required'];
+                $gotParameterIsDefaultAvailable = $parameters[$i]->isDefaultValueAvailable();
+                if ($expectedParameterRequired !== null and $expectedParameterRequired != !$gotParameterIsDefaultAvailable) {
+                    $message = $expectedParameterRequired
                         ? "$i-th parameter is expected to be required but has a default value."
                         : "$i-th parameter is not expected to be required but has not a default value.";
                     return false;
                 }
+
                 if ($this->parameters[$i]['checkDefault']) {
-                    if (!$parameters[$i]->isDefaultValueAvailable()) {
+                    $expectedParameterDefault = $this->parameters[$i]['default'];
+                    $gotParameterDefault = $parameters[$i]->getDefaultValue();
+                    if (!$gotParameterIsDefaultAvailable) {
                         $message = "$i-th parameter is expected to have default value of '" .
-                            xua_var_dump($this->parameters[$i]['default']) .
+                            xua_var_dump($expectedParameterDefault) .
                             "' but no default value is provided.";
                         return false;
                     }
-                    if ($this->parameters[$i]['default'] != $parameters[$i]->getDefaultValue()) {
+
+                    if ($expectedParameterDefault != $gotParameterDefault) {
                         $message = "$i-th parameter is expected to have default value of '" .
-                            xua_var_dump($this->parameters[$i]['default']) . "' but '" .
-                            xua_var_dump($parameters[$i]->getDefaultValue()) . "' default value is provided.";
+                            xua_var_dump($expectedParameterDefault) . "' but '" .
+                            xua_var_dump($gotParameterDefault) . "' default value is provided.";
                         return false;
                     }
                 }
-                if ($this->parameters[$i]['passByReference'] !== null and $this->parameters[$i]['passByReference'] != $parameters[$i]->isPassedByReference()) {
+
+                $expectedParameterPassByReference = $this->parameters[$i]['passByReference'];
+                $gotParameterPassByReference = $parameters[$i]->isPassedByReference();
+                if ($expectedParameterPassByReference !== null and $expectedParameterPassByReference != $gotParameterPassByReference) {
                     $message = "$i-th parameter is expected to be pass-by-reference but is not.";
                     return false;
                 }

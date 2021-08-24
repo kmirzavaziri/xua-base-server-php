@@ -22,6 +22,7 @@ class DatabaseVirtualField extends Super
                     [
                         'name' => 'param',
                         'type' => 'array',
+                        'allowSubtype' => true,
                         'required' => true,
                         'checkDefault' => false,
                         'default' => null,
