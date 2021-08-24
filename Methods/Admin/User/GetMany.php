@@ -5,8 +5,17 @@ namespace Methods\Admin\User;
 use Entities\User;
 use Methods\Abstraction\GetManyPagerAdmin;
 use XUA\Tools\Signature\EntityFieldSignature;
+use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
+/**
+ * @property int Q_pageSize
+ * @method static MethodItemSignature Q_pageSize() The Signature of: Request Item `pageSize`
+ * @property int Q_pageIndex
+ * @method static MethodItemSignature Q_pageIndex() The Signature of: Request Item `pageIndex`
+ * @property array users
+ * @method static MethodItemSignature R_users() The Signature of: Response Item `users`
+ */
 class GetMany extends GetManyPagerAdmin
 {
     protected static function entity(): string
