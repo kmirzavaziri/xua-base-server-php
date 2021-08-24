@@ -7,11 +7,11 @@ use XUA\Service;
 
 abstract class IranAdministrativeDivisionService extends Service
 {
-    public static function getSpecificLevel(IranAdministrativeDivision $geographicDivision, string $type): ?IranAdministrativeDivision
+    public static function getSpecificLevel(IranAdministrativeDivision $geographicDivision, string $type): ?int
     {
         while ($geographicDivision !== null and $geographicDivision->type != $type) {
             $geographicDivision = $geographicDivision->parent;
         }
-        return $geographicDivision;
+        return $geographicDivision?->id;
     }
 }

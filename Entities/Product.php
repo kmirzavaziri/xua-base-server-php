@@ -175,7 +175,7 @@ class Product extends Entity
             'ostan' => new EntityFieldSignature(
                 static::class, 'ostan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): IranAdministrativeDivision {
+                    'getter' => function (Entity $entity): int {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'ostan');
                     }
                 ]),
@@ -184,7 +184,7 @@ class Product extends Entity
             'shahrestan' => new EntityFieldSignature(
                 static::class, 'shahrestan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): IranAdministrativeDivision {
+                    'getter' => function (Entity $entity): int {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'shahrestan');
                     }
                 ]),
@@ -193,7 +193,7 @@ class Product extends Entity
             'bakhsh' => new EntityFieldSignature(
                 static::class, 'bakhsh',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): IranAdministrativeDivision {
+                    'getter' => function (Entity $entity): ?int {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'bakhsh');
                     }
                 ]),
@@ -202,7 +202,7 @@ class Product extends Entity
             'dehestan' => new EntityFieldSignature(
                 static::class, 'dehestan',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): IranAdministrativeDivision {
+                    'getter' => function (Entity $entity): ?int {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'dehestan');
                     }
                 ]),
@@ -211,7 +211,7 @@ class Product extends Entity
             'abadi' => new EntityFieldSignature(
                 static::class, 'abadi',
                 new PhpVirtualField([
-                    'getter' => function (Entity $entity): IranAdministrativeDivision {
+                    'getter' => function (Entity $entity): int {
                         return IranAdministrativeDivisionService::getSpecificLevel($entity->geographicDivision, 'abadi');
                     }
                 ]),
