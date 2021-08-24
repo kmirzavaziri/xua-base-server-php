@@ -113,7 +113,7 @@ class Field extends Entity
                     $exception->setError('value', ExpressionService::get('errormessage.not.implemented.yet'));
                     return;
             }
-            if ($super->explicitlyAccepts($this->value, $message)) {
+            if (!$super->explicitlyAccepts($this->value, $message)) {
                 $exception->setError('value', $message);
             }
         }
