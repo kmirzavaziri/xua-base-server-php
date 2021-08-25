@@ -77,9 +77,6 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?IranAdministrativeDivision dehestan
  * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
  * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
- * @property ?IranAdministrativeDivision abadi
- * @method static EntityFieldSignature F_abadi() The Signature of: Field `abadi`
- * @method static ConditionField C_abadi() The Condition Field of: Field `abadi`
  * @property Farm farm
  * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
  * @method static ConditionField C_farm() The Condition Field of: Field `farm`
@@ -216,15 +213,6 @@ class Product extends Entity
                 new PhpVirtualField([
                     'getter' => function (Product $product): ?IranAdministrativeDivision {
                         return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'dehestan');
-                    }
-                ]),
-                null
-            ),
-            'abadi' => new EntityFieldSignature(
-                static::class, 'abadi',
-                new PhpVirtualField([
-                    'getter' => function (Product $product): ?IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'abadi');
                     }
                 ]),
                 null
