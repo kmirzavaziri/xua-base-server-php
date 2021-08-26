@@ -189,14 +189,15 @@ class Product extends Entity
 
     protected function _validation(EntityFieldException $exception): void
     {
-        $additionalFieldSignatureIds = [];
+        $thisAfsIds = [];
         foreach ($this->additionalFields as $additionalField) {
-            $additionalFieldSignatureIds[$additionalField->fieldSignature->id] = true;
+            $thisAfsIds[$additionalField->fieldSignature->id] = true;
         }
 
-        foreach ($this->category->additionalFields as $categoryAdditionalField) {
-            if (!isset($additionalFieldSignatureIds[$categoryAdditionalField->id])) {
-                $exception->setError('additionalFields', ExpressionService::get('errormessage.field.title.missing', ['title' => $categoryAdditionalField->title]));
+        $categoryAfses = $this->category->additionalFields;
+        foreach ($categoryAfses as $categoryAfs) {
+            if (!isset($thisAfsIds[$categoryAfs->id])) {
+                $exception->setError('additionalFields', ExpressionService::get('errormessage.field.title.missing', ['title' => $categoryAfs->title]));
             }
         }
     }
