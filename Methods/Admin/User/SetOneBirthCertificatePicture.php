@@ -35,7 +35,7 @@ class SetOneBirthCertificatePicture extends SetOneByIdAdmin
         if ($user->birthCertificatePicture and file_exists($user->birthCertificatePicture->path)) {
             unlink($user->birthCertificatePicture->path);
         }
-        $this->Q_birthCertificatePicture?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . 'users' . DIRECTORY_SEPARATOR . $user->id);
+        $this->Q_birthCertificatePicture?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . User::table() . DIRECTORY_SEPARATOR . $user->id);
         $user->birthCertificatePicture = $this->Q_birthCertificatePicture;
         $user->store();
     }

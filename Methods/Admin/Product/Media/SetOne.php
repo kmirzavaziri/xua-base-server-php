@@ -39,7 +39,7 @@ class SetOne extends SetOneByIdAdmin
         if ($media and $media->source and file_exists($media->source->path)) {
             unlink($media->source->path);
         }
-        $this->Q_source?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . 'medias' . DIRECTORY_SEPARATOR . $media->id);
+        $this->Q_source?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . Media::table() . DIRECTORY_SEPARATOR . $media->id);
         $media->source = $this->Q_source;
         $media->product = new Product($this->Q_product);
         $media->store();

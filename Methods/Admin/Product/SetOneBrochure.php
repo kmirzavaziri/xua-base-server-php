@@ -35,7 +35,7 @@ class SetOneBrochure extends SetOneByIdAdmin
         if ($product->brochure and file_exists($product->brochure->path)) {
             unlink($product->brochure->path);
         }
-        $this->Q_brochure?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . 'products' . DIRECTORY_SEPARATOR . $product->id);
+        $this->Q_brochure?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . Product::table() . DIRECTORY_SEPARATOR . $product->id);
         $product->brochure = $this->Q_brochure;
         $product->store();
     }

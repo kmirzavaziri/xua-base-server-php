@@ -35,7 +35,7 @@ class SetOneProfilePicture extends SetOneByIdAdmin
         if ($user->profilePicture and file_exists($user->profilePicture->path)) {
             unlink($user->profilePicture->path);
         }
-        $this->Q_profilePicture?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . 'users' . DIRECTORY_SEPARATOR . $user->id);
+        $this->Q_profilePicture?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . User::table() . DIRECTORY_SEPARATOR . $user->id);
         $user->profilePicture = $this->Q_profilePicture;
         $user->store();
     }
