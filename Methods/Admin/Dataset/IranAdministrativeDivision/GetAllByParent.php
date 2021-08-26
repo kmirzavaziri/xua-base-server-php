@@ -3,12 +3,11 @@
 namespace Methods\Admin\Dataset\IranAdministrativeDivision;
 
 use Entities\Dataset\IranAdministrativeDivision;
-use Services\UserService;
+use Methods\Abstraction\GetAllAdmin;
 use Supers\Basics\Numerics\Decimal;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
-use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
@@ -17,7 +16,7 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @property array result
  * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
-class GetAllByParent extends MethodQuery
+class GetAllByParent extends GetAllAdmin
 {
     protected static function entity(): string
     {
@@ -55,10 +54,5 @@ class GetAllByParent extends MethodQuery
     protected static function association(): ?EntityFieldSignature
     {
         return null;
-    }
-
-    protected function validations(): void
-    {
-        UserService::verifyAdmin($this->error);
     }
 }

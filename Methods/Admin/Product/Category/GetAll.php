@@ -3,17 +3,16 @@
 namespace Methods\Admin\Product\Category;
 
 use Entities\Product\Category;
-use Services\UserService;
+use Methods\Abstraction\GetAllAdmin;
 use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
-use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
  * @property array result
  * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
-class GetAll extends MethodQuery
+class GetAll extends GetAllAdmin
 {
     protected static function entity(): string
     {
@@ -36,10 +35,5 @@ class GetAll extends MethodQuery
     protected static function association(): ?EntityFieldSignature
     {
         return null;
-    }
-
-    protected function validations(): void
-    {
-        UserService::verifyAdmin($this->error);
     }
 }
