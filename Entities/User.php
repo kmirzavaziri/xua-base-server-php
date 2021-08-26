@@ -320,6 +320,18 @@ class User extends Entity
                 new Boolean([]),
                 false
             ),
+            'farms' => new EntityFieldSignature(
+                static::class, 'farms',
+                new EntityRelation([
+                    'relatedEntity' => Farm::class,
+                    'relation' => 'IN',
+                    'invName' => 'owner',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'there',
+                ]),
+                null
+            ),
         ]);
     }
 
