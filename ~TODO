@@ -1,5 +1,6 @@
 █   XUA/
 █       Sooner/
+?           Add an abstract class for services and classes who want to be abstract and final at the same time by throwing exception in constructor.
 1           Remove users who never activated their account after reasonable amount of time.
 1           Cache feed for VARQUE
 1           Add a Super for field ID
