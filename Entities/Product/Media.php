@@ -52,7 +52,6 @@ class Media extends Entity
     protected static function _indexes(): array
     {
         return array_merge(parent::_indexes(), [
-            new Index(['product' => Index::ASC], false),
         ]);
     }
 }
