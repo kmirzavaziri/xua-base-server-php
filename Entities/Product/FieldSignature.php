@@ -2,17 +2,11 @@
 
 namespace Entities\Product;
 
-use Services\XUA\LocaleLanguage;
-use Supers\Basics\Boolean;
+use Services\SimpleTypeService;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Map;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Highers\StructuredMap;
-use Supers\Basics\Numerics\Decimal;
-use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
-use Supers\Customs\Name;
 use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Entity\ConditionField;
@@ -53,7 +47,7 @@ class FieldSignature extends Entity
                 static::class, 'type',
                 new Enum([
                     'nullable' => true,
-                    'values' => ['boolean', 'integer', 'decimal', 'string', 'sequence', 'enum', 'set', 'dateTime', 'date', 'time']
+                    'values' => SimpleTypeService::TYPES
                 ]),
                 null
             ),
@@ -86,56 +80,8 @@ class FieldSignature extends Entity
 
     protected function _validation(EntityFieldException $exception): void
     {
-        if ($this->type !== null) {
-            $typeParamsStructure = [
-                'nullable' => new Boolean([]),
-            ];
-            $badType = false;
-            switch ($this->type) {
-                case 'boolean':
-                case 'dateTime':
-                case 'date':
-                case 'time':
-                    $typeParamsStructure = array_merge($typeParamsStructure, [
-                    ]);
-                    break;
-                case 'integer':
-                    $typeParamsStructure = array_merge($typeParamsStructure, [
-                        'min' => new Integer(['nullable' => true]),
-                        'max' => new Integer(['nullable' => true]),
-                    ]);
-                    break;
-                case 'decimal':
-                    $typeParamsStructure = array_merge($typeParamsStructure, [
-                        'min' => new Decimal(['nullable' => true]),
-                        'max' => new Decimal(['nullable' => true]),
-                    ]);
-                    break;
-                case 'string':
-                case 'sequence':
-                    $typeParamsStructure = array_merge($typeParamsStructure, [
-                        'minLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                        'maxLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                    ]);
-                    break;
-                case 'enum':
-                    $typeParamsStructure = array_merge($typeParamsStructure, [
-                        'values' => new Sequence(['type' => new Text([]), 'minLength' => 1]),
-                    ]);
-                    break;
-                case 'set':
-                    $typeParamsStructure = array_merge($typeParamsStructure, [
-                        'minLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                        'maxLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                        'values' => new Sequence(['type' => new Text([]), 'minLength' => 1]),
-                    ]);
-                    break;
-                default:
-                    $badType = true;
-            }
-            if (!$badType and !(new StructuredMap(['nullable' => false, 'structure' => $typeParamsStructure]))->explicitlyAccepts($this->typeParams, $message)) {
-                $exception->setError('typeParams', $message);
-            }
+        if (!SimpleTypeService::validateTypeParams($this->type, $this->typeParams, $message)) {
+            $exception->setError('typeParams', $message);
         }
     }
 }

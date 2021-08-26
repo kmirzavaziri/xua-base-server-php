@@ -42,3 +42,4 @@ errormessage.entity.with.id.does.not.exists: $entity با شناسه $id وجو�
 entityclass.Dataset_IranAdministrativeDivision: منطقه
 errormessage.bad.geographic.division.with.title: $title منطقه معتبری نیست.
 entityclass.Product: محصول
+unknown.simple.type.type: تایپ $type شناخته‌شده نیست.

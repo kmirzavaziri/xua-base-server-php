@@ -3,14 +3,10 @@
 namespace Entities\Product;
 
 use Entities\Product;
+use Services\SimpleTypeService;
 use Services\XUA\ExpressionService;
-use Supers\Basics\Boolean;
 use Supers\Basics\EntitySupers\EntityRelation;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Numerics\DecimalRange;
-use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
-use Supers\Basics\Trilean;
 use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Entity\ConditionField;
@@ -81,41 +77,8 @@ class Field extends Entity
             $exception->setError('fieldSignature', ExpressionService::get('errormessage.invalid.field.title.title', ['title' => $this->fieldSignature->title]));
             return;
         }
-        if ($this->fieldSignature->type !== null) {
-            switch ($this->fieldSignature->type) {
-                case 'boolean':
-                    if ($this->fieldSignature->typeParams['nullable']) {
-                        $super = new Trilean([]);
-                    } else {
-                        $super = new Boolean([]);
-                    }
-                    break;
-                case 'integer':
-                    $super = new DecimalRange(array_merge($this->fieldSignature->typeParams, ['fractionalLength' => 0]));
-                    break;
-                case 'decimal':
-                    $super = new DecimalRange(array_merge($this->fieldSignature->typeParams, ['fractionalLength' => 2]));
-                    break;
-                case 'string':
-                    $super = new Text($this->fieldSignature->typeParams);
-                    break;
-                case 'sequence':
-                    $super = new Sequence($this->fieldSignature->typeParams);
-                    break;
-                case 'enum':
-                    $super = new Enum($this->fieldSignature->typeParams);
-                    break;
-                case 'set':
-                case 'dateTime':
-                case 'date':
-                case 'time':
-                default:
-                    $exception->setError('value', ExpressionService::get('errormessage.not.implemented.yet'));
-                    return;
-            }
-            if (!$super->explicitlyAccepts($this->value, $message)) {
-                $exception->setError('value', $message);
-            }
+        if (! SimpleTypeService::validateValue($this->fieldSignature->type, $this->fieldSignature->typeParams, $this->value, $message)) {
+            $exception->setError('value', $message);
         }
     }
 }
