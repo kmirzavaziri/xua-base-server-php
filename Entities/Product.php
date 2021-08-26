@@ -2,11 +2,9 @@
 
 namespace Entities;
 
-use Entities\Dataset\IranAdministrativeDivision;
 use Entities\Product\Category;
 use Entities\Product\Field;
 use Entities\Product\Media;
-use Services\IranAdministrativeDivisionService;
 use Services\Mime;
 use Services\Size;
 use Services\XUA\ExpressionService;
@@ -62,21 +60,6 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property array predictionsTable
  * @method static EntityFieldSignature F_predictionsTable() The Signature of: Field `predictionsTable`
  * @method static ConditionField C_predictionsTable() The Condition Field of: Field `predictionsTable`
- * @property IranAdministrativeDivision geographicDivision
- * @method static EntityFieldSignature F_geographicDivision() The Signature of: Field `geographicDivision`
- * @method static ConditionField C_geographicDivision() The Condition Field of: Field `geographicDivision`
- * @property IranAdministrativeDivision ostan
- * @method static EntityFieldSignature F_ostan() The Signature of: Field `ostan`
- * @method static ConditionField C_ostan() The Condition Field of: Field `ostan`
- * @property IranAdministrativeDivision shahrestan
- * @method static EntityFieldSignature F_shahrestan() The Signature of: Field `shahrestan`
- * @method static ConditionField C_shahrestan() The Condition Field of: Field `shahrestan`
- * @property ?IranAdministrativeDivision bakhsh
- * @method static EntityFieldSignature F_bakhsh() The Signature of: Field `bakhsh`
- * @method static ConditionField C_bakhsh() The Condition Field of: Field `bakhsh`
- * @property ?IranAdministrativeDivision dehestan
- * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
- * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
  * @property Farm farm
  * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
  * @method static ConditionField C_farm() The Condition Field of: Field `farm`
@@ -169,54 +152,6 @@ class Product extends Entity
                 new Sequence(['nullable' => false, 'type' => new Sequence(['nullable' => false, 'type' => new Text([])])]),
                 null
             ),
-            'geographicDivision' => new EntityFieldSignature(
-                static::class, 'geographicDivision',
-                new EntityRelation([
-                    'relatedEntity' => IranAdministrativeDivision::class,
-                    'relation' => 'NI',
-                    'invName' => null,
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
-                ]),
-                null
-            ),
-            'ostan' => new EntityFieldSignature(
-                static::class, 'ostan',
-                new PhpVirtualField([
-                    'getter' => function (Product $product): IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'ostan');
-                    }
-                ]),
-                null
-            ),
-            'shahrestan' => new EntityFieldSignature(
-                static::class, 'shahrestan',
-                new PhpVirtualField([
-                    'getter' => function (Product $product): IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'shahrestan');
-                    }
-                ]),
-                null
-            ),
-            'bakhsh' => new EntityFieldSignature(
-                static::class, 'bakhsh',
-                new PhpVirtualField([
-                    'getter' => function (Product $product): ?IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'bakhsh');
-                    }
-                ]),
-                null
-            ),
-            'dehestan' => new EntityFieldSignature(
-                static::class, 'dehestan',
-                new PhpVirtualField([
-                    'getter' => function (Product $product): ?IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($product->geographicDivision, 'dehestan');
-                    }
-                ]),
-                null
-            ),
             'farm' => new EntityFieldSignature(
                 static::class, 'farm',
                 new EntityRelation([
@@ -263,12 +198,6 @@ class Product extends Entity
             if (!isset($additionalFieldSignatureIds[$categoryAdditionalField->id])) {
                 $exception->setError('additionalFields', ExpressionService::get('errormessage.field.title.missing', ['title' => $categoryAdditionalField->title]));
             }
-        }
-
-        if ($this->geographicDivision->type == 'ostan') {
-            $exception->setError('geographicDivision', ExpressionService::get('errormessage.bad.geographic.division.with.title', [
-                'title' => $this->geographicDivision->title,
-            ]));
         }
     }
 }
