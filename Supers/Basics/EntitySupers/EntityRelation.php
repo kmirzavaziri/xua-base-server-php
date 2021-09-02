@@ -62,7 +62,7 @@ class EntityRelation extends Super
             if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
-            if ($input !== null and $input->id === null and $input->givenId() !== 0) {
+            if ($input !== null and $input->id === null) {
                 if ($this->relation == 'II' and !$this->invNullable) {
                     if (!FlagService::get('force-store-II') and $this->definedOn == 'here') {
                         FlagService::set('force-store-II', true);
