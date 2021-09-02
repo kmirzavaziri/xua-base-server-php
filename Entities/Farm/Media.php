@@ -10,7 +10,6 @@ use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Files\Generic;
 use XUA\Entity;
 use XUA\Tools\Entity\ConditionField;
-use XUA\Tools\Entity\Index;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 /**
