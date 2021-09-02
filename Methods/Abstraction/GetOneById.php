@@ -2,7 +2,6 @@
 
 namespace Methods\Abstraction;
 
-use Entities\User;
 use Services\UserService;
 use Services\XUA\ExpressionService;
 use XUA\Entity;
@@ -19,7 +18,7 @@ abstract class GetOneById extends MethodView
     protected static function _requestSignatures(): array
     {
         return array_merge(parent::_requestSignatures(), [
-            'id' => new MethodItemSignature(User::F_id()->type, true, null, false),
+            'id' => new MethodItemSignature(static::entity()::F_id()->type, true, null, false),
         ]);
     }
 
