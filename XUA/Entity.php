@@ -683,7 +683,7 @@ abstract class Entity extends XUA
                     $this->_x_must_store['id'] = false;
                 }
             } catch (PDOException $e) {
-                if ($e->getCode() == 23000) {
+                if (str_contains($e->getMessage(), 'Duplicate entry')) {
                     $pattern = "/Duplicate entry '([^']*)' for key '([^.]*)\.([^']*)'/";
                     preg_match($pattern, $e->getMessage(), $matches);
                     $duplicateValues = explode('-', $matches[1]);
