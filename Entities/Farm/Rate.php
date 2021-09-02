@@ -18,13 +18,13 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property \Entities\User rater
+ * @property User rater
  * @method static EntityFieldSignature F_rater() The Signature of: Field `rater`
  * @method static ConditionField C_rater() The Condition Field of: Field `rater`
  * @property int rate
  * @method static EntityFieldSignature F_rate() The Signature of: Field `rate`
  * @method static ConditionField C_rate() The Condition Field of: Field `rate`
- * @property \Entities\Farm farm
+ * @property Farm farm
  * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
  * @method static ConditionField C_farm() The Condition Field of: Field `farm`
  */
