@@ -192,7 +192,7 @@ class Farm extends Entity
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                null
+                []
             ),
             # Farm Location Information
             'geographicDivision' => new EntityFieldSignature(
