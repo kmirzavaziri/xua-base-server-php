@@ -119,7 +119,7 @@ class Farm extends Entity
                 new EntityRelation([
                     'relatedEntity' => Field::class,
                     'relation' => 'IN',
-                    'invName' => 'product',
+                    'invName' => 'farm',
                     'nullable' => false,
                     'invNullable' => false,
                     'definedOn' => 'here',
