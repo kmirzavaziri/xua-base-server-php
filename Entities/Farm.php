@@ -2,6 +2,12 @@
 
 namespace Entities;
 
+use Entities\Dataset\IranAdministrativeDivision;
+use Entities\Farm\Field;
+use Entities\Farm\FieldSignature;
+use Entities\Farm\Media;
+use Services\IranAdministrativeDivisionService;
+use Services\XUA\ExpressionService;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Customs\Name;
