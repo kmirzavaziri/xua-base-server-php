@@ -174,8 +174,8 @@ abstract class Entity extends XUA
             throw (new MagicCallException())->setError($key, 'Cannot change id of an entity.');
         }
 
-        if (!$signature->type->accepts($value, $messages)) {
-            throw (new MagicCallException())->setError($key, $messages);
+        if (!$signature->type->explicitlyAccepts($value, $messages)) {
+            throw (new EntityFieldException())->setError($key, $messages);
         }
 
         if (is_a($signature->type, PhpVirtualField::class)) {
