@@ -43,7 +43,7 @@ class Rate extends Entity
                     'invNullable' => false,
                     'definedOn' => 'here',
                 ]),
-                null
+                []
             ),
             'rate' => new EntityFieldSignature(
                 static::class, 'rate',
@@ -60,7 +60,7 @@ class Rate extends Entity
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                null
+                []
             ),
         ]);
     }
