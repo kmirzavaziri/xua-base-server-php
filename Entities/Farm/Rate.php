@@ -68,7 +68,7 @@ class Rate extends Entity
     protected static function _indexes(): array
     {
         return array_merge(parent::_indexes(), [
-            new Index(['farm' => Index::ASC, 'fieldSignature' => Index::ASC], true),
+            new Index(['farm' => Index::ASC, 'rater' => Index::ASC], true),
         ]);
     }
 
