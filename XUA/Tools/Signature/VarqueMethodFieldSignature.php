@@ -42,9 +42,9 @@ class VarqueMethodFieldSignature
         $instances = [];
         foreach ($list as $item) {
             if (is_a($item, EntityFieldSignature::class)) {
-                $instances[] = static::fromSignature($item);
+                $instances[] = static::fromSignature($item, $required, $default, $const);
             } elseif (is_a($item, EntityFieldSignatureTree::class)) {
-                $instances[] = static::fromTree($item);
+                $instances[] = static::fromTree($item, $required, $default, $const);
             } else {
                 throw new Exception('each item must be an instance of either EntityFieldSignature or EntityFieldSignatureTree');
             }
