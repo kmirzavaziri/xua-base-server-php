@@ -39,7 +39,7 @@ abstract class SimpleTypeService extends Service
         self::TYPE_TIME,
     ];
 
-    public static function validateTypeParams(?string $type, array $typeParams, string &$message): bool
+    public static function validateTypeParams(?string $type, array $typeParams, ?string &$message): bool
     {
         if ($type === null) {
             return true;
@@ -112,7 +112,7 @@ abstract class SimpleTypeService extends Service
                 $super = new DecimalRange(array_merge($typeParams, ['fractionalLength' => 0]));
                 break;
             case 'decimal':
-                $super = new DecimalRange(array_merge($typeParams, ['fractionalLength' => 2]));
+                $super = new DecimalRange(array_merge($typeParams, ['fractionalLength' => 4]));
                 break;
             case 'string':
                 $super = new Text($typeParams);
