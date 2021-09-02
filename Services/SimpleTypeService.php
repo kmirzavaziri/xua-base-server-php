@@ -102,7 +102,7 @@ abstract class SimpleTypeService extends Service
         return (new StructuredMap(['nullable' => true, 'structure' => $typeParamsStructure]))->explicitlyAccepts($typeParams, $message);
     }
 
-    public static function validateValue(?string $type, array $typeParams, mixed $value, string &$message): bool
+    public static function validateValue(?string $type, array $typeParams, mixed $value, ?string &$message): bool
     {
         if ($type === null) {
             return true;
