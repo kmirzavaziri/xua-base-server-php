@@ -28,8 +28,6 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature Q_costsTable() The Signature of: Request Item `costsTable`
  * @property array Q_predictionsTable
  * @method static MethodItemSignature Q_predictionsTable() The Signature of: Request Item `predictionsTable`
- * @property int Q_geographicDivision
- * @method static MethodItemSignature Q_geographicDivision() The Signature of: Request Item `geographicDivision`
  * @property int Q_farm
  * @method static MethodItemSignature Q_farm() The Signature of: Request Item `farm`
  * @property ?array Q_paymentPlan
@@ -57,7 +55,6 @@ class SetOne extends SetOneByIdAdmin
             Product::F_category(),
             Product::F_costsTable(),
             Product::F_predictionsTable(),
-            Product::F_geographicDivision(),
             Product::F_farm(),
             Product::F_paymentPlan(),
         ], false);
