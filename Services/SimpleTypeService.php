@@ -61,31 +61,39 @@ abstract class SimpleTypeService extends Service
                     'min' => new Integer(['nullable' => true]),
                     'max' => new Integer(['nullable' => true]),
                 ]);
+                $typeParams['min'] = $typeParams['min'] ?? null;
+                $typeParams['max'] = $typeParams['max'] ?? null;
                 break;
             case 'decimal':
                 $typeParamsStructure = array_merge($typeParamsStructure, [
                     'min' => new Decimal(['nullable' => true]),
                     'max' => new Decimal(['nullable' => true]),
                 ]);
+                $typeParams['min'] = $typeParams['min'] ?? null;
+                $typeParams['max'] = $typeParams['max'] ?? null;
                 break;
             case 'string':
             case 'sequence':
                 $typeParamsStructure = array_merge($typeParamsStructure, [
-                    'minLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                    'maxLength' => new Integer(['unsigned' => true, 'nullable' => true]),
+                    'minLength' => new Integer(['nullable' => true, 'unsigned' => true]),
+                    'maxLength' => new Integer(['nullable' => true, 'unsigned' => true]),
                 ]);
+                $typeParams['minLength'] = $typeParams['minLength'] ?? null;
+                $typeParams['maxLength'] = $typeParams['maxLength'] ?? null;
                 break;
             case 'enum':
                 $typeParamsStructure = array_merge($typeParamsStructure, [
-                    'values' => new Sequence(['type' => new Text([]), 'minLength' => 1]),
+                    'values' => new Sequence(['nullable' => false, 'type' => new Text([]), 'minLength' => 1]),
                 ]);
                 break;
             case 'set':
                 $typeParamsStructure = array_merge($typeParamsStructure, [
-                    'minLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                    'maxLength' => new Integer(['unsigned' => true, 'nullable' => true]),
-                    'values' => new Sequence(['type' => new Text([]), 'minLength' => 1]),
+                    'minLength' => new Integer(['nullable' => true, 'unsigned' => true]),
+                    'maxLength' => new Integer(['nullable' => true, 'unsigned' => true]),
+                    'values' => new Sequence(['nullable' => false, 'type' => new Text([]), 'minLength' => 1]),
                 ]);
+                $typeParams['minLength'] = $typeParams['minLength'] ?? null;
+                $typeParams['maxLength'] = $typeParams['maxLength'] ?? null;
                 break;
             default:
                 $message = ExpressionService::get('unknown.simple.type.type', ['type' => $type]);
