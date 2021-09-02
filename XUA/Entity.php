@@ -639,7 +639,7 @@ abstract class Entity extends XUA
         $bind = [];
         $insert = false;
         if ($this->_x_fields['id'] === null) {
-            if ($this->givenId() !== 0) {
+            if ($this->givenId()) {
                 throw (new EntityException())->setError('id', static::class . ' with id ' . $this->givenId() . ' does not exist, use 0 to insert.');
             }
             $columnNames = [];
