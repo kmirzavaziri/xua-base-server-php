@@ -6,6 +6,7 @@ use Entities\Dataset\IranAdministrativeDivision;
 use Entities\Farm\Field;
 use Entities\Farm\FieldSignature;
 use Entities\Farm\Media;
+use Entities\Farm\Rate;
 use Services\IranAdministrativeDivisionService;
 use Services\Mime;
 use Services\Size;
@@ -46,6 +47,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property Field[] rates
  * @method static EntityFieldSignature F_rates() The Signature of: Field `rates`
  * @method static ConditionField C_rates() The Condition Field of: Field `rates`
+ * @property float rate
+ * @method static EntityFieldSignature F_rate() The Signature of: Field `rate`
+ * @method static ConditionField C_rate() The Condition Field of: Field `rate`
  * @property string status
  * @method static EntityFieldSignature F_status() The Signature of: Field `status`
  * @method static ConditionField C_status() The Condition Field of: Field `status`
@@ -138,6 +142,16 @@ class Farm extends Entity
                     'definedOn' => 'here',
                 ]),
                 []
+            ),
+            'rate' => new EntityFieldSignature(
+                static::class, 'rate',
+                new PhpVirtualField([
+                    'getter' => function (Farm $farm): float {
+                        $rates = array_map(function (Rate $rate) { return $rate->rate; }, $farm->rates);
+                        return array_sum($rates) / count($rates);
+                    }
+                ]),
+                null
             ),
             'status' => new EntityFieldSignature(
                 static::class, 'status',
