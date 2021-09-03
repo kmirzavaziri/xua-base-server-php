@@ -3,7 +3,7 @@
 namespace Methods\Developer\Sms;
 
 use Services\JsonLogService;
-use Services\XUA\ConstantService;
+use Services\UserService;
 use Supers\Basics\Highers\Map;
 use Supers\Basics\Highers\Sequence;
 use XUA\Method;
@@ -15,12 +15,6 @@ use XUA\Tools\Signature\MethodItemSignature;
  */
 class GetAll extends Method
 {
-
-    public static function isPublic(): bool
-    {
-        return false;
-    }
-
     protected static function _responseSignatures(): array
     {
         return array_merge(parent::_responseSignatures(), [
@@ -31,5 +25,10 @@ class GetAll extends Method
     protected function body(): void
     {
         $this->result = JsonLogService::getAll('sms');
+    }
+
+    protected function validations(): void
+    {
+        UserService::verifyAdmin($this->error);
     }
 }
