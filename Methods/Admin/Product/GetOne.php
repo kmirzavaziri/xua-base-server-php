@@ -2,13 +2,11 @@
 
 namespace Methods\Admin\Product;
 
-use Entities\Dataset\IranAdministrativeDivision;
 use Entities\Product;
 use Entities\Product\Field;
 use Entities\Product\Media;
 use Methods\Abstraction\GetOneByIdAdmin;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
-use XUA\Tools\Entity\EntityInstantField;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
@@ -35,14 +33,6 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_costsTable() The Signature of: Response Item `costsTable`
  * @property array predictionsTable
  * @method static MethodItemSignature R_predictionsTable() The Signature of: Response Item `predictionsTable`
- * @property \int ostan
- * @method static MethodItemSignature R_ostan() The Signature of: Response Item `ostan`
- * @property \int shahrestan
- * @method static MethodItemSignature R_shahrestan() The Signature of: Response Item `shahrestan`
- * @property \?int bakhsh
- * @method static MethodItemSignature R_bakhsh() The Signature of: Response Item `bakhsh`
- * @property \?int dehestan
- * @method static MethodItemSignature R_dehestan() The Signature of: Response Item `dehestan`
  * @property int farm
  * @method static MethodItemSignature R_farm() The Signature of: Response Item `farm`
  * @property ?array paymentPlan
@@ -75,10 +65,6 @@ class GetOne extends GetOneByIdAdmin
             Product::F_category(),
             Product::F_costsTable(),
             Product::F_predictionsTable(),
-            new EntityInstantField('ostan', function (Product $product) { return $product->ostan->id;}),
-            new EntityInstantField('shahrestan', function (Product $product) { return $product->shahrestan->id;}),
-            new EntityInstantField('bakhsh', function (Product $product) { return $product->bakhsh?->id;}),
-            new EntityInstantField('dehestan', function (Product $product) { return $product->dehestan?->id;}),
             Product::F_farm(),
             Product::F_paymentPlan(),
         ]);
