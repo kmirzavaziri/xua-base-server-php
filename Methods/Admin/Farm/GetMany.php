@@ -32,11 +32,8 @@ class GetMany extends GetManyPagerAdmin
             Farm::F_title(),
             Farm::F_rate(),
             Farm::F_status(),
+            Farm::F_averageAnnualInterest(),
             (new EntityFieldSignatureTree(Farm::F_owner()))->addChild(User::F_titleFa()),
-            new EntityInstantField('ostan', function (Farm $farm) { return $farm->ostan->title;}),
-            new EntityInstantField('shahrestan', function (Farm $farm) { return $farm->shahrestan->title;}),
-            new EntityInstantField('bakhsh', function (Farm $farm) { return $farm->bakhsh?->title;}),
-            new EntityInstantField('dehestan', function (Farm $farm) { return $farm->dehestan?->title;}),
         ]);
     }
 }
