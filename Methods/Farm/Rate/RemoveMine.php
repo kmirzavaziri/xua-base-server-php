@@ -7,12 +7,9 @@ use Entities\Farm;
 use Entities\Farm\Rate;
 use Entities\User;
 use Services\UserService;
-use XUA\Entity;
 use XUA\Method;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
-use XUA\Tools\Signature\VarqueMethodFieldSignature;
-use XUA\VARQUE\MethodView;
 
 /**
  * @property int Q_farm
