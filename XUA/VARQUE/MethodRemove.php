@@ -2,19 +2,12 @@
 
 namespace XUA\VARQUE;
 
+use XUA\Entity;
 use XUA\MethodEve;
-use XUA\Tools\Signature\MethodItemSignature;
 
 abstract class MethodRemove extends MethodEve
 {
     # Finalize Eve Methods
-    final protected static function requestSignaturesCalculator(): array
-    {
-        return array_merge(parent::_requestSignatures(), [
-            'id' => new MethodItemSignature(static::entity()::F_id()->type, true, null, false),
-        ]);
-    }
-
     final protected static function responseSignaturesCalculator(): array
     {
         return parent::responseSignaturesCalculator();
@@ -22,7 +15,7 @@ abstract class MethodRemove extends MethodEve
 
     protected function body(): void
     {
-        (new ($this->entity())($this->Q_id))->delete();
+        $this->feed()->delete();
     }
 
     # New Overridable Methods
@@ -30,4 +23,6 @@ abstract class MethodRemove extends MethodEve
     {
         return '';
     }
+
+    abstract protected function feed(): Entity;
 }
