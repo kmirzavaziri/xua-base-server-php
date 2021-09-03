@@ -55,6 +55,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property \Entities\Farm\Media[] gallery
  * @method static EntityFieldSignature F_gallery() The Signature of: Field `gallery`
  * @method static ConditionField C_gallery() The Condition Field of: Field `gallery`
+ * @property ?string image
+ * @method static EntityFieldSignature F_image() The Signature of: Field `image`
+ * @method static ConditionField C_image() The Condition Field of: Field `image`
  * @property \Entities\User owner
  * @method static EntityFieldSignature F_owner() The Signature of: Field `owner`
  * @method static ConditionField C_owner() The Condition Field of: Field `owner`
@@ -168,6 +171,15 @@ class Farm extends Entity
                     'definedOn' => 'here',
                 ]),
                 []
+            ),
+            'image' => new EntityFieldSignature(
+                static::class, 'image',
+                new PhpVirtualField([
+                    'getter' => function (Farm $farm): ?string {
+                        return $farm->gallery ? (Media::F_source()->type)->marshal($farm->gallery[0]->source) : null;
+                    }
+                ]),
+                null
             ),
             'owner' => new EntityFieldSignature(
                 static::class, 'owner',
