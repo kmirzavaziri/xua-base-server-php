@@ -30,6 +30,7 @@ class GetMany extends GetManyPager
             Product::F_title(),
             Product::F_price(),
             Product::F_image(),
+            Product::F_rate(),
         ]);
     }
 }

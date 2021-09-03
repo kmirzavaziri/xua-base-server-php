@@ -17,6 +17,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_title() The Signature of: Response Item `title`
  * @property string description
  * @method static MethodItemSignature R_description() The Signature of: Response Item `description`
+ * @property float rate
+ * @method static MethodItemSignature R_rate() The Signature of: Response Item `rate`
  * @property array additionalFields
  * @method static MethodItemSignature R_additionalFields() The Signature of: Response Item `additionalFields`
  * @property ?string investmentTimespan
@@ -50,6 +52,7 @@ class GetOne extends GetOneByIdAdmin
         return VarqueMethodFieldSignature::fromList([
             Product::F_title(),
             Product::F_description(),
+            Product::F_rate(),
             (new EntityFieldSignatureTree(Product::F_additionalFields()))->addChildren([
                 Field::F_id(),
                 Field::F_fieldSignature(),

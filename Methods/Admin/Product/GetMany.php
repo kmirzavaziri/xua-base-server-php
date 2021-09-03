@@ -32,6 +32,7 @@ class GetMany extends GetManyPagerAdmin
             Product::F_id(),
             Product::F_title(),
             Product::F_price(),
+            Product::F_rate(),
             (new EntityFieldSignatureTree(Product::F_category()))->addChild(Category::F_title()),
             (new EntityFieldSignatureTree(Product::F_farm()))->addChild(Farm::F_title()),
             // @TODO Product::F_stock(),
