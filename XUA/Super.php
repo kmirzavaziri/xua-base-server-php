@@ -128,7 +128,7 @@ abstract class Super extends XUA
         # Empty by default
     }
 
-    abstract protected function _predicate($input, string &$message = null) : bool;
+    abstract protected function _predicate($input, null|string|array &$message = null) : bool;
 
     protected function _marshal(mixed $input): mixed
     {
@@ -181,7 +181,7 @@ abstract class Super extends XUA
         }
     }
 
-    private function predicate($input, string &$message = null) : bool {
+    private function predicate($input, string|array &$message = null) : bool {
         return $this->_predicate($input, $message);
     }
 
@@ -225,7 +225,7 @@ abstract class Super extends XUA
     }
 
     # Predefined Methods
-    final public function explicitlyAccepts($input, string &$message = null) : bool
+    final public function explicitlyAccepts($input, null|string|array &$message = null) : bool
     {
         $result = $this->predicate($input, $message);
 

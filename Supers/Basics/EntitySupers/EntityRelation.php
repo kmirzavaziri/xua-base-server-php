@@ -56,7 +56,7 @@ class EntityRelation extends Super
         }
     }
 
-    protected function _predicate($input, string &$message = null) : bool
+    protected function _predicate($input, null|string|array &$message = null) : bool
     {
         if ($this->relation[1] == 'I') {
             if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->explicitlyAccepts($input, $message)) {

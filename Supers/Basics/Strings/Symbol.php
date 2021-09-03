@@ -29,7 +29,7 @@ class Symbol extends Regex
         ]);
     }
 
-    protected function _predicate($input, string &$message = null): bool
+    protected function _predicate($input, null|string|array &$message = null): bool
     {
         if ($input === '' and $this->allowEmpty) {
             return true;

@@ -31,7 +31,7 @@ class Url extends Text
         ]);
     }
 
-    protected function _predicate($input, string &$message = null): bool
+    protected function _predicate($input, null|string|array &$message = null): bool
     {
         if ($this->nullable and $input === null) {
             return true;

@@ -8,7 +8,7 @@ use XUA\Super;
 
 class Boolean extends Super
 {
-    protected function _predicate($input, string &$message = null): bool
+    protected function _predicate($input, null|string|array &$message = null): bool
     {
         $message = 'Value of type ' . gettype($input) . ' is not bool.';
         return is_bool($input);

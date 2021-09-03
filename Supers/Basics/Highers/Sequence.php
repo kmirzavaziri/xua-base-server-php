@@ -37,7 +37,7 @@ class Sequence extends Json
         }
     }
 
-    protected function _predicate($input, string &$message = null): bool
+    protected function _predicate($input, null|string|array &$message = null): bool
     {
         if ($this->nullable and $input === null) {
             return true;
@@ -67,10 +67,11 @@ class Sequence extends Json
             return false;
         }
 
+        $message = [];
         if ($this->type != null) {
             foreach ($input as $i => $item) {
                 if (!$this->type->_predicate($item, $itemMessage)) {
-                    $message = "sequence item $i: $itemMessage";
+                    $message[$i] = $itemMessage;
                     return false;
                 }
             }

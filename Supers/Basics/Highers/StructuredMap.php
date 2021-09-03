@@ -24,7 +24,7 @@ class StructuredMap extends Json
         ]);
     }
 
-    protected function _predicate($input, string &$message = null): bool
+    protected function _predicate($input, null|string|array &$message = null): bool
     {
         if ($this->nullable and $input === null) {
             return true;
@@ -49,8 +49,8 @@ class StructuredMap extends Json
             /** @var ?Super $type */
 
             if (in_array($key, array_keys($input))) {
-                if ($type !== null and !$type->accepts($input[$key], $messages)) {
-                    $message = "$key: " . implode(' ', $messages);
+                if ($type !== null and !$type->_predicate($input[$key], $messages)) {
+                    $message[$key] = $messages;
                     return false;
                 }
             } else {

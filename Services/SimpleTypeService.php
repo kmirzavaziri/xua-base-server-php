@@ -39,7 +39,7 @@ abstract class SimpleTypeService extends Service
         self::TYPE_TIME,
     ];
 
-    public static function validateTypeParams(?string $type, ?array $typeParams, ?string &$message): bool
+    public static function validateTypeParams(?string $type, ?array $typeParams, null|string|array &$message): bool
     {
         if ($type === null) {
             return true;
@@ -102,7 +102,7 @@ abstract class SimpleTypeService extends Service
         return (new StructuredMap(['nullable' => true, 'structure' => $typeParamsStructure]))->explicitlyAccepts($typeParams, $message);
     }
 
-    public static function validateValue(?string $type, array $typeParams, mixed $value, ?string &$message): bool
+    public static function validateValue(?string $type, array $typeParams, mixed $value, null|string|array &$message): bool
     {
         if ($type === null) {
             return true;
