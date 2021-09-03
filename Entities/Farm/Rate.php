@@ -55,7 +55,7 @@ class Rate extends Entity
                 new EntityRelation([
                     'relatedEntity' => Farm::class,
                     'relation' => 'NI',
-                    'invName' => 'additionalFields',
+                    'invName' => 'rates',
                     'nullable' => false,
                     'invNullable' => false,
                     'definedOn' => 'there',
@@ -70,12 +70,5 @@ class Rate extends Entity
         return array_merge(parent::_indexes(), [
             new Index(['farm' => Index::ASC, 'rater' => Index::ASC], true),
         ]);
-    }
-
-    protected function _validation(EntityFieldException $exception): void
-    {
-        if (! SimpleTypeService::validateValue($this->fieldSignature->type, $this->fieldSignature->typeParams, $this->value, $message)) {
-            $exception->setError('value', $message);
-        }
     }
 }
