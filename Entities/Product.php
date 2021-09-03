@@ -72,6 +72,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?array paymentPlan
  * @method static EntityFieldSignature F_paymentPlan() The Signature of: Field `paymentPlan`
  * @method static ConditionField C_paymentPlan() The Condition Field of: Field `paymentPlan`
+ * @property int stock
+ * @method static EntityFieldSignature F_stock() The Signature of: Field `stock`
+ * @method static ConditionField C_stock() The Condition Field of: Field `stock`
  */
 class Product extends Entity
 {
@@ -205,7 +208,11 @@ class Product extends Entity
                 ]),
                 null
             ),
-
+            'stock' => new EntityFieldSignature(
+                static::class, 'stock',
+                new DecimalRange(['nullable' => false, 'fractionalLength' => 0, 'min' => 0, 'max' => 10_000_000_000]),
+                0
+            ),
         ]);
     }
 

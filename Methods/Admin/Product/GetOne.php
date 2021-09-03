@@ -70,6 +70,7 @@ class GetOne extends GetOneByIdAdmin
             Product::F_predictionsTable(),
             Product::F_farm(),
             Product::F_paymentPlan(),
+            Product::F_stock(),
         ]);
     }
 }
