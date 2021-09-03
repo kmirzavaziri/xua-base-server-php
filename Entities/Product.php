@@ -5,10 +5,10 @@ namespace Entities;
 use Entities\Product\Category;
 use Entities\Product\Field;
 use Entities\Product\Media;
+use Entities\Product\Rate;
 use Services\Mime;
 use Services\Size;
 use Services\XUA\ExpressionService;
-use Services\XUA\FileInstance;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
@@ -33,25 +33,31 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string description
  * @method static EntityFieldSignature F_description() The Signature of: Field `description`
  * @method static ConditionField C_description() The Condition Field of: Field `description`
- * @property Field[] additionalFields
+ * @property \Entities\Product\Field[] additionalFields
  * @method static EntityFieldSignature F_additionalFields() The Signature of: Field `additionalFields`
  * @method static ConditionField C_additionalFields() The Condition Field of: Field `additionalFields`
  * @property ?string investmentTimespan
  * @method static EntityFieldSignature F_investmentTimespan() The Signature of: Field `investmentTimespan`
  * @method static ConditionField C_investmentTimespan() The Condition Field of: Field `investmentTimespan`
- * @property ?FileInstance brochure
+ * @property \Entities\Product\Rate[] rates
+ * @method static EntityFieldSignature F_rates() The Signature of: Field `rates`
+ * @method static ConditionField C_rates() The Condition Field of: Field `rates`
+ * @property float rate
+ * @method static EntityFieldSignature F_rate() The Signature of: Field `rate`
+ * @method static ConditionField C_rate() The Condition Field of: Field `rate`
+ * @property ?\Services\XUA\FileInstance brochure
  * @method static EntityFieldSignature F_brochure() The Signature of: Field `brochure`
  * @method static ConditionField C_brochure() The Condition Field of: Field `brochure`
  * @property int price
  * @method static EntityFieldSignature F_price() The Signature of: Field `price`
  * @method static ConditionField C_price() The Condition Field of: Field `price`
- * @property Media[] gallery
+ * @property \Entities\Product\Media[] gallery
  * @method static EntityFieldSignature F_gallery() The Signature of: Field `gallery`
  * @method static ConditionField C_gallery() The Condition Field of: Field `gallery`
  * @property ?string image
  * @method static EntityFieldSignature F_image() The Signature of: Field `image`
  * @method static ConditionField C_image() The Condition Field of: Field `image`
- * @property Category category
+ * @property \Entities\Product\Category category
  * @method static EntityFieldSignature F_category() The Signature of: Field `category`
  * @method static ConditionField C_category() The Condition Field of: Field `category`
  * @property array costsTable
@@ -60,7 +66,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property array predictionsTable
  * @method static EntityFieldSignature F_predictionsTable() The Signature of: Field `predictionsTable`
  * @method static ConditionField C_predictionsTable() The Condition Field of: Field `predictionsTable`
- * @property Farm farm
+ * @property \Entities\Farm farm
  * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
  * @method static ConditionField C_farm() The Condition Field of: Field `farm`
  * @property ?array paymentPlan
@@ -98,6 +104,28 @@ class Product extends Entity
                 static::class, 'investmentTimespan',
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 100]),
                 []
+            ),
+            'rates' => new EntityFieldSignature(
+                static::class, 'rates',
+                new EntityRelation([
+                    'relatedEntity' => Rate::class,
+                    'relation' => 'IN',
+                    'invName' => 'product',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'here',
+                ]),
+                []
+            ),
+            'rate' => new EntityFieldSignature(
+                static::class, 'rate',
+                new PhpVirtualField([
+                    'getter' => function (Product $product): float {
+                        $rates = array_map(function (Rate $rate) { return $rate->rate; }, $product->rates);
+                        return $rates ? (array_sum($rates) / count($rates)) : 0;
+                    }
+                ]),
+                null
             ),
             'brochure' => new EntityFieldSignature(
                 static::class, 'brochure',

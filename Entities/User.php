@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-use Entities\Farm\Rate;
 use Entities\User\Session;
 use Services\Mime;
 use Services\Size;
@@ -367,7 +366,7 @@ class User extends Entity
             'ratedFarms' => new EntityFieldSignature(
                 static::class, 'ratedFarms',
                 new EntityRelation([
-                    'relatedEntity' => Rate::class,
+                    'relatedEntity' => Farm\Rate::class,
                     'relation' => 'IN',
                     'invName' => 'rater',
                     'nullable' => false,
@@ -375,6 +374,18 @@ class User extends Entity
                     'definedOn' => 'there',
                 ]),
                 []
+            ),
+            'ratedProducts' => new EntityFieldSignature(
+                static::class, 'ratedProducts',
+                new EntityRelation([
+                    'relatedEntity' => Product\Rate::class,
+                    'relation' => 'IN',
+                    'invName' => 'rater',
+                    'nullable' => false,
+                    'invNullable' => false,
+                    'definedOn' => 'there',
+                ]),
+                null
             ),
         ]);
     }
