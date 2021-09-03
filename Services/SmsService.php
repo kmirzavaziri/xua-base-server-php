@@ -15,20 +15,24 @@ abstract class SmsService extends Service
 
     public static function sendTemplate(string $phoneNumber, int $templateId, array $parameters = []) : void
     {
-        $stupidParameters = [];
-        foreach ($parameters as $key => $value) {
-            $stupidParameters[] = [
-                'Parameter' => $key,
-                'ParameterValue' => $value
-            ];
-        }
-        $response = self::curl(self::SMS_IR_SEND_TEMPLATE_URL, [
-            'Mobile' => $phoneNumber,
-            'TemplateId' => $templateId,
-            'ParameterArray' => $stupidParameters,
-        ], self::getToken());
+        if (EnvironmentService::getEnv() == EnvironmentService::ENV_PROD) {
+            $stupidParameters = [];
+            foreach ($parameters as $key => $value) {
+                $stupidParameters[] = [
+                    'Parameter' => $key,
+                    'ParameterValue' => $value
+                ];
+            }
+            $response = self::curl(self::SMS_IR_SEND_TEMPLATE_URL, [
+                'Mobile' => $phoneNumber,
+                'TemplateId' => $templateId,
+                'ParameterArray' => $stupidParameters,
+            ], self::getToken());
 
-        $response['Message'] ?? throw new SmsException('Sending sms failed with response: ' . xua_var_dump($response));
+            $response['Message'] ?? throw new SmsException('Sending sms failed with response: ' . xua_var_dump($response));
+        } else {
+            JsonLogService::append('sms', ['phoneNumber' => $phoneNumber, 'templateId' => $templateId, 'parameters' => $parameters]);
+        }
     }
 
     private static function getToken() : string
