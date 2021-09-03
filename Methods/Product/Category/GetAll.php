@@ -26,14 +26,4 @@ class GetAll extends MethodQuery
             Category::F_title(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'productCategories';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
 }

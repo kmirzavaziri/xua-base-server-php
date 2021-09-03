@@ -38,9 +38,4 @@ class GetAll extends MethodQuery
             ->and(Session::C_accessToken(), Condition::NEQ, '')
         ;
     }
-
-    protected static function wrapper(): string
-    {
-        return 'sessions';
-    }
 }

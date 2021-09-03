@@ -35,14 +35,4 @@ class GetMany extends GetManyPagerAdmin
             ]),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'productCategories';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
 }

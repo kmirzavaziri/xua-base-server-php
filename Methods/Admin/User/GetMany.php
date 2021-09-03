@@ -34,15 +34,4 @@ class GetMany extends GetManyPagerAdmin
             User::F_email(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'users';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
-
 }

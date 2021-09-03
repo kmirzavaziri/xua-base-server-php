@@ -37,15 +37,4 @@ class GetMany extends GetManyPagerAdmin
             // @TODO Product::F_stock(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'products';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
-
 }

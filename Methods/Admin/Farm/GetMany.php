@@ -30,15 +30,4 @@ class GetMany extends GetManyPagerAdmin
             Farm::F_title(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'farms';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
-
 }

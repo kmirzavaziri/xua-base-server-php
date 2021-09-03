@@ -45,14 +45,4 @@ class GetAllByParent extends GetAllAdmin
         }
         return IranAdministrativeDivision::getMany(Condition::leaf(IranAdministrativeDivision::C_parent()->rel(IranAdministrativeDivision::C_id()), Condition::EQ, $this->Q_parent));
     }
-
-    protected static function wrapper(): string
-    {
-        return 'result';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
 }

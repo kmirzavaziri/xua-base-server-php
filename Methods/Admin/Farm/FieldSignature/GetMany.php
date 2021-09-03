@@ -33,15 +33,4 @@ class GetMany extends GetManyPagerAdmin
             FieldSignature::F_typeParams(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'result';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
-
 }

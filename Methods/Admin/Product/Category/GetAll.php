@@ -26,14 +26,4 @@ class GetAll extends GetAllAdmin
             Category::F_title(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'result';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
 }

@@ -44,14 +44,4 @@ class GetAllByCategory extends GetAllAdmin
     {
         return FieldSignature::getMany(Condition::leaf(FieldSignature::C_category()->rel(Category::C_id()), Condition::EQ, $this->Q_category));
     }
-
-    protected static function wrapper(): string
-    {
-        return 'result';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
 }

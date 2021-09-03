@@ -32,15 +32,4 @@ class GetMany extends GetManyPager
             Product::F_image(),
         ]);
     }
-
-    protected static function wrapper(): string
-    {
-        return 'products';
-    }
-
-    protected static function association(): ?EntityFieldSignature
-    {
-        return null;
-    }
-
 }
