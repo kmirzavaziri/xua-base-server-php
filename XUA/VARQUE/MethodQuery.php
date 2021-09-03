@@ -91,11 +91,11 @@ abstract class MethodQuery extends MethodEve
 
     protected static function wrapper(): string
     {
-        return lcfirst(static::entity()::table()) . 's';
+        return 'result';
     }
 
     protected static function association(): ?EntityFieldSignature
     {
-        return static::entity()::F_id();
+        return null;
     }
 }
