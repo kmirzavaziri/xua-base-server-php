@@ -35,6 +35,7 @@ class GetOne extends GetOneById
             (new EntityFieldSignatureTree(Farm::F_owner()))->addChildren([
                 User::F_id(),
                 User::F_titleFa(),
+                User::F_profilePicture(),
             ]),
             new EntityInstantField('ostan', function (Farm $farm) { return $farm->ostan->title;}),
             new EntityInstantField('shahrestan', function (Farm $farm) { return $farm->shahrestan->title;}),
