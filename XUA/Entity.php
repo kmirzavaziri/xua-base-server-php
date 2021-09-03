@@ -734,9 +734,9 @@ abstract class Entity extends XUA
 
                 if ($removingIds) {
                     if ($signature->type->invNullable) {
-                        self::execute("UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = NULL WHERE id IN (?)", $removingIds);
+                        self::execute("UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = NULL WHERE id IN (?)", [$removingIds]);
                     } else {
-                        self::execute("DELETE FROM " . $signature->type->relatedEntity::table() . " WHERE id IN (?)", $removingIds);
+                        self::execute("DELETE FROM " . $signature->type->relatedEntity::table() . " WHERE id IN (?)", [$removingIds]);
                     }
                 }
 
