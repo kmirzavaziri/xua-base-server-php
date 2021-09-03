@@ -9,6 +9,6 @@ class TestInterface extends InterfaceEve
 {
     public static function execute(): string
     {
-        return 'Hello World! This is the ' . EnvironmentService::getEnv() . 'environment.';
+        return 'Hello World! This is the ' . EnvironmentService::getEnv() . ' environment.';
     }
 }
