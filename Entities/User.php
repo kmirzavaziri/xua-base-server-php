@@ -9,6 +9,7 @@ use Services\Size;
 use Services\XUA\LocaleLanguage;
 use Supers\Basics\Boolean;
 use Supers\Basics\EntitySupers\EntityRelation;
+use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Files\Image;
 use Supers\Basics\Highers\Date;
 use Supers\Basics\Numerics\Decimal;
@@ -37,12 +38,18 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string firstNameEn
  * @method static EntityFieldSignature F_firstNameEn() The Signature of: Field `firstNameEn`
  * @method static ConditionField C_firstNameEn() The Condition Field of: Field `firstNameEn`
+ * @property string titleFa
+ * @method static EntityFieldSignature F_titleFa() The Signature of: Field `titleFa`
+ * @method static ConditionField C_titleFa() The Condition Field of: Field `titleFa`
  * @property ?string lastNameFa
  * @method static EntityFieldSignature F_lastNameFa() The Signature of: Field `lastNameFa`
  * @method static ConditionField C_lastNameFa() The Condition Field of: Field `lastNameFa`
  * @property ?string lastNameEn
  * @method static EntityFieldSignature F_lastNameEn() The Signature of: Field `lastNameEn`
  * @method static ConditionField C_lastNameEn() The Condition Field of: Field `lastNameEn`
+ * @property string titleEn
+ * @method static EntityFieldSignature F_titleEn() The Signature of: Field `titleEn`
+ * @method static ConditionField C_titleEn() The Condition Field of: Field `titleEn`
  * @property ?string nationalCode
  * @method static EntityFieldSignature F_nationalCode() The Signature of: Field `nationalCode`
  * @method static ConditionField C_nationalCode() The Condition Field of: Field `nationalCode`
@@ -130,6 +137,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property bool admin
  * @method static EntityFieldSignature F_admin() The Signature of: Field `admin`
  * @method static ConditionField C_admin() The Condition Field of: Field `admin`
+ * @property \Entities\Farm[] farms
+ * @method static EntityFieldSignature F_farms() The Signature of: Field `farms`
+ * @method static ConditionField C_farms() The Condition Field of: Field `farms`
+ * @property \Entities\Farm\Rate[] ratedFarms
+ * @method static EntityFieldSignature F_ratedFarms() The Signature of: Field `ratedFarms`
+ * @method static ConditionField C_ratedFarms() The Condition Field of: Field `ratedFarms`
  */
 class User extends Entity
 {
@@ -147,6 +160,15 @@ class User extends Entity
                 new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
                 null
             ),
+            'titleFa' => new EntityFieldSignature(
+                static::class, 'titleFa',
+                new PhpVirtualField([
+                    'getter' => function (User $user): string {
+                        return $user->firstNameFa . ' ' . $user->lastNameFa;
+                    }
+                ]),
+                null
+            ),
             'lastNameFa' => new EntityFieldSignature(
                 static::class, 'lastNameFa',
                 new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_FA]),
@@ -155,6 +177,15 @@ class User extends Entity
             'lastNameEn' => new EntityFieldSignature(
                 static::class, 'lastNameEn',
                 new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
+                null
+            ),
+            'titleEn' => new EntityFieldSignature(
+                static::class, 'titleEn',
+                new PhpVirtualField([
+                    'getter' => function (User $user): string {
+                        return $user->firstNameEn . ' ' . $user->lastNameEn;
+                    }
+                ]),
                 null
             ),
             'nationalCode' => new EntityFieldSignature(
