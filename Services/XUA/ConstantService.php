@@ -9,6 +9,8 @@ use XUA\Service;
 
 final class ConstantService extends Service
 {
+    const URL = 'http://urpi.mynewfarm.net';
+
     const INTERFACES_NAMESPACE = 'Interfaces';
     const ENTITIES_NAMESPACE = 'Entities';
 
