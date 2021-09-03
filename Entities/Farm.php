@@ -148,7 +148,7 @@ class Farm extends Entity
                 new PhpVirtualField([
                     'getter' => function (Farm $farm): float {
                         $rates = array_map(function (Rate $rate) { return $rate->rate; }, $farm->rates);
-                        return array_sum($rates) / count($rates);
+                        return $rates ? (array_sum($rates) / count($rates)) : 0;
                     }
                 ]),
                 null
