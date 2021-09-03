@@ -1,5 +1,6 @@
 █   XUA/
 █       Sooner/
+?           ability to fill an entity instance and then search by it. (For example useful in Rate/SetMine)
 ?           Add an abstract class for services and classes who want to be abstract and final at the same time by throwing exception in constructor.
 1           Remove users who never activated their account after reasonable amount of time.
 1           Cache feed for VARQUE
@@ -42,7 +43,6 @@
 0                   Researcher
 0                   Employee
 0                   Worker
-0           Farm
 0           Order
 0           Transaction
 0           Report
@@ -56,9 +56,6 @@
 █               Cart/
 0                   Get
 0                   GetPaymentLink
-█           Farms/
-0               GetMany
-0               GetOne
 █           Farmers/
 0               GetMany
 0               GetOne
@@ -78,10 +75,6 @@
 0               GetMany
 0               GetOne
 █           Admin/
-█               Farm/
-0                   GetMany
-0                   GetOne
-0                   SetOne
 █               Order/
 0                   GetMany
 0                   GetOne
