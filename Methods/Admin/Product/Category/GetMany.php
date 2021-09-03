@@ -15,8 +15,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature Q_pageSize() The Signature of: Request Item `pageSize`
  * @property int Q_pageIndex
  * @method static MethodItemSignature Q_pageIndex() The Signature of: Request Item `pageIndex`
- * @property array productCategories
- * @method static MethodItemSignature R_productCategories() The Signature of: Response Item `productCategories`
+ * @property array result
+ * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
 class GetMany extends GetManyPagerAdmin
 {

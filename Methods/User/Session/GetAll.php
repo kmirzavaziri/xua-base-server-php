@@ -11,8 +11,8 @@ use XUA\Tools\Entity\Condition;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
- * @property array sessions
- * @method static MethodItemSignature R_sessions() The Signature of: Response Item `sessions`
+ * @property array result
+ * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
 class GetAll extends MethodQuery
 {

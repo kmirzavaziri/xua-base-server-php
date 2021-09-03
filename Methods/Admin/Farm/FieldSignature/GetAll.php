@@ -9,8 +9,6 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
- * @property int Q_category
- * @method static MethodItemSignature Q_category() The Signature of: Request Item `category`
  * @property array result
  * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */

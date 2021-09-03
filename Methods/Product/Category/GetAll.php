@@ -9,8 +9,8 @@ use XUA\VARQUE\MethodQuery;
 use XUA\Tools\Signature\MethodItemSignature;
 
 /**
- * @property array productCategories
- * @method static MethodItemSignature R_productCategories() The Signature of: Response Item `productCategories`
+ * @property array result
+ * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
 class GetAll extends MethodQuery
 {
