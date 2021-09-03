@@ -44,3 +44,4 @@ errormessage.bad.geographic.division.with.title: $title منطقه معتبری 
 entityclass.Product: محصول
 unknown.simple.type.type: تایپ $type شناخته‌شده نیست.
 entityclass.User: کاربر
+entityclass.Farm: مزرعه
