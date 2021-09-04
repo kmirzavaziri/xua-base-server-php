@@ -10,7 +10,6 @@ class HomeInterface extends InterfaceEve
 {
     public static function execute(): string
     {
-        self::$bind['data'] = ['version' => XUA::VERSION];
-        return TemplateService::render('home.twig', self::$bind);
+        return TemplateService::render('home.twig', ['data' => ['version' => XUA::VERSION]]);
     }
 }
