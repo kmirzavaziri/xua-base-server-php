@@ -8,7 +8,7 @@ abstract class EnvironmentService extends Service
 {
     const ENV_LOCAL = 'local';
     const ENV_DEMO = 'demo';
-    const ENV_PROD = 'production';
+    const ENV_PROD = 'prod';
 
     public static function getEnv(): string
     {
