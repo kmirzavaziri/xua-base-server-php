@@ -87,4 +87,18 @@ final class ConstantService extends Service
         }
         return $tree;
     }
+
+    public static function url(): string
+    {
+        switch (EnvironmentService::env()) {
+            case EnvironmentService::ENV_LOCAL:
+                return 'http://localhost';
+            case EnvironmentService::ENV_DEMO:
+                return 'http://urpi.mynewfarm.net';
+            case EnvironmentService::ENV_PROD:
+                return 'http://demo-urpi.mynewfarm.net';
+            default:
+                return '';
+        }
+    }
 }
