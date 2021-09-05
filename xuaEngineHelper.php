@@ -105,7 +105,7 @@ function getRelationInverseColumns(string $class) : object
         'invNullable' => " . ($signature->type->nullable ? 'true' : 'false') . ",
         'definedOn' => 'there',
     ]),
-    null
+    ". (strrev($signature->type->relation)[1] == 'N' ? '[]' : 'null') ."
 )"
                 ];
             }
