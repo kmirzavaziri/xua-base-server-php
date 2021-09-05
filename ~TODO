@@ -31,20 +31,7 @@
 -1          add icon to farm
 -1          add isVerified field to farm
 █       Entities/
-█           User/
-█               Info/
-0                   Owner
-0                   Farmer
-0                   Agent
-0                   Operator
-0                   Inspector
-0                   Veterinarian
-0                   Botanist
-0                   Researcher
-0                   Employee
-0                   Worker
 0           Order
-0           Transaction
 0           Report
 0?          Cooperation
 0           Post
