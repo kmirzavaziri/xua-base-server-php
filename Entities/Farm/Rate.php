@@ -53,14 +53,14 @@ class Rate extends Entity
             'farm' => new EntityFieldSignature(
                 static::class, 'farm',
                 new EntityRelation([
-                    'relatedEntity' => Farm::class,
+                    'relatedEntity' => \Entities\Farm::class,
                     'relation' => 'NI',
                     'invName' => 'rates',
                     'nullable' => false,
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                []
+                null
             ),
         ]);
     }

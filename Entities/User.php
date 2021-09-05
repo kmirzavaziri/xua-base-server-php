@@ -354,7 +354,7 @@ class User extends Entity
             'farms' => new EntityFieldSignature(
                 static::class, 'farms',
                 new EntityRelation([
-                    'relatedEntity' => Farm::class,
+                    'relatedEntity' => \Entities\Farm::class,
                     'relation' => 'IN',
                     'invName' => 'owner',
                     'nullable' => false,
