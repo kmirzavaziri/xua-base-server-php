@@ -1,5 +1,5 @@
 <?php
-const XUA_VAR_DUMP_MAX_DEPTH = 3;
+const XUA_VAR_DUMP_MAX_DEPTH = 4;
 const XUA_VAR_DUMP_TAB = '  ';
 
 function xua_var_dump(mixed $value, int $level = 0, $visited = []) : string
