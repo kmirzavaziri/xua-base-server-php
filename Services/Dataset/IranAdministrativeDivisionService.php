@@ -1,6 +1,6 @@
 <?php
 
-namespace Services;
+namespace Services\Dataset;
 
 use Entities\Dataset\IranAdministrativeDivision;
 use XUA\Service;

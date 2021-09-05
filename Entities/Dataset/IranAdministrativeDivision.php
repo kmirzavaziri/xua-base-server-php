@@ -46,7 +46,7 @@ class IranAdministrativeDivision extends Entity
             ),
             'type' => new EntityFieldSignature(
                 static::class, 'type',
-                new Enum(['nullable' => false, 'values' => ['ostan', 'shahrestan', 'bakhsh', 'dehestan', 'abadi']]),
+                new Enum(['nullable' => false, 'values' => ['ostan', 'shahrestan', 'bakhsh', 'dehestan', 'shahrOrRoosta']]),
                 null
             ),
             'children' => new EntityFieldSignature(
