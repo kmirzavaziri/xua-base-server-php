@@ -45,3 +45,9 @@ entityclass.Product: محصول
 unknown.simple.type.type: تایپ $type شناخته‌شده نیست.
 entityclass.User: کاربر
 entityclass.Farm: مزرعه
+payment.ok: پرداخت با موفقیت انجام شد.
+payment.errormessage.nok: تراكنش ناموفق بود يا توسط كاربر لغو شد.
+payment.cart.description: سبد محصول در مزرعهٔ من
+payment.cart.title: پرداخت سبد محصول
+payment.cart.myfarm_title: مزرعه من
+payment.cart.back_to_app: بازگشت به اپلیکیشن

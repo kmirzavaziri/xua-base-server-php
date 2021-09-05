@@ -2,3 +2,5 @@
 {methodOrEntityPath|SA}: POST(UniversalResourcePoolInterface)
 test: TestInterface
 404: XUA\NotFoundInterface
+cart:
+  payment-zarinpal: GET(Cart\Payment\ZarinpalInterface)
