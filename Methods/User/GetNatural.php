@@ -41,8 +41,8 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @method static MethodItemSignature R_website() The Signature of: Response Item `website`
  * @property ?\Services\XUA\FileInstance nationalCardPicture
  * @method static MethodItemSignature R_nationalCardPicture() The Signature of: Response Item `nationalCardPicture`
- * @property ?\Services\XUA\FileInstance birthCertificatePicture
- * @method static MethodItemSignature R_birthCertificatePicture() The Signature of: Response Item `birthCertificatePicture`
+ * @property ?\Services\XUA\FileInstance idBookletPicture
+ * @method static MethodItemSignature R_idBookletPicture() The Signature of: Response Item `idBookletPicture`
  */
 class GetNatural extends MethodView
 {
@@ -69,7 +69,7 @@ class GetNatural extends MethodView
             User::F_job(),
             User::F_website(),
             User::F_nationalCardPicture(),
-            User::F_birthCertificatePicture(),
+            User::F_idBookletPicture(),
         ]);
     }
 

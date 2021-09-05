@@ -73,9 +73,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?\Services\XUA\FileInstance nationalCardPicture
  * @method static EntityFieldSignature F_nationalCardPicture() The Signature of: Field `nationalCardPicture`
  * @method static ConditionField C_nationalCardPicture() The Condition Field of: Field `nationalCardPicture`
- * @property ?\Services\XUA\FileInstance birthCertificatePicture
- * @method static EntityFieldSignature F_birthCertificatePicture() The Signature of: Field `birthCertificatePicture`
- * @method static ConditionField C_birthCertificatePicture() The Condition Field of: Field `birthCertificatePicture`
+ * @property ?\Services\XUA\FileInstance idBookletPicture
+ * @method static EntityFieldSignature F_idBookletPicture() The Signature of: Field `idBookletPicture`
+ * @method static ConditionField C_idBookletPicture() The Condition Field of: Field `idBookletPicture`
  * @property ?string organizationNameFa
  * @method static EntityFieldSignature F_organizationNameFa() The Signature of: Field `organizationNameFa`
  * @method static ConditionField C_organizationNameFa() The Condition Field of: Field `organizationNameFa`
@@ -142,6 +142,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property \Entities\Farm\Rate[] ratedFarms
  * @method static EntityFieldSignature F_ratedFarms() The Signature of: Field `ratedFarms`
  * @method static ConditionField C_ratedFarms() The Condition Field of: Field `ratedFarms`
+ * @property \Entities\Product\Rate[] ratedProducts
+ * @method static EntityFieldSignature F_ratedProducts() The Signature of: Field `ratedProducts`
+ * @method static ConditionField C_ratedProducts() The Condition Field of: Field `ratedProducts`
  */
 class User extends Entity
 {
@@ -235,8 +238,8 @@ class User extends Entity
                 new Image(['nullable' => true, 'unifier' => Mime::MIME_IMAGE_JPEG, 'maxSize' => 2 * Size::MB]),
                 null
             ),
-            'birthCertificatePicture' => new EntityFieldSignature(
-                static::class, 'birthCertificatePicture',
+            'idBookletPicture' => new EntityFieldSignature(
+                static::class, 'idBookletPicture',
                 new Image(['nullable' => true, 'unifier' => Mime::MIME_IMAGE_JPEG, 'maxSize' => 2 * Size::MB]),
                 null
             ),

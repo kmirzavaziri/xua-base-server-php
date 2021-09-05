@@ -16,10 +16,14 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_firstNameFa() The Signature of: Response Item `firstNameFa`
  * @property ?string firstNameEn
  * @method static MethodItemSignature R_firstNameEn() The Signature of: Response Item `firstNameEn`
+ * @property string titleFa
+ * @method static MethodItemSignature R_titleFa() The Signature of: Response Item `titleFa`
  * @property ?string lastNameFa
  * @method static MethodItemSignature R_lastNameFa() The Signature of: Response Item `lastNameFa`
  * @property ?string lastNameEn
  * @method static MethodItemSignature R_lastNameEn() The Signature of: Response Item `lastNameEn`
+ * @property string titleEn
+ * @method static MethodItemSignature R_titleEn() The Signature of: Response Item `titleEn`
  * @property ?string nationalCode
  * @method static MethodItemSignature R_nationalCode() The Signature of: Response Item `nationalCode`
  * @property ?string gender
@@ -36,8 +40,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_profilePicture() The Signature of: Response Item `profilePicture`
  * @property ?\Services\XUA\FileInstance nationalCardPicture
  * @method static MethodItemSignature R_nationalCardPicture() The Signature of: Response Item `nationalCardPicture`
- * @property ?\Services\XUA\FileInstance birthCertificatePicture
- * @method static MethodItemSignature R_birthCertificatePicture() The Signature of: Response Item `birthCertificatePicture`
+ * @property ?\Services\XUA\FileInstance idBookletPicture
+ * @method static MethodItemSignature R_idBookletPicture() The Signature of: Response Item `idBookletPicture`
  * @property ?string organizationNameFa
  * @method static MethodItemSignature R_organizationNameFa() The Signature of: Response Item `organizationNameFa`
  * @property ?string organizationNameEn
@@ -74,10 +78,14 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_referralDetails() The Signature of: Response Item `referralDetails`
  * @property bool verified
  * @method static MethodItemSignature R_verified() The Signature of: Response Item `verified`
- * @property \Entities\User\Session[] sessions
- * @method static MethodItemSignature R_sessions() The Signature of: Response Item `sessions`
  * @property bool admin
  * @method static MethodItemSignature R_admin() The Signature of: Response Item `admin`
+ * @property array farms
+ * @method static MethodItemSignature R_farms() The Signature of: Response Item `farms`
+ * @property array ratedFarms
+ * @method static MethodItemSignature R_ratedFarms() The Signature of: Response Item `ratedFarms`
+ * @property array ratedProducts
+ * @method static MethodItemSignature R_ratedProducts() The Signature of: Response Item `ratedProducts`
  */
 class GetOne extends GetOneByIdAdmin
 {
