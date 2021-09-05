@@ -6,7 +6,6 @@ use Entities\Farm;
 use Entities\User;
 use Methods\Abstraction\GetManyPagerAdmin;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
-use XUA\Tools\Entity\EntityInstantField;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
@@ -33,7 +32,7 @@ class GetMany extends GetManyPagerAdmin
             Farm::F_rate(),
             Farm::F_status(),
             Farm::F_averageAnnualInterest(),
-            (new EntityFieldSignatureTree(Farm::F_owner()))->addChild(User::F_titleFa()),
+            (new EntityFieldSignatureTree(Farm::F_agent()))->addChild(User::F_titleFa()),
         ]);
     }
 }

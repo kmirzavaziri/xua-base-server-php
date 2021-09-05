@@ -32,7 +32,7 @@ class GetOne extends GetOneById
             Farm::F_description(),
             Farm::F_story(),
             Farm::F_rate(),
-            (new EntityFieldSignatureTree(Farm::F_owner()))->addChildren([
+            (new EntityFieldSignatureTree(Farm::F_agent()))->addChildren([
                 User::F_id(),
                 User::F_titleFa(),
                 User::F_profilePicture(),

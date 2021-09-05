@@ -356,7 +356,7 @@ class User extends Entity
                 new EntityRelation([
                     'relatedEntity' => \Entities\Farm::class,
                     'relation' => 'IN',
-                    'invName' => 'owner',
+                    'invName' => 'agent',
                     'nullable' => false,
                     'invNullable' => false,
                     'definedOn' => 'there',

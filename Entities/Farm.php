@@ -58,9 +58,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string image
  * @method static EntityFieldSignature F_image() The Signature of: Field `image`
  * @method static ConditionField C_image() The Condition Field of: Field `image`
- * @property \Entities\User owner
- * @method static EntityFieldSignature F_owner() The Signature of: Field `owner`
- * @method static ConditionField C_owner() The Condition Field of: Field `owner`
+ * @property \Entities\User agent
+ * @method static EntityFieldSignature F_agent() The Signature of: Field `agent`
+ * @method static ConditionField C_agent() The Condition Field of: Field `agent`
+ * @property string agentType
+ * @method static EntityFieldSignature F_agentType() The Signature of: Field `agentType`
+ * @method static ConditionField C_agentType() The Condition Field of: Field `agentType`
  * @property \Entities\Product[] products
  * @method static EntityFieldSignature F_products() The Signature of: Field `products`
  * @method static ConditionField C_products() The Condition Field of: Field `products`
@@ -181,8 +184,8 @@ class Farm extends Entity
                 ]),
                 null
             ),
-            'owner' => new EntityFieldSignature(
-                static::class, 'owner',
+            'agent' => new EntityFieldSignature(
+                static::class, 'agent',
                 new EntityRelation([
                     'relatedEntity' => User::class,
                     'relation' => 'NI',
@@ -191,6 +194,12 @@ class Farm extends Entity
                     'invNullable' => false,
                     'definedOn' => 'here',
                 ]),
+                null
+            ),
+            'agentType' => new EntityFieldSignature(
+                static::class, 'agentType' .
+                '',
+                new Enum(['nullable' => false, 'values' => ['owner', 'attorney']]),
                 null
             ),
             'products' => new EntityFieldSignature(

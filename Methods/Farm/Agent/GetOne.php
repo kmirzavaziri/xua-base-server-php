@@ -1,17 +1,12 @@
 <?php
 
-namespace Methods\Farm\Owner;
+namespace Methods\Farm\Agent;
 
 use Entities\Farm;
-use Entities\Farm\Field;
-use Entities\Farm\FieldSignature;
-use Entities\Farm\Media;
-use Entities\Product;
 use Entities\User;
 use Methods\Abstraction\GetOneById;
 use Services\XUA\ExpressionService;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
-use XUA\Tools\Entity\EntityInstantField;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 

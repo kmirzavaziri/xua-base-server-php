@@ -6,8 +6,17 @@ use Entities\Farm;
 use Entities\User;
 use Methods\Abstraction\GetManyPager;
 use XUA\Tools\Entity\EntityFieldSignatureTree;
+use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
+/**
+ * @property int Q_pageSize
+ * @method static MethodItemSignature Q_pageSize() The Signature of: Request Item `pageSize`
+ * @property int Q_pageIndex
+ * @method static MethodItemSignature Q_pageIndex() The Signature of: Request Item `pageIndex`
+ * @property array result
+ * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
+ */
 class GetMany extends GetManyPager
 {
     protected static function entity(): string
@@ -21,7 +30,7 @@ class GetMany extends GetManyPager
             Farm::F_id(),
             Farm::F_image(),
             Farm::F_title(),
-            (new EntityFieldSignatureTree(Farm::F_owner()))->addChild(User::F_titleFa()),
+            (new EntityFieldSignatureTree(Farm::F_agent()))->addChild(User::F_titleFa()),
             Farm::F_averageAnnualInterest(),
             Farm::F_description(),
             Farm::F_story(),
