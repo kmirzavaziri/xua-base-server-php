@@ -80,13 +80,39 @@ class SetOne extends SetOneByIdAdmin
 
     protected static function fields(): array
     {
-        $fields = User::fieldSignatures();
-        unset($fields['id']);
-        unset($fields['profilePicture']);
-        unset($fields['nationalCardPicture']);
-        unset($fields['idBookletPicture']);
-        unset($fields['sessions']);
-        return VarqueMethodFieldSignature::fromList($fields, false, null, false);
+        return VarqueMethodFieldSignature::fromList([
+            User::F_id(),
+            User::F_firstNameFa(),
+            User::F_firstNameEn(),
+            User::F_lastNameFa(),
+            User::F_lastNameEn(),
+            User::F_nationalCode(),
+            User::F_gender(),
+            User::F_birthDate(),
+            User::F_nationality(),
+            User::F_education(),
+            User::F_job(),
+            User::F_organizationNameFa(),
+            User::F_organizationNameEn(),
+            User::F_organizationNationalId(),
+            User::F_organizationRegistrationId(),
+            User::F_cellphoneNumber(),
+            User::F_email(),
+            User::F_address(),
+            User::F_geolocationLat(),
+            User::F_geolocationLong(),
+            User::F_postalCode(),
+            User::F_landlinePhoneNumber(),
+            User::F_faxNumber(),
+            User::F_website(),
+            User::F_personType(),
+            User::F_iban(),
+            User::F_referralMethod(),
+            User::F_referralDetails(),
+            User::F_verified(),
+            User::F_admin(),
+        ]);
+
     }
 
     protected function validations(): void

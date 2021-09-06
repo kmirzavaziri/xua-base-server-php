@@ -62,6 +62,8 @@ class GetNatural extends MethodView
             User::F_postalCode(),
             User::F_landlinePhoneNumber(),
             User::F_iban(),
+            User::F_bankAccountNo(),
+            User::F_bankTitle(),
             User::F_nationality(),
             User::F_birthDate(),
             User::F_gender(),

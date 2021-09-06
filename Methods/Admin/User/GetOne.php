@@ -2,16 +2,17 @@
 
 namespace Methods\Admin\User;
 
+use Entities\Farm;
+use Entities\Product;
 use Entities\User;
 use Methods\Abstraction\GetOneByIdAdmin;
+use XUA\Tools\Entity\EntityFieldSignatureTree;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
 /**
  * @property int Q_id
  * @method static MethodItemSignature Q_id() The Signature of: Request Item `id`
- * @property int id
- * @method static MethodItemSignature R_id() The Signature of: Response Item `id`
  * @property ?string firstNameFa
  * @method static MethodItemSignature R_firstNameFa() The Signature of: Response Item `firstNameFa`
  * @property ?string firstNameEn
@@ -72,6 +73,10 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_personType() The Signature of: Response Item `personType`
  * @property ?string iban
  * @method static MethodItemSignature R_iban() The Signature of: Response Item `iban`
+ * @property ?string bankAccountNo
+ * @method static MethodItemSignature R_bankAccountNo() The Signature of: Response Item `bankAccountNo`
+ * @property ?string bankTitle
+ * @method static MethodItemSignature R_bankTitle() The Signature of: Response Item `bankTitle`
  * @property ?string referralMethod
  * @method static MethodItemSignature R_referralMethod() The Signature of: Response Item `referralMethod`
  * @property ?string referralDetails
@@ -96,8 +101,59 @@ class GetOne extends GetOneByIdAdmin
 
     protected static function fields(): array
     {
-        $fields = User::fieldSignatures();
-        unset($fields['sessions']);
-        return VarqueMethodFieldSignature::fromList($fields);
+        return VarqueMethodFieldSignature::fromList([
+            User::F_firstNameFa(),
+            User::F_firstNameEn(),
+            User::F_titleFa(),
+            User::F_lastNameFa(),
+            User::F_lastNameEn(),
+            User::F_titleEn(),
+            User::F_nationalCode(),
+            User::F_gender(),
+            User::F_birthDate(),
+            User::F_nationality(),
+            User::F_education(),
+            User::F_job(),
+            User::F_profilePicture(),
+            User::F_nationalCardPicture(),
+            User::F_idBookletPicture(),
+            User::F_organizationNameFa(),
+            User::F_organizationNameEn(),
+            User::F_organizationNationalId(),
+            User::F_organizationRegistrationId(),
+            User::F_cellphoneNumber(),
+            User::F_email(),
+            User::F_address(),
+            User::F_geolocationLat(),
+            User::F_geolocationLong(),
+            User::F_postalCode(),
+            User::F_landlinePhoneNumber(),
+            User::F_faxNumber(),
+            User::F_website(),
+            User::F_personType(),
+            User::F_iban(),
+            User::F_bankAccountNo(),
+            User::F_bankTitle(),
+            User::F_referralMethod(),
+            User::F_referralDetails(),
+            User::F_verified(),
+            User::F_admin(),
+            (new EntityFieldSignatureTree(User::F_farms()))->addChildren([
+                Farm::F_id(),
+                Farm::F_title(),
+            ]),
+            (new EntityFieldSignatureTree(User::F_ratedFarms()))->addChild(
+                (new EntityFieldSignatureTree(\Entities\Farm\Rate::F_farm()))->addChildren([
+                    Farm::F_id(),
+                    Farm::F_title(),
+                ])
+            ),
+            (new EntityFieldSignatureTree(User::F_ratedProducts()))->addChild(
+                (new EntityFieldSignatureTree(\Entities\Product\Rate::F_product()))->addChildren([
+                    Product::F_id(),
+                    Product::F_title(),
+                ])
+            ),
+        ]);
     }
 }

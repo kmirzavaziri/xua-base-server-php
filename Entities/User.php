@@ -3,6 +3,7 @@
 namespace Entities;
 
 use Entities\User\Session;
+use Services\Dataset\IranBankService;
 use Services\Mime;
 use Services\Size;
 use Services\XUA\LocaleLanguage;
@@ -121,6 +122,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string iban
  * @method static EntityFieldSignature F_iban() The Signature of: Field `iban`
  * @method static ConditionField C_iban() The Condition Field of: Field `iban`
+ * @property ?string bankAccountNo
+ * @method static EntityFieldSignature F_bankAccountNo() The Signature of: Field `bankAccountNo`
+ * @method static ConditionField C_bankAccountNo() The Condition Field of: Field `bankAccountNo`
+ * @property ?string bankTitle
+ * @method static EntityFieldSignature F_bankTitle() The Signature of: Field `bankTitle`
+ * @method static ConditionField C_bankTitle() The Condition Field of: Field `bankTitle`
  * @property ?string referralMethod
  * @method static EntityFieldSignature F_referralMethod() The Signature of: Field `referralMethod`
  * @method static ConditionField C_referralMethod() The Condition Field of: Field `referralMethod`
@@ -319,6 +326,24 @@ class User extends Entity
             'iban' => new EntityFieldSignature(
                 static::class, 'iban',
                 new Iban(['nullable' => true]),
+                null
+            ),
+            'bankAccountNo' => new EntityFieldSignature(
+                static::class, 'bankAccountNo',
+                new PhpVirtualField([
+                    'getter' => function (User $user): ?string {
+                        return IranBankService::getBankAccountNoFromIban($user->iban);
+                    }
+                ]),
+                null
+            ),
+            'bankTitle' => new EntityFieldSignature(
+                static::class, 'bankTitle',
+                new PhpVirtualField([
+                    'getter' => function (User $user): ?string {
+                        return IranBankService::getBankFromIban($user->iban)[IranBankService::BANK_FIELD_TITLE];
+                    }
+                ]),
                 null
             ),
             'referralMethod' => new EntityFieldSignature(
