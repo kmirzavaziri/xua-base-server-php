@@ -48,6 +48,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string lastNameEn
  * @method static EntityFieldSignature F_lastNameEn() The Signature of: Field `lastNameEn`
  * @method static ConditionField C_lastNameEn() The Condition Field of: Field `lastNameEn`
+ * @property ?string bio
+ * @method static EntityFieldSignature F_bio() The Signature of: Field `bio`
+ * @method static ConditionField C_bio() The Condition Field of: Field `bio`
  * @property string titleEn
  * @method static EntityFieldSignature F_titleEn() The Signature of: Field `titleEn`
  * @method static ConditionField C_titleEn() The Condition Field of: Field `titleEn`
@@ -190,6 +193,11 @@ class User extends Entity
             'lastNameEn' => new EntityFieldSignature(
                 static::class, 'lastNameEn',
                 new Name(['nullable' => true, 'minLength' => 1, 'maxLength' => 200, 'language' => LocaleLanguage::LANG_EN]),
+                null
+            ),
+            'bio' => new EntityFieldSignature(
+                static::class, 'bio',
+                new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 1000]),
                 null
             ),
             'titleEn' => new EntityFieldSignature(

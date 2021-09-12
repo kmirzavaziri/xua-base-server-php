@@ -22,6 +22,8 @@ use XUA\VARQUE\MethodView;
  * @method static MethodItemSignature R_cellphoneNumber() The Signature of: Response Item `cellphoneNumber`
  * @property ?string email
  * @method static MethodItemSignature R_email() The Signature of: Response Item `email`
+ * @property ?string bio
+ * @method static MethodItemSignature R_bio() The Signature of: Response Item `bio`
  */
 class GetBasics extends MethodView
 {
@@ -39,6 +41,7 @@ class GetBasics extends MethodView
             User::F_nationalCode(),
             User::F_cellphoneNumber(),
             User::F_email(),
+            User::F_bio(),
         ]);
     }
 

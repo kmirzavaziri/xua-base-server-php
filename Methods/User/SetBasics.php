@@ -21,6 +21,8 @@ use XUA\VARQUE\MethodAdjust;
  * @method static MethodItemSignature Q_cellphoneNumber() The Signature of: Request Item `cellphoneNumber`
  * @property ?string Q_email
  * @method static MethodItemSignature Q_email() The Signature of: Request Item `email`
+ * @property ?string Q_bio
+ * @method static MethodItemSignature Q_bio() The Signature of: Request Item `bio`
  */
 class SetBasics extends MethodAdjust
 {
@@ -37,6 +39,7 @@ class SetBasics extends MethodAdjust
             User::F_nationalCode(),
             User::F_cellphoneNumber(),
             User::F_email(),
+            User::F_bio(),
         ], false, null, false);
     }
 
