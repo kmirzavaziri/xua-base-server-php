@@ -45,7 +45,6 @@ class SendVerificationCode extends Method
         } catch (Exception $e) {
             $this->addAndThrowError('emailOrPhone', $e->getMessage());
         }
-        var_dump($emailOrPhone);
         if (!$user->id) {
             if ($isEmail) {
                 $user->email = $emailOrPhone;

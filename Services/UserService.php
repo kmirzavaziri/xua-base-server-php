@@ -132,7 +132,6 @@ abstract class UserService extends Service
         $cellphoneType = new IranPhone(['type' => 'cellphone']);
         $EmailType = new Email([]);
         $isEmail = false;
-        $condition = Condition::falseLeaf();
         if ($cellphoneType->accepts($emailOrPhone)) {
             $condition = Condition::leaf(User::C_cellphoneNumber(), Condition::EQ, $emailOrPhone);
         } elseif ($EmailType->accepts($emailOrPhone)) {
