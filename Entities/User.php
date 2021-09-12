@@ -438,7 +438,7 @@ class User extends Entity
                     'invNullable' => false,
                     'definedOn' => 'there',
                 ]),
-                null
+                []
             ),
         ]);
     }
