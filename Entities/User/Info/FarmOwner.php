@@ -6,8 +6,29 @@ use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\IranPhone;
 use XUA\Entity;
+use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
 
+/**
+ * @property int id
+ * @method static EntityFieldSignature F_id() The Signature of: Field `id`
+ * @method static ConditionField C_id() The Condition Field of: Field `id`
+ * @property \Entities\User user
+ * @method static EntityFieldSignature F_user() The Signature of: Field `user`
+ * @method static ConditionField C_user() The Condition Field of: Field `user`
+ * @property ?string bankAccountType
+ * @method static EntityFieldSignature F_bankAccountType() The Signature of: Field `bankAccountType`
+ * @method static ConditionField C_bankAccountType() The Condition Field of: Field `bankAccountType`
+ * @property string emergencyPhoneNumber
+ * @method static EntityFieldSignature F_emergencyPhoneNumber() The Signature of: Field `emergencyPhoneNumber`
+ * @method static ConditionField C_emergencyPhoneNumber() The Condition Field of: Field `emergencyPhoneNumber`
+ * @property ?string skills
+ * @method static EntityFieldSignature F_skills() The Signature of: Field `skills`
+ * @method static ConditionField C_skills() The Condition Field of: Field `skills`
+ * @property ?string experiences
+ * @method static EntityFieldSignature F_experiences() The Signature of: Field `experiences`
+ * @method static ConditionField C_experiences() The Condition Field of: Field `experiences`
+ */
 class FarmOwner extends Entity
 {
     protected static function _fieldSignatures(): array
