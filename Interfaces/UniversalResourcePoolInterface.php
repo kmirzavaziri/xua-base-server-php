@@ -20,7 +20,6 @@ class UniversalResourcePoolInterface extends InterfaceEve
 {
     public static function execute(): string
     {
-        // Allow from any origin
         if (isset($_SERVER['HTTP_ORIGIN'])) {
             // Decide if the origin in $_SERVER['HTTP_ORIGIN'] is one
             // you want to allow, and if so:
