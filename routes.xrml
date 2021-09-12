@@ -1,5 +1,5 @@
-: GET(HomeInterface) POST(UniversalResourcePoolInterface)
-{methodOrEntityPath|SA}: POST(UniversalResourcePoolInterface)
+: GET(HomeInterface) POST(UniversalResourcePoolInterface) OPTIONS(UniversalResourcePoolOptionsInterface)
+{methodOrEntityPath|SA}: POST(UniversalResourcePoolInterface) OPTIONS(UniversalResourcePoolOptionsInterface)
 test: TestInterface
 404: XUA\NotFoundInterface
 cart:

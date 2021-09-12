@@ -14,8 +14,10 @@ final class RouteService extends Service
 {
     const TAB_LEN = 2;
     const METHODS = [
+        'OPTIONS',
         'GET',
         'POST',
+        'PATCH',
         'PUT',
         'DELETE',
     ];
