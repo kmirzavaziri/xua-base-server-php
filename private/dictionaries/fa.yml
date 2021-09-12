@@ -8,6 +8,7 @@ errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
 errormessage.url.format.is.not.valid: فرمت آدرس وبسایت صحیح نیست.
 errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.
 errormessage.landline.format.is.not.valid: فرمت شماره تلفن ثابت صحیح نیست.
+errormessage.both.format.is.not.valid: فرمت شماره تلفن صحیح نیست.
 errormessage.not.implemented.yet: هنوز پیاده‌سازی نشده.
 errormessage.email.or.cellphone.is.not.valid: فرمت ایمیل یا شماره تلفن همراه صحیح نیست.
 errormessage.wait.seconds.to.send.verification.code: برای ارسال کد تأییدیه، $seconds ثانیه دیگر درخواست دهید.

@@ -2,6 +2,7 @@
 
 namespace Entities;
 
+use Entities\User\Info\FarmOwner;
 use Entities\User\Session;
 use Services\Dataset\IranBankService;
 use Services\Mime;
@@ -134,6 +135,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?string referralDetails
  * @method static EntityFieldSignature F_referralDetails() The Signature of: Field `referralDetails`
  * @method static ConditionField C_referralDetails() The Condition Field of: Field `referralDetails`
+ * @property ?\Entities\User\Info\FarmOwner infoFarmOwner
+ * @method static EntityFieldSignature F_infoFarmOwner() The Signature of: Field `infoFarmOwner`
+ * @method static ConditionField C_infoFarmOwner() The Condition Field of: Field `infoFarmOwner`
  * @property bool verified
  * @method static EntityFieldSignature F_verified() The Signature of: Field `verified`
  * @method static ConditionField C_verified() The Condition Field of: Field `verified`
@@ -354,6 +358,19 @@ class User extends Entity
             'referralDetails' => new EntityFieldSignature(
                 static::class, 'referralDetails',
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 200]),
+                null
+            ),
+            # Extra Information
+            'infoFarmOwner' => new EntityFieldSignature(
+                static::class, 'infoFarmOwner',
+                new EntityRelation([
+                    'relatedEntity' => FarmOwner::class,
+                    'relation' => 'II',
+                    'invName' => 'user',
+                    'nullable' => true,
+                    'invNullable' => false,
+                    'definedOn' => 'here',
+                ]),
                 null
             ),
             # Security Information
