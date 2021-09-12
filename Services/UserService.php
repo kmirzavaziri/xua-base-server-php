@@ -4,6 +4,7 @@ namespace Services;
 
 use Entities\User;
 use Entities\User\Session;
+use Exception;
 use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
 use Services\XUA\ExpressionService;
@@ -137,6 +138,8 @@ abstract class UserService extends Service
         } elseif ($EmailType->accepts($emailOrPhone)) {
             $condition = Condition::leaf(User::C_email(), Condition::EQ, $emailOrPhone);
             $isEmail = true;
+        } else {
+            throw new Exception(ExpressionService::get('errormessage.email.or.cellphone.is.not.valid'));
         }
         return User::getOne($condition);
     }

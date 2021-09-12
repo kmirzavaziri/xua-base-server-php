@@ -4,6 +4,7 @@ namespace Methods\User\Access;
 
 use Entities\User;
 use Entities\User\Session;
+use Exception;
 use Services\EmailService;
 use Services\EmailUser;
 use Services\SmsService;
@@ -39,7 +40,12 @@ class SendVerificationCode extends Method
     protected function body(): void
     {
         $emailOrPhone = $this->Q_emailOrPhone;
-        $user = UserService::getUserByEmailOrPhone($emailOrPhone, $isEmail);
+        try {
+            $user = UserService::getUserByEmailOrPhone($emailOrPhone, $isEmail);
+        } catch (Exception $e) {
+            $this->addAndThrowError('emailOrPhone', $e->getMessage());
+        }
+        var_dump($emailOrPhone);
         if (!$user->id) {
             if ($isEmail) {
                 $user->email = $emailOrPhone;

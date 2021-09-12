@@ -4,6 +4,7 @@ namespace Methods\User\Access;
 
 use Entities\User;
 use Entities\User\Session;
+use Exception;
 use Services\UserService;
 use Services\XUA\ConstantService;
 use Services\XUA\DateTimeInstance;
@@ -41,7 +42,11 @@ class GetAccessToken extends Method
     protected function body(): void
     {
         $emailOrPhone = $this->Q_emailOrPhone;
-        $user = UserService::getUserByEmailOrPhone($emailOrPhone, $isEmail);
+        try {
+            $user = UserService::getUserByEmailOrPhone($emailOrPhone, $isEmail);
+        } catch (Exception $e) {
+            $this->addAndThrowError('emailOrPhone', $e->getMessage());
+        }
         if (!$user->id) {
             $this->addAndThrowError('emailOrPhone', ExpressionService::get('errormessage.email.or.cellphone.is.not.valid'));
         }
