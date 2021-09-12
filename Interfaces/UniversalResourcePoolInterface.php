@@ -21,8 +21,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
     public static function execute(): string
     {
         if (isset($_SERVER['HTTP_ORIGIN'])) {
-            // Decide if the origin in $_SERVER['HTTP_ORIGIN'] is one
-            // you want to allow, and if so:
+            // @TODO only allow localhost for $_SERVER['HTTP_ORIGIN']
             header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Max-Age: 86400');
@@ -59,7 +58,6 @@ class UniversalResourcePoolInterface extends InterfaceEve
                             if (is_a($e, MethodRequestException::class)) {
                                 $response['errors'] = $e->getErrors();
                             } else {
-                                http_response_code(500);
                                 if (Credentials::developer()) {
                                     throw $e;
                                 } else {
