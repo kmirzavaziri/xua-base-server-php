@@ -24,6 +24,7 @@ class GetAll extends MethodQuery
     protected static function fields(): array
     {
         return VarqueMethodFieldSignature::fromList([
+            Session::F_id(),
             Session::F_lastOnline(),
             Session::F_ip(),
             Session::F_location(),
