@@ -11,6 +11,7 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 abstract class Super extends XUA
 {
     # Constants
+    const METHOD_IDENTITY = 'identity';
     const METHOD_UNMARSHAL = 'unmarshal';
     const METHOD_UNMARSHAL_DATABASE = 'unmarshalDatabase';
 
@@ -236,27 +237,20 @@ abstract class Super extends XUA
         return $result;
     }
 
-    final public function implicitlyAccepts($input, array &$messages = null, array $tryMethods = [self::METHOD_UNMARSHAL, self::METHOD_UNMARSHAL_DATABASE]) : bool
+    final public function implicitlyAccepts($input, array &$messages = null, array $tryMethods = [self::METHOD_IDENTITY, self::METHOD_UNMARSHAL, self::METHOD_UNMARSHAL_DATABASE]) : bool
     {
         # This way we do not change the real value of $input
         return $this->accepts($input, $messages, $tryMethods);
     }
 
-    final public function accepts(&$input, array &$messages = null, array $tryMethods = [self::METHOD_UNMARSHAL, self::METHOD_UNMARSHAL_DATABASE]) : bool
+    final public function accepts(&$input, array &$messages = null, array $tryMethods = [self::METHOD_IDENTITY, self::METHOD_UNMARSHAL, self::METHOD_UNMARSHAL_DATABASE]) : bool
     {
-        $messages = ['identity' => null];
         foreach ($tryMethods as $tryMethod) {
             $messages[$tryMethod] = null;
         }
 
-        if ($this->predicate($input, $message)) {
-            return true;
-        } else {
-            $messages['identity'] = $message;
-        }
-
         foreach ($tryMethods as $tryMethod) {
-            $tmp = $this->$tryMethod($input);
+            $tmp = $tryMethod == self::METHOD_IDENTITY ? $input : $this->$tryMethod($input);
             if ($this->predicate($tmp, $message)) {
                 $input = $tmp;
                 return true;
