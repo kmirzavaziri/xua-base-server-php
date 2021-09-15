@@ -7,6 +7,7 @@ use Services\Size;
 use Services\XUA\ConstantService;
 use Services\XUA\ExpressionService;
 use Services\XUA\FileInstance;
+use Services\XUA\FileInstanceSame;
 use Supers\Basics\Boolean;
 use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\Integer;
@@ -42,6 +43,10 @@ class Generic extends Super
             return true;
         }
 
+        if (!is_a($input, FileInstanceSame::class)) {
+            return true;
+        }
+
         if (!is_a($input, FileInstance::class)) {
             $message = ExpressionService::get('errormessage.invalid.file');
             return false;
@@ -71,6 +76,9 @@ class Generic extends Super
     {
         if (!is_string($input)) {
             return $input;
+        }
+        if ($input == 'same') {
+            return new FileInstanceSame();
         }
         if (isset($_FILES[$input]) and !$_FILES[$input]['error']) {
             return new FileInstance($_FILES[$input]['tmp_name'],  pathinfo($_FILES[$input]['name'], PATHINFO_EXTENSION), false);

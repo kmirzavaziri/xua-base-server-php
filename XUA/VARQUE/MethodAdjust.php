@@ -2,6 +2,9 @@
 
 namespace XUA\VARQUE;
 
+use Services\XUA\ConstantService;
+use Services\XUA\FileInstanceSame;
+use Supers\Basics\Files\Generic;
 use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
 use XUA\MethodEve;
@@ -33,7 +36,17 @@ abstract class MethodAdjust extends MethodEve
         foreach ($fields as $field) {
             try {
                 if ($field->root->name() != 'id') {
-                    $feed->{$field->root->name()} = $field->root->valueFromRequest($this->{'Q_' . $field->root->name()});
+                    if (!is_a($field->root->type(), Generic::class)) {
+                        $feed->{$field->root->name()} = $field->root->valueFromRequest($this->{'Q_' . $field->root->name()});
+                    } else {
+                        if (!is_a($this->{'Q_' . $field->root->name()}, FileInstanceSame::class)) {
+                            if ($feed->{$field->root->name()} and file_exists($feed->{$field->root->name()}->path)) {
+                                unlink($feed->{$field->root->name()}->path);
+                            }
+                            $this->{'Q_' . $field->root->name()}?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . static::entity()::table() . DIRECTORY_SEPARATOR . $feed->id);
+                            $feed->{$field->root->name()} = $this->{'Q_' . $field->root->name()};
+                        }
+                    }
                 }
             } catch (EntityFieldException $e) {
                 $this->error->fromException($e);

@@ -11,6 +11,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\VARQUE\MethodAdjust;
 
 /**
+ * @property ?\Services\XUA\FileInstance Q_profilePicture
+ * @method static MethodItemSignature Q_profilePicture() The Signature of: Request Item `profilePicture`
  * @property ?string Q_firstNameFa
  * @method static MethodItemSignature Q_firstNameFa() The Signature of: Request Item `firstNameFa`
  * @property ?string Q_lastNameFa
@@ -34,6 +36,7 @@ class SetBasics extends MethodAdjust
     protected static function fields(): array
     {
         return VarqueMethodFieldSignature::fromList([
+            User::F_profilePicture(),
             User::F_firstNameFa(),
             User::F_lastNameFa(),
             User::F_nationalCode(),

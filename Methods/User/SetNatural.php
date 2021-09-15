@@ -40,6 +40,10 @@ use XUA\VARQUE\MethodAdjust;
  * @method static MethodItemSignature Q_job() The Signature of: Request Item `job`
  * @property ?string Q_website
  * @method static MethodItemSignature Q_website() The Signature of: Request Item `website`
+ * @property ?\Services\XUA\FileInstance Q_nationalCardPicture
+ * @method static MethodItemSignature Q_nationalCardPicture() The Signature of: Request Item `nationalCardPicture`
+ * @property ?\Services\XUA\FileInstance Q_idBookletPicture
+ * @method static MethodItemSignature Q_idBookletPicture() The Signature of: Request Item `idBookletPicture`
  */
 class SetNatural extends MethodAdjust
 {
@@ -65,6 +69,8 @@ class SetNatural extends MethodAdjust
             User::F_education(),
             User::F_job(),
             User::F_website(),
+            User::F_nationalCardPicture(),
+            User::F_idBookletPicture(),
         ], false, null, false);
     }
 
@@ -92,6 +98,9 @@ class SetNatural extends MethodAdjust
             $this->addAndThrowError('geolocationLong', $errorMessage);
         }
         if ($this->Q_postalCode === null) {
+            $this->addAndThrowError('postalCode', $errorMessage);
+        }
+        if ($this->Q_idBookletPicture === null) {
             $this->addAndThrowError('postalCode', $errorMessage);
         }
     }
