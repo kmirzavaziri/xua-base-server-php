@@ -28,6 +28,7 @@ abstract class JsonService extends Service
         }
         return $input;
     }
+
     public static function unmarshalItems(?array $input, Super $type): ?array
     {
         if ($input === null) {
