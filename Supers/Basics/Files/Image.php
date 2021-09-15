@@ -7,6 +7,7 @@ namespace Supers\Basics\Files;
 use Services\Mime;
 use Services\XUA\ExpressionService;
 use Services\XUA\FileInstance;
+use Services\XUA\FileInstanceSame;
 use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Enum;
@@ -58,7 +59,11 @@ class Image extends Generic
             return false;
         }
 
-        if ($input === null) {
+        if ($this->nullable and $input === null) {
+            return true;
+        }
+
+        if (!is_a($input, FileInstanceSame::class)) {
             return true;
         }
 
