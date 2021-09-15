@@ -63,7 +63,7 @@ class Image extends Generic
             return true;
         }
 
-        if (!is_a($input, FileInstanceSame::class)) {
+        if (is_a($input, FileInstanceSame::class)) {
             return true;
         }
 
