@@ -100,7 +100,7 @@ class SetNatural extends MethodAdjust
         if ($this->Q_postalCode === null) {
             $this->addAndThrowError('postalCode', $errorMessage);
         }
-        if ($this->Q_idBookletPicture === null) {
+        if ($this->Q_nationalCardPicture === null) {
             $this->addAndThrowError('postalCode', $errorMessage);
         }
     }
