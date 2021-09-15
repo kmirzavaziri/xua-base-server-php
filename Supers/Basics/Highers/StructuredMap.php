@@ -4,6 +4,7 @@
 namespace Supers\Basics\Highers;
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Numerics\Integer;
 use Supers\Basics\Strings\Symbol;
 use XUA\Super;
@@ -54,7 +55,7 @@ class StructuredMap extends Json
                     return false;
                 }
             } else {
-                $message = "Key '$key' is missing.";
+                $message = ExpressionService::get('errormessage.key.key.is.missing', ['key' => $key]);
                 return false;
             }
         }
