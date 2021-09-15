@@ -60,8 +60,5 @@ class SetJuridical extends MethodAdjust
         if ($this->Q_organizationRegistrationId === null) {
             $this->addAndThrowError('organizationRegistrationId', $errorMessage);
         }
-        if ($this->Q_faxNumber === null) {
-            $this->addAndThrowError('faxNumber', $errorMessage);
-        }
     }
 }
