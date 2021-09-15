@@ -9,6 +9,8 @@ errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $inpu
 errormessage.please.enter.a.valid.value.from.values: لطفا یکی از مقادیر مجاز ($values) را انتخاب کنید.
 comma.separator: "، "
 errormessage.key.key.is.missing: فیلد $key یافت نشد.
+errormessage.unknown.key.key: فیلد $key شناخته‌شده نیست.
+errormessage.unknown.keys.keys: فیلدهای $keys شناخته‌شده نیستند.
 errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
 errormessage.url.format.is.not.valid: فرمت آدرس وبسایت صحیح نیست.
 errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.

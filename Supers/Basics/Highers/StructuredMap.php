@@ -42,7 +42,15 @@ class StructuredMap extends Json
 
         $unknownKeys = array_diff(array_keys($input), array_keys($this->structure));
         if ($unknownKeys) {
-            $message = "Unknown keys " . implode(', ', $unknownKeys) . ".";
+            if (count($unknownKeys) == 1) {
+                $message = ExpressionService::get('errormessage.unknown.key.key', [
+                    'key' => implode('', $unknownKeys)
+                ]);
+            } else {
+                $message = ExpressionService::get('errormessage.unknown.keys.keys', [
+                    'keys' => implode(ExpressionService::get('comma.separator'), $unknownKeys)
+                ]);
+            }
             return false;
         }
 
