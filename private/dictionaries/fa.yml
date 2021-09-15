@@ -1,4 +1,6 @@
 hello.name: سلام $name!
+errormessage.invalid.request: پارامتر request معتبر نیست.
+errormessage.invalid.path: مسیر معتبر نیست.
 errormessage.unknown.request.item: چنین فیلدی وجود ندارد.
 errormessage.cannot.set.constant.request.item: امکان تغییر این فیلد وجود ندارد.
 errormessage.required.request.item.not.provided: این فیلد ضروری است.

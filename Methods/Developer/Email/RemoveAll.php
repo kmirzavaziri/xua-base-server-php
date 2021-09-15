@@ -4,6 +4,7 @@ namespace Methods\Developer\Email;
 
 use Services\JsonLogService;
 use Services\UserService;
+use Services\XUA\Dev\Credentials;
 use XUA\Method;
 
 class RemoveAll extends Method
@@ -15,6 +16,6 @@ class RemoveAll extends Method
 
     protected function validations(): void
     {
-        UserService::verifyAdmin($this->error);
+        Credentials::verifyDeveloper($this->error);
     }
 }

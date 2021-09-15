@@ -4,6 +4,7 @@ namespace Methods\Developer\Email;
 
 use Services\JsonLogService;
 use Services\UserService;
+use Services\XUA\Dev\Credentials;
 use Supers\Basics\Highers\Map;
 use Supers\Basics\Highers\Sequence;
 use XUA\Method;
@@ -29,6 +30,6 @@ class GetAll extends Method
 
     protected function validations(): void
     {
-        UserService::verifyAdmin($this->error);
+        Credentials::verifyDeveloper($this->error);
     }
 }

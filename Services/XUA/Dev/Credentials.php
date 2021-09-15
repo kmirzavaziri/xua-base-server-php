@@ -5,7 +5,9 @@ namespace Services\XUA\Dev;
 
 
 use Exception;
+use Services\XUA\ExpressionService;
 use XUA\Exceptions\InstantiationException;
+use XUA\Exceptions\MethodRequestException;
 use XUA\Service;
 
 final class Credentials extends Service
@@ -41,4 +43,14 @@ final class Credentials extends Service
             }
         }
     }
+
+    public static function verifyDeveloper(MethodRequestException $error): string
+    {
+        $developer = self::$developer;
+        if (!$developer) {
+            throw ($error ?? new MethodRequestException())->setError('', ExpressionService::get('errormessage.access.denied'));
+        }
+        return $developer;
+    }
+
 }
