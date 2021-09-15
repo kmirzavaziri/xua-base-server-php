@@ -57,7 +57,7 @@ class FarmOwner extends Entity
                 null
             ),
             'skills' => new EntityFieldSignature(
-                static::class, 'skill',
+                static::class, 'skills',
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 1000]),
                 null
             ),
