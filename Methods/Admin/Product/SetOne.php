@@ -32,6 +32,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature Q_farm() The Signature of: Request Item `farm`
  * @property ?array Q_paymentPlan
  * @method static MethodItemSignature Q_paymentPlan() The Signature of: Request Item `paymentPlan`
+ * @property ?\Services\XUA\FileInstance Q_brochure
+ * @method static MethodItemSignature Q_brochure() The Signature of: Request Item `brochure`
  */
 class SetOne extends SetOneByIdAdmin
 {
@@ -57,6 +59,7 @@ class SetOne extends SetOneByIdAdmin
             Product::F_predictionsTable(),
             Product::F_farm(),
             Product::F_paymentPlan(),
+            Product::F_brochure(),
         ], false);
     }
 }
