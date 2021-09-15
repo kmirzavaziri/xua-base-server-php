@@ -2,6 +2,7 @@
 
 namespace Interfaces;
 
+use Exception;
 use Services\XUA\Dev\Credentials;
 use Services\XUA\ExpressionService;
 use Services\XUA\RouteService;
@@ -63,7 +64,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
                                     if ($unknownKeys) {
                                         $e = new MethodRequestException();
                                         foreach ($unknownKeys as $unknownKey) {
-                                            $e->setError($unknownKey, ExpressionService::get('errormessage.unknown.request.item'));
+                                            $e = new Exception("Unknown request item $unknownKey.", 0, $e);
                                         }
                                     }
                                 }
