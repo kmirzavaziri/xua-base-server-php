@@ -5,6 +5,7 @@ namespace Methods\User;
 use Entities\User;
 use Services\UserService;
 use Services\XUA\ExpressionService;
+use Services\XUA\FileInstanceSame;
 use XUA\Entity;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
@@ -100,7 +101,8 @@ class SetNatural extends MethodAdjust
         if ($this->Q_postalCode === null) {
             $this->addAndThrowError('postalCode', $errorMessage);
         }
-        if ($this->Q_nationalCardPicture === null) {
+        if ($this->Q_nationalCardPicture === null or
+            (is_a($this->Q_nationalCardPicture, FileInstanceSame::class) and UserService::user()->nationalCardPicture === null)) {
             $this->addAndThrowError('nationalCardPicture', $errorMessage);
         }
     }

@@ -77,7 +77,7 @@ class Generic extends Super
         if (!is_string($input)) {
             return $input;
         }
-        if ($input == 'same') {
+        if ($input == FileInstanceSame::SAME) {
             return new FileInstanceSame();
         }
         if (isset($_FILES[$input]) and !$_FILES[$input]['error']) {
