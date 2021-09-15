@@ -72,7 +72,7 @@ class SetNatural extends MethodAdjust
             User::F_website(),
             User::F_nationalCardPicture(),
             User::F_idBookletPicture(),
-        ], false, null, false);
+        ]);
     }
 
     protected function feed(): Entity

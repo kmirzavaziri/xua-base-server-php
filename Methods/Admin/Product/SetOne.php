@@ -60,6 +60,6 @@ class SetOne extends SetOneByIdAdmin
             Product::F_farm(),
             Product::F_paymentPlan(),
             Product::F_brochure(),
-        ], false);
+        ]);
     }
 }

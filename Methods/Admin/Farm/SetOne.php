@@ -72,6 +72,6 @@ class SetOne extends SetOneByIdAdmin
             Farm::F_geolocationLong(),
             Farm::F_cooperationField(),
             Farm::F_proposal(),
-        ], false);
+        ]);
     }
 }

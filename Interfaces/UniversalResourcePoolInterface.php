@@ -63,7 +63,7 @@ class UniversalResourcePoolInterface extends InterfaceEve
                                     if ($unknownKeys) {
                                         $e = new MethodRequestException();
                                         foreach ($unknownKeys as $unknownKey) {
-                                            $e->setError($unknownKey, 'Unknown request item.');
+                                            $e->setError($unknownKey, ExpressionService::get('errormessage.unknown.request.item'));
                                         }
                                     }
                                 }

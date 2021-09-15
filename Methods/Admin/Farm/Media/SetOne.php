@@ -29,7 +29,7 @@ class SetOne extends SetOneByIdAdmin
         return VarqueMethodFieldSignature::fromList([
             Media::F_farm(),
             Media::F_source(),
-        ], false, null, false);
+        ]);
     }
 
     protected function body(): void

@@ -37,7 +37,7 @@ class SetJuridical extends MethodAdjust
             User::F_organizationNationalId(),
             User::F_organizationRegistrationId(),
             User::F_faxNumber(),
-        ], false, null, false);
+        ]);
     }
 
     protected function feed(): Entity

@@ -34,6 +34,6 @@ class SetOne extends SetOneByIdAdmin
                 FieldSignature::F_type(),
                 FieldSignature::F_typeParams(),
             ]),
-        ], false);
+        ]);
     }
 }
