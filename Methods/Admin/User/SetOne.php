@@ -32,6 +32,12 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature Q_education() The Signature of: Request Item `education`
  * @property ?string Q_job
  * @method static MethodItemSignature Q_job() The Signature of: Request Item `job`
+ * @property ?\Services\XUA\FileInstance Q_profilePicture
+ * @method static MethodItemSignature Q_profilePicture() The Signature of: Request Item `profilePicture`
+ * @property ?\Services\XUA\FileInstance Q_nationalCardPicture
+ * @method static MethodItemSignature Q_nationalCardPicture() The Signature of: Request Item `nationalCardPicture`
+ * @property ?\Services\XUA\FileInstance Q_idBookletPicture
+ * @method static MethodItemSignature Q_idBookletPicture() The Signature of: Request Item `idBookletPicture`
  * @property ?string Q_organizationNameFa
  * @method static MethodItemSignature Q_organizationNameFa() The Signature of: Request Item `organizationNameFa`
  * @property ?string Q_organizationNameEn
@@ -92,6 +98,9 @@ class SetOne extends SetOneByIdAdmin
             User::F_nationality(),
             User::F_education(),
             User::F_job(),
+            User::F_profilePicture(),
+            User::F_nationalCardPicture(),
+            User::F_idBookletPicture(),
             User::F_organizationNameFa(),
             User::F_organizationNameEn(),
             User::F_organizationNationalId(),
