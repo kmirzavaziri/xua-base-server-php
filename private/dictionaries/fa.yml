@@ -6,6 +6,8 @@ errormessage.cannot.set.constant.request.item: امکان تغییر این فی
 errormessage.required.request.item.not.provided: این فیلد ضروری است.
 errormessage.value.input.is.not.an.integer: مقدار $input عددی صحیح نیست.
 errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $input کمتر از صفر است و لذا بی‌علامت نیست.
+errormessage.please.enter.a.valid.value.from.values: لطفا یکی از مقادیر مجاز ($values) را انتخاب کنید.
+comma.separator: "، "
 errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
 errormessage.url.format.is.not.valid: فرمت آدرس وبسایت صحیح نیست.
 errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.

@@ -4,6 +4,7 @@
 namespace Supers\Basics\Strings;
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\Integer;
 use XUA\Tools\Signature\SuperArgumentSignature;
@@ -40,7 +41,9 @@ class Enum extends Text
         }
 
         if (!in_array($input, $this->values)) {
-            $message = "Value '$input' is not a member of values (" . implode(', ', $this->values) . ").";
+            $message = ExpressionService::get('errormessage.please.enter.a.valid.value.from.values', [
+                'values' => implode(ExpressionService::get('comma.separator'), $this->values)
+            ]);
             return false;
         }
 

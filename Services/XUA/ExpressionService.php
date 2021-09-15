@@ -32,26 +32,11 @@ final class ExpressionService extends Service
 
     public static function get(string $key, array $bind = []): string
     {
-        return trim(preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return $bind[$matches[1]] ?? $matches[1]; }, (self::$dict[$key]) ?? $key));
+        return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return $bind[$matches[1]] ?? $matches[1]; }, (self::$dict[$key]) ?? $key);
     }
 
     private static function dictParse(string $filename) : array
     {
-        if (!($content = @file_get_contents($filename))) {
-            return [];
-        }
-
-        $lines = preg_split("/\r\n|\n|\r/", $content);
-
-        $result = [];
-        foreach ($lines as $line) {
-            $lineData = explode(':', $line);
-            if (count($lineData) != 2) {
-                continue;
-            }
-            $result[$lineData[0]] = $lineData[1];
-        }
-
-        return $result;
+        return @yaml_parse_file($filename);
     }
 }
