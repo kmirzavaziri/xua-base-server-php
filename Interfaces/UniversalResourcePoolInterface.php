@@ -62,9 +62,8 @@ class UniversalResourcePoolInterface extends InterfaceEve
                                 if (is_a($e, MethodRequestException::class)) {
                                     $unknownKeys = array_diff(array_keys($e->getErrors()), ['', ...array_keys($class::requestSignatures())]);
                                     if ($unknownKeys) {
-                                        $e = new MethodRequestException();
                                         foreach ($unknownKeys as $unknownKey) {
-                                            $e = new Exception("Unknown request item $unknownKey.", 0, $e);
+                                            trigger_error("Unknown request item $unknownKey.", E_USER_WARNING);
                                         }
                                     }
                                 }
