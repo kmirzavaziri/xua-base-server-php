@@ -217,7 +217,7 @@ final class TableScheme
         $dropTables = array_diff($oldTables, $newTables);
         $drops = [];
         foreach ($dropTables as $dropTable) {
-            $drops[] = "DROP TABLE $dropTable";
+            $drops[] = "DROP TABLE $dropTable;";
         }
         return implode(PHP_EOL . PHP_EOL, $drops);
     }
