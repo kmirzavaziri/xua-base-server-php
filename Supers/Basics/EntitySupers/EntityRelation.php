@@ -33,6 +33,16 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  */
 class EntityRelation extends Super
 {
+    const REL_O11O = 'O11O'; // one-to-one relation;   optional on both sides
+    const REL_O11R = 'O11R'; // one-to-one relation;   optional on left and required on right sides
+    const REL_R11O = 'R11O'; // one-to-one relation;   required on left and optional on right sides
+    const REL_R11R = 'R11R'; // one-to-one relation;   required on both sides
+    const REL_ON1R = 'ON1R'; // many-to-one relation;  optional on left and required on right sides
+    const REL_RN1R = 'RN1R'; // many-to-one relation;  required on both sides
+    const REL_R1NO = 'R1NO'; // one-to-many relation;  required on left and optional on right sides
+    const REL_R1NR = 'R1NR'; // one-to-many relation;  required on both sides
+    const REL_RNNR = 'RNNR'; // many-to-many relation; required on both sides
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
