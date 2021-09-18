@@ -66,7 +66,9 @@ class EntityFieldSignatureTree
             } else {
                 $type = $this->value->type->relatedEntity::F_id()->type;
             }
-            return $this->value->type->relation[1] == 'N' ? new Sequence(['type' => $type]) : $type;
+            $type =  $this->value->type->relation[1] == 'N' ? new Sequence(['type' => $type]) : $type;
+            $type->nullable = $this->value->type->nullable;
+            return $type;
         } else {
             return $this->value->type;
         }
@@ -115,8 +117,12 @@ class EntityFieldSignatureTree
     }
 
 
-    private function oneItemValueFromEntity(Entity $entity): array|int
+    private function oneItemValueFromEntity(Entity $entity): null|array|int
     {
+        if (!$entity->id) {
+            return null;
+        }
+
         if ($this->children) {
             $return = [];
             foreach ($this->children as $child) {

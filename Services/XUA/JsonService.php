@@ -23,7 +23,12 @@ abstract class JsonService extends Service
                 Sequence::class => $type->type,
             };
             if ($itemType) {
-                $input[$key] = is_a($itemType, Json::class) ? static::marshalItems((array)$value, $itemType) : $itemType->marshal($value);
+                $input[$key] = $value === null
+                ? null
+                : (is_a($itemType, Json::class)
+                    ? static::marshalItems((array)$value, $itemType)
+                    : $itemType->marshal($value)
+                );
             }
         }
         return $input;
