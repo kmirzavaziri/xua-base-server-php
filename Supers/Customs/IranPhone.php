@@ -41,9 +41,9 @@ class IranPhone extends Text
         $cellPhoneValidPrefixes = [
             '901', '902', '903', '904', '905', '930', '933', '935', '936', '937', '938', '939', '941', /* ایرانسل */
             '910', '911', '912', '913', '914', '915', '916', '917', '918', '919', /* همراه اول */
-            '920', '921', '931', '932', '934' /* سایر */
+            '920', '921', '931', '932', '934', '999' /* سایر */
         ];
-        $validCellphonePrefixesPattern = implode('|', $cellPhoneValidPrefixes);
+        $validCellphonePrefixesPattern = '(' . implode('|', $cellPhoneValidPrefixes) . ')';
 
         $landlineValidPrefixes = [
             '41', /* آذربایجان شرقی */      '44', /* آذربایجان غربی */ '45', /* اردبیل */
@@ -63,15 +63,15 @@ class IranPhone extends Text
         switch ($this->type) {
             case 'cellphone':
                 $message = ExpressionService::get('errormessage.cellphone.format.is.not.valid');
-                return preg_match('/^\+98(' . $validCellphonePrefixesPattern . ')[0-9]{7}$/', $input);
+                return preg_match('/^\+98' . $validCellphonePrefixesPattern . '[0-9]{7}$/', $input);
             case 'landline':
                 $message = ExpressionService::get('errormessage.landline.format.is.not.valid');
-                return preg_match('/^\+98(' . $validLandlinePrefixesPattern . ')[0-9]{7}$/', $input);
+                return preg_match('/^\+98' . $validLandlinePrefixesPattern . '[0-9]{7}$/', $input);
             case 'both':
                 $message = ExpressionService::get('errormessage.both.format.is.not.valid');
                 return
-                    preg_match('/^\+98(' . $validCellphonePrefixesPattern . ')[0-9]{7}$/', $input) or
-                    preg_match('/^\+98(' . $validLandlinePrefixesPattern . ')[0-9]{7}$/', $input);
+                    preg_match('/^\+98' . $validCellphonePrefixesPattern . '[0-9]{7}$/', $input) or
+                    preg_match('/^\+98' . $validLandlinePrefixesPattern . '[0-9]{7}$/', $input);
             default:
                 $message = ExpressionService::get('errormessage.not.implemented.yet');
                 return false;
