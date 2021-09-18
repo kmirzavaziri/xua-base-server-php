@@ -38,11 +38,9 @@ class Category extends Entity
                 static::class, 'additionalFields',
                 new EntityRelation([
                     'relatedEntity' => FieldSignature::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'category',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -50,11 +48,9 @@ class Category extends Entity
                 static::class, 'products',
                 new EntityRelation([
                     'relatedEntity' => Product::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'category',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

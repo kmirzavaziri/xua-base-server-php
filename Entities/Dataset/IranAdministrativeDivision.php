@@ -53,11 +53,9 @@ class IranAdministrativeDivision extends Entity
                 static::class, 'children',
                 new EntityRelation([
                     'relatedEntity' => IranAdministrativeDivision::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NO,
                     'invName' => 'parent',
-                    'nullable' => false,
-                    'invNullable' => true,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -65,11 +63,9 @@ class IranAdministrativeDivision extends Entity
                 static::class, 'parent',
                 new EntityRelation([
                     'relatedEntity' => IranAdministrativeDivision::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_ON1,
                     'invName' => 'children',
-                    'nullable' => true,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

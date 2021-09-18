@@ -32,11 +32,9 @@ class Media extends Entity
                 static::class, 'farm',
                 new EntityRelation([
                     'relatedEntity' => \Entities\Farm::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'gallery',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

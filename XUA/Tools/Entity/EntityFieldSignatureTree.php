@@ -66,7 +66,7 @@ class EntityFieldSignatureTree
             } else {
                 $type = $this->value->type->relatedEntity::F_id()->type;
             }
-            $type =  $this->value->type->relation[1] == 'N' ? new Sequence(['type' => $type]) : $type;
+            $type = $this->value->type->toMany ? new Sequence(['type' => $type]) : $type;
             $type->nullable = $this->value->type->nullable;
             return $type;
         } else {
@@ -77,7 +77,7 @@ class EntityFieldSignatureTree
     public function valueFromEntity(Entity $entity): mixed
     {
         if (is_a($this->value->type, EntityRelation::class)) {
-            if ($this->value->type->relation[1] == 'N') {
+            if ($this->value->type->toMany) {
                 $return = [];
                 foreach ($entity->{$this->name()} as $item) {
                     $return[] = $this->oneItemValueFromEntity($item);
@@ -94,7 +94,7 @@ class EntityFieldSignatureTree
     public function valueFromRequest(mixed $value): mixed
     {
         if (is_a($this->value->type, EntityRelation::class)) {
-            if ($this->value->type->relation[1] == 'N') {
+            if ($this->value->type->toMany) {
                 $return = [];
                 foreach ($value as $index => $item) {
                     try {

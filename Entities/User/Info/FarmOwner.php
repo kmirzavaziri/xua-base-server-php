@@ -38,11 +38,9 @@ class FarmOwner extends Entity
                 static::class, 'user',
                 new EntityRelation([
                     'relatedEntity' => \Entities\User::class,
-                    'relation' => 'II',
+                    'relation' => EntityRelation::REL_R11O,
                     'invName' => 'infoFarmOwner',
-                    'nullable' => false,
-                    'invNullable' => true,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

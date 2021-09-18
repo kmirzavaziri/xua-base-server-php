@@ -60,11 +60,9 @@ class FieldSignature extends Entity
                 static::class, 'category',
                 new EntityRelation([
                     'relatedEntity' => Category::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'additionalFields',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

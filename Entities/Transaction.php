@@ -52,11 +52,9 @@ class Transaction extends Entity
                 static::class, 'user',
                 new EntityRelation([
                     'relatedEntity' => User::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => null,
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),

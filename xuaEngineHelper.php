@@ -90,7 +90,7 @@ function getRelationInverseColumns(string $class) : object
     if (is_a($class, Entity::class, true)) {
         foreach ($class::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
-            if (is_a($signature->type, EntityRelation::class) and $signature->type->definedOn == 'here' and $signature->type->invName) {
+            if (is_a($signature->type, EntityRelation::class) and $signature->type->definedHere and $signature->type->invName) {
                 $result->result[] = [
                     'new' => !in_array($signature->type->invName, array_keys($signature->type->relatedEntity::fieldSignatures())),
                     'name' => $signature->type->invName,
@@ -99,13 +99,11 @@ function getRelationInverseColumns(string $class) : object
     static::class, '{$signature->type->invName}',
     new EntityRelation([
         'relatedEntity' => \\$signature->entity::class,
-        'relation' => '" . strrev($signature->type->relation) . "',
+        'relation' => EntityRelation::REL_" . strrev($signature->type->relation) . ",
         'invName' => '$key',
-        'nullable' => " . ($signature->type->invNullable ? 'true' : 'false') . ",
-        'invNullable' => " . ($signature->type->nullable ? 'true' : 'false') . ",
-        'definedOn' => 'there',
+        'definedOn' => EntityRelation::DEFINED_ON_THERE,
     ]),
-    ". (strrev($signature->type->relation)[1] == 'N' ? '[]' : 'null') ."
+    ". ($signature->type->fromMany ? '[]' : 'null') ."
 )"
                 ];
             }

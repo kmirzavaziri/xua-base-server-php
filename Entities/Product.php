@@ -95,11 +95,9 @@ class Product extends Entity
                 static::class, 'additionalFields',
                 new EntityRelation([
                     'relatedEntity' => Field::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'product',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -112,11 +110,9 @@ class Product extends Entity
                 static::class, 'rates',
                 new EntityRelation([
                     'relatedEntity' => Rate::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'product',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -144,11 +140,9 @@ class Product extends Entity
                 static::class, 'gallery',
                 new EntityRelation([
                     'relatedEntity' => Media::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'product',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -165,11 +159,9 @@ class Product extends Entity
                 static::class, 'category',
                 new EntityRelation([
                     'relatedEntity' => Category::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'products',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),
@@ -187,11 +179,9 @@ class Product extends Entity
                 static::class, 'farm',
                 new EntityRelation([
                     'relatedEntity' => Farm::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'products',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),

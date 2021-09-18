@@ -191,11 +191,11 @@ abstract class Entity extends XUA
         }
 
         if (is_a($signature->type, EntityRelation::class)) {
-            if ($signature->type->relation[1] == 'I') {
+            if ($signature->type->toOne) {
                 if ($value !== null and $signature->type->invName !== null) {
                     $this->addThisToAnotherEntity($value, $signature->type->invName);
                 }
-            } elseif ($signature->type->relation[1] == 'N') {
+            } elseif ($signature->type->toMany) {
                 if ($signature->type->invName !== null) {
                     foreach ($value as $item) {
                         $this->addThisToAnotherEntity($item, $signature->type->invName);
@@ -338,8 +338,8 @@ abstract class Entity extends XUA
     {
         $relIndexes = [];
         foreach (static::fieldSignatures() as $key => $signature) {
-            if (is_a($signature->type, EntityRelation::class) and $signature->type->relation == 'II' and $signature->type->definedOn == 'here') {
-                $relIndexes[] = new Index([$key => 'ASC'], true);
+            if (is_a($signature->type, EntityRelation::class) and $signature->type->columnHere) {
+                $relIndexes[] = new Index([$key => 'ASC'], $signature->type->fromOne);
             }
         }
         return array_merge(static::_indexes(), $relIndexes);
@@ -465,7 +465,7 @@ abstract class Entity extends XUA
     {
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
-            if (is_a($signature->type, EntityRelation::class) and $signature->type->relation[0] == 'I' and !$signature->type->invNullable and $this->$key) {
+            if (is_a($signature->type, EntityRelation::class) and $signature->type->fromOne and $signature->type->invRequired and $this->$key) {
                 throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
             }
         }
@@ -473,15 +473,12 @@ abstract class Entity extends XUA
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class)) {
-                if (
-                    ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') or
-                    $signature->type->relation == 'IN'
-                ) {
+                if ($signature->type->columnThere) {
                     if ($this->$key) {
                         $this->$key->{$signature->type->invName} = null;
                         $this->$key->store();
                     }
-                } elseif ($signature->type->relation == 'NN') {
+                } elseif ($signature->type->hasJunction) {
                     $this->$key = [];
                     $this->store();
                 }
@@ -525,22 +522,22 @@ abstract class Entity extends XUA
         foreach ($array as $key => $value) {
             $signature = static::fieldSignatures()[$key];
             if (is_a($signature->type, EntityRelation::class)) {
-                if ($signature->type->relation[1] == 'I') {
+                if ($signature->type->toOne) {
                     $result = new $signature->type->relatedEntity($value);
                     if ($result->id) {
-                        if ($signature->type->relation[0] == 'I') {
+                        if ($signature->type->fromOne) {
                             $result->_x_fields[$signature->type->invName] = $this;
                             $result->_x_must_fetch[$signature->type->invName] = false;
                             $result->_x_must_store[$signature->type->invName] = false;
                         }
                     }
-                } elseif ($signature->type->relation[1] == 'N') {
+                } elseif ($signature->type->toMany) {
                     $result = [];
                     if ($value) {
                         foreach ($value as $id) {
                             $tmp = new $signature->type->relatedEntity($id);
                             if ($tmp->id) {
-                                if ($signature->type->relation[0] == 'I') {
+                                if ($signature->type->fromOne) {
                                     $tmp->_x_fields[$signature->type->invName] = $this;
                                     $tmp->_x_must_fetch[$signature->type->invName] = false;
                                     $tmp->_x_must_store[$signature->type->invName] = false;
@@ -587,9 +584,9 @@ abstract class Entity extends XUA
 
         if (
             is_a($signature->type, EntityRelation::class) and
-            $signature->type->relation[1] == 'N'
+            $signature->type->toMany
         ) {
-            if ($signature->type->relation == 'IN') {
+            if ($signature->type->is1N) {
                 $statement = self::execute("SELECT id FROM " . $signature->type->relatedEntity::table() . " WHERE " . $signature->type->invName . " = ?", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
@@ -598,7 +595,7 @@ abstract class Entity extends XUA
                         $array[$fieldName][] = $item[0];
                     }
                 }
-            } elseif ($signature->type->relation == 'NN') {
+            } elseif ($signature->type->isNN) {
                 $statement = self::execute("SELECT " . $signature->type->relatedEntity::table() . " FROM " . static::junctionTableName($fieldName) . " WHERE " . static::table() . " = ?", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
@@ -713,14 +710,14 @@ abstract class Entity extends XUA
             $value = $this->_x_fields[$key];
             if (!is_a($signature->type, EntityRelation::class) or !$this->_x_must_store[$key]) {
                 continue;
-            } elseif ($signature->type->relation == 'II' and $signature->type->definedOn == 'there') {
+            } elseif ($signature->type->is11 and $signature->type->definedThere) {
                 $value->_x_fields[$signature->type->invName] = $this;
                 try {
                     $value->store();
                 } catch (EntityFieldException $e) {
                     throw (new EntityFieldException())->setError($key, $e->getErrors());
                 }
-            } elseif ($signature->type->relation == 'IN') {
+            } elseif ($signature->type->is1N) {
                 foreach ($this->_x_fields[$key] as $relatedEntityKey => $relatedEntity) {
                     $relatedEntity->_x_fields[$signature->type->invName] = $this;
                     try {
@@ -733,14 +730,14 @@ abstract class Entity extends XUA
                 [$addingIds, $removingIds] = $this->getAddingRemovingIds($key);
 
                 if ($removingIds) {
-                    if ($signature->type->invNullable) {
+                    if ($signature->type->invOptional) {
                         self::execute("UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = NULL WHERE id IN (?)", [$removingIds]);
                     } else {
                         self::execute("DELETE FROM " . $signature->type->relatedEntity::table() . " WHERE id IN (?)", [$removingIds]);
                     }
                 }
 
-            } elseif ($signature->type->relation == 'NN') {
+            } elseif ($signature->type->isNN) {
                 foreach ($this->_x_fields[$key] as $relatedEntityKey => $relatedEntity) {
                     try {
                         $relatedEntity->store();
@@ -791,8 +788,8 @@ abstract class Entity extends XUA
             }
             if (
                 is_a($signature->type, EntityRelation::class) and
-                $signature->type->relation == 'NN' and
-                $signature->type->definedOn == 'here'
+                $signature->type->hasJunction and
+                $signature->type->definedHere
             ) {
                 $leftColumn = static::table();
                 $rightColumn = $signature->type->relatedEntity::table();
@@ -803,7 +800,6 @@ abstract class Entity extends XUA
                     new Index([$leftColumn => 'ASC', $rightColumn => 'ASC'], true, 'PRIMARY')
                 ]);
             }
-
         }
 
         $tables[] = new TableScheme(static::table(), $columns, static::indexes());
@@ -873,7 +869,7 @@ abstract class Entity extends XUA
     final public static function junctionTableName (string $fieldName) : string
     {
         $signature = static::fieldSignatures()[$fieldName];
-        return $signature->type->definedOn == 'here'
+        return $signature->type->definedHere
             ? '_' . static::table() . '_' . $fieldName
             : '_' . $signature->type->relatedEntity::table() . '_' . $signature->type->invName;
     }

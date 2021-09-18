@@ -36,11 +36,9 @@ class Field extends Entity
                 static::class, 'fieldSignature',
                 new EntityRelation([
                     'relatedEntity' => FieldSignature::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => null,
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),
@@ -53,11 +51,9 @@ class Field extends Entity
                 static::class, 'product',
                 new EntityRelation([
                     'relatedEntity' => Product::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'additionalFields',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

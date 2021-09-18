@@ -123,11 +123,9 @@ class Farm extends Entity
                 static::class, 'additionalFields',
                 new EntityRelation([
                     'relatedEntity' => Field::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'farm',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -140,11 +138,9 @@ class Farm extends Entity
                 static::class, 'rates',
                 new EntityRelation([
                     'relatedEntity' => Rate::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'farm',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -167,11 +163,9 @@ class Farm extends Entity
                 static::class, 'gallery',
                 new EntityRelation([
                     'relatedEntity' => Media::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'farm',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -188,11 +182,9 @@ class Farm extends Entity
                 static::class, 'agent',
                 new EntityRelation([
                     'relatedEntity' => User::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'farms',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),
@@ -206,11 +198,9 @@ class Farm extends Entity
                 static::class, 'products',
                 new EntityRelation([
                     'relatedEntity' => Product::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'farm',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []
             ),
@@ -219,11 +209,9 @@ class Farm extends Entity
                 static::class, 'geographicDivision',
                 new EntityRelation([
                     'relatedEntity' => IranAdministrativeDivision::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => null,
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),

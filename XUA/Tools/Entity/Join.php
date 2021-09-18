@@ -41,13 +41,13 @@ class Join
         $rightTableName = $type->relatedEntity::table();
         $rightTableNameAlias = $this->rightTableNameAlias();
 
-        if (($type->relation == 'II' and $type->definedOn == 'here') or $type->relation == 'NI') {
+        if ($type->columnHere) {
             $name = $this->joiningField->name;
             return "$this->type JOIN $rightTableName $rightTableNameAlias ON $this->leftTableNameAlias.$name = $rightTableNameAlias.id";
-        } elseif (($type->relation == 'II' and $type->definedOn == 'there') or $type->relation == 'IN') {
+        } elseif ($type->columnThere) {
             $name = $type->invName;
             return "$this->type JOIN $rightTableName $rightTableNameAlias ON $this->leftTableNameAlias.id = $rightTableNameAlias.$name";
-        } else { // NN
+        } else { // $type->hasJunction
             $junctionTableName = $this->joiningField->entity::junctionTableName($this->joiningField->name);
             $junctionEntityAlias = $this->leftTableNameAlias . '_j_' . $this->joiningField->name;
 

@@ -33,11 +33,9 @@ class Media extends Entity
                 static::class, 'product',
                 new EntityRelation([
                     'relatedEntity' => Product::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'gallery',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),

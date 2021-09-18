@@ -373,11 +373,9 @@ class User extends Entity
                 static::class, 'infoFarmOwner',
                 new EntityRelation([
                     'relatedEntity' => FarmOwner::class,
-                    'relation' => 'II',
+                    'relation' => EntityRelation::REL_O11R,
                     'invName' => 'user',
-                    'nullable' => true,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 null
             ),
@@ -391,11 +389,9 @@ class User extends Entity
                 static::class, 'sessions',
                 new EntityRelation([
                     'relatedEntity' => Session::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'user',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []
             ),
@@ -408,11 +404,9 @@ class User extends Entity
                 static::class, 'farms',
                 new EntityRelation([
                     'relatedEntity' => \Entities\Farm::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'agent',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []
             ),
@@ -420,11 +414,9 @@ class User extends Entity
                 static::class, 'ratedFarms',
                 new EntityRelation([
                     'relatedEntity' => Farm\Rate::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'rater',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []
             ),
@@ -432,11 +424,9 @@ class User extends Entity
                 static::class, 'ratedProducts',
                 new EntityRelation([
                     'relatedEntity' => Product\Rate::class,
-                    'relation' => 'IN',
+                    'relation' => EntityRelation::REL_1NR,
                     'invName' => 'rater',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []
             ),

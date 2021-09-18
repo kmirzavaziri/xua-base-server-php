@@ -24,57 +24,134 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  * @method static SuperArgumentSignature A_relation() The Signature of: Argument `relation`
  * @property ?string invName
  * @method static SuperArgumentSignature A_invName() The Signature of: Argument `invName`
- * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
- * @property bool invNullable
- * @method static SuperArgumentSignature A_invNullable() The Signature of: Argument `invNullable`
  * @property string definedOn
  * @method static SuperArgumentSignature A_definedOn() The Signature of: Argument `definedOn`
+ * @property bool fromMany
+ * @method static SuperArgumentSignature A_fromMany() The Signature of: Argument `fromMany`
+ * @property bool fromOne
+ * @method static SuperArgumentSignature A_fromOne() The Signature of: Argument `fromOne`
+ * @property bool toMany
+ * @method static SuperArgumentSignature A_toMany() The Signature of: Argument `toMany`
+ * @property bool toOne
+ * @method static SuperArgumentSignature A_toOne() The Signature of: Argument `toOne`
+ * @property bool is11
+ * @method static SuperArgumentSignature A_is11() The Signature of: Argument `is11`
+ * @property bool isN1
+ * @method static SuperArgumentSignature A_isN1() The Signature of: Argument `isN1`
+ * @property bool is1N
+ * @method static SuperArgumentSignature A_is1N() The Signature of: Argument `is1N`
+ * @property bool isNN
+ * @method static SuperArgumentSignature A_isNN() The Signature of: Argument `isNN`
+ * @property bool optional
+ * @method static SuperArgumentSignature A_optional() The Signature of: Argument `optional`
+ * @property bool nullable
+ * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
+ * @property bool required
+ * @method static SuperArgumentSignature A_required() The Signature of: Argument `required`
+ * @property bool invOptional
+ * @method static SuperArgumentSignature A_invOptional() The Signature of: Argument `invOptional`
+ * @property bool invRequired
+ * @method static SuperArgumentSignature A_invRequired() The Signature of: Argument `invRequired`
+ * @property bool definedHere
+ * @method static SuperArgumentSignature A_definedHere() The Signature of: Argument `definedHere`
+ * @property bool definedThere
+ * @method static SuperArgumentSignature A_definedThere() The Signature of: Argument `definedThere`
+ * @property bool columnHere
+ * @method static SuperArgumentSignature A_columnHere() The Signature of: Argument `columnHere`
+ * @property bool columnThere
+ * @method static SuperArgumentSignature A_columnThere() The Signature of: Argument `columnThere`
+ * @property bool hasJunction
+ * @method static SuperArgumentSignature A_hasJunction() The Signature of: Argument `hasJunction`
  */
 class EntityRelation extends Super
 {
     const REL_O11O = 'O11O'; // one-to-one relation;   optional on both sides
-    const REL_O11R = 'O11R'; // one-to-one relation;   optional on left and required on right sides
-    const REL_R11O = 'R11O'; // one-to-one relation;   required on left and optional on right sides
+    const REL_O11R = 'O11R'; // one-to-one relation;   optional on left and required on right side
+    const REL_R11O = 'R11O'; // one-to-one relation;   required on left and optional on right side
     const REL_R11R = 'R11R'; // one-to-one relation;   required on both sides
-    const REL_ON1R = 'ON1R'; // many-to-one relation;  optional on left and required on right sides
-    const REL_RN1R = 'RN1R'; // many-to-one relation;  required on both sides
-    const REL_R1NO = 'R1NO'; // one-to-many relation;  required on left and optional on right sides
-    const REL_R1NR = 'R1NR'; // one-to-many relation;  required on both sides
-    const REL_RNNR = 'RNNR'; // many-to-many relation; required on both sides
+    const REL_ON1  = 'ON1';  // many-to-one relation;  optional on left side
+    const REL_RN1  = 'RN1';  // many-to-one relation;  required on left side
+    const REL_1NO  = '1NO';  // one-to-many relation;  optional on right side
+    const REL_1NR  = '1NR';  // one-to-many relation;  required on right side
+    const REL_NN   = 'NN';   // many-to-many relation;
+    const REL_ = [
+        self::REL_O11O,
+        self::REL_O11R,
+        self::REL_R11O,
+        self::REL_R11R,
+        self::REL_ON1,
+        self::REL_RN1,
+        self::REL_1NO,
+        self::REL_1NR,
+        self::REL_NN,
+    ];
+
+    const DEFINED_ON_HERE = 'here';
+    const DEFINED_ON_THERE = 'there';
+    const DEFINED_ON_ = [
+        self::DEFINED_ON_HERE,
+        self::DEFINED_ON_THERE,
+    ];
 
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                'relatedEntity' => new SuperArgumentSignature(new Instance(['of' => Entity::class, 'acceptClass' => true]), true, null, false),
-                'relation' => new SuperArgumentSignature(new Enum(['values' => ['II', 'IN', 'NI', 'NN']]), true, null, false),
-                'invName' => new SuperArgumentSignature(new Symbol(['nullable' => true]), false, null, false),
-                'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
-                'invNullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
-                'definedOn' => new SuperArgumentSignature(new Enum(['values' => ['here', 'there']]), false, 'here', false),
-            ]);
+            'relatedEntity' => new SuperArgumentSignature(new Instance(['of' => Entity::class, 'acceptClass' => true]), true, null, false),
+            'relation' => new SuperArgumentSignature(new Enum(['values' => self::REL_]), true, null, false),
+            'invName' => new SuperArgumentSignature(new Symbol(['nullable' => true]), false, null, false),
+            'definedOn' => new SuperArgumentSignature(new Enum(['values' => self::DEFINED_ON_]), false, EntityRelation::DEFINED_ON_HERE, false),
+            'fromMany' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'fromOne' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'toMany' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'toOne' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'is11' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'isN1' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'is1N' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'isNN' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'optional' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'required' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'invOptional' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'invRequired' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'definedHere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'definedThere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'columnHere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'columnThere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'hasJunction' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+        ]);
     }
 
     protected function _validation(SuperValidationException $exception): void
     {
-        if ($this->relation[0] == 'N' and $this->invNullable != false) {
-            $exception->setError('invNullable', 'Inverse nullable must be false when defining a many-to-? (N?) relation.');
-        }
-
-        if ($this->relation[1] == 'N' and $this->nullable != false) {
-            $exception->setError('nullable', 'Nullable must be false when defining a ?-to-many (?N) relation.');
-        }
+        $this->fromMany = in_array($this->relation, [self::REL_NN, self::REL_ON1, self::REL_RN1]);
+        $this->fromOne = !$this->fromMany;
+        $this->toMany = in_array($this->relation, [self::REL_NN, self::REL_1NO, self::REL_1NR]);
+        $this->toOne = !$this->toMany;
+        $this->is11 = ($this->fromOne and $this->toOne);
+        $this->isN1 = ($this->fromMany and $this->toOne);
+        $this->is1N = ($this->fromOne and $this->toMany);
+        $this->isNN = ($this->fromMany and $this->toMany);
+        $this->optional = in_array($this->relation, [self::REL_O11O, self::REL_O11R, self::REL_ON1]);
+        $this->nullable = $this->optional;
+        $this->required = !$this->optional;
+        $this->invOptional = in_array($this->relation, [self::REL_O11O, self::REL_R11O, self::REL_1NO]);
+        $this->invRequired = !$this->invOptional;
+        $this->definedHere = ($this->definedOn == self::DEFINED_ON_HERE);
+        $this->definedThere = ($this->definedOn == self::DEFINED_ON_THERE);
+        $this->columnHere = (($this->is11 and $this->definedHere) or $this->isN1);
+        $this->columnThere = (($this->is11 and $this->definedThere) or $this->is1N);
+        $this->hasJunction = $this->isNN;
     }
 
     protected function _predicate($input, null|string|array &$message = null) : bool
     {
-        if ($this->relation[1] == 'I') {
-            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->nullable]))->explicitlyAccepts($input, $message)) {
+        if ($this->toOne) {
+            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->optional]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
             if ($input !== null and $input->id === null) {
-                if ($this->relation == 'II' and !$this->invNullable) {
-                    if (!FlagService::get('force-store-II') and $this->definedOn == 'here') {
+                if ($this->is11 and $this->invRequired) {
+                    if (!FlagService::get('force-store-II') and $this->definedHere) {
                         FlagService::set('force-store-II', true);
                         $input->store();
                         FlagService::unset('force-store-II');
@@ -90,7 +167,7 @@ class EntityRelation extends Super
                 return false;
             }
             return true;
-        } elseif ($this->relation[1] == 'N') {
+        } elseif ($this->toMany) {
             if (!(new Sequence(['type' => new Instance(['of' => $this->relatedEntity])]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
@@ -107,16 +184,16 @@ class EntityRelation extends Super
 
     protected function _marshalDatabase($input) : ?string
     {
-        if (($this->relation == 'II' and $this->definedOn == 'here') or $this->relation == 'NI') {
-            return $input === null ? null : $input->id;
+        if ($this->columnHere) {
+            return $input?->id;
         }
         return null;
     }
 
     protected function _databaseType(): ?string
     {
-        if (($this->relation == 'II' and $this->definedOn == 'here') or $this->relation == 'NI') {
-            return (new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2, 'nullable' => $this->nullable]))->databaseType();
+        if ($this->columnHere) {
+            return (new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2, 'nullable' => $this->optional]))->databaseType();
         } else {
             return 'DONT STORE';
         }
@@ -124,12 +201,10 @@ class EntityRelation extends Super
 
     protected function _phpType(): string
     {
-        if ($this->relation[1] == 'I') {
-            return ($this->nullable ? '?' : '') . "\\$this->relatedEntity";
-        } elseif ($this->relation[1] == 'N') {
+        if ($this->toOne) {
+            return ($this->optional ? '?' : '') . "\\$this->relatedEntity";
+        } else {
             return "\\$this->relatedEntity[]";
         }
-
-        return 'mixed';
     }
 }

@@ -37,11 +37,9 @@ class Rate extends Entity
                 static::class, 'rater',
                 new EntityRelation([
                     'relatedEntity' => User::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'ratedFarms',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'here',
+                    'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
             ),
@@ -54,11 +52,9 @@ class Rate extends Entity
                 static::class, 'farm',
                 new EntityRelation([
                     'relatedEntity' => \Entities\Farm::class,
-                    'relation' => 'NI',
+                    'relation' => EntityRelation::REL_RN1,
                     'invName' => 'rates',
-                    'nullable' => false,
-                    'invNullable' => false,
-                    'definedOn' => 'there',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 null
             ),
