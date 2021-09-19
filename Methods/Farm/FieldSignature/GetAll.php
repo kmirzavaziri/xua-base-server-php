@@ -1,18 +1,17 @@
 <?php
 
-namespace Methods\Admin\Farm\FieldSignature;
+namespace Methods\Farm\FieldSignature;
 
 use Entities\Farm\FieldSignature;
-use Methods\Abstraction\GetAllAdmin;
-use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\VARQUE\MethodQuery;
 
 /**
  * @property array result
  * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
-class GetAll extends GetAllAdmin
+class GetAll extends MethodQuery
 {
     protected static function entity(): string
     {

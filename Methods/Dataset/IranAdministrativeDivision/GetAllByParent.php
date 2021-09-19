@@ -1,14 +1,13 @@
 <?php
 
-namespace Methods\Admin\Dataset\IranAdministrativeDivision;
+namespace Methods\Dataset\IranAdministrativeDivision;
 
 use Entities\Dataset\IranAdministrativeDivision;
-use Methods\Abstraction\GetAllAdmin;
 use Supers\Basics\Numerics\Decimal;
 use XUA\Tools\Entity\Condition;
-use XUA\Tools\Signature\EntityFieldSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 use XUA\Tools\Signature\MethodItemSignature;
+use XUA\VARQUE\MethodQuery;
 
 /**
  * @property null|int Q_parent
@@ -16,7 +15,7 @@ use XUA\Tools\Signature\MethodItemSignature;
  * @property array result
  * @method static MethodItemSignature R_result() The Signature of: Response Item `result`
  */
-class GetAllByParent extends GetAllAdmin
+class GetAllByParent extends MethodQuery
 {
     protected static function entity(): string
     {
