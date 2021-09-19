@@ -37,8 +37,9 @@ abstract class MethodAdjust extends MethodEve
             try {
                 if ($field->root->name() != 'id') {
                     if (!is_a($field->root->type(), Generic::class)) {
-                        $feed->{$field->root->name()} = $field->root->valueFromRequest($this->{'Q_' . $field->root->name()});
+                        $feed->{$field->root->name()} = $field->root->valueFromRequest($this->{'Q_' . $field->root->name()}, $feed);
                     } else {
+                        // What about Recursive fields in children?
                         if (!is_a($this->{'Q_' . $field->root->name()}, FileInstanceSame::class)) {
                             if ($feed->{$field->root->name()} and file_exists($feed->{$field->root->name()}->path)) {
                                 unlink($feed->{$field->root->name()}->path);

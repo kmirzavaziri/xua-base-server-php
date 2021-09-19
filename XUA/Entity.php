@@ -174,10 +174,6 @@ abstract class Entity extends XUA
             throw (new MagicCallException())->setError($key, 'Cannot change id of an entity.');
         }
 
-        if (!$signature->type->accepts($value, $messages)) {
-            throw (new EntityFieldException())->setError($key, $messages['identity']);
-        }
-
         if (is_a($signature->type, PhpVirtualField::class)) {
             if ($signature->type->setter !== null) {
                 ($signature->type->setter)($this, $signature->p(), $value);
@@ -204,7 +200,11 @@ abstract class Entity extends XUA
             }
         }
 
-        if ($this->_x_fields[$key] != $value or $this->_x_must_fetch[$key]) {
+        if (!$signature->type->accepts($value, $messages)) {
+            throw (new EntityFieldException())->setError($key, $messages['identity']);
+        }
+
+        if ($this->_x_fields[$key] != $value or $this->_x_must_fetch[$key] or is_object($this->_x_fields[$key])) {
             $this->_x_fields[$key] = $value;
             $this->_x_must_fetch[$key] = false;
             $this->_x_must_store[$key] = true;

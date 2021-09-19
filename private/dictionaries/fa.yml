@@ -4,6 +4,10 @@ errormessage.invalid.path: مسیر معتبر نیست.
 errormessage.unknown.request.item: چنین فیلدی وجود ندارد.
 errormessage.cannot.set.constant.request.item: امکان تغییر این فیلد وجود ندارد.
 errormessage.required.request.item.not.provided: این فیلد ضروری است.
+errormessage.related.entity.with.id.id.is.already.in.rel: $entityRight با شناسه $id در حال حاضر متعلق به $entityLeft دیگری است.
+errormessage.cannot.change.11.by.id: فیلد یک‌به‌یک با شناسه قابل تغییر نیست.
+errormessage.toOne.fields.cannot.include.id: فیلدهای رابطه‌ای ؟به‌یک نمی‌توانند شامل فیلد شناسه باشند، در صورت نیاز به تغییر شناسه، به فیلد فرزند اضافه نکنید.
+errormessage.toMany.fields.must.include.id: فیلدهای رابطه‌ای ؟به‌چند باید شامل فیلد شناسه باشند.
 errormessage.value.input.is.not.an.integer: مقدار $input عددی صحیح نیست.
 errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $input کمتر از صفر است و لذا بی‌علامت نیست.
 errormessage.please.enter.a.valid.value.from.values: لطفا یکی از مقادیر مجاز ($values) را انتخاب کنید.
@@ -41,8 +45,8 @@ errormessage.image.max.width.violated: عرض تصویر $width است در حا
 errormessage.image.min.height.violated: عرض تصویر $height است در حالی که باید حداقل $minHeight باشد.
 errormessage.image.max.height.violated: عرض تصویر $height است در حالی که باید حداکثر $maxHeight باشد.
 errormessage.image.ratio.violated: نسبت ابعاد تصویر باید $formalRatio باشد اما $actualRatio است.
-errormessage.invalid.id: آی‌دی نادرست می‌باشد.
-errormessage.invalid.id.id: آی‌دی $id نادرست می‌باشد.
+errormessage.invalid.id: شناسه نادرست می‌باشد.
+errormessage.invalid.id.id: شناسه $id نادرست می‌باشد.
 errormessage.cannot.degrade.yourself: نمی‌توانید خودتان را از حالت ادمین خارج کنید.
 errormessage.invalid.field.title.title: فیلد $title برای دسته‌بندی این محصول معتبر نیست.
 errormessage.field.title.missing: فیلد $title ضروری است اما وارد نشده.

@@ -91,14 +91,14 @@ class EntityFieldSignatureTree
         }
     }
 
-    public function valueFromRequest(mixed $value): mixed
+    public function valueFromRequest(mixed $value, Entity $entity): mixed
     {
         if (is_a($this->value->type, EntityRelation::class)) {
             if ($this->value->type->toMany) {
                 $return = [];
                 foreach ($value as $index => $item) {
                     try {
-                        $return[] = $this->oneItemValueFromRequest($item);
+                        $return[] = $this->oneItemValueFromRequest($item, $entity);
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException)->setError($this->name(), [$index => $e->getErrors()]);
                     }
@@ -106,7 +106,7 @@ class EntityFieldSignatureTree
                 return $return;
             } else {
                 try {
-                    return $this->oneItemValueFromRequest($value);
+                    return $this->oneItemValueFromRequest($value, $entity);
                 } catch (EntityFieldException $e) {
                     throw (new EntityFieldException)->setError($this->name(), $e->getErrors());
                 }
@@ -134,29 +134,63 @@ class EntityFieldSignatureTree
         }
     }
 
-    private function oneItemValueFromRequest(array|int $value): entity
+    private function oneItemValueFromRequest(null|array|int $value, Entity $entity): ?entity
     {
-        if (is_int($value)) {
-            $return = new ($this->value->type->relatedEntity)($value);
-            if ($value != $return->id) {
-                throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value]));
-            }
-            return $return;
-        }
-
-        if (in_array('id', array_map(function (EntityFieldSignatureTree $tree) { return $tree->name(); }, $this->children))) {
-            $return = new ($this->value->type->relatedEntity)($value['id']);
-            if ($value['id'] != $return->id) {
-                throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value['id']]));
-            }
-            foreach ($this->children as $child) {
-                if ($child->name() != 'id') {
-                    $return->{$child->name()} = $child->valueFromRequest($value[$child->name()]);
+        if (is_int($value)) { // case: ID
+            if ($this->value->type->relation == EntityRelation::REL_R11O) {
+                $return = new ($this->value->type->relatedEntity)($value);
+                if (!$return->id) {
+                    throw new EntityFieldException(ExpressionService::get('errormessage.invalid.id.id', ['id' => $value]));
                 }
+                if ($return->{$this->value->type->invName}) {
+                    throw new EntityFieldException(ExpressionService::get('errormessage.related.entity.with.id.id.is.already.in.rel', [
+                        'entityLeft' => $this->value->entity,
+                        'entityRight' => $this->value->type->relatedEntity,
+                        'id' => $value,
+                    ]));
+                }
+                return $return;
+            } elseif ($this->value->type->relation == EntityRelation::REL_R11R) {
+                throw (new DefinitionException())->setError($this->name(), ExpressionService::get('errormessage.cannot.change.11.by.id'));
+            } else {
+                    $return = new ($this->value->type->relatedEntity)($value);
+                    if (!$return->id) {
+                        throw new EntityFieldException(ExpressionService::get('errormessage.invalid.id.id', ['id' => $value]));
+                    }
+                    return $return;
             }
-            return $return;
-        } else {
-            throw (new DefinitionException())->setError($this->name(), 'All EntityRelation fields must include id.');
+        } elseif (is_array($value)) { // case: DATA
+            $hasId = in_array('id', array_map(function (EntityFieldSignatureTree $tree) { return $tree->name(); }, $this->children));
+            if ($this->value->type->toOne) {
+                if ($hasId) {
+                    throw (new DefinitionException())->setError($this->name(), ExpressionService::get('errormessage.toOne.fields.cannot.include.id'));
+                }
+                $return = $entity->{$this->value->name};
+                foreach ($this->children as $child) {
+                    $return->{$child->name()} = $child->valueFromRequest($value[$child->name()], $return);
+                }
+                return $return;
+            } else {
+                if (!$hasId) {
+                    throw (new DefinitionException())->setError($this->name(), ExpressionService::get('errormessage.toMany.fields.must.include.id'));
+                }
+                $return = new ($this->value->type->relatedEntity)($value['id']);
+                if ($value['id'] != $return->id) {
+                    throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value['id']]));
+                }
+                foreach ($this->children as $child) {
+                    if ($child->name() != 'id') {
+                        $return->{$child->name()} = $child->valueFromRequest($value[$child->name()], $return);
+                    }
+                }
+                return $return;
+            }
+        } elseif (is_null($value)) { // case: NULL
+            if ($this->value->type->required) {
+                throw new EntityFieldException(ExpressionService::get('errormessage.required.request.item.not.provided'));
+            }
+            return null;
         }
+        throw (new DefinitionException('There is an error in XUA Core. This Exception should not be throw in any case.'));
     }
 }

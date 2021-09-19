@@ -38,7 +38,7 @@ class EntityInstantField extends EntityFieldSignatureTree
         return ($this->getter)($entity);
     }
 
-    public function valueFromRequest(mixed $value): mixed
+    public function valueFromRequest(mixed $value, Entity $entity): mixed
     {
         throw new DefinitionException('Cannot use EntityInstantFieldSignatureTree in Adjust and Update methods.');
     }
