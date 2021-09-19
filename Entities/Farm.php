@@ -15,6 +15,9 @@ use Services\XUA\LocaleLanguage;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\EntitySupers\PhpVirtualField;
 use Supers\Basics\Files\Generic;
+use Supers\Basics\Files\Image;
+use Supers\Basics\Highers\Date;
+use Supers\Basics\Highers\StructuredMap;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
@@ -67,6 +70,15 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property \Entities\Product[] products
  * @method static EntityFieldSignature F_products() The Signature of: Field `products`
  * @method static ConditionField C_products() The Condition Field of: Field `products`
+ * @property string ownership
+ * @method static EntityFieldSignature F_ownership() The Signature of: Field `ownership`
+ * @method static ConditionField C_ownership() The Condition Field of: Field `ownership`
+ * @property ?\Services\XUA\FileInstance agreementPicture
+ * @method static EntityFieldSignature F_agreementPicture() The Signature of: Field `agreementPicture`
+ * @method static ConditionField C_agreementPicture() The Condition Field of: Field `agreementPicture`
+ * @property array deedDetails
+ * @method static EntityFieldSignature F_deedDetails() The Signature of: Field `deedDetails`
+ * @method static ConditionField C_deedDetails() The Condition Field of: Field `deedDetails`
  * @property \Entities\Dataset\IranAdministrativeDivision geographicDivision
  * @method static EntityFieldSignature F_geographicDivision() The Signature of: Field `geographicDivision`
  * @method static ConditionField C_geographicDivision() The Condition Field of: Field `geographicDivision`
@@ -82,6 +94,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?\Entities\Dataset\IranAdministrativeDivision dehestan
  * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
  * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
+ * @property ?\Entities\Dataset\IranAdministrativeDivision shahrOrRoosta
+ * @method static EntityFieldSignature F_shahrOrRoosta() The Signature of: Field `shahrOrRoosta`
+ * @method static ConditionField C_shahrOrRoosta() The Condition Field of: Field `shahrOrRoosta`
  * @property ?string address
  * @method static EntityFieldSignature F_address() The Signature of: Field `address`
  * @method static ConditionField C_address() The Condition Field of: Field `address`
@@ -204,6 +219,28 @@ class Farm extends Entity
                 ]),
                 []
             ),
+            'ownership' => new EntityFieldSignature(
+                static::class, 'ownership' .
+                '',
+                new Enum(['nullable' => false, 'values' => ['deed', 'agreement']]),
+                null
+            ),
+            'agreementPicture' => new EntityFieldSignature(
+                static::class, 'agreementPicture',
+                new Image(['nullable' => true, 'unifier' => Mime::MIME_IMAGE_JPEG, 'maxSize' => 2 * Size::MB]),
+                null
+            ),
+            'deedDetails' => new EntityFieldSignature(
+                static::class, 'deedDetails',
+                new StructuredMap(['structure' => [
+                    'propertyNumber' => new Text(['maxLength' => 20]),
+                    'registrationNumber' => new Text(['maxLength' => 20]),
+                    'registrationDate' => new Date([]),
+                    'volume' => new Text(['maxLength' => 5]),
+                    'page' => new Text(['maxLength' => 5]),
+                ]]),
+                null
+            ),
             # Farm Location Information
             'geographicDivision' => new EntityFieldSignature(
                 static::class, 'geographicDivision',
@@ -251,6 +288,15 @@ class Farm extends Entity
                 ]),
                 null
             ),
+            'shahrOrRoosta' => new EntityFieldSignature(
+                static::class, 'shahrOrRoosta',
+                new PhpVirtualField([
+                    'getter' => function (Farm $farm): ?IranAdministrativeDivision {
+                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, 'shahrOrRoosta');
+                    }
+                ]),
+                null
+            ),
             'address' => new EntityFieldSignature(
                 static::class, 'address',
                 new Text(['nullable' => true, 'minLength' => 1, 'maxLength' => 500]),
@@ -288,12 +334,14 @@ class Farm extends Entity
 
     protected function _validation(EntityFieldException $exception): void
     {
+        // Geographic Division
         if ($this->geographicDivision->type == 'ostan') {
             $exception->setError('geographicDivision', ExpressionService::get('errormessage.bad.geographic.division.with.title', [
                 'title' => $this->geographicDivision->title,
             ]));
         }
 
+        // Additional Fields
         $thisAfsIds = [];
         foreach ($this->additionalFields as $af) {
             $thisAfsIds[$af->fieldSignature->id] = true;
@@ -306,5 +354,12 @@ class Farm extends Entity
             }
         }
 
+        // Deed & Agreement
+        if ($this->ownership == 'agreement' and !$this->agreementPicture) {
+            $exception->setError('agreementPicture', ExpressionService::get('errormessage.required.entity.field.not.provided'));
+        }
+        if ($this->ownership == 'deed' and !$this->deedDetails) {
+            $exception->setError('deedDetails', ExpressionService::get('errormessage.required.entity.field.not.provided'));
+        }
     }
 }
