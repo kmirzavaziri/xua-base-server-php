@@ -65,7 +65,7 @@ abstract class Super extends XUA
     final function __set($key, $value) : void
     {
         if (!isset(static::argumentSignatures()[$key])) {
-            throw (new MagicCallException())->setError($key, 'Unknown super argument');
+            throw (new MagicCallException())->setError($key, 'Unknown super argument on ' . static::class);
         }
         $signature = static::argumentSignatures()[$key];
         if (!$signature->type->accepts($value, $messages)) {
