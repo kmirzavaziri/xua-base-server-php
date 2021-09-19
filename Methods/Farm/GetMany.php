@@ -28,13 +28,13 @@ class GetMany extends GetManyPager
     {
         return VarqueMethodFieldSignature::fromList([
             Farm::F_id(),
-            Farm::F_image(),
             Farm::F_title(),
-            (new EntityFieldSignatureTree(Farm::F_agent()))->addChild(User::F_titleFa()),
-            Farm::F_averageAnnualInterest(),
             Farm::F_description(),
             Farm::F_story(),
+            Farm::F_averageAnnualInterest(),
             Farm::F_rate(),
+            Farm::F_image(),
+            (new EntityFieldSignatureTree(Farm::F_agent()))->addChild(User::F_titleFa()),
         ]);
     }
 }

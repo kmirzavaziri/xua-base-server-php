@@ -30,6 +30,12 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature Q_agentType() The Signature of: Request Item `agentType`
  * @property array Q_products
  * @method static MethodItemSignature Q_products() The Signature of: Request Item `products`
+ * @property string Q_ownership
+ * @method static MethodItemSignature Q_ownership() The Signature of: Request Item `ownership`
+ * @property ?\Services\XUA\FileInstance Q_agreementPicture
+ * @method static MethodItemSignature Q_agreementPicture() The Signature of: Request Item `agreementPicture`
+ * @property array Q_deedDetails
+ * @method static MethodItemSignature Q_deedDetails() The Signature of: Request Item `deedDetails`
  * @property int Q_geographicDivision
  * @method static MethodItemSignature Q_geographicDivision() The Signature of: Request Item `geographicDivision`
  * @property ?string Q_address
@@ -66,6 +72,9 @@ class SetOne extends SetOneByIdAdmin
             Farm::F_agent(),
             Farm::F_agentType(),
             Farm::F_products(),
+            Farm::F_ownership(),
+            Farm::F_agreementPicture(),
+            Farm::F_deedDetails(),
             Farm::F_geographicDivision(),
             Farm::F_address(),
             Farm::F_geolocationLat(),

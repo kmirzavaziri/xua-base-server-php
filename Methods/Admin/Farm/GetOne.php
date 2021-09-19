@@ -39,6 +39,12 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_agentType() The Signature of: Response Item `agentType`
  * @property array products
  * @method static MethodItemSignature R_products() The Signature of: Response Item `products`
+ * @property string ownership
+ * @method static MethodItemSignature R_ownership() The Signature of: Response Item `ownership`
+ * @property ?\Services\XUA\FileInstance agreementPicture
+ * @method static MethodItemSignature R_agreementPicture() The Signature of: Response Item `agreementPicture`
+ * @property array deedDetails
+ * @method static MethodItemSignature R_deedDetails() The Signature of: Response Item `deedDetails`
  * @property mixed ostan
  * @method static MethodItemSignature R_ostan() The Signature of: Response Item `ostan`
  * @property mixed shahrestan
@@ -47,6 +53,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_bakhsh() The Signature of: Response Item `bakhsh`
  * @property mixed dehestan
  * @method static MethodItemSignature R_dehestan() The Signature of: Response Item `dehestan`
+ * @property mixed shahrOrRoosta
+ * @method static MethodItemSignature R_shahrOrRoosta() The Signature of: Response Item `shahrOrRoosta`
  * @property ?string address
  * @method static MethodItemSignature R_address() The Signature of: Response Item `address`
  * @property null|int|float geolocationLat
@@ -92,10 +100,14 @@ class GetOne extends GetOneByIdAdmin
                 Product::F_id(),
                 Product::F_title(),
             ]),
+            Farm::F_ownership(),
+            Farm::F_agreementPicture(),
+            Farm::F_deedDetails(),
             new EntityInstantField('ostan', function (Farm $farm) { return $farm->ostan->id;}),
             new EntityInstantField('shahrestan', function (Farm $farm) { return $farm->shahrestan->id;}),
             new EntityInstantField('bakhsh', function (Farm $farm) { return $farm->bakhsh?->id;}),
             new EntityInstantField('dehestan', function (Farm $farm) { return $farm->dehestan?->id;}),
+            new EntityInstantField('shahrOrRoosta', function (Farm $farm) { return $farm->shahrOrRoosta?->id;}),
             Farm::F_address(),
             Farm::F_geolocationLat(),
             Farm::F_geolocationLong(),
