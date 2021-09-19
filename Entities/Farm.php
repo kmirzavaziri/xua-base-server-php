@@ -232,13 +232,16 @@ class Farm extends Entity
             ),
             'deedDetails' => new EntityFieldSignature(
                 static::class, 'deedDetails',
-                new StructuredMap(['structure' => [
-                    'propertyNumber' => new Text(['maxLength' => 20]),
-                    'registrationNumber' => new Text(['maxLength' => 20]),
-                    'registrationDate' => new Date([]),
-                    'volume' => new Text(['maxLength' => 5]),
-                    'page' => new Text(['maxLength' => 5]),
-                ]]),
+                new StructuredMap([
+                    'nullable' => true,
+                    'structure' => [
+                        'propertyNumber' => new Text(['maxLength' => 20]),
+                        'registrationNumber' => new Text(['maxLength' => 20]),
+                        'registrationDate' => new Date([]),
+                        'volume' => new Text(['maxLength' => 5]),
+                        'page' => new Text(['maxLength' => 5]),
+                    ]
+                ]),
                 null
             ),
             # Farm Location Information
