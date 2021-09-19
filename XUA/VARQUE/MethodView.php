@@ -3,6 +3,7 @@
 namespace XUA\VARQUE;
 
 use XUA\Entity;
+use XUA\Exceptions\MagicCallException;
 use XUA\MethodEve;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
@@ -20,7 +21,13 @@ abstract class MethodView extends MethodEve
         $response = parent::responseSignaturesCalculator();
         $fields = static::fields();
         foreach ($fields as $field) {
-            $response[$field->root->name()] = new MethodItemSignature($field->root->type(), true, null, false);
+            $type = $field->root->type();
+            try {
+                @$type->nullable = true;
+            } catch (MagicCallException $e) {
+                // It's OK
+            }
+            $response[$field->root->name()] = new MethodItemSignature($type, true, null, false);
         }
         return $response;
     }
@@ -28,6 +35,9 @@ abstract class MethodView extends MethodEve
     protected function body(): void
     {
         $feed = $this->feed();
+        if (!$feed) {
+            return;
+        }
         $fields = static::fields();
         foreach ($fields as $field) {
             $this->{$field->root->name()} = $field->root->valueFromEntity($feed);
