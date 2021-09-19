@@ -358,11 +358,21 @@ class Farm extends Entity
         }
 
         // Deed & Agreement
-        if ($this->ownership == 'agreement' and !$this->agreementPicture) {
-            $exception->setError('agreementPicture', ExpressionService::get('errormessage.required.entity.field.not.provided'));
+        if ($this->ownership == 'agreement') {
+            if (!$this->agreementPicture) {
+                $exception->setError('agreementPicture', ExpressionService::get('errormessage.required.entity.field.not.provided'));
+            }
+            if ($this->deedDetails) {
+                $exception->setError('deedDetails', ExpressionService::get('errormessage.entity.field.must.be.empty'));
+            }
         }
-        if ($this->ownership == 'deed' and !$this->deedDetails) {
-            $exception->setError('deedDetails', ExpressionService::get('errormessage.required.entity.field.not.provided'));
+        if ($this->ownership == 'deed') {
+            if (!$this->deedDetails) {
+                $exception->setError('deedDetails', ExpressionService::get('errormessage.required.entity.field.not.provided'));
+            }
+            if ($this->agreementPicture) {
+                $exception->setError('agreementPicture', ExpressionService::get('errormessage.entity.field.must.be.empty'));
+            }
         }
     }
 }

@@ -65,3 +65,4 @@ payment.cart.title: پرداخت سبد محصول
 payment.cart.myfarm_title: مزرعه من
 payment.cart.back_to_app: بازگشت به اپلیکیشن
 errormessage.required.entity.field.not.provided: این فیلد ضروری است.
+errormessage.entity.field.must.be.empty: این فیلد باید خالی باشد.
