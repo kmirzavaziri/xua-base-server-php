@@ -15,6 +15,7 @@ comma.separator: "، "
 errormessage.key.key.is.missing: فیلد $key یافت نشد.
 errormessage.unknown.key.key: فیلد $key شناخته‌شده نیست.
 errormessage.unknown.keys.keys: فیلدهای $keys شناخته‌شده نیستند.
+errormessage.invalid.date: تاریخ $date صحیح نیست.
 errormessage.email.format.is.not.valid: فرمت ایمیل صحیح نیست.
 errormessage.url.format.is.not.valid: فرمت آدرس وبسایت صحیح نیست.
 errormessage.cellphone.format.is.not.valid: فرمت شماره تلفن همراه صحیح نیست.

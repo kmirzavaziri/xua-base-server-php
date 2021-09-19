@@ -28,6 +28,12 @@ class Date extends Instance
         ]);
     }
 
+    protected function _predicate($input, array|string|null &$message = null): bool
+    {
+        $message = ExpressionService::get('errormessage.invalid.date', ['date' => is_string($input) ? $input : xua_var_dump($input)]);
+        return parent::_predicate($input);
+    }
+
     protected function _marshal($input): mixed
     {
         /** @var DateTimeInstance $input */
