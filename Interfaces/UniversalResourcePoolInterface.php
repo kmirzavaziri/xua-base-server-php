@@ -2,7 +2,6 @@
 
 namespace Interfaces;
 
-use Exception;
 use Services\XUA\Dev\Credentials;
 use Services\XUA\ExpressionService;
 use Services\XUA\RouteService;
