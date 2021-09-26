@@ -47,7 +47,7 @@ class Category extends Entity
             'products' => new EntityFieldSignature(
                 static::class, 'products',
                 new EntityRelation([
-                    'relatedEntity' => Product::class,
+                    'relatedEntity' => \Entities\Product::class,
                     'relation' => EntityRelation::REL_1NR,
                     'invName' => 'category',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,

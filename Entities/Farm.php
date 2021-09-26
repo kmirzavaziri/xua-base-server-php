@@ -212,7 +212,7 @@ class Farm extends Entity
             'products' => new EntityFieldSignature(
                 static::class, 'products',
                 new EntityRelation([
-                    'relatedEntity' => Product::class,
+                    'relatedEntity' => \Entities\Product::class,
                     'relation' => EntityRelation::REL_1NR,
                     'invName' => 'farm',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,
