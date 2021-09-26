@@ -120,7 +120,7 @@ abstract class Entity extends XUA
 
         $exists = false;
         if ($id) {
-            $statement = self::execute("SELECT EXISTS (SELECT * FROM " . static::table() . " WHERE id = ?) e", [$id]);
+            $statement = self::execute("SELECT EXISTS (SELECT * FROM `" . static::table() . "` WHERE `id` = ?) e", [$id]);
             $exists = $statement->fetch()['e'];
         }
         if ($exists) {
@@ -320,6 +320,11 @@ abstract class Entity extends XUA
         return static::_x_getMany($condition, $order, $pager);
     }
 
+    protected static function _count(Condition $condition, Order $order, Pager $pager, string $caller) : int
+    {
+        return static::_x_count($condition, $order, $pager);
+    }
+
     protected static function _deleteMany(Condition $condition, Order $order, Pager $pager, string $caller) : int
     {
         return static::_x_deleteMany($condition, $order, $pager);
@@ -418,6 +423,20 @@ abstract class Entity extends XUA
         return static::_getMany($condition, $order, $pager, $caller);
     }
 
+    final public static function count(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : int
+    {
+        if ($condition === null) {
+            $condition = Condition::trueLeaf();
+        }
+        if ($order === null) {
+            $order = Order::noOrder();
+        }
+        if ($pager === null) {
+            $pager = Pager::unlimited();
+        }
+        return static::_count($condition, $order, $pager, $caller);
+    }
+
     final public static function deleteMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP) : int
     {
         if ($condition === null) {
@@ -485,7 +504,7 @@ abstract class Entity extends XUA
             }
         }
 
-        self::execute("DELETE FROM " . static::table() . " WHERE id = ? LIMIT 1", [$this->id]);
+        self::execute("DELETE FROM `" . static::table() . "` WHERE `id` = ? LIMIT 1", [$this->id]);
     }
 
     /**
@@ -494,7 +513,7 @@ abstract class Entity extends XUA
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager) : array
     {
         [$columnsExpression, $keys] = self::columnsExpression();
-        $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
+        $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
         $rawArrays = $statement->fetchAll(PDO::FETCH_NUM);
         $arrays = [];
         foreach ($rawArrays as $item => $rawArray) {
@@ -511,10 +530,17 @@ abstract class Entity extends XUA
         return $entities;
     }
 
+    final protected static function _x_count(Condition $condition, Order $order, Pager $pager) : int
+    {
+        [$columnsExpression, $keys] = self::columnsExpression();
+        $statement = self::execute("SELECT COUNT(`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
+        return $statement->fetch(PDO::FETCH_ASSOC)['c'];
+    }
+
     final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager) : int
     {
         // @TODO remove relatives or raise error, just like delete
-        return self::execute("DELETE " . static::table() . " FROM " . static::table() . " " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
+        return self::execute("DELETE FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
     }
 
     # Predefined Methods (Array-Entity Conversations)
@@ -587,7 +613,7 @@ abstract class Entity extends XUA
             $signature->type->toMany
         ) {
             if ($signature->type->is1N) {
-                $statement = self::execute("SELECT id FROM " . $signature->type->relatedEntity::table() . " WHERE " . $signature->type->invName . " = ?", [$this->_x_fields['id']]);
+                $statement = self::execute("SELECT id FROM `" . $signature->type->relatedEntity::table() . "` WHERE `" . $signature->type->invName . "` = ?", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
                     $array[$fieldName] = [];
@@ -596,7 +622,7 @@ abstract class Entity extends XUA
                     }
                 }
             } elseif ($signature->type->isNN) {
-                $statement = self::execute("SELECT " . $signature->type->relatedEntity::table() . " FROM " . static::junctionTableName($fieldName) . " WHERE " . static::table() . " = ?", [$this->_x_fields['id']]);
+                $statement = self::execute("SELECT `" . $signature->type->relatedEntity::table() . "` FROM `" . static::junctionTableName($fieldName) . "` WHERE `" . static::table() . "` = ?", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
                     $array[$fieldName] = [];
@@ -610,7 +636,7 @@ abstract class Entity extends XUA
         } else {
             [$columnsExpression, $keys] = self::columnsExpression($this);
             if ($columnsExpression) {
-                $statement = self::execute("SELECT $columnsExpression FROM " . static::table() . " WHERE " . static::table() . ".id = ? LIMIT 1", [$this->_x_fields['id']]);
+                $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` WHERE `" . static::table() . "`.`id` = ? LIMIT 1", [$this->_x_fields['id']]);
                 $rawArray = $statement->fetch(PDO::FETCH_NUM);
                 if ($rawArray) {
                     foreach ($keys as $i => $key) {
@@ -643,7 +669,7 @@ abstract class Entity extends XUA
             $placeHolders = [];
             $values = [];
             foreach ($array as $key => $value) {
-                $columnNames[] = $key;
+                $columnNames[] = '`' . $key . '`';
                 $placeHolders[] = '?';
                 $values[] = $value;
             }
@@ -651,14 +677,14 @@ abstract class Entity extends XUA
             $columnNames = implode(', ', $columnNames);
             $placeHolders = implode(', ', $placeHolders);
 
-            $query = "INSERT INTO " . static::table() . " ($columnNames) VALUES ($placeHolders)";
+            $query = "INSERT INTO `" . static::table() . "` ($columnNames) VALUES ($placeHolders)";
             $bind = $values;
             $insert = true;
         } else {
             $expressions = [];
             $values = [];
             foreach ($array as $key => $value) {
-                $expressions[] = "$key = ?";
+                $expressions[] = "`$key` = ?";
                 $values[] = $value;
             }
 
@@ -666,7 +692,7 @@ abstract class Entity extends XUA
             $values[] = $this->_x_fields['id'];
 
             if ($expressions) {
-                $query = "UPDATE " . static::table() . " SET $expressions WHERE id = ?";
+                $query = "UPDATE `" . static::table() . "` SET $expressions WHERE `id` = ?";
                 $bind = $values;
             }
         }
@@ -731,9 +757,9 @@ abstract class Entity extends XUA
 
                 if ($removingIds) {
                     if ($signature->type->invOptional) {
-                        self::execute("UPDATE " . $signature->type->relatedEntity::table() . " SET " . $signature->type->invName . " = NULL WHERE id IN (?)", [$removingIds]);
+                        self::execute("UPDATE `" . $signature->type->relatedEntity::table() . "` SET `" . $signature->type->invName . "` = NULL WHERE `id` IN (?)", [$removingIds]);
                     } else {
-                        self::execute("DELETE FROM " . $signature->type->relatedEntity::table() . " WHERE id IN (?)", [$removingIds]);
+                        self::execute("DELETE FROM `" . $signature->type->relatedEntity::table() . "` WHERE `id` IN (?)", [$removingIds]);
                     }
                 }
 
@@ -761,7 +787,7 @@ abstract class Entity extends XUA
                     }
                 }
                 if ($removingIds) {
-                    $relNNQuery .= "DELETE FROM " . static::junctionTableName($key) . " WHERE $leftColumn = ? AND $rightColumn IN (?);";
+                    $relNNQuery .= "DELETE FROM `" . static::junctionTableName($key) . "` WHERE `$leftColumn` = ? AND `$rightColumn` IN (?);";
                     $relNNBind[] = $this->_x_fields['id'];
                     $relNNBind[] = $removingIds;
                 }
@@ -850,9 +876,9 @@ abstract class Entity extends XUA
                 continue;
             }
             if (is_a($signature->type, DatabaseVirtualField::class)) {
-                $expression =  ($signature->type->getter)($signature->p()) . ' ' . $signature->name;
+                $expression =  ($signature->type->getter)($signature->p()) . ' `' . $signature->name . '`';
             } elseif ($signature->type->databaseType() != 'DONT STORE') {
-                $expression = static::table() . '.' . $signature->name;
+                $expression = '`' . static::table() . '`.`' . $signature->name . '`';
             } else {
                 continue;
             }

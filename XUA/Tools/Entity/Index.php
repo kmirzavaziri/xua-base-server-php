@@ -27,7 +27,7 @@ class Index
     {
         $fieldExpression = [];
         foreach ($this->fields as $field => $order) {
-            $fieldExpression[] = $field . ' ' . $order;
+            $fieldExpression[] = '`' . $field . '` ' . $order;
         }
         if ($this->name == 'PRIMARY') {
             return 'PRIMARY KEY (' . implode(', ', $fieldExpression) . ')';

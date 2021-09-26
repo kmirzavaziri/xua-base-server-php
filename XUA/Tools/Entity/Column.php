@@ -47,7 +47,7 @@ class Column
     public function toQuery() : string
     {
         $nullExpression = $this->Null == 'YES' ? 'NULL' : 'NOT NULL';
-        return trim("$this->Field $this->Type $nullExpression $this->Extra");
+        return trim("`$this->Field` $this->Type $nullExpression $this->Extra");
     }
 
     public function eq(Column $column) : bool

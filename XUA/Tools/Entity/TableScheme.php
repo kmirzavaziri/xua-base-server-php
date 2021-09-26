@@ -27,7 +27,7 @@ final class TableScheme
             return $index->toQuery();
         }, $this->indexes));
 
-        Entity::execute("CREATE TABLE $this->tableName ($columns,\n\t$indexes)");
+        Entity::execute("CREATE TABLE `$this->tableName` ($columns,\n\t$indexes)");
     }
 
     private function columnsAlter(false|PDOStatement $rawOldColumns): string
@@ -149,7 +149,7 @@ final class TableScheme
     public function alter() : string
     {
         try {
-            $rawOldColumns = Entity::connection()->query("DESCRIBE $this->tableName", PDO::FETCH_CLASS, Column::class);
+            $rawOldColumns = Entity::connection()->query("DESCRIBE `$this->tableName`", PDO::FETCH_CLASS, Column::class);
         } catch (PDOException $e) {
             // Specified by variable $rawOldColumns being undefined
         }
@@ -160,7 +160,7 @@ final class TableScheme
         } else {
             $columnsAlter = $this->columnsAlter($rawOldColumns);
 
-            $rawOldIndexes = Entity::connection()->query("SHOW INDEX FROM $this->tableName");
+            $rawOldIndexes = Entity::execute("SHOW INDEX FROM `$this->tableName`");
             $indexesAlter = $this->indexesAlter($rawOldIndexes);
 
             if (!$columnsAlter and !$indexesAlter) {

@@ -43,10 +43,10 @@ class Join
 
         if ($type->columnHere) {
             $name = $this->joiningField->name;
-            return "$this->type JOIN $rightTableName $rightTableNameAlias ON $this->leftTableNameAlias.$name = $rightTableNameAlias.id";
+            return "$this->type JOIN `$rightTableName` `$rightTableNameAlias` ON `$this->leftTableNameAlias`.`$name` = `$rightTableNameAlias`.`id`";
         } elseif ($type->columnThere) {
             $name = $type->invName;
-            return "$this->type JOIN $rightTableName $rightTableNameAlias ON $this->leftTableNameAlias.id = $rightTableNameAlias.$name";
+            return "$this->type JOIN `$rightTableName` `$rightTableNameAlias` ON `$this->leftTableNameAlias`.`id` = `$rightTableNameAlias`.`$name`";
         } else { // $type->hasJunction
             $junctionTableName = $this->joiningField->entity::junctionTableName($this->joiningField->name);
             $junctionEntityAlias = $this->leftTableNameAlias . '_j_' . $this->joiningField->name;

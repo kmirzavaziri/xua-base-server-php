@@ -76,7 +76,7 @@ final class Condition
         /** @var Condition $condition */
         $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
 
-        $condition->template = str_replace('$', $field->name(), $relation);
+        $condition->template = str_replace('$', '`' . $field->name() . '`', $relation);
         $condition->joins = $field->joins();
 
         $fieldType = $field->signature->type;
