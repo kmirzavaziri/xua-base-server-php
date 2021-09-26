@@ -32,7 +32,7 @@ class Media extends Entity
             'product' => new EntityFieldSignature(
                 static::class, 'product',
                 new EntityRelation([
-                    'relatedEntity' => Product::class,
+                    'relatedEntity' => \Entities\Product::class,
                     'relation' => EntityRelation::REL_RN1,
                     'invName' => 'gallery',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,
