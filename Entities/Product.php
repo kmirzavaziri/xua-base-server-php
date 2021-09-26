@@ -20,6 +20,7 @@ use Supers\Basics\Strings\Text;
 use Supers\Customs\Name;
 use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
+use XUA\Tools\Entity\Condition;
 use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
 
@@ -72,9 +73,12 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?array paymentPlan
  * @method static EntityFieldSignature F_paymentPlan() The Signature of: Field `paymentPlan`
  * @method static ConditionField C_paymentPlan() The Condition Field of: Field `paymentPlan`
- * @property int stock
+ * @property mixed stock
  * @method static EntityFieldSignature F_stock() The Signature of: Field `stock`
  * @method static ConditionField C_stock() The Condition Field of: Field `stock`
+ * @property \Entities\Item[] items
+ * @method static EntityFieldSignature F_items() The Signature of: Field `items`
+ * @method static ConditionField C_items() The Condition Field of: Field `items`
  */
 class Product extends Entity
 {
@@ -200,8 +204,23 @@ class Product extends Entity
             ),
             'stock' => new EntityFieldSignature(
                 static::class, 'stock',
-                new DecimalRange(['nullable' => false, 'fractionalLength' => 0, 'min' => 0, 'max' => 10_000_000_000]),
+                new PhpVirtualField(['getter' => function (Product $product) {
+                    return Item::count(
+                        Condition::leaf(Item::C_product()->rel(Product::C_id()), Condition::EQ, $product->id)
+                            ->and(Item::C_status(), Condition::EQ, Item::STATUS_AVAILABLE)
+                    );
+                }]),
                 0
+            ),
+            'items' => new EntityFieldSignature(
+                static::class, 'items',
+                new EntityRelation([
+                    'relatedEntity' => \Entities\Item::class,
+                    'relation' => EntityRelation::REL_1NR,
+                    'invName' => 'product',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
+                ]),
+                []
             ),
         ]);
     }

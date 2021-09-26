@@ -18,13 +18,13 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property User rater
+ * @property \Entities\User rater
  * @method static EntityFieldSignature F_rater() The Signature of: Field `rater`
  * @method static ConditionField C_rater() The Condition Field of: Field `rater`
  * @property int rate
  * @method static EntityFieldSignature F_rate() The Signature of: Field `rate`
  * @method static ConditionField C_rate() The Condition Field of: Field `rate`
- * @property Farm farm
+ * @property \Entities\Farm farm
  * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
  * @method static ConditionField C_farm() The Condition Field of: Field `farm`
  */
@@ -38,7 +38,7 @@ class Rate extends Entity
                 new EntityRelation([
                     'relatedEntity' => User::class,
                     'relation' => EntityRelation::REL_RN1,
-                    'invName' => 'ratedFarms',
+                    'invName' => 'farmRates',
                     'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []

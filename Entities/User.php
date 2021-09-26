@@ -153,12 +153,15 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property \Entities\Farm[] farms
  * @method static EntityFieldSignature F_farms() The Signature of: Field `farms`
  * @method static ConditionField C_farms() The Condition Field of: Field `farms`
- * @property \Entities\Farm\Rate[] ratedFarms
- * @method static EntityFieldSignature F_ratedFarms() The Signature of: Field `ratedFarms`
- * @method static ConditionField C_ratedFarms() The Condition Field of: Field `ratedFarms`
- * @property \Entities\Product\Rate[] ratedProducts
- * @method static EntityFieldSignature F_ratedProducts() The Signature of: Field `ratedProducts`
- * @method static ConditionField C_ratedProducts() The Condition Field of: Field `ratedProducts`
+ * @property \Entities\Farm\Rate[] farmRates
+ * @method static EntityFieldSignature F_farmRates() The Signature of: Field `farmRates`
+ * @method static ConditionField C_farmRates() The Condition Field of: Field `farmRates`
+ * @property \Entities\Product\Rate[] productRates
+ * @method static EntityFieldSignature F_productRates() The Signature of: Field `productRates`
+ * @method static ConditionField C_productRates() The Condition Field of: Field `productRates`
+ * @property \Entities\Order[] orders
+ * @method static EntityFieldSignature F_orders() The Signature of: Field `orders`
+ * @method static ConditionField C_orders() The Condition Field of: Field `orders`
  */
 class User extends Entity
 {
@@ -400,6 +403,7 @@ class User extends Entity
                 new Boolean([]),
                 false
             ),
+            # Relational Information
             'farms' => new EntityFieldSignature(
                 static::class, 'farms',
                 new EntityRelation([
@@ -410,22 +414,32 @@ class User extends Entity
                 ]),
                 []
             ),
-            'ratedFarms' => new EntityFieldSignature(
-                static::class, 'ratedFarms',
+            'farmRates' => new EntityFieldSignature(
+                static::class, 'farmRates',
                 new EntityRelation([
-                    'relatedEntity' => Farm\Rate::class,
+                    'relatedEntity' => \Entities\Farm\Rate::class,
                     'relation' => EntityRelation::REL_1NR,
                     'invName' => 'rater',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []
             ),
-            'ratedProducts' => new EntityFieldSignature(
-                static::class, 'ratedProducts',
+            'productRates' => new EntityFieldSignature(
+                static::class, 'productRates',
                 new EntityRelation([
-                    'relatedEntity' => Product\Rate::class,
+                    'relatedEntity' => \Entities\Product\Rate::class,
                     'relation' => EntityRelation::REL_1NR,
                     'invName' => 'rater',
+                    'definedOn' => EntityRelation::DEFINED_ON_THERE,
+                ]),
+                []
+            ),
+            'orders' => new EntityFieldSignature(
+                static::class, 'orders',
+                new EntityRelation([
+                    'relatedEntity' => \Entities\Order::class,
+                    'relation' => EntityRelation::REL_1NR,
+                    'invName' => 'customer',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
                 []

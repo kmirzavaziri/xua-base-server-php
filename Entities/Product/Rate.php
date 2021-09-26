@@ -35,7 +35,7 @@ class Rate extends Entity
                 new EntityRelation([
                     'relatedEntity' => User::class,
                     'relation' => EntityRelation::REL_RN1,
-                    'invName' => 'ratedProducts',
+                    'invName' => 'productRates',
                     'definedOn' => EntityRelation::DEFINED_ON_HERE,
                 ]),
                 []
