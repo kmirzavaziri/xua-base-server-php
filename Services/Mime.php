@@ -35,8 +35,10 @@ abstract class Mime extends Service
     const MIME_APPLICATION_VND_MS_CAB_COMPRESSED = 'application/vnd.ms-cab-compressed';
     const MIME_APPLICATION_POSTSCRIPT = 'application/postscript';
     const MIME_APPLICATION_MSWORD = 'application/msword';
+    const MIME_APPLICATION_MSWORD_X = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     const MIME_APPLICATION_RTF = 'application/rtf';
     const MIME_APPLICATION_VND_MS_EXCEL = 'application/vnd.ms-excel';
+    const MIME_APPLICATION_VND_MS_EXCEL_X = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
     const MIME_APPLICATION_VND_MS_POWERPOINT = 'application/vnd.ms-powerpoint';
     const MIME_APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT = 'application/vnd.oasis.opendocument.text';
     const MIME_APPLICATION_VND_OASIS_OPENDOCUMENT_SPREADSHEET = 'application/vnd.oasis.opendocument.spreadsheet';
