@@ -36,7 +36,7 @@ final class ConditionField
 
     public function name() : string
     {
-        return $this->alias . '.' . $this->signature->name;
+        return '`' . $this->alias . '`.`' . $this->signature->name . '`';
     }
 
     public function joins(): array
