@@ -52,7 +52,7 @@ class Category extends Entity
                     'invName' => 'category',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,
                 ]),
-                null
+                []
             ),
         ]);
     }
