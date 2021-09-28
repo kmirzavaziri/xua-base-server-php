@@ -50,6 +50,13 @@ use XUA\Tools\Signature\EntityFieldSignature;
  */
 class Session extends Entity
 {
+    const CODE_SENT_VIA_SMS = 'sms';
+    const CODE_SENT_VIA_EMAIL = 'email';
+    const CODE_SENT_VIA_ = [
+        self::CODE_SENT_VIA_SMS,
+        self::CODE_SENT_VIA_EMAIL,
+    ];
+
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
@@ -80,7 +87,7 @@ class Session extends Entity
             ),
             'codeSentVia' => new EntityFieldSignature(
                 static::class, 'codeSentVia',
-                new Enum(['values' => ['sms', 'email']]),
+                new Enum(['values' => self::CODE_SENT_VIA_]),
                 null
             ),
             'systemInfo' => new EntityFieldSignature(

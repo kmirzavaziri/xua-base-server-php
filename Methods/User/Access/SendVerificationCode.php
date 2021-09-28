@@ -87,7 +87,7 @@ class SendVerificationCode extends Method
         $session->user = $user;
         $session->verificationCode = $verificationCode;
         $session->codeSentAt = new DateTimeInstance();
-        $session->codeSentVia = $isEmail ? 'email' : 'sms';
+        $session->codeSentVia = $isEmail ? Session::CODE_SENT_VIA_EMAIL : Session::CODE_SENT_VIA_SMS;
         $session->store();
     }
 }
