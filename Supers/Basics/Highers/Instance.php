@@ -45,7 +45,7 @@ class Instance extends Super
                 }
             } else {
                 if (!($input instanceof $this->of)) {
-                    $message = "Class " . get_class($input) . " is not an subclass of class $this->of.";
+                    $message = "Class " . get_class($input) . " is not a subclass of class $this->of.";
                     return false;
                 }
             }
@@ -59,7 +59,7 @@ class Instance extends Super
                 }
             } else {
                 if (!is_a($input, $this->of, true)) {
-                    $message = "Class $input is not an subclass of class $this->of.";
+                    $message = "Class $input is not a subclass of class $this->of.";
                     return false;
                 }
             }
