@@ -126,6 +126,29 @@ use XUA\Tools\Signature\EntityFieldSignature;
  */
 class Farm extends ChangeTracker
 {
+    const STATUS_APPROVED = 'approved';
+    const STATUS_ACTIVATE = 'activated';
+    const STATUS_DEACTIVATED = 'deactivated';
+    const STATUS_ = [
+        self::STATUS_APPROVED,
+        self::STATUS_ACTIVATE,
+        self::STATUS_DEACTIVATED,
+    ];
+
+    const AGENT_TYPE_OWNER = 'owner';
+    const AGENT_TYPE_ATTORNEY = 'attorney';
+    const AGENT_TYPE_ = [
+        self::AGENT_TYPE_OWNER,
+        self::AGENT_TYPE_ATTORNEY,
+    ];
+
+    const OWNERSHIP_DEED = 'deed';
+    const OWNERSHIP_AGREEMENT = 'agreement';
+    const OWNERSHIP_ = [
+        self::OWNERSHIP_DEED,
+        self::OWNERSHIP_AGREEMENT,
+    ];
+
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
@@ -182,7 +205,7 @@ class Farm extends ChangeTracker
             ),
             'status' => new EntityFieldSignature(
                 static::class, 'status',
-                new Enum(['nullable' => false, 'values' => ['approved', 'activated', 'deactivated']]),
+                new Enum(['nullable' => false, 'values' => self::STATUS_]),
                 null
             ),
             'gallery' => new EntityFieldSignature(
@@ -217,7 +240,7 @@ class Farm extends ChangeTracker
             'agentType' => new EntityFieldSignature(
                 static::class, 'agentType' .
                 '',
-                new Enum(['nullable' => false, 'values' => ['owner', 'attorney']]),
+                new Enum(['nullable' => false, 'values' => self::AGENT_TYPE_]),
                 null
             ),
             'products' => new EntityFieldSignature(
@@ -233,7 +256,7 @@ class Farm extends ChangeTracker
             'ownership' => new EntityFieldSignature(
                 static::class, 'ownership' .
                 '',
-                new Enum(['nullable' => false, 'values' => ['deed', 'agreement']]),
+                new Enum(['nullable' => false, 'values' => self::OWNERSHIP_]),
                 null
             ),
             'agreementPicture' => new EntityFieldSignature(
@@ -369,7 +392,7 @@ class Farm extends ChangeTracker
         }
 
         // Deed & Agreement
-        if ($this->ownership == 'agreement') {
+        if ($this->ownership == self::OWNERSHIP_AGREEMENT) {
             if (!$this->agreementPicture) {
                 $exception->setError('agreementPicture', ExpressionService::get('errormessage.required.entity.field.not.provided'));
             }
@@ -377,7 +400,7 @@ class Farm extends ChangeTracker
                 $exception->setError('deedDetails', ExpressionService::get('errormessage.entity.field.must.be.empty'));
             }
         }
-        if ($this->ownership == 'deed') {
+        if ($this->ownership == self::OWNERSHIP_DEED) {
             if (!$this->deedDetails) {
                 $exception->setError('deedDetails', ExpressionService::get('errormessage.required.entity.field.not.provided'));
             }
