@@ -46,6 +46,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
 class Item extends ChangeTracker
 {
     const STATUS_UNTRACKED = 'untracked';
+    const STATUS_UNAVAILABLE = 'unavailable';
     const STATUS_AVAILABLE = 'available';
     const STATUS_RESERVED = 'reserved';
     const STATUS_WITHHELD = 'withheld';
@@ -53,6 +54,7 @@ class Item extends ChangeTracker
     const STATUS_LOST = 'lost';
     const STATUS_ = [
         self::STATUS_UNTRACKED,
+        self::STATUS_UNAVAILABLE,
         self::STATUS_AVAILABLE,
         self::STATUS_RESERVED,
         self::STATUS_WITHHELD,
