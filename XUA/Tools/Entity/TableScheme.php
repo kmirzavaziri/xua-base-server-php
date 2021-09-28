@@ -151,6 +151,9 @@ final class TableScheme
         try {
             $rawOldColumns = Entity::connection()->query("DESCRIBE `$this->tableName`", PDO::FETCH_CLASS, Column::class);
         } catch (PDOException $e) {
+            if (!str_contains($e->getMessage(), "doesn't exist")) {
+                throw $e;
+            }
             // Specified by variable $rawOldColumns being undefined
         }
 
