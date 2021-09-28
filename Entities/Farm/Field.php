@@ -2,6 +2,7 @@
 
 namespace Entities\Farm;
 
+use Entities\ChangeTracker;
 use Entities\Farm;
 use Services\SimpleTypeService;
 use Supers\Basics\EntitySupers\EntityRelation;
@@ -16,17 +17,29 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property FieldSignature fieldSignature
+ * @property \Services\XUA\DateTimeInstance createdAt
+ * @method static EntityFieldSignature F_createdAt() The Signature of: Field `createdAt`
+ * @method static ConditionField C_createdAt() The Condition Field of: Field `createdAt`
+ * @property \Entities\User createdBy
+ * @method static EntityFieldSignature F_createdBy() The Signature of: Field `createdBy`
+ * @method static ConditionField C_createdBy() The Condition Field of: Field `createdBy`
+ * @property \Services\XUA\DateTimeInstance updatedAt
+ * @method static EntityFieldSignature F_updatedAt() The Signature of: Field `updatedAt`
+ * @method static ConditionField C_updatedAt() The Condition Field of: Field `updatedAt`
+ * @property \Entities\User updatedBy
+ * @method static EntityFieldSignature F_updatedBy() The Signature of: Field `updatedBy`
+ * @method static ConditionField C_updatedBy() The Condition Field of: Field `updatedBy`
+ * @property \Entities\Farm\FieldSignature fieldSignature
  * @method static EntityFieldSignature F_fieldSignature() The Signature of: Field `fieldSignature`
  * @method static ConditionField C_fieldSignature() The Condition Field of: Field `fieldSignature`
  * @property ?string value
  * @method static EntityFieldSignature F_value() The Signature of: Field `value`
  * @method static ConditionField C_value() The Condition Field of: Field `value`
- * @property Farm farm
+ * @property \Entities\Farm farm
  * @method static EntityFieldSignature F_farm() The Signature of: Field `farm`
  * @method static ConditionField C_farm() The Condition Field of: Field `farm`
  */
-class Field extends Entity
+class Field extends ChangeTracker
 {
     protected static function _fieldSignatures(): array
     {

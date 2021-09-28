@@ -18,6 +18,18 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
+ * @property \Services\XUA\DateTimeInstance createdAt
+ * @method static EntityFieldSignature F_createdAt() The Signature of: Field `createdAt`
+ * @method static ConditionField C_createdAt() The Condition Field of: Field `createdAt`
+ * @property \Entities\User createdBy
+ * @method static EntityFieldSignature F_createdBy() The Signature of: Field `createdBy`
+ * @method static ConditionField C_createdBy() The Condition Field of: Field `createdBy`
+ * @property \Services\XUA\DateTimeInstance updatedAt
+ * @method static EntityFieldSignature F_updatedAt() The Signature of: Field `updatedAt`
+ * @method static ConditionField C_updatedAt() The Condition Field of: Field `updatedAt`
+ * @property \Entities\User updatedBy
+ * @method static EntityFieldSignature F_updatedBy() The Signature of: Field `updatedBy`
+ * @method static ConditionField C_updatedBy() The Condition Field of: Field `updatedBy`
  * @property \Entities\User user
  * @method static EntityFieldSignature F_user() The Signature of: Field `user`
  * @method static ConditionField C_user() The Condition Field of: Field `user`
@@ -36,14 +48,11 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property bool verified
  * @method static EntityFieldSignature F_verified() The Signature of: Field `verified`
  * @method static ConditionField C_verified() The Condition Field of: Field `verified`
- * @property \Services\XUA\DateTimeInstance createdAt
- * @method static EntityFieldSignature F_createdAt() The Signature of: Field `createdAt`
- * @method static ConditionField C_createdAt() The Condition Field of: Field `createdAt`
- * @property \Services\XUA\DateTimeInstance verifiedAt
+ * @property null|\Services\XUA\DateTimeInstance verifiedAt
  * @method static EntityFieldSignature F_verifiedAt() The Signature of: Field `verifiedAt`
  * @method static ConditionField C_verifiedAt() The Condition Field of: Field `verifiedAt`
  */
-class Transaction extends Entity
+class Transaction extends ChangeTracker
 {
     protected static function _fieldSignatures(): array
     {

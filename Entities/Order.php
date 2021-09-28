@@ -16,6 +16,18 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
+ * @property \Services\XUA\DateTimeInstance createdAt
+ * @method static EntityFieldSignature F_createdAt() The Signature of: Field `createdAt`
+ * @method static ConditionField C_createdAt() The Condition Field of: Field `createdAt`
+ * @property \Entities\User createdBy
+ * @method static EntityFieldSignature F_createdBy() The Signature of: Field `createdBy`
+ * @method static ConditionField C_createdBy() The Condition Field of: Field `createdBy`
+ * @property \Services\XUA\DateTimeInstance updatedAt
+ * @method static EntityFieldSignature F_updatedAt() The Signature of: Field `updatedAt`
+ * @method static ConditionField C_updatedAt() The Condition Field of: Field `updatedAt`
+ * @property \Entities\User updatedBy
+ * @method static EntityFieldSignature F_updatedBy() The Signature of: Field `updatedBy`
+ * @method static ConditionField C_updatedBy() The Condition Field of: Field `updatedBy`
  * @property \Entities\User customer
  * @method static EntityFieldSignature F_customer() The Signature of: Field `customer`
  * @method static ConditionField C_customer() The Condition Field of: Field `customer`
@@ -32,7 +44,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @method static EntityFieldSignature F_transaction() The Signature of: Field `transaction`
  * @method static ConditionField C_transaction() The Condition Field of: Field `transaction`
  */
-class Order extends Entity
+class Order extends ChangeTracker
 {
     const STATUS_DRAFT = 'draft';
     const STATUS_PAYING = 'paying';

@@ -22,7 +22,6 @@ use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Text;
 use Supers\Customs\Name;
-use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Entity\ConditionField;
 use XUA\Tools\Signature\EntityFieldSignature;
@@ -31,6 +30,18 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
+ * @property \Services\XUA\DateTimeInstance createdAt
+ * @method static EntityFieldSignature F_createdAt() The Signature of: Field `createdAt`
+ * @method static ConditionField C_createdAt() The Condition Field of: Field `createdAt`
+ * @property \Entities\User createdBy
+ * @method static EntityFieldSignature F_createdBy() The Signature of: Field `createdBy`
+ * @method static ConditionField C_createdBy() The Condition Field of: Field `createdBy`
+ * @property \Services\XUA\DateTimeInstance updatedAt
+ * @method static EntityFieldSignature F_updatedAt() The Signature of: Field `updatedAt`
+ * @method static ConditionField C_updatedAt() The Condition Field of: Field `updatedAt`
+ * @property \Entities\User updatedBy
+ * @method static EntityFieldSignature F_updatedBy() The Signature of: Field `updatedBy`
+ * @method static ConditionField C_updatedBy() The Condition Field of: Field `updatedBy`
  * @property string title
  * @method static EntityFieldSignature F_title() The Signature of: Field `title`
  * @method static ConditionField C_title() The Condition Field of: Field `title`
@@ -76,7 +87,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?\Services\XUA\FileInstance agreementPicture
  * @method static EntityFieldSignature F_agreementPicture() The Signature of: Field `agreementPicture`
  * @method static ConditionField C_agreementPicture() The Condition Field of: Field `agreementPicture`
- * @property array deedDetails
+ * @property ?array deedDetails
  * @method static EntityFieldSignature F_deedDetails() The Signature of: Field `deedDetails`
  * @method static ConditionField C_deedDetails() The Condition Field of: Field `deedDetails`
  * @property \Entities\Dataset\IranAdministrativeDivision geographicDivision
@@ -113,7 +124,7 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @method static EntityFieldSignature F_proposal() The Signature of: Field `proposal`
  * @method static ConditionField C_proposal() The Condition Field of: Field `proposal`
  */
-class Farm extends Entity
+class Farm extends ChangeTracker
 {
     protected static function _fieldSignatures(): array
     {

@@ -12,6 +12,7 @@ use Supers\Basics\Highers\Sequence;
 use Supers\Basics\Numerics\Decimal;
 use Supers\Basics\Strings\Enum;
 use Supers\Basics\Strings\Symbol;
+use Supers\Basics\Universal;
 use XUA\Entity;
 use XUA\Exceptions\SuperValidationException;
 use XUA\Super;
@@ -96,7 +97,7 @@ class EntityRelation extends Super
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'relatedEntity' => new SuperArgumentSignature(new Instance(['of' => Entity::class, 'acceptClass' => true]), true, null, false),
+            'relatedEntity' => new SuperArgumentSignature(new Universal([]), true, null, false),
             'relation' => new SuperArgumentSignature(new Enum(['values' => self::REL_]), true, null, false),
             'invName' => new SuperArgumentSignature(new Symbol(['nullable' => true]), false, null, false),
             'definedOn' => new SuperArgumentSignature(new Enum(['values' => self::DEFINED_ON_]), false, EntityRelation::DEFINED_ON_HERE, false),

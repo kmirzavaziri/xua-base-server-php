@@ -2,6 +2,7 @@
 
 namespace Entities\Product;
 
+use Entities\ChangeTracker;
 use Services\SimpleTypeService;
 use Supers\Basics\EntitySupers\EntityRelation;
 use Supers\Basics\Highers\Map;
@@ -17,9 +18,18 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
- * @property string name
- * @method static EntityFieldSignature F_name() The Signature of: Field `name`
- * @method static ConditionField C_name() The Condition Field of: Field `name`
+ * @property \Services\XUA\DateTimeInstance createdAt
+ * @method static EntityFieldSignature F_createdAt() The Signature of: Field `createdAt`
+ * @method static ConditionField C_createdAt() The Condition Field of: Field `createdAt`
+ * @property \Entities\User createdBy
+ * @method static EntityFieldSignature F_createdBy() The Signature of: Field `createdBy`
+ * @method static ConditionField C_createdBy() The Condition Field of: Field `createdBy`
+ * @property \Services\XUA\DateTimeInstance updatedAt
+ * @method static EntityFieldSignature F_updatedAt() The Signature of: Field `updatedAt`
+ * @method static ConditionField C_updatedAt() The Condition Field of: Field `updatedAt`
+ * @property \Entities\User updatedBy
+ * @method static EntityFieldSignature F_updatedBy() The Signature of: Field `updatedBy`
+ * @method static ConditionField C_updatedBy() The Condition Field of: Field `updatedBy`
  * @property string title
  * @method static EntityFieldSignature F_title() The Signature of: Field `title`
  * @method static ConditionField C_title() The Condition Field of: Field `title`
@@ -29,11 +39,11 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?array typeParams
  * @method static EntityFieldSignature F_typeParams() The Signature of: Field `typeParams`
  * @method static ConditionField C_typeParams() The Condition Field of: Field `typeParams`
- * @property Category category
+ * @property \Entities\Product\Category category
  * @method static EntityFieldSignature F_category() The Signature of: Field `category`
  * @method static ConditionField C_category() The Condition Field of: Field `category`
  */
-class FieldSignature extends Entity
+class FieldSignature extends ChangeTracker
 {
     protected static function _fieldSignatures(): array
     {
@@ -59,7 +69,7 @@ class FieldSignature extends Entity
             'category' => new EntityFieldSignature(
                 static::class, 'category',
                 new EntityRelation([
-                    'relatedEntity' => Category::class,
+                    'relatedEntity' => \Entities\Product\Category::class,
                     'relation' => EntityRelation::REL_RN1,
                     'invName' => 'additionalFields',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,

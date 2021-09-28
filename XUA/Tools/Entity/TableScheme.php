@@ -167,7 +167,7 @@ final class TableScheme
                 return "";
             }
 
-            return "ALTER TABLE $this->tableName$columnsAlter$indexesAlter\nENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;";
+            return "ALTER TABLE `$this->tableName`$columnsAlter$indexesAlter\nENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_persian_ci;";
         }
     }
 
