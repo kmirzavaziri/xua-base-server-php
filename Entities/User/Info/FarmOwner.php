@@ -64,7 +64,7 @@ class FarmOwner extends ChangeTracker
             ),
             'emergencyPhoneNumber' => new EntityFieldSignature(
                 static::class, 'emergencyPhoneNumber',
-                new IranPhone(['nullable' => false, 'type' => 'both']),
+                new IranPhone(['nullable' => false, 'type' => IranPhone::TYPE_BOTH]),
                 null
             ),
             'skills' => new EntityFieldSignature(

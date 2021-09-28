@@ -129,7 +129,7 @@ abstract class UserService extends Service
 
     public static function getUserByEmailOrPhone(string &$emailOrPhone, ?bool &$isEmail): User
     {
-        $cellphoneType = new IranPhone(['type' => 'cellphone']);
+        $cellphoneType = new IranPhone(['type' => IranPhone::TYPE_CELLPHONE]);
         $EmailType = new Email([]);
         $isEmail = false;
         if ($cellphoneType->accepts($emailOrPhone)) {

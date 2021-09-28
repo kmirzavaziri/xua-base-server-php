@@ -333,7 +333,7 @@ class User extends ChangeTracker
             # Contact Information
             'cellphoneNumber' => new EntityFieldSignature(
                 static::class, 'cellphoneNumber',
-                new IranPhone(['nullable' => true, 'type' => 'cellphone']),
+                new IranPhone(['nullable' => true, 'type' => IranPhone::TYPE_CELLPHONE]),
                 null
             ),
             'email' => new EntityFieldSignature(
@@ -363,12 +363,12 @@ class User extends ChangeTracker
             ),
             'landlinePhoneNumber' => new EntityFieldSignature(
                 static::class, 'landlinePhoneNumber',
-                new IranPhone(['nullable' => true, 'type' => 'landline']),
+                new IranPhone(['nullable' => true, 'type' => IranPhone::TYPE_LANDLINE]),
                 null
             ),
             'faxNumber' => new EntityFieldSignature(
                 static::class, 'faxNumber',
-                new IranPhone(['nullable' => true, 'type' => 'landline']),
+                new IranPhone(['nullable' => true, 'type' => IranPhone::TYPE_LANDLINE]),
                 null
             ),
             'website' => new EntityFieldSignature(

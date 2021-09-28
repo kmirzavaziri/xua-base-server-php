@@ -23,10 +23,19 @@ use XUA\Tools\Signature\SuperArgumentSignature;
  */
 class IranPhone extends Text
 {
+    const TYPE_CELLPHONE = 'cellphone';
+    const TYPE_LANDLINE = 'landline';
+    const TYPE_BOTH = 'both';
+    const TYPE_ = [
+        self::TYPE_CELLPHONE,
+        self::TYPE_LANDLINE,
+        self::TYPE_BOTH,
+    ];
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'type' => new SuperArgumentSignature(new Enum(['values' => ['cellphone', 'landline', 'both']]), true, null, false),
+            'type' => new SuperArgumentSignature(new Enum(['values' => self::TYPE_]), true, null, false),
             'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 13, true),
             'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 13, true),
         ]);
@@ -61,13 +70,13 @@ class IranPhone extends Text
         $validLandlinePrefixesPattern = '(' . implode('|', $landlineValidPrefixes) . ')[0-9]';
 
         switch ($this->type) {
-            case 'cellphone':
+            case self::TYPE_CELLPHONE:
                 $message = ExpressionService::get('errormessage.cellphone.format.is.not.valid');
                 return preg_match('/^\+98' . $validCellphonePrefixesPattern . '[0-9]{7}$/', $input);
-            case 'landline':
+            case self::TYPE_LANDLINE:
                 $message = ExpressionService::get('errormessage.landline.format.is.not.valid');
                 return preg_match('/^\+98' . $validLandlinePrefixesPattern . '[0-9]{7}$/', $input);
-            case 'both':
+            case self::TYPE_BOTH:
                 $message = ExpressionService::get('errormessage.both.format.is.not.valid');
                 return
                     preg_match('/^\+98' . $validCellphonePrefixesPattern . '[0-9]{7}$/', $input) or
@@ -82,8 +91,8 @@ class IranPhone extends Text
     {
         $input = parent::_unmarshal($input);
         return match ($this->type) {
-            'cellphone' => strlen($input) < 9 ? $input : '+989' . substr($input, -9),
-            'landline', 'both' => strlen($input) < 10 ? $input : '+98' . substr($input, -10),
+            self::TYPE_CELLPHONE => strlen($input) < 9 ? $input : '+989' . substr($input, -9),
+            self::TYPE_LANDLINE, self::TYPE_BOTH => strlen($input) < 10 ? $input : '+98' . substr($input, -10),
             default => $input,
         };
     }
