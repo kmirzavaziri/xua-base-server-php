@@ -177,6 +177,38 @@ use XUA\Tools\Signature\EntityFieldSignature;
  */
 class User extends ChangeTracker
 {
+    const GENDER_MALE = 'male';
+    const GENDER_FEMALE = 'female';
+    const GENDER_ = [
+        self::GENDER_MALE,
+        self::GENDER_FEMALE,
+    ];
+
+    const NATIONALITY_IRANIAN = 'iranian';
+    const NATIONALITY_FOREIGN = 'foreign';
+    const NATIONALITY_ = [
+        self::NATIONALITY_IRANIAN,
+        self::NATIONALITY_FOREIGN,
+    ];
+
+    const PERSON_TYPE_JURIDICAL = 'juridical';
+    const PERSON_TYPE_NATURAL = 'natural';
+    const PERSON_TYPE_ = [
+        self::PERSON_TYPE_JURIDICAL,
+        self::PERSON_TYPE_NATURAL,
+    ];
+
+    const REFERRAL_METHOD_WEBSITE = 'website';
+    const REFERRAL_METHOD_SOCIAL_MEDIA = 'social_media';
+    const REFERRAL_METHOD_USER = 'user';
+    const REFERRAL_METHOD_OTHER = 'other';
+    const REFERRAL_METHOD_ = [
+        self::REFERRAL_METHOD_WEBSITE,
+        self::REFERRAL_METHOD_SOCIAL_MEDIA,
+        self::REFERRAL_METHOD_USER,
+        self::REFERRAL_METHOD_OTHER,
+    ];
+
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
@@ -231,7 +263,7 @@ class User extends ChangeTracker
             ),
             'gender' => new EntityFieldSignature(
                 static::class, 'gender',
-                new Enum(['nullable' => true, 'values' => ['male', 'female']]),
+                new Enum(['nullable' => true, 'values' => self::GENDER_]),
                 null
             ),
             'birthDate' => new EntityFieldSignature(
@@ -241,7 +273,7 @@ class User extends ChangeTracker
             ),
             'nationality' => new EntityFieldSignature(
                 static::class, 'nationality',
-                new Enum(['nullable' => true, 'values' => ['iranian', 'foreign']]),
+                new Enum(['nullable' => true, 'values' => self::NATIONALITY_]),
                 null
             ),
             'education' => new EntityFieldSignature(
@@ -347,7 +379,7 @@ class User extends ChangeTracker
             # Other Information
             'personType' => new EntityFieldSignature(
                 static::class, 'personType',
-                new Enum(['nullable' => true, 'values' => ['juridical', 'natural']]),
+                new Enum(['nullable' => true, 'values' => self::PERSON_TYPE_]),
                 null
             ),
             'iban' => new EntityFieldSignature(
@@ -375,7 +407,7 @@ class User extends ChangeTracker
             ),
             'referralMethod' => new EntityFieldSignature(
                 static::class, 'referralMethod',
-                new Enum(['nullable' => true, 'values' => ['website', 'socialMedia', 'referralUser', 'other']]),
+                new Enum(['nullable' => true, 'values' => self::REFERRAL_METHOD_]),
                 null
             ),
             'referralDetails' => new EntityFieldSignature(
