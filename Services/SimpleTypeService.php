@@ -26,7 +26,7 @@ abstract class SimpleTypeService extends Service
     const TYPE_DATETIME = 'dateTime';
     const TYPE_DATE = 'date';
     const TYPE_TIME = 'time';
-    const TYPES = [
+    const TYPE_ = [
         self::TYPE_BOOLEAN,
         self::TYPE_INTEGER,
         self::TYPE_DECIMAL,

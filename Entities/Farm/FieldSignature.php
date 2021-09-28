@@ -51,10 +51,7 @@ class FieldSignature extends ChangeTracker
             ),
             'type' => new EntityFieldSignature(
                 static::class, 'type',
-                new Enum([
-                    'nullable' => true,
-                    'values' => SimpleTypeService::TYPES
-                ]),
+                new Enum(['nullable' => true, 'values' => SimpleTypeService::TYPE_]),
                 null
             ),
             'typeParams' => new EntityFieldSignature(
