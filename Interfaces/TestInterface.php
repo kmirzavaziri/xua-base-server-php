@@ -3,7 +3,6 @@
 namespace Interfaces;
 
 use Entities\Item;
-use Entities\Product;
 use Services\EnvironmentService;
 use Services\ItemService;
 use XUA\InterfaceEve;
