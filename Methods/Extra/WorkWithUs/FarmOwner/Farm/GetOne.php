@@ -41,8 +41,8 @@ use XUA\VARQUE\MethodView;
  * @method static MethodItemSignature R_bakhsh() The Signature of: Response Item `bakhsh`
  * @property mixed dehestan
  * @method static MethodItemSignature R_dehestan() The Signature of: Response Item `dehestan`
- * @property mixed shahrOrRoosta
- * @method static MethodItemSignature R_shahrOrRoosta() The Signature of: Response Item `shahrOrRoosta`
+ * @property mixed shahrRoosta
+ * @method static MethodItemSignature R_shahrRoosta() The Signature of: Response Item `shahrRoosta`
  * @property ?string address
  * @method static MethodItemSignature R_address() The Signature of: Response Item `address`
  * @property null|int|float geolocationLat
@@ -81,7 +81,7 @@ class GetOne extends MethodView
             new EntityInstantField('shahrestan', function (Farm $farm) { return $farm->shahrestan?->id;}),
             new EntityInstantField('bakhsh', function (Farm $farm) { return $farm->bakhsh?->id;}),
             new EntityInstantField('dehestan', function (Farm $farm) { return $farm->dehestan?->id;}),
-            new EntityInstantField('shahrOrRoosta', function (Farm $farm) { return $farm->shahrOrRoosta?->id;}),
+            new EntityInstantField('shahrRoosta', function (Farm $farm) { return $farm->shahrRoosta?->id;}),
             Farm::F_address(),
             Farm::F_geolocationLat(),
             Farm::F_geolocationLong(),

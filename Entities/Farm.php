@@ -105,9 +105,9 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property ?\Entities\Dataset\IranAdministrativeDivision dehestan
  * @method static EntityFieldSignature F_dehestan() The Signature of: Field `dehestan`
  * @method static ConditionField C_dehestan() The Condition Field of: Field `dehestan`
- * @property ?\Entities\Dataset\IranAdministrativeDivision shahrOrRoosta
- * @method static EntityFieldSignature F_shahrOrRoosta() The Signature of: Field `shahrOrRoosta`
- * @method static ConditionField C_shahrOrRoosta() The Condition Field of: Field `shahrOrRoosta`
+ * @property ?\Entities\Dataset\IranAdministrativeDivision shahrRoosta
+ * @method static EntityFieldSignature F_shahrRoosta() The Signature of: Field `shahrRoosta`
+ * @method static ConditionField C_shahrRoosta() The Condition Field of: Field `shahrRoosta`
  * @property ?string address
  * @method static EntityFieldSignature F_address() The Signature of: Field `address`
  * @method static ConditionField C_address() The Condition Field of: Field `address`
@@ -293,7 +293,7 @@ class Farm extends ChangeTracker
                 static::class, 'ostan',
                 new PhpVirtualField([
                     'getter' => function (Farm $farm): IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, 'ostan');
+                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, IranAdministrativeDivision::TYPE_OSTAN);
                     }
                 ]),
                 null
@@ -302,7 +302,7 @@ class Farm extends ChangeTracker
                 static::class, 'shahrestan',
                 new PhpVirtualField([
                     'getter' => function (Farm $farm): IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, 'shahrestan');
+                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, IranAdministrativeDivision::TYPE_SHAHRESTAN);
                     }
                 ]),
                 null
@@ -311,7 +311,7 @@ class Farm extends ChangeTracker
                 static::class, 'bakhsh',
                 new PhpVirtualField([
                     'getter' => function (Farm $farm): ?IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, 'bakhsh');
+                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, IranAdministrativeDivision::TYPE_BAKHSH);
                     }
                 ]),
                 null
@@ -320,16 +320,16 @@ class Farm extends ChangeTracker
                 static::class, 'dehestan',
                 new PhpVirtualField([
                     'getter' => function (Farm $farm): ?IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, 'dehestan');
+                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, IranAdministrativeDivision::TYPE_DEHESTAN);
                     }
                 ]),
                 null
             ),
-            'shahrOrRoosta' => new EntityFieldSignature(
-                static::class, 'shahrOrRoosta',
+            'shahrRoosta' => new EntityFieldSignature(
+                static::class, 'shahrRoosta',
                 new PhpVirtualField([
                     'getter' => function (Farm $farm): ?IranAdministrativeDivision {
-                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, 'shahrOrRoosta');
+                        return IranAdministrativeDivisionService::getSpecificLevel($farm->geographicDivision, IranAdministrativeDivision::TYPE_SHAHR_ROOSTA);
                     }
                 ]),
                 null
@@ -372,7 +372,7 @@ class Farm extends ChangeTracker
     protected function _validation(EntityFieldException $exception): void
     {
         // Geographic Division
-        if ($this->geographicDivision->type == 'ostan') {
+        if ($this->geographicDivision->type == IranAdministrativeDivision::TYPE_OSTAN) {
             $exception->setError('geographicDivision', ExpressionService::get('errormessage.bad.geographic.division.with.title', [
                 'title' => $this->geographicDivision->title,
             ]));

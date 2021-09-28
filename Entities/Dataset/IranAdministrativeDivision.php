@@ -22,15 +22,28 @@ use XUA\Tools\Signature\EntityFieldSignature;
  * @property string type
  * @method static EntityFieldSignature F_type() The Signature of: Field `type`
  * @method static ConditionField C_type() The Condition Field of: Field `type`
- * @property IranAdministrativeDivision[] children
+ * @property \Entities\Dataset\IranAdministrativeDivision[] children
  * @method static EntityFieldSignature F_children() The Signature of: Field `children`
  * @method static ConditionField C_children() The Condition Field of: Field `children`
- * @property ?IranAdministrativeDivision parent
+ * @property ?\Entities\Dataset\IranAdministrativeDivision parent
  * @method static EntityFieldSignature F_parent() The Signature of: Field `parent`
  * @method static ConditionField C_parent() The Condition Field of: Field `parent`
  */
 class IranAdministrativeDivision extends Entity
 {
+    const TYPE_OSTAN = 'ostan';
+    const TYPE_SHAHRESTAN = 'shahrestan';
+    const TYPE_BAKHSH = 'bakhsh';
+    const TYPE_DEHESTAN = 'dehestan';
+    const TYPE_SHAHR_ROOSTA = 'shahr_roosta';
+    const TYPE_ = [
+        self::TYPE_OSTAN,
+        self::TYPE_SHAHRESTAN,
+        self::TYPE_BAKHSH,
+        self::TYPE_DEHESTAN,
+        self::TYPE_SHAHR_ROOSTA,
+    ];
+
     protected static function _fieldSignatures(): array
     {
         return array_merge(parent::_fieldSignatures(), [
@@ -46,7 +59,7 @@ class IranAdministrativeDivision extends Entity
             ),
             'type' => new EntityFieldSignature(
                 static::class, 'type',
-                new Enum(['nullable' => false, 'values' => ['ostan', 'shahrestan', 'bakhsh', 'dehestan', 'shahrOrRoosta']]),
+                new Enum(['nullable' => false, 'values' => self::TYPE_]),
                 null
             ),
             'children' => new EntityFieldSignature(
@@ -62,7 +75,7 @@ class IranAdministrativeDivision extends Entity
             'parent' => new EntityFieldSignature(
                 static::class, 'parent',
                 new EntityRelation([
-                    'relatedEntity' => IranAdministrativeDivision::class,
+                    'relatedEntity' => \Entities\Dataset\IranAdministrativeDivision::class,
                     'relation' => EntityRelation::REL_ON1,
                     'invName' => 'children',
                     'definedOn' => EntityRelation::DEFINED_ON_THERE,

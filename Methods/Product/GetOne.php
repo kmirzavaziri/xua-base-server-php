@@ -20,11 +20,11 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 /**
  * @property int Q_id
  * @method static MethodItemSignature Q_id() The Signature of: Request Item `id`
- * @property string title
+ * @property ?string title
  * @method static MethodItemSignature R_title() The Signature of: Response Item `title`
- * @property array gallery
+ * @property ?array gallery
  * @method static MethodItemSignature R_gallery() The Signature of: Response Item `gallery`
- * @property int category
+ * @property null|int category
  * @method static MethodItemSignature R_category() The Signature of: Response Item `category`
  * @property float rate
  * @method static MethodItemSignature R_rate() The Signature of: Response Item `rate`
@@ -36,19 +36,21 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_bakhsh() The Signature of: Response Item `bakhsh`
  * @property mixed dehestan
  * @method static MethodItemSignature R_dehestan() The Signature of: Response Item `dehestan`
+ * @property mixed shahrRoosta
+ * @method static MethodItemSignature R_shahrRoosta() The Signature of: Response Item `shahrRoosta`
  * @property mixed farm
  * @method static MethodItemSignature R_farm() The Signature of: Response Item `farm`
- * @property string description
+ * @property ?string description
  * @method static MethodItemSignature R_description() The Signature of: Response Item `description`
  * @property ?string investmentTimespan
  * @method static MethodItemSignature R_investmentTimespan() The Signature of: Response Item `investmentTimespan`
- * @property int price
+ * @property null|int price
  * @method static MethodItemSignature R_price() The Signature of: Response Item `price`
- * @property array additionalFields
+ * @property ?array additionalFields
  * @method static MethodItemSignature R_additionalFields() The Signature of: Response Item `additionalFields`
- * @property array costsTable
+ * @property ?array costsTable
  * @method static MethodItemSignature R_costsTable() The Signature of: Response Item `costsTable`
- * @property array predictionsTable
+ * @property ?array predictionsTable
  * @method static MethodItemSignature R_predictionsTable() The Signature of: Response Item `predictionsTable`
  * @property ?\Services\XUA\FileInstance brochure
  * @method static MethodItemSignature R_brochure() The Signature of: Response Item `brochure`
@@ -74,6 +76,7 @@ class GetOne extends GetOneById
             new EntityInstantField('shahrestan', function (Product $product) { return $product->farm->shahrestan->title;}),
             new EntityInstantField('bakhsh', function (Product $product) { return $product->farm->bakhsh?->title;}),
             new EntityInstantField('dehestan', function (Product $product) { return $product->farm->dehestan?->title;}),
+            new EntityInstantField('shahrRoosta', function (Product $product) { return $product->farm->shahrRoosta?->title;}),
             new EntityInstantField('farm', function (Product $product) { return $product->farm->title;}),
             Product::F_description(),
             Product::F_investmentTimespan(),

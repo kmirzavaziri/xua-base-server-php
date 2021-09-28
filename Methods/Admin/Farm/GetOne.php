@@ -17,33 +17,33 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 /**
  * @property int Q_id
  * @method static MethodItemSignature Q_id() The Signature of: Request Item `id`
- * @property string title
+ * @property ?string title
  * @method static MethodItemSignature R_title() The Signature of: Response Item `title`
- * @property string description
+ * @property ?string description
  * @method static MethodItemSignature R_description() The Signature of: Response Item `description`
  * @property ?string story
  * @method static MethodItemSignature R_story() The Signature of: Response Item `story`
- * @property array additionalFields
+ * @property ?array additionalFields
  * @method static MethodItemSignature R_additionalFields() The Signature of: Response Item `additionalFields`
- * @property int|float averageAnnualInterest
+ * @property null|int|float averageAnnualInterest
  * @method static MethodItemSignature R_averageAnnualInterest() The Signature of: Response Item `averageAnnualInterest`
  * @property float rate
  * @method static MethodItemSignature R_rate() The Signature of: Response Item `rate`
- * @property string status
+ * @property ?string status
  * @method static MethodItemSignature R_status() The Signature of: Response Item `status`
- * @property array gallery
+ * @property ?array gallery
  * @method static MethodItemSignature R_gallery() The Signature of: Response Item `gallery`
- * @property array agent
+ * @property ?array agent
  * @method static MethodItemSignature R_agent() The Signature of: Response Item `agent`
- * @property string agentType
+ * @property ?string agentType
  * @method static MethodItemSignature R_agentType() The Signature of: Response Item `agentType`
- * @property array products
+ * @property ?array products
  * @method static MethodItemSignature R_products() The Signature of: Response Item `products`
- * @property string ownership
+ * @property ?string ownership
  * @method static MethodItemSignature R_ownership() The Signature of: Response Item `ownership`
  * @property ?\Services\XUA\FileInstance agreementPicture
  * @method static MethodItemSignature R_agreementPicture() The Signature of: Response Item `agreementPicture`
- * @property array deedDetails
+ * @property ?array deedDetails
  * @method static MethodItemSignature R_deedDetails() The Signature of: Response Item `deedDetails`
  * @property mixed ostan
  * @method static MethodItemSignature R_ostan() The Signature of: Response Item `ostan`
@@ -53,8 +53,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_bakhsh() The Signature of: Response Item `bakhsh`
  * @property mixed dehestan
  * @method static MethodItemSignature R_dehestan() The Signature of: Response Item `dehestan`
- * @property mixed shahrOrRoosta
- * @method static MethodItemSignature R_shahrOrRoosta() The Signature of: Response Item `shahrOrRoosta`
+ * @property mixed shahrRoosta
+ * @method static MethodItemSignature R_shahrRoosta() The Signature of: Response Item `shahrRoosta`
  * @property ?string address
  * @method static MethodItemSignature R_address() The Signature of: Response Item `address`
  * @property null|int|float geolocationLat
@@ -107,7 +107,7 @@ class GetOne extends GetOneByIdAdmin
             new EntityInstantField('shahrestan', function (Farm $farm) { return $farm->shahrestan->id;}),
             new EntityInstantField('bakhsh', function (Farm $farm) { return $farm->bakhsh?->id;}),
             new EntityInstantField('dehestan', function (Farm $farm) { return $farm->dehestan?->id;}),
-            new EntityInstantField('shahrOrRoosta', function (Farm $farm) { return $farm->shahrOrRoosta?->id;}),
+            new EntityInstantField('shahrRoosta', function (Farm $farm) { return $farm->shahrRoosta?->id;}),
             Farm::F_address(),
             Farm::F_geolocationLat(),
             Farm::F_geolocationLong(),

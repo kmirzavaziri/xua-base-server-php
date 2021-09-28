@@ -17,23 +17,23 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 /**
  * @property int Q_id
  * @method static MethodItemSignature Q_id() The Signature of: Request Item `id`
- * @property string title
+ * @property ?string title
  * @method static MethodItemSignature R_title() The Signature of: Response Item `title`
- * @property string description
+ * @property ?string description
  * @method static MethodItemSignature R_description() The Signature of: Response Item `description`
  * @property ?string story
  * @method static MethodItemSignature R_story() The Signature of: Response Item `story`
- * @property array additionalFields
+ * @property ?array additionalFields
  * @method static MethodItemSignature R_additionalFields() The Signature of: Response Item `additionalFields`
- * @property int|float averageAnnualInterest
+ * @property null|int|float averageAnnualInterest
  * @method static MethodItemSignature R_averageAnnualInterest() The Signature of: Response Item `averageAnnualInterest`
  * @property float rate
  * @method static MethodItemSignature R_rate() The Signature of: Response Item `rate`
- * @property array gallery
+ * @property ?array gallery
  * @method static MethodItemSignature R_gallery() The Signature of: Response Item `gallery`
- * @property array agent
+ * @property ?array agent
  * @method static MethodItemSignature R_agent() The Signature of: Response Item `agent`
- * @property array products
+ * @property ?array products
  * @method static MethodItemSignature R_products() The Signature of: Response Item `products`
  * @property mixed ostan
  * @method static MethodItemSignature R_ostan() The Signature of: Response Item `ostan`
@@ -43,6 +43,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
  * @method static MethodItemSignature R_bakhsh() The Signature of: Response Item `bakhsh`
  * @property mixed dehestan
  * @method static MethodItemSignature R_dehestan() The Signature of: Response Item `dehestan`
+ * @property mixed shahrRoosta
+ * @method static MethodItemSignature R_shahrRoosta() The Signature of: Response Item `shahrRoosta`
  */
 class GetOne extends GetOneById
 {
@@ -82,6 +84,7 @@ class GetOne extends GetOneById
             new EntityInstantField('shahrestan', function (Farm $farm) { return $farm->shahrestan->title;}),
             new EntityInstantField('bakhsh', function (Farm $farm) { return $farm->bakhsh?->title;}),
             new EntityInstantField('dehestan', function (Farm $farm) { return $farm->dehestan?->title;}),
+            new EntityInstantField('shahrRoosta', function (Farm $farm) { return $farm->shahrRoosta?->title;}),
         ]);
     }
 }
