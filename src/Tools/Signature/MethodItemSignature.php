@@ -4,10 +4,10 @@
 namespace XUA\Tools\Signature;
 
 
-use Services\XUA\ExpressionService;
+use XUA\Services\ExpressionService;
 use XUA\Exceptions\MethodRequestException;
 use XUA\Exceptions\MethodResponseException;
-use XUA\Super;
+use XUA\Eves\Super;
 
 class MethodItemSignature
 {

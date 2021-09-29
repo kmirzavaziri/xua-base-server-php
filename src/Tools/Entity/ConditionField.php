@@ -4,7 +4,7 @@
 namespace XUA\Tools\Entity;
 
 
-use Supers\Basics\EntitySupers\EntityRelation;
+use XUA\Supers\EntitySupers\EntityRelation;
 use XUA\Exceptions\EntityConditionException;
 use XUA\Tools\Signature\EntityFieldSignature;
 

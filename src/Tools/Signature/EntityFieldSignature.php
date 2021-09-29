@@ -4,7 +4,7 @@
 namespace XUA\Tools\Signature;
 
 
-use XUA\Super;
+use XUA\Eves\Super;
 
 final class EntityFieldSignature
 {

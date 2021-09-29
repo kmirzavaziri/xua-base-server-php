@@ -3,10 +3,10 @@
 namespace XUA\Tools\Entity;
 
 use Closure;
-use Supers\Basics\Universal;
-use XUA\Entity;
+use XUA\Supers\Universal;
+use XUA\Eves\Entity;
 use XUA\Exceptions\DefinitionException;
-use XUA\Super;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 class EntityInstantField extends EntityFieldSignatureTree
@@ -40,6 +40,6 @@ class EntityInstantField extends EntityFieldSignatureTree
 
     public function valueFromRequest(mixed $value, Entity $entity): mixed
     {
-        throw new DefinitionException('Cannot use EntityInstantFieldSignatureTree in Adjust and Update methods.');
+        throw new DefinitionException('Cannot use XUA\EntityInstantFieldSignatureTree in Adjust and Update methods.');
     }
 }

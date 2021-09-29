@@ -15,7 +15,7 @@ class VarqueMethodFieldSignature
     public bool $const;
 
     public function __construct() {
-        throw new InstantiationException('Use static method fromSignature or fromTree.');
+        throw new InstantiationException('Use XUA\static method fromSignature or fromTree.');
     }
 
     public static function fromSignature(EntityFieldSignature $signature, $required = true, $default = null, $const = false): self

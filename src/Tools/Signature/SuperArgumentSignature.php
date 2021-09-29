@@ -5,7 +5,7 @@ namespace XUA\Tools\Signature;
 
 
 use XUA\Exceptions\SuperArgumentException;
-use XUA\Super;
+use XUA\Eves\Super;
 
 class SuperArgumentSignature
 {

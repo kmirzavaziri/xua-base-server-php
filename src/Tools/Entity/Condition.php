@@ -7,8 +7,8 @@ namespace XUA\Tools\Entity;
 
 use ReflectionClass;
 use ReflectionException;
-use Supers\Basics\EntitySupers\EntityRelation;
-use Supers\Basics\Highers\Sequence;
+use XUA\Supers\EntitySupers\EntityRelation;
+use XUA\Supers\Highers\Sequence;
 use XUA\Exceptions\EntityConditionException;
 use XUA\Exceptions\InstantiationException;
 use XUA\Exceptions\SuperValidationException;
@@ -50,7 +50,7 @@ final class Condition
      */
     public function __construct()
     {
-        throw new InstantiationException('cannot instantiate class `Condition` directly, use `leaf`, `falseLeaf`, or `trueLeaf` methods.');
+        throw new InstantiationException('cannot instantiate class `Condition` directly, use XUA\`leaf`, `falseLeaf`, or `trueLeaf` methods.');
     }
 
     public static function relations() : array
@@ -70,7 +70,7 @@ final class Condition
         }
 
         if (is_a($field->signature->type, EntityRelation::class)) {
-            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use rel function on the it.');
+            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use XUA\rel function on the it.');
         }
 
         /** @var Condition $condition */

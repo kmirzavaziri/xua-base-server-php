@@ -7,7 +7,7 @@ namespace XUA\Tools\Entity;
 use PDO;
 use PDOException;
 use PDOStatement;
-use XUA\Entity;
+use XUA\Eves\Entity;
 
 final class TableScheme
 {

@@ -2,14 +2,14 @@
 
 namespace XUA\Tools\Entity;
 
-use Services\XUA\ExpressionService;
-use Supers\Basics\EntitySupers\EntityRelation;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Highers\StructuredMap;
-use XUA\Entity;
+use XUA\Services\ExpressionService;
+use XUA\Supers\EntitySupers\EntityRelation;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Highers\StructuredMap;
+use XUA\Eves\Entity;
 use XUA\Exceptions\DefinitionException;
 use XUA\Exceptions\EntityFieldException;
-use XUA\Super;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 class EntityFieldSignatureTree
