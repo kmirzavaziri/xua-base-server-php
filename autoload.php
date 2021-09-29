@@ -1,6 +1,4 @@
-<?php /** @noinspection PhpIncludeInspection */
-/** @noinspection PhpIncludeInspection */
-
+<?php
 
 spl_autoload_register(function ($class) {
     $fileName = str_replace("\\", DIRECTORY_SEPARATOR, "$class.php");
