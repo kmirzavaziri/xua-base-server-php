@@ -1,6 +1,0 @@
-: GET(HomeInterface) POST(UniversalResourcePoolInterface) OPTIONS(UniversalResourcePoolInterface)
-{methodOrEntityPath|SA}: POST(UniversalResourcePoolInterface) OPTIONS(UniversalResourcePoolInterface)
-test: TestInterface
-404: XUA\NotFoundInterface
-cart:
-  payment-zarinpal: GET(Cart\Payment\ZarinpalInterface)

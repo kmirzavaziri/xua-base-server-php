@@ -1,8 +1,12 @@
 {
-  "name": "xua/xua",
-  "autoload": {
-    "psr-4": {
-      "": "."
+    "name": "xua/xua",
+    "autoload": {
+        "files": ["magic/var_dump.php"],
+        "psr-4": {
+            "XUA\\": "src/"
+        }
+    },
+    "require": {
+        "twig/twig": "^3.3"
     }
-  }
 }
