@@ -1,0 +1,8 @@
+{
+  "name": "xua/xua",
+  "autoload": {
+    "psr-4": {
+      "": "."
+    }
+  }
+}

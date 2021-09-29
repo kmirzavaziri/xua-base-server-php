@@ -1,9 +1,0 @@
-{
-  "smtp": {
-    "host": "smtp.mynewfarm.com",
-    "port": "465",
-    "username": "USERNAME",
-    "password": "PASSWORD"
-  },
-  "domain": "mynewfarm.com"
-}
