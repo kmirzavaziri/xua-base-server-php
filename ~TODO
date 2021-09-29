@@ -1,5 +1,6 @@
 █   XUA/
 █       Sooner/
+?           make all of the _x_store procedure query-base, i.e., return a SQL Query string as output of the function, this way we can use flusher(storer) to have more efficiency.
 ?           ability to fill an entity instance and then search by it. (For example useful in Rate/SetMine)
 ?           Add an abstract class for services and classes who want to be abstract and final at the same time by throwing exception in constructor.
 1           Remove users who never activated their account after reasonable amount of time.
@@ -26,23 +27,17 @@
 !           Entity Log
 █   MyFarm/
 █       Don't forget/
--1          add delete methods
--1          add stock and rate fields to product
+-1          use flusher in Item\GenerateMany
 -1          add icon to farm
--1          add isVerified field to farm
+-1          forooshe aghsati
 █       Entities/
-0           Order
-0           Report
-0?          Cooperation
 0           Post
-0           ContactUsFields
 █       Methods/
-█           User/
-█               CapitalBasket/
-0                   Get
-█               Cart/
-0                   Get
-0                   GetPaymentLink
+█           CapitalBasket/
+0               Get
+█           Cart/
+0               Get
+0              GetPaymentLink
 █           Farmers/
 0               GetMany
 0               GetOne
@@ -61,16 +56,3 @@
 █           Report/
 0               GetMany
 0               GetOne
-█           Admin/
-█               Order/
-0                   GetMany
-0                   GetOne
-0                   SetOne
-█               Report/
-0                   GetMany
-0                   GetOne
-0                   SetOne
-█               Transaction/
-0                   GetMany
-0                   GetOne
-0                   SetOne
