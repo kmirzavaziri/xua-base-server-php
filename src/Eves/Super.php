@@ -1,6 +1,6 @@
 <?php
 
-namespace XUA;
+namespace XUA\Eves;
 
 use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\SuperArgumentException;

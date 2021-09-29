@@ -1,10 +1,8 @@
 <?php
 
-namespace XUA\VARQUE;
+namespace XUA\Eves;
 
-use XUA\Entity;
 use XUA\Exceptions\MagicCallException;
-use XUA\MethodEve;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
@@ -45,12 +43,18 @@ abstract class MethodView extends MethodEve
     }
 
     # New Overridable Methods
-    abstract protected static function entity(): string;
+    protected static function entity(): string
+    {
+        return Entity::class;
+    }
 
     /**
      * @return VarqueMethodFieldSignature[]
      */
-    abstract protected static function fields(): array;
+    protected static function fields(): array
+    {
+        return [];
+    }
 
     abstract protected function feed(): Entity;
 }

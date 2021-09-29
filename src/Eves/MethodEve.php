@@ -1,6 +1,6 @@
 <?php
 
-namespace XUA;
+namespace XUA\Eves;
 
 use ReflectionClass;
 use XUA\Exceptions\MagicCallException;

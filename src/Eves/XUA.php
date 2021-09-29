@@ -1,7 +1,7 @@
 <?php
 
 
-namespace XUA;
+namespace XUA\Eves;
 
 
 abstract class XUA

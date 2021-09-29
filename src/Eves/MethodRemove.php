@@ -1,9 +1,6 @@
 <?php
 
-namespace XUA\VARQUE;
-
-use XUA\Entity;
-use XUA\MethodEve;
+namespace XUA\Eves;
 
 abstract class MethodRemove extends MethodEve
 {
@@ -21,7 +18,7 @@ abstract class MethodRemove extends MethodEve
     # New Overridable Methods
     protected static function entity(): string
     {
-        return '';
+        return Entity::class;
     }
 
     abstract protected function feed(): Entity;

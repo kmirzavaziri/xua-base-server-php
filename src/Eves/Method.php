@@ -1,6 +1,6 @@
 <?php
 
-namespace XUA;
+namespace XUA\Eves;
 
 abstract class Method extends MethodEve
 {

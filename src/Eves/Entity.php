@@ -1,16 +1,16 @@
 <?php
 
-namespace XUA;
+namespace XUA\Eves;
 
 use PDO;
 use PDOException;
 use PDOStatement;
 use ReflectionClass;
-use Services\XUA\ConstantService;
-use Supers\Basics\EntitySupers\DatabaseVirtualField;
-use Supers\Basics\EntitySupers\EntityRelation;
-use Supers\Basics\EntitySupers\PhpVirtualField;
-use Supers\Basics\Numerics\Decimal;
+use XUA\Services\ConstantService;
+use XUA\Supers\Basics\EntitySupers\DatabaseVirtualField;
+use XUA\Supers\Basics\EntitySupers\EntityRelation;
+use XUA\Supers\Basics\EntitySupers\PhpVirtualField;
+use XUA\Supers\Basics\Numerics\Decimal;
 use Throwable;
 use XUA\Exceptions\EntityException;
 use XUA\Exceptions\MagicCallException;
@@ -485,7 +485,7 @@ abstract class Entity extends XUA
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->fromOne and $signature->type->invRequired and $this->$key) {
-                throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
+                throw new EntityDeleteException("Cannot delete " . static::table() . " because XUA\there exists a $key but the inverse nullable is false.");
             }
         }
 
@@ -663,7 +663,7 @@ abstract class Entity extends XUA
         $insert = false;
         if ($this->_x_fields['id'] === null) {
             if ($this->givenId()) {
-                throw (new EntityException())->setError('id', static::class . ' with id ' . $this->givenId() . ' does not exist, use 0 to insert.');
+                throw (new EntityException())->setError('id', static::class . ' with id ' . $this->givenId() . ' does not exist, use XUA\0 to insert.');
             }
             $columnNames = [];
             $placeHolders = [];

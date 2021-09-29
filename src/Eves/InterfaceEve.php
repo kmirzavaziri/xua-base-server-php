@@ -1,10 +1,7 @@
 <?php
 
 
-namespace XUA;
-
-
-use Throwable;
+namespace XUA\Eves;
 
 abstract class InterfaceEve extends XUA
 {

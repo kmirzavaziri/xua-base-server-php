@@ -1,13 +1,11 @@
 <?php
 
-namespace XUA\VARQUE;
+namespace XUA\Eves;
 
-use Services\XUA\ConstantService;
-use Services\XUA\FileInstanceSame;
-use Supers\Basics\Files\Generic;
-use XUA\Entity;
+use XUA\Services\ConstantService;
+use XUA\Services\FileInstanceSame;
+use XUA\Supers\Basics\Files\Generic;
 use XUA\Exceptions\EntityFieldException;
-use XUA\MethodEve;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
@@ -62,12 +60,18 @@ abstract class MethodAdjust extends MethodEve
     }
 
     # New Overridable Methods
-    abstract protected static function entity(): string;
+    protected static function entity(): string
+    {
+        return Entity::class;
+    }
 
     /**
      * @return VarqueMethodFieldSignature[]
      */
-    abstract protected static function fields(): array;
+    protected static function fields(): array
+    {
+        return [];
+    }
 
     abstract protected function feed(): Entity;
 }

@@ -1,12 +1,10 @@
 <?php
 
-namespace XUA\VARQUE;
+namespace XUA\Eves;
 
-use Supers\Basics\Highers\Map;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Highers\StructuredMap;
-use XUA\Entity;
-use XUA\MethodEve;
+use XUA\Supers\Basics\Highers\Map;
+use XUA\Supers\Basics\Highers\Sequence;
+use XUA\Supers\Basics\Highers\StructuredMap;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Entity\Order;
 use XUA\Tools\Entity\Pager;
@@ -63,12 +61,18 @@ abstract class MethodQuery extends MethodEve
     }
 
     # New Overridable Methods
-    abstract protected static function entity(): string;
+    protected static function entity(): string
+    {
+        return Entity::class;
+    }
 
     /**
      * @return VarqueMethodFieldSignature[]
      */
-    abstract protected static function fields(): array;
+    protected static function fields(): array
+    {
+        return [];
+    }
 
     /**
      * @return Entity[]
