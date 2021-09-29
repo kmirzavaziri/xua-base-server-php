@@ -2,7 +2,7 @@
 
 namespace XUA\Exceptions;
 
-use XUA\XUAException;
+use XUA\Eves\XUAException;
 
 class SuperValidationException extends XUAException
 {}

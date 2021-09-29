@@ -5,7 +5,7 @@ namespace XUA\Exceptions;
 
 
 
-use XUA\XUAException;
+use XUA\Eves\XUAException;
 
 class RouteException extends XUAException
 {
