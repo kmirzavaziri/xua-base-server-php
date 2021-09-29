@@ -2,8 +2,8 @@
 
 namespace XUA\Interfaces;
 
-use XUA\Services\XUA\TemplateService;
-use XUA\XUA\InterfaceEve;
+use XUA\Services\TemplateService;
+use XUA\Eves\InterfaceEve;
 
 class NotFoundInterface extends InterfaceEve
 {
