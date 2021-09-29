@@ -4,7 +4,7 @@ namespace XUA\Eves;
 
 use XUA\Services\ConstantService;
 use XUA\Services\FileInstanceSame;
-use XUA\Supers\Basics\Files\Generic;
+use XUA\Supers\Files\Generic;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Signature\MethodItemSignature;
 use XUA\Tools\Signature\VarqueMethodFieldSignature;

@@ -2,9 +2,9 @@
 
 namespace XUA\Eves;
 
-use XUA\Supers\Basics\Highers\Map;
-use XUA\Supers\Basics\Highers\Sequence;
-use XUA\Supers\Basics\Highers\StructuredMap;
+use XUA\Supers\Highers\Map;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Highers\StructuredMap;
 use XUA\Tools\Entity\Condition;
 use XUA\Tools\Entity\Order;
 use XUA\Tools\Entity\Pager;

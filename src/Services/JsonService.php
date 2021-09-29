@@ -4,11 +4,11 @@
 namespace XUA\Services;
 
 
-use XUA\Supers\Basics\Highers\Json;
-use XUA\Supers\Basics\Highers\Map;
-use XUA\Supers\Basics\Highers\Sequence;
-use XUA\Supers\Basics\Highers\StructuredMap;
-use XUA\Supers\Basics\Universal;
+use XUA\Supers\Highers\Json;
+use XUA\Supers\Highers\Map;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Highers\StructuredMap;
+use XUA\Supers\Universal;
 use XUA\Eves\Service;
 use XUA\Eves\Super;
 

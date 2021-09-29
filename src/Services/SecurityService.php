@@ -4,7 +4,7 @@
 namespace XUA\Services;
 
 
-use XUA\Supers\Basics\Numerics\DecimalRange;
+use XUA\Supers\Numerics\DecimalRange;
 use XUA\Exceptions\InstantiationException;
 use XUA\Eves\Service;
 
