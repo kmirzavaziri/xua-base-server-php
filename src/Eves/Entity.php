@@ -92,7 +92,6 @@ abstract class Entity extends XUA
     final public static function _init() : void
     {
         $tableNameTemp = explode("\\", static::class);
-        array_shift($tableNameTemp);
         self::$_x_table[static::class] = implode('_', $tableNameTemp);
 
         self::$_x_field_signatures[static::class] = static::fieldSignaturesCalculator();
