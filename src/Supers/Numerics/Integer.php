@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Supers\Basics\Numerics;
+namespace XUA\Supers\Numerics;
 
 
-use Services\XUA\ExpressionService;
-use Supers\Basics\Boolean;
+use XUA\Services\ExpressionService;
+use XUA\Supers\Boolean;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

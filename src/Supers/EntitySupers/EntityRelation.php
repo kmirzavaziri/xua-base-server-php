@@ -1,25 +1,25 @@
 <?php
 
 
-namespace Supers\Basics\EntitySupers;
+namespace XUA\Supers\EntitySupers;
 
 
-use Services\XUA\ExpressionService;
-use Services\XUA\FlagService;
-use Supers\Basics\Boolean;
-use Supers\Basics\Highers\Instance;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Numerics\Decimal;
-use Supers\Basics\Strings\Enum;
-use Supers\Basics\Strings\Symbol;
-use Supers\Basics\Universal;
-use XUA\Entity;
+use XUA\Services\ExpressionService;
+use XUA\Services\FlagService;
+use XUA\Supers\Boolean;
+use XUA\Supers\Highers\Instance;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Numerics\Decimal;
+use XUA\Supers\Strings\Enum;
+use XUA\Supers\Strings\Symbol;
+use XUA\Supers\Universal;
+use XUA\Eves\Entity;
 use XUA\Exceptions\SuperValidationException;
-use XUA\Super;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
- * @property \XUA\Entity|string relatedEntity
+ * @property \XUA\Eves\Entity|string relatedEntity
  * @method static SuperArgumentSignature A_relatedEntity() The Signature of: Argument `relatedEntity`
  * @property string relation
  * @method static SuperArgumentSignature A_relation() The Signature of: Argument `relation`

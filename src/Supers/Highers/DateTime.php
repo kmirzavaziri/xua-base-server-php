@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Supers\Basics\Highers;
+namespace XUA\Supers\Highers;
 
 
 
-use Services\XUA\DateTimeInstance;
-use Services\XUA\LocaleLanguage;
-use Supers\Basics\Boolean;
-use Supers\Basics\Strings\Text;
+use XUA\Services\DateTimeInstance;
+use XUA\Services\LocaleLanguage;
+use XUA\Supers\Boolean;
+use XUA\Supers\Strings\Text;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

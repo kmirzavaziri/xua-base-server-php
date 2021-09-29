@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Supers\Basics\Numerics;
+namespace XUA\Supers\Numerics;
 
 
-use Supers\Basics\Boolean;
+use XUA\Supers\Boolean;
 use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Signature\SuperArgumentSignature;
 

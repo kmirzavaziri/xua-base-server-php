@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Supers\Basics;
+namespace XUA\Supers;
 
 
-use XUA\Super;
+use XUA\Eves\Super;
 
 class Trilean extends Super
 {

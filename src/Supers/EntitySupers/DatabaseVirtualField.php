@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Supers\Basics\EntitySupers;
+namespace XUA\Supers\EntitySupers;
 
 
-use Supers\Basics\Highers\Callback;
-use XUA\Super;
+use XUA\Supers\Highers\Callback;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

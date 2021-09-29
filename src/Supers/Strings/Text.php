@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Supers\Basics\Strings;
+namespace XUA\Supers\Strings;
 
 
-use Supers\Basics\Boolean;
-use Supers\Basics\Numerics\Integer;
+use XUA\Supers\Boolean;
+use XUA\Supers\Numerics\Integer;
 use XUA\Exceptions\SuperValidationException;
-use XUA\Super;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

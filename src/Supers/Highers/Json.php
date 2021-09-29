@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Supers\Basics\Highers;
+namespace XUA\Supers\Highers;
 
 
 
-use Services\XUA\JsonService;
-use Supers\Basics\Boolean;
-use Supers\Basics\Strings\Text;
-use XUA\Super;
+use XUA\Services\JsonService;
+use XUA\Supers\Boolean;
+use XUA\Supers\Strings\Text;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

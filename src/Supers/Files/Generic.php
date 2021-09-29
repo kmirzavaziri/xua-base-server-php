@@ -1,18 +1,18 @@
 <?php
 
 
-namespace Supers\Basics\Files;
+namespace XUA\Supers\Files;
 
-use Services\Size;
-use Services\XUA\ConstantService;
-use Services\XUA\ExpressionService;
-use Services\XUA\FileInstance;
-use Services\XUA\FileInstanceSame;
-use Supers\Basics\Boolean;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Numerics\Integer;
-use Supers\Basics\Strings\Text;
-use XUA\Super;
+use XUA\Services\FileSize;
+use XUA\Services\ConstantService;
+use XUA\Services\ExpressionService;
+use XUA\Services\FileInstance;
+use XUA\Services\FileInstanceSame;
+use XUA\Supers\Boolean;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Numerics\Integer;
+use XUA\Supers\Strings\Text;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
@@ -62,8 +62,8 @@ class Generic extends Super
         if ($this->maxSize !== null) {
             if ($input->size > $this->maxSize) {
                 $message = ExpressionService::get('errormessage.invalid.file.size', [
-                    'size' => Size::decorate($input->size),
-                    'maxSize' => Size::decorate($this->maxSize),
+                    'size' => FileSize::decorate($input->size),
+                    'maxSize' => FileSize::decorate($this->maxSize),
                 ]);
                 return false;
             }

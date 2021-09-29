@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Supers\Basics\Files;
+namespace XUA\Supers\Files;
 
 
-use Services\Mime;
-use Services\XUA\ExpressionService;
-use Services\XUA\FileInstance;
-use Services\XUA\FileInstanceSame;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Numerics\Integer;
-use Supers\Basics\Strings\Enum;
+use XUA\Services\Mime;
+use XUA\Services\ExpressionService;
+use XUA\Services\FileInstance;
+use XUA\Services\FileInstanceSame;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Numerics\Integer;
+use XUA\Supers\Strings\Enum;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

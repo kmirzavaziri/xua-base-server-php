@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Supers\Basics\Strings;
+namespace XUA\Supers\Strings;
 
 
-use Services\XUA\ExpressionService;
-use Supers\Basics\Highers\Sequence;
-use Supers\Basics\Numerics\Integer;
+use XUA\Services\ExpressionService;
+use XUA\Supers\Highers\Sequence;
+use XUA\Supers\Numerics\Integer;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

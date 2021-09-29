@@ -1,16 +1,16 @@
 <?php
 
 
-namespace Supers\Basics\Highers;
+namespace XUA\Supers\Highers;
 
 use Closure;
 use ReflectionFunction;
-use Supers\Basics\Boolean;
-use Supers\Basics\Strings\Symbol;
-use Supers\Basics\Strings\Text;
-use Supers\Basics\Trilean;
-use Supers\Basics\Universal;
-use XUA\Super;
+use XUA\Supers\Boolean;
+use XUA\Supers\Strings\Symbol;
+use XUA\Supers\Strings\Text;
+use XUA\Supers\Trilean;
+use XUA\Supers\Universal;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**

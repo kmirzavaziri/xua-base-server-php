@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Supers\Basics\Highers;
+namespace XUA\Supers\Highers;
 
 
-use Services\XUA\ExpressionService;
-use Supers\Basics\Numerics\Integer;
-use Supers\Basics\Strings\Symbol;
-use XUA\Super;
+use XUA\Services\ExpressionService;
+use XUA\Supers\Numerics\Integer;
+use XUA\Supers\Strings\Symbol;
+use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
 
 /**
