@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Services\XUA;
+namespace XUA\Services;
 
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use XUA\Exceptions\InstantiationException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class TemplateService extends Service
 {

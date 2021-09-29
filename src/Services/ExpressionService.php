@@ -1,11 +1,11 @@
 <?php
 
 
-namespace Services\XUA;
+namespace XUA\Services;
 
 
 use XUA\Exceptions\InstantiationException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class ExpressionService extends Service
 {

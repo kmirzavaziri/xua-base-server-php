@@ -1,17 +1,16 @@
 <?php
 
 
-namespace Services\XUA;
+namespace XUA\Services;
 
 
 use XUA\Exceptions\InstantiationException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class ConstantService extends Service
 {
     const URL = 'http://urpi.mynewfarm.net';
 
-    const INTERFACES_NAMESPACE = 'Interfaces';
     const ENTITIES_NAMESPACE = 'Entities';
 
     const ROUTE_FILE = './routes.xrml';
@@ -25,9 +24,9 @@ final class ConstantService extends Service
 
     const DEFAULT_LANG = 'fa';
 
-    // @TODO use this
+    // @TODO use XUA\this
     const VERIFICATION_CODE_LENGTH = 6;
-    // @TODO use this
+    // @TODO use XUA\this
     const VERIFICATION_CODE_EXPIRATION_TIME = DateTimeInstance::MINUTE;
 
 

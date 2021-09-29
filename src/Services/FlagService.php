@@ -1,12 +1,10 @@
 <?php
 
 
-namespace Services\XUA;
+namespace XUA\Services;
 
-
-use Exception;
 use XUA\Exceptions\InstantiationException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class FlagService extends Service
 {

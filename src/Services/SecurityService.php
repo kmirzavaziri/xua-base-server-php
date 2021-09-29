@@ -1,12 +1,12 @@
 <?php
 
 
-namespace Services\XUA;
+namespace XUA\Services;
 
 
-use Supers\Basics\Numerics\DecimalRange;
+use XUA\Supers\Basics\Numerics\DecimalRange;
 use XUA\Exceptions\InstantiationException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class SecurityService extends Service
 {

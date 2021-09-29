@@ -1,14 +1,13 @@
 <?php
 
 
-namespace Services\XUA;
+namespace XUA\Services;
 
 
-use Exception;
 use XUA\Exceptions\InstantiationException;
 use XUA\Exceptions\RouteDefinitionException;
 use XUA\Exceptions\RouteException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class RouteService extends Service
 {
@@ -139,9 +138,9 @@ final class RouteService extends Service
             }
         }
         if (is_string($search)) {
-            return ConstantService::INTERFACES_NAMESPACE . '\\' . $search;
+            return $search;
         } elseif ($lastSARoute and isset($lastSARoute[''][$method])) {
-            return ConstantService::INTERFACES_NAMESPACE . '\\' . $lastSARoute[''][$method];
+            return $lastSARoute[''][$method];
         }
         else {
             throw (new RouteException())->setError($routePart, 'Not found');

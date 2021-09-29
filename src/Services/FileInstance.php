@@ -1,10 +1,9 @@
 <?php
 
-namespace Services\XUA;
+namespace XUA\Services;
 
 use Exception;
-use Services\UserService;
-use XUA\Service;
+use XUA\Eves\Service;
 
 class FileInstance extends Service
 {
@@ -24,12 +23,8 @@ class FileInstance extends Service
         }
     }
 
-    public function newName(string $dir, ?string $seed = null): string
+    public function newName(string $dir, string $seed = ''): string
     {
-        if (!$seed) {
-            $seed = UserService::session()->id ?? 'guest';
-        }
-
         do {
             $filename = md5($seed . '|' . SecurityService::getRandomSalt(32) . '|' . (new DateTimeInstance())->getTimestamp()) . '.' . $this->extension;
         } while (file_exists($dir . DIRECTORY_SEPARATOR . $filename));

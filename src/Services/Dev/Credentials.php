@@ -1,14 +1,12 @@
 <?php
 
 
-namespace Services\XUA\Dev;
+namespace XUA\Services\Dev;
 
-
-use Exception;
-use Services\XUA\ExpressionService;
+use XUA\Services\ExpressionService;
 use XUA\Exceptions\InstantiationException;
 use XUA\Exceptions\MethodRequestException;
-use XUA\Service;
+use XUA\Eves\Service;
 
 final class Credentials extends Service
 {
