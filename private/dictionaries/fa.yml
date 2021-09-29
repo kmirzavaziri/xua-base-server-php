@@ -10,6 +10,8 @@ errormessage.toOne.fields.cannot.include.id: فیلدهای رابطه‌ای ؟
 errormessage.toMany.fields.must.include.id: فیلدهای رابطه‌ای ؟به‌چند باید شامل فیلد شناسه باشند.
 errormessage.value.input.is.not.an.integer: مقدار $input عددی صحیح نیست.
 errormessage.input.is.less.than.zero.therefore.is.not.unsigned: مقدار $input کمتر از صفر است و لذا بی‌علامت نیست.
+value.value.must.be.at.least.min: مقدار $value باید حداقل $min باشد.
+value.value.must.be.at.most.max: مقدار $value باید حداکثر $max باشد.
 errormessage.please.enter.a.valid.value.from.values: لطفا یکی از مقادیر مجاز ($values) را انتخاب کنید.
 comma.separator: "، "
 errormessage.key.key.is.missing: فیلد $key یافت نشد.
@@ -66,3 +68,6 @@ payment.cart.myfarm_title: مزرعه من
 payment.cart.back_to_app: بازگشت به اپلیکیشن
 errormessage.required.entity.field.not.provided: این فیلد ضروری است.
 errormessage.entity.field.must.be.empty: این فیلد باید خالی باشد.
+errormessage.cant.create.new.item.by.this.method: تعریف آیتم جدید از طریق این متد امکان‌پذیر نمی‌باشد.
+errormessage.cant.change.item.status.from.status.to.status: وضعیت آیتم نمی‌تواند از $oldStatus به $newStatus تغییر کند.
+errormessage.cant.change.item.product.for.status.status: محصول متناظر با آیتم هنگامی که آیتم در وضعیت $status باشد امکان‌پذیر نیست.

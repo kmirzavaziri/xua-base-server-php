@@ -9,6 +9,7 @@ use Supers\Basics\Strings\Text;
 use XUA\Entity;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Tools\Entity\ConditionField;
+use XUA\Tools\Entity\Index;
 use XUA\Tools\Signature\EntityFieldSignature;
 
 /**
@@ -112,6 +113,7 @@ class Item extends ChangeTracker
     protected static function _indexes(): array
     {
         return array_merge(parent::_indexes(), [
+            new Index(['code' => Index::ASC], true),
         ]);
     }
 

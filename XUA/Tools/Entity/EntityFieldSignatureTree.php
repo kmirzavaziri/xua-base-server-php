@@ -140,12 +140,15 @@ class EntityFieldSignatureTree
             if ($this->value->type->relation == EntityRelation::REL_R11O) {
                 $return = new ($this->value->type->relatedEntity)($value);
                 if (!$return->id) {
-                    throw new EntityFieldException(ExpressionService::get('errormessage.invalid.id.id', ['id' => $value]));
+                    throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
+                        'entity' => ExpressionService::get('entityclass.' . $this->value->type->relatedEntity::table()),
+                        'id' => $value,
+                    ]));
                 }
                 if ($return->{$this->value->type->invName}) {
                     throw new EntityFieldException(ExpressionService::get('errormessage.related.entity.with.id.id.is.already.in.rel', [
-                        'entityLeft' => $this->value->entity,
-                        'entityRight' => $this->value->type->relatedEntity,
+                        'entityLeft' => ExpressionService::get('entityclass.' . $this->value->entity::table()),
+                        'entityRight' => ExpressionService::get('entityclass.' . $this->value->type->relatedEntity::table()),
                         'id' => $value,
                     ]));
                 }
@@ -155,7 +158,10 @@ class EntityFieldSignatureTree
             } else {
                     $return = new ($this->value->type->relatedEntity)($value);
                     if (!$return->id) {
-                        throw new EntityFieldException(ExpressionService::get('errormessage.invalid.id.id', ['id' => $value]));
+                        throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
+                            'entity' => ExpressionService::get('entityclass.' . $this->value->type->relatedEntity::table()),
+                            'id' => $value,
+                        ]));
                     }
                     return $return;
             }
@@ -176,7 +182,10 @@ class EntityFieldSignatureTree
                 }
                 $return = new ($this->value->type->relatedEntity)($value['id']);
                 if ($value['id'] != $return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.invalid.id.id', ['id' => $value['id']]));
+                    throw (new EntityFieldException())->setError('id', ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
+                        'entity' => ExpressionService::get('entityclass.' . $this->value->type->relatedEntity::table()),
+                        'id' => $value['id'],
+                    ]));
                 }
                 foreach ($this->children as $child) {
                     if ($child->name() != 'id') {

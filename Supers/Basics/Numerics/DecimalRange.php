@@ -4,6 +4,7 @@
 namespace Supers\Basics\Numerics;
 
 
+use Services\XUA\ExpressionService;
 use Supers\Basics\Boolean;
 use XUA\Exceptions\SuperValidationException;
 use XUA\Tools\Signature\SuperArgumentSignature;
@@ -52,12 +53,18 @@ class DecimalRange extends Decimal
         }
 
         if ($this->min !== null and $input < $this->min) {
-            $message = "Value $input must be at least $this->min.";
+            $message = ExpressionService::get('value.value.must.be.at.least.min', [
+                'value' => $input,
+                'min' => $this->min
+            ]);
             return false;
         }
 
         if ($this->max !== null and $input > $this->max) {
-            $message = "Value $input must be at most $this->max.";
+            $message = ExpressionService::get('value.value.must.be.at.most.max', [
+                'value' => $input,
+                'max' => $this->max
+            ]);
             return false;
         }
 
