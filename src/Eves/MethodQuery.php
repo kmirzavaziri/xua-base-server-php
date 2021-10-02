@@ -6,6 +6,7 @@ use XUA\Supers\Highers\Map;
 use XUA\Supers\Highers\Sequence;
 use XUA\Supers\Highers\StructuredMap;
 use XUA\Tools\Entity\Condition;
+use XUA\Tools\Entity\EntityArray;
 use XUA\Tools\Entity\Order;
 use XUA\Tools\Entity\Pager;
 use XUA\Tools\Signature\EntityFieldSignature;
@@ -47,20 +48,8 @@ abstract class MethodQuery extends MethodEve
         $feed = $this->feed();
         $fields = static::fields();
         $association = static::association();
-        $result = [];
-        foreach ($feed as $entity) {
-            $data = [];
-            foreach ($fields as $field) {
-                $data[$field->root->name()] = $field->root->valueFromEntity($entity);
-            }
-            if ($association) {
-                $result[$entity->{$association->name}] = $data;
-            } else {
-                $result[] = $data;
-            }
-        }
 
-        $this->{static::wrapper()} = $result;
+        $this->{static::wrapper()} = EntityArray::manyToArray($feed, $fields, $association);
     }
 
     # Overridable Methods Wrappers
