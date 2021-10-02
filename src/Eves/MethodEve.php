@@ -10,6 +10,7 @@ use XUA\Tools\Signature\MethodItemSignature;
 
 abstract class MethodEve extends XUA
 {
+    // @TODO rename add underline
     protected MethodRequestException $error;
 
     # Magics
