@@ -8,10 +8,6 @@
     },
     "require": {
         "php": ">=8.0",
-        "ext-pdo": "*",
-        "ext-gd": "*",
-        "ext-bcmath": "*",
-        "ext-yaml": "*",
         "twig/twig": "^3.3"
     }
 }
