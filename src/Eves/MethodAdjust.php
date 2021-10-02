@@ -11,6 +11,8 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
 abstract class MethodAdjust extends MethodEve
 {
+    private ?Entity $_cache_feed = null;
+
     # Finalize Eve Methods
     final protected static function requestSignaturesCalculator(): array
     {
@@ -59,6 +61,14 @@ abstract class MethodAdjust extends MethodEve
         }
     }
 
+    # Overridable Methods Wrappers
+    final protected function feed(): Entity {
+        if ($this->_cache_feed === null) {
+            $this->_cache_feed = $this->_feed();
+        }
+        return $this->_cache_feed;
+    }
+
     # New Overridable Methods
     protected static function entity(): string
     {
@@ -73,5 +83,5 @@ abstract class MethodAdjust extends MethodEve
         return [];
     }
 
-    abstract protected function feed(): Entity;
+    abstract protected function _feed(): Entity;
 }

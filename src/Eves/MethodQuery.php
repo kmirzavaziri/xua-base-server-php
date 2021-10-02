@@ -14,6 +14,9 @@ use XUA\Tools\Signature\VarqueMethodFieldSignature;
 
 abstract class MethodQuery extends MethodEve
 {
+    /** @var Entity[] $_cache_feed */
+    private ?array $_cache_feed = null;
+
     # Finalize Eve Methods
     final protected static function requestSignaturesCalculator(): array
     {
@@ -60,6 +63,18 @@ abstract class MethodQuery extends MethodEve
         $this->{static::wrapper()} = $result;
     }
 
+    # Overridable Methods Wrappers
+
+    /**
+     * @return Entity[]
+     */
+    final protected function feed(): array {
+        if ($this->_cache_feed === null) {
+            $this->_cache_feed = $this->_feed();
+        }
+        return $this->_cache_feed;
+    }
+
     # New Overridable Methods
     protected static function entity(): string
     {
@@ -77,7 +92,7 @@ abstract class MethodQuery extends MethodEve
     /**
      * @return Entity[]
      */
-    protected function feed(): array {
+    protected function _feed(): array {
         return static::entity()::getMany(static::condition(), static::order(), static::pager());
     }
 
