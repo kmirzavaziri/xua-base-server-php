@@ -288,9 +288,9 @@ abstract class Entity extends XUA
         # Empty by default
     }
 
-    protected function _initialize(string $caller) : void
+    protected function _initialize(string $caller) : static
     {
-        $this->_x_initialize();
+        return $this->_x_initialize();
     }
 
     protected static function _getOne(Condition $condition, Order $order, string $caller) : static
@@ -368,9 +368,9 @@ abstract class Entity extends XUA
         }
     }
 
-    private function initialize(string $caller = Visibility::CALLER_PHP) : void
+    private function initialize(string $caller = Visibility::CALLER_PHP) : static
     {
-        $this->_initialize($caller);
+        return $this->_initialize($caller);
     }
 
     final public static function getOne(?Condition $condition = null, ?Order $order = null, string $caller = Visibility::CALLER_PHP) : static
@@ -451,7 +451,8 @@ abstract class Entity extends XUA
     }
 
     # Predefined Methods (to wrap in overridable methods)
-    final protected function _x_initialize() : void {
+    final protected function _x_initialize() : static
+    {
         foreach (static::fieldSignatures() as $key => $signature) {
             $this->_x_fields[$key] = $signature->default;
             $this->_x_must_fetch[$key] = true;
@@ -460,6 +461,7 @@ abstract class Entity extends XUA
                 $this->_x_fetched_by_p[$key] = [];
             }
         }
+        return $this;
     }
 
     final protected static function _x_getOne(Condition $condition, Order $order) : static
@@ -521,9 +523,10 @@ abstract class Entity extends XUA
                 $arrays[$item][$key] = $rawArray[$i];
             }
         }
+        $entityClass = new ReflectionClass(static::class);
         $entities = [];
         foreach ($arrays as $array) {
-            $entities[] = (new static())->fromDbArray($array);
+            $entities[] = $entityClass->newInstanceWithoutConstructor()->initialize()->fromDbArray($array);
         }
 
         return $entities;
@@ -532,7 +535,7 @@ abstract class Entity extends XUA
     final protected static function _x_count(Condition $condition, Order $order, Pager $pager) : int
     {
         [$columnsExpression, $keys] = self::columnsExpression();
-        $statement = self::execute("SELECT COUNT(`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
+        $statement = self::execute("SELECT COUNT(`" . self::table() . "`.`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
         return $statement->fetch(PDO::FETCH_ASSOC)['c'];
     }
 
