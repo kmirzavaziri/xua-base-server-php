@@ -138,7 +138,7 @@ abstract class Entity extends XUA
      */
     final function __get(string $key)
     {
-        $signature = static::fieldSignatures()[$key];
+        $signature = @static::fieldSignatures()[$key];
 
         if ($signature === null) {
             throw (new MagicCallException())->setError($key, 'Unknown entity field');
