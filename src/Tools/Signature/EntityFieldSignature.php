@@ -8,7 +8,7 @@ use XUA\Eves\Super;
 
 final class EntityFieldSignature
 {
-    private array $param = [];
+    private array $params = [];
 
     public function __construct(
         public string $entity,
@@ -17,12 +17,12 @@ final class EntityFieldSignature
         public $default = null,
     ) {}
 
-    public function p(?array $param = null) : array|EntityFieldSignature
+    public function p(?array $params = null) : array|EntityFieldSignature
     {
-        if ($param === null) {
-            return $this->param;
+        if ($params === null) {
+            return $this->params;
         } else {
-            $this->param = $param;
+            $this->params = $params;
             return $this;
         }
     }

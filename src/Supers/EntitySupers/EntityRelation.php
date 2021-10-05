@@ -114,11 +114,11 @@ class EntityRelation extends Super
             'required' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'invOptional' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'invRequired' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            'hasJunction' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'definedHere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'definedThere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'columnHere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
             'columnThere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'hasJunction' => new SuperArgumentSignature(new Boolean([]), false, false, true),
         ]);
     }
 
@@ -137,11 +137,11 @@ class EntityRelation extends Super
         $this->required = !$this->optional;
         $this->invOptional = in_array($this->relation, [self::REL_O11O, self::REL_R11O, self::REL_1NO]);
         $this->invRequired = !$this->invOptional;
+        $this->hasJunction = $this->isNN;
         $this->definedHere = ($this->definedOn == self::DEFINED_ON_HERE);
         $this->definedThere = ($this->definedOn == self::DEFINED_ON_THERE);
         $this->columnHere = (($this->is11 and $this->definedHere) or $this->isN1);
         $this->columnThere = (($this->is11 and $this->definedThere) or $this->is1N);
-        $this->hasJunction = $this->isNN;
     }
 
     protected function _predicate($input, null|string|array &$message = null) : bool

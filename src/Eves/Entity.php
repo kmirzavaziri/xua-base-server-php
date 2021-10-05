@@ -329,6 +329,12 @@ abstract class Entity extends XUA
         return static::_x_deleteMany($condition, $order, $pager);
     }
 
+    protected static function _setMany(array $change, Condition $condition, Order $order, Pager $pager, string $caller) : int
+    {
+        # @TODO Implement
+        throw new \Exception('Not implemented yet.');
+    }
+
     # Overridable Method Wrappers
     /**
      * @throws SuperValidationException
