@@ -32,7 +32,7 @@ class FileInstance extends Service
         return $dir . DIRECTORY_SEPARATOR . $filename;
     }
 
-    public function store(string $dir, ?string $seed = null)
+    public function store(string $dir, string $seed = '')
     {
         if (!$this->stored) {
             $this->stored = true;
