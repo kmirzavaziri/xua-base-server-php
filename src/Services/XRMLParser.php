@@ -63,14 +63,14 @@ final class XRMLParser extends Service
     public function parse(): array
     {
         $this->parseLinear();
-        $nodesByLevel = [];
+        $parents = [];
         $tree = [];
         foreach ($this->lines as $line) {
             $level = $line[self::LINE_LEVEL];
             if ($level == 0) {
                 $parent = &$tree;
             } else {
-                $parent = &$nodesByLevel[$level - 1][count($nodesByLevel[$level - 1]) - 1];
+                $parent = &$parents[$level - 1];
             }
 
             $key = $line[self::LINE_KEY];
@@ -89,7 +89,7 @@ final class XRMLParser extends Service
             } else {
                 $parent[$key[self::KEY_KEY]][''] = $line;
             }
-            $nodesByLevel[$level][] = &$parent[$key[self::KEY_KEY]];
+            $parents[$level] = &$parent[$key[self::KEY_KEY]];
         }
 
         return $tree;
