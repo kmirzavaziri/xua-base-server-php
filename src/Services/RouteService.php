@@ -48,7 +48,7 @@ final class RouteService extends Service
             } elseif (isset($search[XRMLParser::KEY_KEY_VAR])) {
                 $search = $search[XRMLParser::KEY_KEY_VAR][''];
                 if (isset($search[XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
-                    self::$routeArgs[$search[XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 2));
+                    self::$routeArgs[$search[XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
                     $lastSARoute = $search;
                 } else {
                     self::$routeArgs[$search[XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = $routePart;
