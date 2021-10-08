@@ -38,7 +38,7 @@ final class EntityAlterService extends Service
 
         $alters[] = TableScheme::getDropTables($newTables);
 
-        return implode(PHP_EOL . PHP_EOL, $alters);
+        return trim(implode(PHP_EOL . PHP_EOL, $alters));
     }
 
     private static function getClassName(string $phpCode): ?string
