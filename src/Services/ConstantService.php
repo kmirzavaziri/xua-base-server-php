@@ -16,7 +16,7 @@ final class ConstantService extends Service
 
     const ENTITIES_DIR = 'src/Entities';
 
-    const ROUTE_FILE = './routes.xrml';
+    const ROUTE_FILE = 'routes.xrml';
 
     const TEMPLATES_PATH = 'private/templates';
     const TEMPLATES_CACHE_PATH = false;
