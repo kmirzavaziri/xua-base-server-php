@@ -15,6 +15,7 @@ final class RouteService extends Service
 
     private static array $routes = [];
     public static array $routeArgs = [];
+    public static ?string $method = null;
 
     /**
      * @throws InstantiationException
@@ -37,6 +38,7 @@ final class RouteService extends Service
      */
     public static function getInterface(string $route, string $method) : string
     {
+        self::$method = $method;
         $route = trim($route, '/');
         $route = explode('/', $route);
         $route[] = '';

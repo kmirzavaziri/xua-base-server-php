@@ -31,9 +31,9 @@ class MainService extends Service
 
         try {
             self::before();
-            $response = RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
+            /** @noinspection PhpUndefinedMethodInspection */
+            RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
             self::after();
-            echo $response;
         } catch (Throwable $throwable) {
             self::catch($throwable);
         }
@@ -55,7 +55,7 @@ class MainService extends Service
                 "</pre>";
         } else {
             if ($throwable instanceof RouteException) {
-                echo NotFoundInterface::execute();
+                NotFoundInterface::execute();
             } else {
                 TemplateService::render('errors/500.twig', []);
             }

@@ -11,6 +11,9 @@ final class ConstantService extends Service
 {
     const URL = 'http://urpi.mynewfarm.net';
 
+    const PUBLIC_PATHS = ['public', 'favicon.ico'];
+    const URPI_ROOT_NAMESPACE = 'Myfarm';
+
     const ENTITIES_DIR = 'src/Entities';
 
     const ROUTE_FILE = './routes.xrml';

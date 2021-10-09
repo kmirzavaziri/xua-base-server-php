@@ -5,5 +5,5 @@ namespace XUA\Eves;
 
 abstract class InterfaceEve extends XUA
 {
-    public abstract static function execute() : string;
+    public abstract static function execute() : void;
 }
