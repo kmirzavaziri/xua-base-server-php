@@ -161,11 +161,14 @@ class EntityRelation extends Super
                         return true;
                     }
                 }
-                $message = ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
-                    'entity' => ExpressionService::get('entityclass.' . $this->relatedEntity::table()),
-                    'id' => ($input->givenId() === null ? 'NULL' : $input->givenId()),
-                ]);
-                return false;
+                if ($this->required) {
+                    $message = ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
+                        'entity' => ExpressionService::get('entityclass.' . $this->relatedEntity::table()),
+                        'id' => ($input->givenId() === null ? 'NULL' : $input->givenId()),
+                    ]);
+                    return false;
+                }
+                return true;
             }
             return true;
         } elseif ($this->toMany) {
@@ -174,7 +177,10 @@ class EntityRelation extends Super
             }
             foreach ($input as $item) {
                 if ($item->id === null and $item->givenId() !== 0) {
-                    $message = "$this->relatedEntity with id " . $item->givenId() . ' does not exist.';
+                    $message = ExpressionService::get('errormessage.entity.with.id.does.not.exists', [
+                        'entity' => ExpressionService::get('entityclass.' . $this->relatedEntity::table()),
+                        'id' => ($input->givenId() === null ? 'NULL' : $input->givenId()),
+                    ]);
                     return false;
                 }
             }
