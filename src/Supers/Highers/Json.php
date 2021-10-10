@@ -7,6 +7,7 @@ namespace XUA\Supers\Highers;
 
 use XUA\Services\JsonService;
 use XUA\Supers\Boolean;
+use XUA\Supers\Numerics\Integer;
 use XUA\Supers\Strings\Text;
 use XUA\Eves\Super;
 use XUA\Tools\Signature\SuperArgumentSignature;
@@ -14,6 +15,8 @@ use XUA\Tools\Signature\SuperArgumentSignature;
 /**
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
+ * @property int marshalFlags
+ * @method static SuperArgumentSignature A_marshalFlags() The Signature of: Argument `marshalFlags`
  */
 class Json extends Super
 {
@@ -21,6 +24,7 @@ class Json extends Super
     {
         return array_merge(parent::_argumentSignatures(), [
                 'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+                'marshalFlags' => new SuperArgumentSignature(new Integer([]), false, 0, false),
             ]);
     }
 
@@ -40,7 +44,7 @@ class Json extends Super
 
     protected function _marshal($input): mixed
     {
-        return json_encode($input ? JsonService::marshalItems($input, $this) : $input);
+        return json_encode($input ? JsonService::marshalItems($input, $this) : $input, $this->marshalFlags);
     }
 
     protected function _marshalDatabase($input): mixed
