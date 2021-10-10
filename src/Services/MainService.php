@@ -14,6 +14,7 @@ class MainService extends Service
 {
     public static function before()
     {
+        header_remove('X-Powered-By');
         Entity::startTransaction();
     }
 
