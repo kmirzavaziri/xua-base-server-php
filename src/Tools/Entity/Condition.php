@@ -195,9 +195,4 @@ final class Condition
             return $join->expression();
         }, $joins));
     }
-
-    public function render(): string
-    {
-        return QueryBinder::bind($this->template, $this->parameters);
-    }
 }
