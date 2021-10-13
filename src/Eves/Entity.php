@@ -17,6 +17,8 @@ use XUA\Exceptions\MagicCallException;
 use XUA\Exceptions\EntityDeleteException;
 use XUA\Exceptions\EntityFieldException;
 use XUA\Exceptions\SuperValidationException;
+use XUA\Tools\Entity\EntityBuffer;
+use XUA\Tools\Entity\QueryBind;
 use XUA\Tools\Entity\QueryBinder;
 use XUA\Tools\Entity\Column;
 use XUA\Tools\Entity\Condition;
@@ -299,11 +301,14 @@ abstract class Entity extends XUA
     }
 
     /**
+     * @param string $caller
+     * @return QueryBind[]
+     * @throws EntityException
      * @throws EntityFieldException
      */
-    protected function _store(string $caller) : Entity
+    protected function _getStoreQueryBinds(string $caller) : array
     {
-        return $this->_x_store();
+        return $this->_x_getStoreQueryBinds();
     }
 
     protected function _delete(string $caller) : void
@@ -397,11 +402,23 @@ abstract class Entity extends XUA
     {
         $savePoint = static::savePoint();
         try {
-            return $this->_store($caller);
+            EntityBuffer::fromQueryBinds($this->getStoreQueryBinds($caller))->store();
+            return $this;
         } catch (Throwable $t) {
             static::rollbackToSavepoint($savePoint);
             throw $t;
         }
+    }
+
+    /**
+     * @param string $caller
+     * @return QueryBind[]
+     * @throws EntityException
+     * @throws EntityFieldException
+     */
+    final public function getStoreQueryBinds(string $caller = Visibility::CALLER_PHP) : array
+    {
+        return $this->_getStoreQueryBinds($caller);
     }
 
     final public function delete(string $caller = Visibility::CALLER_PHP) : void
@@ -476,12 +493,13 @@ abstract class Entity extends XUA
     }
 
     /**
+     * @return QueryBind[]
+     * @throws EntityException
      * @throws EntityFieldException
      */
-    final protected function _x_store() : Entity
+    final protected function _x_getStoreQueryBinds() : array
     {
-        $this->_x_insert_or_update();
-        return $this;
+        return $this->_x_insert_or_update();
     }
 
     /**
@@ -492,7 +510,7 @@ abstract class Entity extends XUA
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var EntityFieldSignature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->fromOne and $signature->type->invRequired and $this->$key) {
-                throw new EntityDeleteException("Cannot delete " . static::table() . " because XUA\there exists a $key but the inverse nullable is false.");
+                throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
             }
         }
 
@@ -658,10 +676,14 @@ abstract class Entity extends XUA
     }
 
     /**
+     * @return QueryBind[]
+     * @throws EntityException
      * @throws EntityFieldException
      */
-    private function _x_insert_or_update() : void
+    private function _x_insert_or_update() : array
     {
+        $queryBinds = [];
+
         $this->validation();
 
         $array = $this->toDbArray();
@@ -671,7 +693,7 @@ abstract class Entity extends XUA
         $insert = false;
         if ($this->_x_fields['id'] === null) {
             if ($this->givenId()) {
-                throw (new EntityException())->setError('id', static::class . ' with id ' . $this->givenId() . ' does not exist, use XUA\0 to insert.');
+                throw (new EntityException())->setError('id', static::class . ' with id ' . $this->givenId() . ' does not exist, use 0 to insert.');
             }
             $columnNames = [];
             $placeHolders = [];
@@ -706,36 +728,11 @@ abstract class Entity extends XUA
         }
 
         if ($query and $bind) {
-            try {
-                self::execute($query, $bind);
-                if ($insert) {
-                    $this->_x_fields['id'] = self::connection()->lastInsertId();
-                    $this->_x_must_fetch['id'] = false;
-                    $this->_x_must_store['id'] = false;
-                }
-            } catch (PDOException $e) {
-                if (str_contains($e->getMessage(), 'Duplicate entry')) {
-                    $pattern = "/Duplicate entry '([^']*)' for key '([^.]*)\.([^']*)'/";
-                    preg_match($pattern, $e->getMessage(), $matches);
-                    $duplicateValues = explode('-', $matches[1]);
-                    $table = $matches[2];
-                    $duplicateIndexName = $matches[3];
-                    $duplicateIndexes = array_filter(static::indexes(), function (Index $index) use($duplicateIndexName) {
-                        return $index->name == $duplicateIndexName;
-                    });
-                    $duplicateIndex = array_pop($duplicateIndexes);
-                    $duplicateExpressions = [];
-                    $iterator = 0;
-                    $fieldNames = array_keys($duplicateIndex->fields);
-                    foreach ($fieldNames as $fieldName) {
-                        $duplicateExpressions[] = "$fieldName=" . $duplicateValues[$iterator];
-                        $iterator++;
-                    }
-                    $duplicateExpression = implode(', ', $duplicateExpressions);
-                    throw (new EntityFieldException())->setError($fieldNames[0], "A $table with $duplicateExpression already exists.");
-                } else {
-                    throw $e;
-                }
+            $queryBinds[] = new QueryBind(static::class, $query, $bind);
+            if ($insert) {
+                $this->_x_fields['id'] = self::connection()->lastInsertId();
+                $this->_x_must_fetch['id'] = false;
+                $this->_x_must_store['id'] = false;
             }
         }
 
@@ -747,7 +744,7 @@ abstract class Entity extends XUA
             } elseif ($signature->type->is11 and $signature->type->definedThere) {
                 $value->_x_fields[$signature->type->invName] = $this;
                 try {
-                    $value->store();
+                    $queryBinds = array_merge($queryBinds, $value->store());
                 } catch (EntityFieldException $e) {
                     throw (new EntityFieldException())->setError($key, $e->getErrors());
                 }
@@ -755,7 +752,7 @@ abstract class Entity extends XUA
                 foreach ($this->_x_fields[$key] as $relatedEntityKey => $relatedEntity) {
                     $relatedEntity->_x_fields[$signature->type->invName] = $this;
                     try {
-                        $relatedEntity->store();
+                        $queryBinds = array_merge($queryBinds, $relatedEntity->store());
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
                     }
@@ -765,16 +762,16 @@ abstract class Entity extends XUA
 
                 if ($removingIds) {
                     if ($signature->type->invOptional) {
-                        self::execute("UPDATE `" . $signature->type->relatedEntity::table() . "` SET `" . $signature->type->invName . "` = NULL WHERE `id` IN (?)", [$removingIds]);
+                        $queryBinds[] = new QueryBind(static::class, "UPDATE `" . $signature->type->relatedEntity::table() . "` SET `" . $signature->type->invName . "` = NULL WHERE `id` IN (?)", [$removingIds]);
                     } else {
-                        self::execute("DELETE FROM `" . $signature->type->relatedEntity::table() . "` WHERE `id` IN (?)", [$removingIds]);
+                        $queryBinds[] = new QueryBind(static::class, "DELETE FROM `" . $signature->type->relatedEntity::table() . "` WHERE `id` IN (?)", [$removingIds]);
                     }
                 }
 
             } elseif ($signature->type->isNN) {
                 foreach ($this->_x_fields[$key] as $relatedEntityKey => $relatedEntity) {
                     try {
-                        $relatedEntity->store();
+                        $queryBinds = array_merge($queryBinds, $relatedEntity->store());
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
                     }
@@ -784,27 +781,28 @@ abstract class Entity extends XUA
                 $leftColumn = static::table();
                 $rightColumn = $signature->type->relatedEntity::table();
 
-                $relNNQuery = '';
-                $relNNBind = [];
+                $relNNQueryBind = new QueryBind(static::class, '', []);
                 if ($addingIds) {
-                    $relNNQuery .= "INSERT INTO " . static::junctionTableName($key) . " ($leftColumn, $rightColumn) VALUES\n" .
+                    $relNNQueryBind->query .= "INSERT INTO " . static::junctionTableName($key) . " ($leftColumn, $rightColumn) VALUES\n" .
                         implode(",\n", array_fill(0, count($addingIds), "\t(?, ?)")) . ";\n";
                     foreach ($addingIds as $addingId) {
-                        $relNNBind[] = $this->_x_fields['id'];
-                        $relNNBind[] = $addingId;
+                        $relNNQueryBind->bind[] = $this->_x_fields['id'];
+                        $relNNQueryBind->bind[] = $addingId;
                     }
                 }
                 if ($removingIds) {
-                    $relNNQuery .= "DELETE FROM `" . static::junctionTableName($key) . "` WHERE `$leftColumn` = ? AND `$rightColumn` IN (?);";
-                    $relNNBind[] = $this->_x_fields['id'];
-                    $relNNBind[] = $removingIds;
+                    $relNNQueryBind->query .= "DELETE FROM `" . static::junctionTableName($key) . "` WHERE `$leftColumn` = ? AND `$rightColumn` IN (?);";
+                    $relNNQueryBind->bind[] = $this->_x_fields['id'];
+                    $relNNQueryBind->bind[] = $removingIds;
                 }
 
-                if ($relNNQuery) {
-                    self::execute($relNNQuery, $relNNBind);
+                if ($relNNQueryBind->query) {
+                    $queryBinds[] = $relNNQueryBind;
                 }
             }
         }
+
+        return $queryBinds;
     }
 
     # Predefined Methods (helpers)
