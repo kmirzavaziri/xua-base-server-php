@@ -14,13 +14,11 @@ class VarqueMethodFieldSignature
     public mixed $default;
     public bool $const;
 
-    public function __construct() {
-        throw new InstantiationException('Use XUA\static method fromSignature or fromTree.');
-    }
+    private function __construct() {}
 
     public static function fromSignature(EntityFieldSignature $signature, $required = true, $default = null, $const = false): self
     {
-        $instance = static::instance();
+        $instance = new static();
         $instance->root = new EntityFieldSignatureTree($signature);
         $instance->required = $required;
         $instance->default = $default;
@@ -30,7 +28,7 @@ class VarqueMethodFieldSignature
 
     public static function fromTree(EntityFieldSignatureTree $tree, $required = true, $default = null, $const = false): self
     {
-        $instance = static::instance();
+        $instance = new static();
         $instance->root = $tree;
         $instance->required = $required;
         $instance->default = $default;
@@ -50,9 +48,5 @@ class VarqueMethodFieldSignature
             }
         }
         return $instances;
-    }
-
-    private static function instance() : static {
-        return (new ReflectionClass(VarqueMethodFieldSignature::class))->newInstanceWithoutConstructor();
     }
 }
