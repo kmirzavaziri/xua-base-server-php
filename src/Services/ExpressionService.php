@@ -35,6 +35,12 @@ final class ExpressionService extends Service
         return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return $bind[$matches[1]] ?? $matches[1]; }, (self::$dict[$key]) ?? $key);
     }
 
+    public static function implode(array $list): string
+    {
+        $last = array_pop($list);
+        return implode(self::get('comma.separator'), $list) . self::get('last.separator') . $last;
+    }
+
     private static function dictParse(string $filename) : array
     {
         return @yaml_parse_file($filename);

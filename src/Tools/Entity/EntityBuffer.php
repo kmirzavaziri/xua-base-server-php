@@ -3,65 +3,57 @@
 namespace XUA\Tools\Entity;
 
 
-use JetBrains\PhpStorm\Pure;
-use PDOException;
+use ReflectionObject;
+use Throwable;
 use XUA\Eves\Entity;
+use XUA\Exceptions\EntityException;
 use XUA\Exceptions\EntityFieldException;
-use XUA\Services\ExpressionService;
 
 final class EntityBuffer {
     /**
-     * @var QueryBind[]
+     * @var Entity[]
      */
-    private array $queryBinds = [];
+    private array $entities = [];
 
-    /**
-     * @param QueryBind[] $queryBinds
-     * @return static
-     */
-    #[Pure] public static function fromQueryBinds(array $queryBinds): self
+    public function add(Entity $entity): self
     {
-        $return = new self();
-        $return->queryBinds = $queryBinds;
-        return $return;
+        $this->entities[] = $entity;
+        return $this;
     }
 
-    public function store()
+    /**
+     * @throws Throwable
+     * @throws EntityException
+     * @throws EntityFieldException
+     */
+    public function store(): void
     {
-        foreach ($this->queryBinds as $queryBind) {
-            try {
-                Entity::execute($queryBind->query, $queryBind->bind);
-            } catch (PDOException $e) {
-                if (str_contains($e->getMessage(), 'Duplicate entry')) {
-                    $pattern = "/Duplicate entry '([^']*)' for key '([^.]*)\.([^']*)'/";
-                    preg_match($pattern, $e->getMessage(), $matches);
-                    $duplicateValues = explode('-', $matches[1]);
-                    $table = $matches[2];
-                    $duplicateIndexName = $matches[3];
-                    /** @noinspection PhpUndefinedMethodInspection */
-                    $duplicateIndexes = array_filter($queryBind->entity::indexes(), function (Index $index) use($duplicateIndexName) {
-                        return $index->name == $duplicateIndexName;
-                    });
-                    $duplicateIndex = array_pop($duplicateIndexes);
-                    $duplicateExpressions = [];
-                    $iterator = 0;
-                    $fieldNames = array_keys($duplicateIndex->fields);
-                    foreach ($fieldNames as $fieldName) {
-                        $duplicateExpressions[] = ExpressionService::get('entity.column.equal.to.value', [
-                            'column' => ExpressionService::get('entityclass.' . $table . '.' . $fieldName),
-                            'value' => $duplicateValues[$iterator],
-                        ]);
-                        $iterator++;
-                    }
-                    throw (new EntityFieldException())->setError($fieldNames[0], ExpressionService::get('errormessage.a.entity.with.expression.already.exists', [
-                        'entity' => ExpressionService::get('entityclass.' . $table),
-                        'expression' => implode(', ', $duplicateExpressions),
-                    ]));
-                } else {
-                    throw $e;
-                }
-            }
+        $savePoint = Entity::savePoint();
+        try {
+            $this->_x_store();
+        } catch (Throwable $t) {
+            Entity::rollbackToSavepoint($savePoint);
+            throw $t;
+        }
+    }
 
+    private function _x_store(): void
+    {
+        $queryString = '';
+        $bind = [];
+        foreach ($this->entities as $entity) {
+            $entityReflector = new ReflectionObject($entity);
+            $methodReflector = $entityReflector->getMethod('storeQueries');
+            $methodReflector->setAccessible(true);
+            /** @var Query[] $queries */
+            $queries = $methodReflector->invoke($entity);
+            foreach ($queries as $query) {
+                $queryString .= $query->query . ';';
+                $bind = array_merge($bind, $query->bind);
+            }
+        }
+        if ($queryString) {
+            Entity::execute($queryString, $bind);
         }
     }
 }

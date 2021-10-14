@@ -3,14 +3,10 @@
 
 namespace XUA\Tools\Entity;
 
-
-
-use ReflectionClass;
-use ReflectionException;
+use XUA\Exceptions\SuperMarshalException;
 use XUA\Supers\EntitySupers\EntityRelation;
 use XUA\Supers\Highers\Sequence;
 use XUA\Exceptions\EntityConditionException;
-use XUA\Exceptions\InstantiationException;
 use XUA\Exceptions\SuperValidationException;
 
 final class Condition
@@ -39,33 +35,63 @@ final class Condition
     const NOT_LIKE    = "$ NOT LIKE ?";
     const REGEXP      = "$ REGEXP ?";
     const NOT_REGEXP  = "$ NOT REGEXP ?";
+    const RELATION_ = [
+        self::GRATER,
+        self::NGRATER,
+        self::GRATEREQ,
+        self::NGRATEREQ,
+        self::LESS,
+        self::NLESS,
+        self::LESSEQ,
+        self::NLESSEQ,
+        self::EQ,
+        self::NEQ,
+        self::NULLSAFEEQ,
+        self::NNULLSAFEEQ,
+        self::BETWEEN,
+        self::NBETWEEN,
+        self::IN,
+        self::NIN,
+        self::IS,
+        self::NIS,
+        self::ISNULL,
+        self::NISNULL,
+        self::LIKE,
+        self::NOT_LIKE,
+        self::REGEXP,
+        self::NOT_REGEXP,
+    ];
 
-    private array $joins = [];
-
+    /**
+     * @var string
+     */
     public string $template = "";
+    /**
+     * @var array
+     */
     public array $parameters = [];
 
     /**
-     * @throws InstantiationException
+     * @var Join[]
      */
-    public function __construct()
-    {
-        throw new InstantiationException('cannot instantiate class `Condition` directly, use XUA\`leaf`, `falseLeaf`, or `trueLeaf` methods.');
-    }
-
-    public static function relations() : array
-    {
-        return (new ReflectionClass(self::class))->getConstants();
-    }
+    private array $joins = [];
 
     /**
-     * @throws ReflectionException
-     * @throws SuperValidationException
+     */
+    private function __construct(){}
+
+    /**
+     * @param ConditionField $field
+     * @param string $relation
+     * @param mixed|null $value
+     * @return Condition
      * @throws EntityConditionException
+     * @throws SuperValidationException
+     * @throws SuperMarshalException
      */
     public static function leaf (ConditionField $field, string $relation, mixed $value = null) : Condition
     {
-        if (!in_array($relation, self::relations())) {
+        if (!in_array($relation, self::RELATION_)) {
             throw new EntityConditionException('Invalid relation provided. Relation must be a constant of class Condition.');
         }
 
@@ -73,8 +99,7 @@ final class Condition
             throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use XUA\rel function on the it.');
         }
 
-        /** @var Condition $condition */
-        $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
+        $condition = new Condition();
 
         $condition->template = str_replace('$', $field->name(), $relation);
         $condition->joins = $field->joins();
@@ -104,43 +129,125 @@ final class Condition
         return $condition;
     }
 
+    /**
+     * @param string $template
+     * @param array $parameters
+     * @param Join[] $joins
+     * @return Condition
+     */
+    public static function rawLeaf(string $template, array $parameters = [], array $joins = []) : Condition
+    {
+        $condition = new Condition();
+        $condition->template = $template;
+        $condition->parameters = $parameters;
+        $condition->joins = $joins;
+        return $condition;
+    }
+
+    /**
+     * @return Condition
+     */
     public static function trueLeaf() : Condition
     {
-        /** @var Condition $condition */
-        $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
-        $condition->template = 'TRUE';
-        return $condition;
+        return self::rawLeaf('TRUE');
     }
 
+    /**
+     * @return Condition
+     */
     public static function falseLeaf() : Condition
     {
-        /** @var Condition $condition */
-        $condition = (new ReflectionClass(Condition::class))->newInstanceWithoutConstructor();
-        $condition->template = 'FALSE';
-        return $condition;
+        return self::rawLeaf('FALSE');
     }
 
+    /**
+     * @param ConditionField $field
+     * @param string $relation
+     * @param mixed|null $value
+     * @return $this
+     * @throws EntityConditionException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
+     */
     public function and(ConditionField $field, string $relation, mixed $value = null) : Condition
     {
         return $this->andC(Condition::leaf($field, $relation, $value));
     }
 
+    /**
+     * @param ConditionField $field
+     * @param string $relation
+     * @param mixed|null $value
+     * @return $this
+     * @throws EntityConditionException
+     * @throws SuperValidationException
+     * @throws SuperMarshalException
+     */
     public function or(ConditionField $field, string $relation, mixed $value = null) : Condition
     {
         return $this->orC(Condition::leaf($field, $relation, $value));
     }
 
+    /**
+     * @param ConditionField $field
+     * @param string $relation
+     * @param mixed|null $value
+     * @return $this
+     * @throws EntityConditionException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
+     */
     public function xor(ConditionField $field, string $relation, mixed $value = null) : Condition
     {
         return $this->xorC(Condition::leaf($field, $relation, $value));
     }
 
+    /**
+     * @param string $template
+     * @param array $parameters
+     * @param array $joins
+     * @return $this
+     */
+    public function andR(string $template, array $parameters = [], array $joins = []) : Condition
+    {
+        return $this->andC(Condition::rawLeaf($template, $parameters, $joins));
+    }
+
+    /**
+     * @param string $template
+     * @param array $parameters
+     * @param array $joins
+     * @return $this
+     */
+    public function orR(string $template, array $parameters = [], array $joins = []) : Condition
+    {
+        return $this->orC(Condition::rawLeaf($template, $parameters, $joins));
+    }
+
+    /**
+     * @param string $template
+     * @param array $parameters
+     * @param array $joins
+     * @return $this
+     */
+    public function xorR(string $template, array $parameters = [], array $joins = []) : Condition
+    {
+        return $this->xorC(Condition::rawLeaf($template, $parameters, $joins));
+    }
+
+    /**
+     * @return $this
+     */
     public function not() : Condition
     {
         $this->template = "NOT ($this->template)";
         return $this;
     }
 
+    /**
+     * @param Condition $condition
+     * @return $this
+     */
     public function andC(Condition $condition) : Condition
     {
         $this->template = "($this->template) AND ($condition->template)";
@@ -149,6 +256,10 @@ final class Condition
         return $this;
     }
 
+    /**
+     * @param Condition $condition
+     * @return $this
+     */
     public function orC(Condition $condition) : Condition
     {
         $this->template = "($this->template) OR ($condition->template)";
@@ -157,6 +268,10 @@ final class Condition
         return $this;
     }
 
+    /**
+     * @param Condition $condition
+     * @return $this
+     */
     public function xorC(Condition $condition) : Condition
     {
         $this->template = "($this->template) XOR ($condition->template)";
@@ -165,26 +280,48 @@ final class Condition
         return $this;
     }
 
+    /**
+     * @param Condition $leftCondition
+     * @param Condition $rightCondition
+     * @return Condition
+     */
     public static function _and_(Condition $leftCondition, Condition $rightCondition) : Condition
     {
         return $leftCondition->andC($rightCondition);
     }
 
+    /**
+     * @param Condition $leftCondition
+     * @param Condition $rightCondition
+     * @return Condition
+     */
     public static function _or_(Condition $leftCondition, Condition $rightCondition) : Condition
     {
         return $leftCondition->orC($rightCondition);
     }
 
+    /**
+     * @param Condition $leftCondition
+     * @param Condition $rightCondition
+     * @return Condition
+     */
     public static function _xor_(Condition $leftCondition, Condition $rightCondition) : Condition
     {
         return $leftCondition->xorC($rightCondition);
     }
 
+    /**
+     * @param Condition $condition
+     * @return Condition
+     */
     public static function _not_(Condition $condition) : Condition
     {
         return $condition->not();
     }
 
+    /**
+     * @return string
+     */
     public function joins(): string
     {
         $joins = [];
