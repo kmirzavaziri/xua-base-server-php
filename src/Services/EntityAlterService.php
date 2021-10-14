@@ -27,6 +27,7 @@ final class EntityAlterService extends Service
 
         foreach ($phpFiles as $phpFile) {
             $className = self::getClassName(file_get_contents($phpFile->getRealPath()));
+            // @TODO check className is not abstract
             if ($className and is_a($className, Entity::class, true)) {
                 $tableNamesAndAlter = $className::alter();
                 $newTables = array_merge($newTables, $tableNamesAndAlter['tableNames']);
