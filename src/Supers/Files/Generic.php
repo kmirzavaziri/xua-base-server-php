@@ -1,19 +1,19 @@
 <?php
 
 
-namespace XUA\Supers\Files;
+namespace Xua\Core\Supers\Files;
 
-use XUA\Services\FileSize;
-use XUA\Services\ConstantService;
-use XUA\Services\ExpressionService;
-use XUA\Services\FileInstance;
-use XUA\Services\FileInstanceSame;
-use XUA\Supers\Boolean;
-use XUA\Supers\Highers\Sequence;
-use XUA\Supers\Numerics\Integer;
-use XUA\Supers\Strings\Text;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\FileSize;
+use Xua\Core\Services\ConstantService;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Services\FileInstance;
+use Xua\Core\Services\FileInstanceSame;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Supers\Strings\Text;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?array allowedMimeTypes

@@ -1,9 +1,9 @@
 <?php
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
-use XUA\Tools\Signature\EntityFieldSignature;
-use XUA\Tools\Signature\VarqueMethodFieldSignature;
+use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
 class EntityArray
 {

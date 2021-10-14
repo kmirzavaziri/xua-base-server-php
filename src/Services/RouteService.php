@@ -1,13 +1,12 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
-
-use XUA\Exceptions\InstantiationException;
-use XUA\Exceptions\XRMLException;
-use XUA\Exceptions\RouteException;
-use XUA\Eves\Service;
+use Xua\Core\Exceptions\InstantiationException;
+use Xua\Core\Exceptions\XRMLException;
+use Xua\Core\Exceptions\RouteException;
+use Xua\Core\Eves\Service;
 
 final class RouteService extends Service
 {

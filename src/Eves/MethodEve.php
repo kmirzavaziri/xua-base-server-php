@@ -1,14 +1,14 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
 use ReflectionClass;
-use XUA\Exceptions\MagicCallException;
-use XUA\Exceptions\MethodRequestException;
-use XUA\Exceptions\MethodResponseException;
-use XUA\Tools\Signature\MethodItemSignature;
+use Xua\Core\Exceptions\MagicCallException;
+use Xua\Core\Exceptions\MethodRequestException;
+use Xua\Core\Exceptions\MethodResponseException;
+use Xua\Core\Tools\Signature\MethodItemSignature;
 
-abstract class MethodEve extends XUA
+abstract class MethodEve extends Xua
 {
     // @TODO rename add underline
     protected MethodRequestException $error;

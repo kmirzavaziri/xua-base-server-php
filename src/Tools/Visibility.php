@@ -1,7 +1,7 @@
 <?php
 
 
-namespace XUA\Tools;
+namespace Xua\Core\Tools;
 
 
 class Visibility

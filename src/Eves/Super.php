@@ -1,14 +1,14 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
-use XUA\Exceptions\MagicCallException;
-use XUA\Exceptions\SuperArgumentException;
-use XUA\Exceptions\SuperMarshalException;
-use XUA\Exceptions\SuperValidationException;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Exceptions\MagicCallException;
+use Xua\Core\Exceptions\SuperArgumentException;
+use Xua\Core\Exceptions\SuperMarshalException;
+use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
-abstract class Super extends XUA
+abstract class Super extends Xua
 {
     # Constants
     const METHOD_IDENTITY = 'identity';

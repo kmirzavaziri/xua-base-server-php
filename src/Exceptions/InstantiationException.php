@@ -1,11 +1,10 @@
 <?php
 
 
-namespace XUA\Exceptions;
+namespace Xua\Core\Exceptions;
 
+use Xua\Core\Eves\XuaException;
 
-use XUA\Eves\XUAException;
-
-class InstantiationException extends XUAException
+class InstantiationException extends XuaException
 {
 }

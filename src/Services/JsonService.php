@@ -1,16 +1,16 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
 
-use XUA\Supers\Highers\Json;
-use XUA\Supers\Highers\Map;
-use XUA\Supers\Highers\Sequence;
-use XUA\Supers\Highers\StructuredMap;
-use XUA\Supers\Universal;
-use XUA\Eves\Service;
-use XUA\Eves\Super;
+use Xua\Core\Supers\Highers\Json;
+use Xua\Core\Supers\Highers\Map;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Highers\StructuredMap;
+use Xua\Core\Supers\Universal;
+use Xua\Core\Eves\Service;
+use Xua\Core\Eves\Super;
 
 abstract class JsonService extends Service
 {

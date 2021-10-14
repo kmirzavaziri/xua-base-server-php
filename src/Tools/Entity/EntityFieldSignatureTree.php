@@ -1,16 +1,16 @@
 <?php
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
-use XUA\Services\ExpressionService;
-use XUA\Supers\EntitySupers\EntityRelation;
-use XUA\Supers\Highers\Sequence;
-use XUA\Supers\Highers\StructuredMap;
-use XUA\Eves\Entity;
-use XUA\Exceptions\DefinitionException;
-use XUA\Exceptions\EntityFieldException;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Highers\StructuredMap;
+use Xua\Core\Eves\Entity;
+use Xua\Core\Exceptions\DefinitionException;
+use Xua\Core\Exceptions\EntityFieldException;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\EntityFieldSignature;
 
 class EntityFieldSignatureTree
 {
@@ -200,6 +200,6 @@ class EntityFieldSignatureTree
             }
             return null;
         }
-        throw (new DefinitionException('There is an error in XUA Core. This Exception should not be throw in any case.'));
+        throw (new DefinitionException('There is an error in Xua Core. This Exception should not be throw in any case.'));
     }
 }

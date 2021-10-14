@@ -1,10 +1,10 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
-use XUA\Exceptions\MagicCallException;
-use XUA\Tools\Signature\MethodItemSignature;
-use XUA\Tools\Signature\VarqueMethodFieldSignature;
+use Xua\Core\Exceptions\MagicCallException;
+use Xua\Core\Tools\Signature\MethodItemSignature;
+use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
 abstract class MethodView extends MethodEve
 {

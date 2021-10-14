@@ -1,10 +1,10 @@
 <?php
 
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
 
-abstract class XUA
+abstract class Xua
 {
     const VERSION = '1.0-β';
 

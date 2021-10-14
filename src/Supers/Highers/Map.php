@@ -1,19 +1,19 @@
 <?php
 
 
-namespace XUA\Supers\Highers;
+namespace Xua\Core\Supers\Highers;
 
 
-use XUA\Supers\Numerics\Integer;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
- * @property null|\XUA\Eves\Super keyType
+ * @property null|\Xua\Core\Eves\Super keyType
  * @method static SuperArgumentSignature A_keyType() The Signature of: Argument `keyType`
- * @property null|\XUA\Eves\Super valueType
+ * @property null|\Xua\Core\Eves\Super valueType
  * @method static SuperArgumentSignature A_valueType() The Signature of: Argument `valueType`
  * @property ?int minSize
  * @method static SuperArgumentSignature A_minSize() The Signature of: Argument `minSize`

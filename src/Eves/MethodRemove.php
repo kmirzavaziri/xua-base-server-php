@@ -1,6 +1,6 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
 abstract class MethodRemove extends MethodEve
 {

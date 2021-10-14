@@ -1,11 +1,11 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
 use JetBrains\PhpStorm\ArrayShape;
-use XUA\Eves\Service;
-use XUA\Exceptions\XRMLException;
+use Xua\Core\Eves\Service;
+use Xua\Core\Exceptions\XRMLException;
 
 final class XRMLParser extends Service
 {

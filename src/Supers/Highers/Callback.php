@@ -1,17 +1,17 @@
 <?php
 
 
-namespace XUA\Supers\Highers;
+namespace Xua\Core\Supers\Highers;
 
 use Closure;
 use ReflectionFunction;
-use XUA\Supers\Boolean;
-use XUA\Supers\Strings\Symbol;
-use XUA\Supers\Strings\Text;
-use XUA\Supers\Trilean;
-use XUA\Supers\Universal;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Supers\Strings\Symbol;
+use Xua\Core\Supers\Strings\Text;
+use Xua\Core\Supers\Trilean;
+use Xua\Core\Supers\Universal;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?array parameters

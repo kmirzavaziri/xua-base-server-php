@@ -1,12 +1,10 @@
 <?php
 
 
-namespace XUA\Exceptions;
+namespace Xua\Core\Exceptions;
 
+use Xua\Core\Eves\XuaException;
 
-
-use XUA\Eves\XUAException;
-
-class RouteException extends XUAException
+class RouteException extends XuaException
 {
 }

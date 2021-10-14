@@ -1,9 +1,9 @@
 <?php
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
 use Exception;
-use XUA\Eves\Service;
+use Xua\Core\Eves\Service;
 
 class FileInstance extends Service
 {

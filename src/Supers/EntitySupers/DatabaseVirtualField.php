@@ -1,12 +1,12 @@
 <?php
 
 
-namespace XUA\Supers\EntitySupers;
+namespace Xua\Core\Supers\EntitySupers;
 
 
-use XUA\Supers\Highers\Callback;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Highers\Callback;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property callable getter

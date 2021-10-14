@@ -1,11 +1,11 @@
 <?php
 
-namespace XUA\Tools\Signature;
+namespace Xua\Core\Tools\Signature;
 
 use Exception;
 use ReflectionClass;
-use XUA\Exceptions\InstantiationException;
-use XUA\Tools\Entity\EntityFieldSignatureTree;
+use Xua\Core\Exceptions\InstantiationException;
+use Xua\Core\Tools\Entity\EntityFieldSignatureTree;
 
 class VarqueMethodFieldSignature
 {

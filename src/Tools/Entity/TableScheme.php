@@ -1,13 +1,13 @@
 <?php
 
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
 
 use PDO;
 use PDOException;
 use PDOStatement;
-use XUA\Eves\Entity;
+use Xua\Core\Eves\Entity;
 
 final class TableScheme
 {

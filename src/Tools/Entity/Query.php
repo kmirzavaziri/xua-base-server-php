@@ -1,9 +1,9 @@
 <?php
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
 
-use XUA\Eves\Entity;
+use Xua\Core\Eves\Entity;
 
 final class Query {
     private function __construct(

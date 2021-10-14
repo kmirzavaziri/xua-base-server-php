@@ -1,12 +1,12 @@
 <?php
 
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
 
-use XUA\Supers\EntitySupers\EntityRelation;
-use XUA\Exceptions\EntityJoinException;
-use XUA\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Exceptions\EntityJoinException;
+use Xua\Core\Tools\Signature\EntityFieldSignature;
 
 class Join
 {

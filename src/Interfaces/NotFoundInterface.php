@@ -1,9 +1,9 @@
 <?php
 
-namespace XUA\Interfaces;
+namespace Xua\Core\Interfaces;
 
-use XUA\Services\TemplateService;
-use XUA\Eves\InterfaceEve;
+use Xua\Core\Services\TemplateService;
+use Xua\Core\Eves\InterfaceEve;
 
 class NotFoundInterface extends InterfaceEve
 {

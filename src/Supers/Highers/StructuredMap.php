@@ -1,14 +1,14 @@
 <?php
 
 
-namespace XUA\Supers\Highers;
+namespace Xua\Core\Supers\Highers;
 
 
-use XUA\Services\ExpressionService;
-use XUA\Supers\Numerics\Integer;
-use XUA\Supers\Strings\Symbol;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Supers\Strings\Symbol;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

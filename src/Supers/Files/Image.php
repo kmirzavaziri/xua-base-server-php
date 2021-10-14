@@ -1,17 +1,16 @@
 <?php
 
 
-namespace XUA\Supers\Files;
+namespace Xua\Core\Supers\Files;
 
-
-use XUA\Services\Mime;
-use XUA\Services\ExpressionService;
-use XUA\Services\FileInstance;
-use XUA\Services\FileInstanceSame;
-use XUA\Supers\Highers\Sequence;
-use XUA\Supers\Numerics\Integer;
-use XUA\Supers\Strings\Enum;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\Mime;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Services\FileInstance;
+use Xua\Core\Services\FileInstanceSame;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Supers\Strings\Enum;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?array allowedMimeTypes

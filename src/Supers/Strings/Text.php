@@ -1,14 +1,14 @@
 <?php
 
 
-namespace XUA\Supers\Strings;
+namespace Xua\Core\Supers\Strings;
 
 
-use XUA\Supers\Boolean;
-use XUA\Supers\Numerics\Integer;
-use XUA\Exceptions\SuperValidationException;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength

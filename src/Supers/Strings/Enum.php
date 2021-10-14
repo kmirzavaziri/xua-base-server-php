@@ -1,13 +1,13 @@
 <?php
 
 
-namespace XUA\Supers\Strings;
+namespace Xua\Core\Supers\Strings;
 
 
-use XUA\Services\ExpressionService;
-use XUA\Supers\Highers\Sequence;
-use XUA\Supers\Numerics\Integer;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength

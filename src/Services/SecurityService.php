@@ -1,12 +1,11 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
-
-use XUA\Supers\Numerics\DecimalRange;
-use XUA\Exceptions\InstantiationException;
-use XUA\Eves\Service;
+use Xua\Core\Supers\Numerics\DecimalRange;
+use Xua\Core\Exceptions\InstantiationException;
+use Xua\Core\Eves\Service;
 
 final class SecurityService extends Service
 {
@@ -21,7 +20,7 @@ final class SecurityService extends Service
 
     protected static function _init(): void
     {
-        self::$hasPrivateMethodAccess = (isset($_SERVER['HTTP_XUA_INTERNAL_URPI_KEY']) and $_SERVER['HTTP_XUA_INTERNAL_URPI_KEY'] == ConstantService::get('config/XUA/sec', 'urpikey'));
+        self::$hasPrivateMethodAccess = (isset($_SERVER['HTTP_XUA_INTERNAL_URPI_KEY']) and $_SERVER['HTTP_XUA_INTERNAL_URPI_KEY'] == ConstantService::get('config/Xua/sec', 'urpikey'));
     }
 
     public static function verifyPrivateMethodAccess() : bool

@@ -1,8 +1,7 @@
 <?php
 
 
-namespace XUA\Tools\Entity;
-
+namespace Xua\Core\Tools\Entity;
 
 abstract class QueryBinder
 {

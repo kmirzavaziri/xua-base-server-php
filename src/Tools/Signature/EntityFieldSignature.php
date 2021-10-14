@@ -1,10 +1,10 @@
 <?php
 
 
-namespace XUA\Tools\Signature;
+namespace Xua\Core\Tools\Signature;
 
 
-use XUA\Eves\Super;
+use Xua\Core\Eves\Super;
 
 final class EntityFieldSignature
 {

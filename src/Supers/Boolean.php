@@ -1,10 +1,10 @@
 <?php
 
 
-namespace XUA\Supers;
+namespace Xua\Core\Supers;
 
 
-use XUA\Eves\Super;
+use Xua\Core\Eves\Super;
 
 class Boolean extends Super
 {

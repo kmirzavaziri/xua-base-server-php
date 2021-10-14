@@ -1,10 +1,10 @@
 <?php
 
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
 
-abstract class Service extends XUA
+abstract class Service extends Xua
 {
 
 }

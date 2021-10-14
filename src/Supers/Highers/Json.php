@@ -1,16 +1,16 @@
 <?php
 
 
-namespace XUA\Supers\Highers;
+namespace Xua\Core\Supers\Highers;
 
 
 
-use XUA\Services\JsonService;
-use XUA\Supers\Boolean;
-use XUA\Supers\Numerics\Integer;
-use XUA\Supers\Strings\Text;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\JsonService;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Supers\Strings\Text;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

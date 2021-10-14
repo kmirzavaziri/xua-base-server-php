@@ -1,13 +1,13 @@
 <?php
 
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
-use XUA\Exceptions\SuperMarshalException;
-use XUA\Supers\EntitySupers\EntityRelation;
-use XUA\Supers\Highers\Sequence;
-use XUA\Exceptions\EntityConditionException;
-use XUA\Exceptions\SuperValidationException;
+use Xua\Core\Exceptions\SuperMarshalException;
+use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Exceptions\EntityConditionException;
+use Xua\Core\Exceptions\SuperValidationException;
 
 final class Condition
 {
@@ -96,7 +96,7 @@ final class Condition
         }
 
         if (is_a($field->signature->type, EntityRelation::class)) {
-            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use XUA\rel function on the it.');
+            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use rel function on the it.');
         }
 
         $condition = new Condition();

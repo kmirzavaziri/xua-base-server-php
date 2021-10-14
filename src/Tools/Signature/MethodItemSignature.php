@@ -1,13 +1,13 @@
 <?php
 
 
-namespace XUA\Tools\Signature;
+namespace Xua\Core\Tools\Signature;
 
 
-use XUA\Services\ExpressionService;
-use XUA\Exceptions\MethodRequestException;
-use XUA\Exceptions\MethodResponseException;
-use XUA\Eves\Super;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Exceptions\MethodRequestException;
+use Xua\Core\Exceptions\MethodResponseException;
+use Xua\Core\Eves\Super;
 
 class MethodItemSignature
 {

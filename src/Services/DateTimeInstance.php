@@ -1,11 +1,11 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
 
 use DateTime;
-use XUA\Eves\Service;
+use Xua\Core\Eves\Service;
 
 class DateTimeInstance extends Service
 {
@@ -172,7 +172,7 @@ class DateTimeInstance extends Service
                     $result .= $M;
                     break;
                 case 'o':
-                    // TODO check (use XUA\$N)
+                    // TODO check (use $N)
                     $result .= ($w > ($z + 3) and $z < 3) ? $Y - 1 : (((3 - $Q) > $w and $Q < 3) ? $Y + 1 : $Y);
                     break;
                 case 'r':
@@ -188,7 +188,7 @@ class DateTimeInstance extends Service
                     $result .= $w;
                     break;
                 case 'W':
-                    // TODO check (use XUA\$N)
+                    // TODO check (use $N)
                     $avs = (($w == 6) ? 0 : $w + 1) - ($z % 7);
                     if ($avs < 0) $avs += 7;
                     $num = floor(($z + $avs) / 7);

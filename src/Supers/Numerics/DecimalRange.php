@@ -1,13 +1,13 @@
 <?php
 
 
-namespace XUA\Supers\Numerics;
+namespace Xua\Core\Supers\Numerics;
 
 
-use XUA\Services\ExpressionService;
-use XUA\Supers\Boolean;
-use XUA\Exceptions\SuperValidationException;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

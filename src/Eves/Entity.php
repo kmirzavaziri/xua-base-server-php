@@ -1,6 +1,6 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
@@ -9,40 +9,40 @@ use PDOException;
 use PDOStatement;
 use ReflectionClass;
 use ReflectionException;
-use XUA\Exceptions\EntityConditionException;
-use XUA\Exceptions\NotImplementedException;
-use XUA\Exceptions\SuperMarshalException;
-use XUA\Services\ConstantService;
-use XUA\Services\ExpressionService;
-use XUA\Supers\EntitySupers\DatabaseVirtualField;
-use XUA\Supers\EntitySupers\EntityRelation;
-use XUA\Supers\EntitySupers\PhpVirtualField;
-use XUA\Supers\Numerics\Decimal;
+use Xua\Core\Exceptions\EntityConditionException;
+use Xua\Core\Exceptions\NotImplementedException;
+use Xua\Core\Exceptions\SuperMarshalException;
+use Xua\Core\Services\ConstantService;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Supers\EntitySupers\DatabaseVirtualField;
+use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Supers\EntitySupers\PhpVirtualField;
+use Xua\Core\Supers\Numerics\Decimal;
 use Throwable;
-use XUA\Exceptions\EntityException;
-use XUA\Exceptions\MagicCallException;
-use XUA\Exceptions\EntityDeleteException;
-use XUA\Exceptions\EntityFieldException;
-use XUA\Exceptions\SuperValidationException;
-use XUA\Tools\Entity\EntityBuffer;
-use XUA\Tools\Entity\Query;
-use XUA\Tools\Entity\QueryBinder;
-use XUA\Tools\Entity\Column;
-use XUA\Tools\Entity\Condition;
-use XUA\Tools\Entity\ConditionField;
-use XUA\Tools\Signature\EntityFieldSignature;
-use XUA\Tools\Entity\Index;
-use XUA\Tools\Entity\Order;
-use XUA\Tools\Entity\Pager;
-use XUA\Tools\Entity\TableScheme;
-use XUA\Tools\Visibility;
+use Xua\Core\Exceptions\EntityException;
+use Xua\Core\Exceptions\MagicCallException;
+use Xua\Core\Exceptions\EntityDeleteException;
+use Xua\Core\Exceptions\EntityFieldException;
+use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Tools\Entity\EntityBuffer;
+use Xua\Core\Tools\Entity\Query;
+use Xua\Core\Tools\Entity\QueryBinder;
+use Xua\Core\Tools\Entity\Column;
+use Xua\Core\Tools\Entity\Condition;
+use Xua\Core\Tools\Entity\ConditionField;
+use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Entity\Index;
+use Xua\Core\Tools\Entity\Order;
+use Xua\Core\Tools\Entity\Pager;
+use Xua\Core\Tools\Entity\TableScheme;
+use Xua\Core\Tools\Visibility;
 
 /**
  * @property int id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
  */
-abstract class Entity extends XUA
+abstract class Entity extends Xua
 {
     ####################################################################################################################
     # Database Engine Connection #######################################################################################
@@ -130,7 +130,7 @@ abstract class Entity extends XUA
 
         self::$_x_field_signatures[static::class] = static::fieldSignaturesCalculator();
 
-        $dbInfo = ConstantService::get('config/XUA/db');
+        $dbInfo = ConstantService::get('config/Xua/db');
         if (!$dbInfo) {
             throw new EntityException('Database connection config not found.');
         }

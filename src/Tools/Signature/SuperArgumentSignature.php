@@ -1,11 +1,11 @@
 <?php
 
 
-namespace XUA\Tools\Signature;
+namespace Xua\Core\Tools\Signature;
 
 
-use XUA\Exceptions\SuperArgumentException;
-use XUA\Eves\Super;
+use Xua\Core\Exceptions\SuperArgumentException;
+use Xua\Core\Eves\Super;
 
 class SuperArgumentSignature
 {

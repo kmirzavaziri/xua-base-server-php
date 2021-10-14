@@ -1,12 +1,12 @@
 <?php
 
 
-namespace XUA\Supers\Numerics;
+namespace Xua\Core\Supers\Numerics;
 
 
-use XUA\Supers\Boolean;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

@@ -1,11 +1,11 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
 
-use XUA\Exceptions\InstantiationException;
-use XUA\Eves\Service;
+use Xua\Core\Exceptions\InstantiationException;
+use Xua\Core\Eves\Service;
 
 final class ConstantService extends Service
 {
@@ -27,9 +27,9 @@ final class ConstantService extends Service
 
     const DEFAULT_LANG = 'fa';
 
-    // @TODO use XUA\this
+    // @TODO use this
     const VERIFICATION_CODE_LENGTH = 6;
-    // @TODO use XUA\this
+    // @TODO use this
     const VERIFICATION_CODE_EXPIRATION_TIME = DateTimeInstance::MINUTE;
 
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
 use Exception;
 
-abstract class XUAException extends Exception
+abstract class XuaException extends Exception
 {
     private array $errors = [];
 
@@ -13,19 +13,19 @@ abstract class XUAException extends Exception
         return $this->errors ?: ($this->getMessage() ? ['' => $this->getMessage()] : []);
     }
 
-    public function setError(string $key, null|string|array $message) : XUAException
+    public function setError(string $key, null|string|array $message) : static
     {
         $this->errors[$key] = $message;
         return $this;
     }
 
-    public function unsetError(string $key) : XUAException
+    public function unsetError(string $key) : static
     {
         unset($this->errors[$key]);
         return $this;
     }
 
-    public function fromException(XUAException $exception): XUAException
+    public function fromException(self $exception): static
     {
         $errors = $exception->getErrors();
         foreach ($errors as $key => $message) {

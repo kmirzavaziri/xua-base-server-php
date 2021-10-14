@@ -1,14 +1,14 @@
 <?php
 
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
-use XUA\Eves\Entity;
-use XUA\Eves\Service;
-use XUA\Tools\Entity\TableScheme;
+use Xua\Core\Eves\Entity;
+use Xua\Core\Eves\Service;
+use Xua\Core\Tools\Entity\TableScheme;
 
 final class EntityAlterService extends Service
 {

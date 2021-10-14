@@ -1,8 +1,8 @@
 <?php
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
-use XUA\Eves\Service;
+use Xua\Core\Eves\Service;
 
 final class FileInstanceSame extends Service
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
 
 use ReflectionObject;
 use Throwable;
-use XUA\Eves\Entity;
-use XUA\Exceptions\EntityException;
-use XUA\Exceptions\EntityFieldException;
+use Xua\Core\Eves\Entity;
+use Xua\Core\Exceptions\EntityException;
+use Xua\Core\Exceptions\EntityFieldException;
 
 final class EntityBuffer {
     /**

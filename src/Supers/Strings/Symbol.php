@@ -1,11 +1,11 @@
 <?php
 
 
-namespace XUA\Supers\Strings;
+namespace Xua\Core\Supers\Strings;
 
 
-use XUA\Supers\Boolean;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property ?int minLength

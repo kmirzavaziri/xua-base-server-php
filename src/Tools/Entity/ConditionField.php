@@ -1,12 +1,12 @@
 <?php
 
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
 
-use XUA\Supers\EntitySupers\EntityRelation;
-use XUA\Exceptions\EntityConditionException;
-use XUA\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Exceptions\EntityConditionException;
+use Xua\Core\Tools\Signature\EntityFieldSignature;
 
 final class ConditionField
 {

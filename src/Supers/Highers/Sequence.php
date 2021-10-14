@@ -1,18 +1,18 @@
 <?php
 
 
-namespace XUA\Supers\Highers;
+namespace Xua\Core\Supers\Highers;
 
 
-use XUA\Supers\Numerics\Integer;
-use XUA\Exceptions\SuperValidationException;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Supers\Numerics\Integer;
+use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable
  * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
- * @property null|\XUA\Eves\Super type
+ * @property null|\Xua\Core\Eves\Super type
  * @method static SuperArgumentSignature A_type() The Signature of: Argument `type`
  * @property ?int minLength
  * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`

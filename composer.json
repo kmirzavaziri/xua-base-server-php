@@ -1,9 +1,9 @@
 {
-    "name": "xua/xua",
+    "name": "xua/core",
     "autoload": {
         "files": ["magic/var_dump.php"],
         "psr-4": {
-            "XUA\\": "src/"
+            "Xua\\Core\\": "src/"
         }
     },
     "require": {

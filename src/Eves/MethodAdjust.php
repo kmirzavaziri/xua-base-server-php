@@ -1,13 +1,13 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
-use XUA\Services\ConstantService;
-use XUA\Services\FileInstanceSame;
-use XUA\Supers\Files\Generic;
-use XUA\Exceptions\EntityFieldException;
-use XUA\Tools\Signature\MethodItemSignature;
-use XUA\Tools\Signature\VarqueMethodFieldSignature;
+use Xua\Core\Services\ConstantService;
+use Xua\Core\Services\FileInstanceSame;
+use Xua\Core\Supers\Files\Generic;
+use Xua\Core\Exceptions\EntityFieldException;
+use Xua\Core\Tools\Signature\MethodItemSignature;
+use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
 abstract class MethodAdjust extends MethodEve
 {

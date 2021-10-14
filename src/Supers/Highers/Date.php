@@ -1,17 +1,17 @@
 <?php
 
 
-namespace XUA\Supers\Highers;
+namespace Xua\Core\Supers\Highers;
 
 
 
-use XUA\Services\DateTimeInstance;
-use XUA\Services\ExpressionService;
-use XUA\Services\LocaleLanguage;
-use XUA\Supers\Boolean;
-use XUA\Supers\Strings\Text;
-use XUA\Eves\Super;
-use XUA\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Services\DateTimeInstance;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Services\LocaleLanguage;
+use Xua\Core\Supers\Boolean;
+use Xua\Core\Supers\Strings\Text;
+use Xua\Core\Eves\Super;
+use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**
  * @property bool nullable

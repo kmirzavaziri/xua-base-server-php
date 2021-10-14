@@ -1,14 +1,14 @@
 <?php
 
-namespace XUA\Services;
+namespace Xua\Core\Services;
 
-use XUA\Interfaces\NotFoundInterface;
-use XUA\Services\Dev\Credentials;
+use Xua\Core\Interfaces\NotFoundInterface;
+use Xua\Core\Services\Dev\Credentials;
 use Throwable;
-use XUA\Eves\Entity;
-use XUA\Exceptions\RouteException;
-use XUA\Eves\Service;
-use XUA\Eves\XUAException;
+use Xua\Core\Eves\Entity;
+use Xua\Core\Exceptions\RouteException;
+use Xua\Core\Eves\Service;
+use Xua\Core\Eves\XuaException;
 
 class MainService extends Service
 {
@@ -50,7 +50,7 @@ class MainService extends Service
         if (Credentials::developer()) {
             echo
                 "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
-                (is_a($throwable, XUAException::class) ? xua_var_dump($throwable->getErrors()) : $throwable->getMessage()) . "\n\n" .
+                (is_a($throwable, XuaException::class) ? xua_var_dump($throwable->getErrors()) : $throwable->getMessage()) . "\n\n" .
                 "Trace:\n" .
                 $throwable->getTraceAsString() .
                 "</pre>";

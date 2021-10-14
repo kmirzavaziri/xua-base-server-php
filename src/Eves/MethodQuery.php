@@ -1,17 +1,17 @@
 <?php
 
-namespace XUA\Eves;
+namespace Xua\Core\Eves;
 
-use XUA\Supers\Highers\Map;
-use XUA\Supers\Highers\Sequence;
-use XUA\Supers\Highers\StructuredMap;
-use XUA\Tools\Entity\Condition;
-use XUA\Tools\Entity\EntityArray;
-use XUA\Tools\Entity\Order;
-use XUA\Tools\Entity\Pager;
-use XUA\Tools\Signature\EntityFieldSignature;
-use XUA\Tools\Signature\MethodItemSignature;
-use XUA\Tools\Signature\VarqueMethodFieldSignature;
+use Xua\Core\Supers\Highers\Map;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Highers\StructuredMap;
+use Xua\Core\Tools\Entity\Condition;
+use Xua\Core\Tools\Entity\EntityArray;
+use Xua\Core\Tools\Entity\Order;
+use Xua\Core\Tools\Entity\Pager;
+use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Signature\MethodItemSignature;
+use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
 abstract class MethodQuery extends MethodEve
 {

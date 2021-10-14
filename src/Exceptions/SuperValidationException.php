@@ -1,8 +1,8 @@
 <?php
 
-namespace XUA\Exceptions;
+namespace Xua\Core\Exceptions;
 
-use XUA\Eves\XUAException;
+use Xua\Core\Eves\XuaException;
 
-class SuperValidationException extends XUAException
+class SuperValidationException extends XuaException
 {}

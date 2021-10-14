@@ -1,7 +1,7 @@
 <?php
 
 
-namespace XUA\Tools\Entity;
+namespace Xua\Core\Tools\Entity;
 
 
 class Column
