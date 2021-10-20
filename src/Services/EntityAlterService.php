@@ -3,18 +3,20 @@
 
 namespace Xua\Core\Services;
 
+use PDO;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RegexIterator;
 use Xua\Core\Eves\Entity;
 use Xua\Core\Eves\Service;
+use Xua\Core\Tools\Entity\Database;
 use Xua\Core\Tools\Entity\TableScheme;
 
 final class EntityAlterService extends Service
 {
     public static function alters(): string
     {
-        return self::altersInDir(ConstantService::ENTITIES_DIR);
+        return self::alterTransaction() . self::altersInDir(ConstantService::ENTITIES_DIR);
     }
 
     private static function altersInDir(string $dir): string
@@ -62,5 +64,16 @@ final class EntityAlterService extends Service
             }
         }
         return null;
+    }
+
+    private static function alterTransaction(): string
+    {
+        $expectedTransactionIsolationLevel = ConstantService::DB_TRANSACTION_ISOLATION_LEVEL;
+        $realTransactionIsolationLevel = Entity::execute('SELECT @@GLOBAL.TRANSACTION_ISOLATION')->fetch(PDO::FETCH_NUM)[0];
+        if ($realTransactionIsolationLevel != $expectedTransactionIsolationLevel) {
+            $expectedTransactionIsolationLevelSyntax = Database::transactionIsolationLevel($expectedTransactionIsolationLevel);
+            return "SET GLOBAL TRANSACTION ISOLATION LEVEL $expectedTransactionIsolationLevelSyntax;" . PHP_EOL;
+        }
+        return '';
     }
 }

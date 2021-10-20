@@ -10,33 +10,34 @@ class Order
 
     private array $orders = [];
 
-    public static function noOrder() : static
+    private function __construct() {}
+
+    public static function noOrder(): static
     {
         return new static();
     }
 
-    public function add(ConditionField $field, string $order) : static
+    public function addRaw(string $order): static
     {
-        $this->orders[] = [$field->name(), $order];
+        $this->orders[] = $order;
         return $this;
     }
 
-    public function addRandom() : static
+    public function add(ConditionField $field, string $direction): static
     {
-        $this->orders[] = ['RAND()', ''];
-        return $this;
+        return $this->addRaw($field->name() . ' ' . $direction);
     }
 
-    public function render() : string
+    public function addRandom(): static
+    {
+        return $this->addRaw('RAND()');
+    }
+
+    public function render(): string
     {
         if (!$this->orders) {
             return '';
         }
-
-        $orders = [];
-        foreach ($this->orders as $order) {
-            $orders[] = $order[0] . ' ' . $order[1];
-        }
-        return 'ORDER BY ' . implode(', ', $orders);
+        return 'ORDER BY ' . implode(', ', $this->orders);
     }
 }

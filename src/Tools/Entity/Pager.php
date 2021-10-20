@@ -8,8 +8,8 @@ namespace Xua\Core\Tools\Entity;
 class Pager
 {
     public function __construct(
-        public int $pageSize,
-        public int $pageIndex
+        private int $pageSize,
+        private int $pageIndex
     ) {}
 
     public static function unlimited() : Pager

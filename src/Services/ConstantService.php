@@ -6,6 +6,7 @@ namespace Xua\Core\Services;
 
 use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
+use Xua\Core\Tools\Entity\Database;
 
 final class ConstantService extends Service
 {
@@ -31,6 +32,8 @@ final class ConstantService extends Service
     const VERIFICATION_CODE_LENGTH = 6;
     // @TODO use this
     const VERIFICATION_CODE_EXPIRATION_TIME = DateTimeInstance::MINUTE;
+
+    const DB_TRANSACTION_ISOLATION_LEVEL = Database::TRANSACTION_ISOLATION_LEVEL_SERIALIZABLE;
 
 
     private static array $cache = [];
