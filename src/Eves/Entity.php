@@ -25,6 +25,7 @@ use Xua\Core\Exceptions\EntityDeleteException;
 use Xua\Core\Exceptions\EntityFieldException;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Tools\Entity\EntityBuffer;
+use Xua\Core\Tools\Entity\EntityLock;
 use Xua\Core\Tools\Entity\Query;
 use Xua\Core\Tools\Entity\QueryBinder;
 use Xua\Core\Tools\Entity\Column;
@@ -368,15 +369,16 @@ abstract class Entity extends Xua
     /**
      * @param Condition $condition
      * @param Order $order
+     * @param string $lock
      * @param string $caller
      * @return static
      * @throws EntityFieldException
      * @throws ReflectionException
      * @noinspection PhpUnusedParameterInspection
      */
-    protected static function _getOne(Condition $condition, Order $order, string $caller): static
+    protected static function _getOne(Condition $condition, Order $order, string $lock, string $caller): static
     {
-        return static::_x_getOne($condition, $order);
+        return static::_x_getOne($condition, $order, $lock);
     }
 
     /**
@@ -424,15 +426,16 @@ abstract class Entity extends Xua
      * @param Condition $condition
      * @param Order $order
      * @param Pager $pager
+     * @param string $lock
      * @param string $caller
      * @return static[]
      * @throws EntityFieldException
      * @throws ReflectionException
      * @noinspection PhpUnusedParameterInspection
      */
-    protected static function _getMany(Condition $condition, Order $order, Pager $pager, string $caller): array
+    protected static function _getMany(Condition $condition, Order $order, Pager $pager, string $lock, string $caller): array
     {
-        return static::_x_getMany($condition, $order, $pager);
+        return static::_x_getMany($condition, $order, $pager, $lock);
     }
 
     /**
@@ -545,12 +548,13 @@ abstract class Entity extends Xua
     /**
      * @param Condition|null $condition
      * @param Order|null $order
+     * @param string $lock
      * @param string $caller
      * @return static
      * @throws EntityFieldException
      * @throws ReflectionException
      */
-    final public static function getOne(?Condition $condition = null, ?Order $order = null, string $caller = Visibility::CALLER_PHP): static
+    final public static function getOne(?Condition $condition = null, ?Order $order = null, string $lock = EntityLock::DEFAULT, string $caller = Visibility::CALLER_PHP): static
     {
         if ($condition === null) {
             $condition = Condition::trueLeaf();
@@ -558,7 +562,7 @@ abstract class Entity extends Xua
         if ($order === null) {
             $order = Order::noOrder();
         }
-        return static::_getOne($condition, $order, $caller);
+        return static::_getOne($condition, $order, $lock, $caller);
     }
 
     /**
@@ -607,12 +611,13 @@ abstract class Entity extends Xua
      * @param Condition|null $condition
      * @param Order|null $order
      * @param Pager|null $pager
+     * @param string $lock
      * @param string $caller
      * @return static[]
      * @throws EntityFieldException
      * @throws ReflectionException
      */
-    final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): array
+    final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $lock = EntityLock::DEFAULT, string $caller = Visibility::CALLER_PHP): array
     {
         if ($condition === null) {
             $condition = Condition::trueLeaf();
@@ -623,7 +628,7 @@ abstract class Entity extends Xua
         if ($pager === null) {
             $pager = Pager::unlimited();
         }
-        return static::_getMany($condition, $order, $pager, $caller);
+        return static::_getMany($condition, $order, $pager, $lock, $caller);
     }
 
     /**
@@ -701,13 +706,14 @@ abstract class Entity extends Xua
     /**
      * @param Condition $condition
      * @param Order $order
+     * @param string $lock
      * @return static
      * @throws EntityFieldException
      * @throws ReflectionException
      */
-    final protected static function _x_getOne(Condition $condition, Order $order): static
+    final protected static function _x_getOne(Condition $condition, Order $order, string $lock): static
     {
-        return static::_x_getMany($condition, $order, new Pager(1, 0))[0] ?? new static();
+        return static::_x_getMany($condition, $order, new Pager(1, 0), $lock)[0] ?? new static();
     }
 
     /**
@@ -859,14 +865,15 @@ abstract class Entity extends Xua
      * @param Condition $condition
      * @param Order $order
      * @param Pager $pager
+     * @param string $lock
      * @return static[]
      * @throws EntityFieldException
      * @throws ReflectionException
      */
-    final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager): array
+    final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager, string $lock): array
     {
         [$columnsExpression, $keys] = self::columnsExpression();
-        $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
+        $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render() . " " . $lock, $condition->parameters);
         $rawArrays = $statement->fetchAll(PDO::FETCH_NUM);
         $arrays = [];
         foreach ($rawArrays as $item => $rawArray) {
