@@ -3,8 +3,6 @@
 namespace Xua\Core\Tools\Signature;
 
 use Exception;
-use ReflectionClass;
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Tools\Entity\EntityFieldSignatureTree;
 
 class VarqueMethodFieldSignature

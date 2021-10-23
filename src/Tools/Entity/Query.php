@@ -9,7 +9,7 @@ final class Query {
     private function __construct(
         public string $query,
         public array $bind,
-    ){}
+    ) {}
 
     public static function insert(string $table, array $data): self
     {

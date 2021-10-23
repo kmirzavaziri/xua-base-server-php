@@ -78,7 +78,7 @@ final class Condition
 
     /**
      */
-    private function __construct(){}
+    private function __construct() {}
 
     /**
      * @param ConditionField $field

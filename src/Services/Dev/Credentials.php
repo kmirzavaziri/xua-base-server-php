@@ -4,7 +4,6 @@
 namespace Xua\Core\Services\Dev;
 
 use Xua\Core\Services\ExpressionService;
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Exceptions\MethodRequestException;
 use Xua\Core\Eves\Service;
 
@@ -21,13 +20,7 @@ final class Credentials extends Service
         return self::$developer;
     }
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `Credentials`.');
-    }
+    private function __construct() {}
 
     protected static function _init(): void
     {

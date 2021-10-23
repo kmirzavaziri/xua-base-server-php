@@ -4,20 +4,13 @@
 namespace Xua\Core\Services;
 
 
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
 
 final class ExpressionService extends Service
 {
     private static array $dict = [];
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `ExpressionService`.');
-    }
+    private function __construct() {}
 
     protected static function _init(): void
     {

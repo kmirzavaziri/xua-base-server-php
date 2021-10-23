@@ -6,20 +6,13 @@ namespace Xua\Core\Services;
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
 
 final class TemplateService extends Service
 {
     private static Environment $twig;
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `TemplateService`.');
-    }
+    private function __construct() {}
 
     protected static function _init(): void
     {

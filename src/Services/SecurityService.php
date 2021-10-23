@@ -4,19 +4,13 @@
 namespace Xua\Core\Services;
 
 use Xua\Core\Supers\Numerics\DecimalRange;
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
 
 final class SecurityService extends Service
 {
     private static bool $hasPrivateMethodAccess = false;
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `FlagService`.');
-    }
+
+    private function __construct() {}
 
     protected static function _init(): void
     {

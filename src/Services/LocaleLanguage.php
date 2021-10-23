@@ -4,7 +4,6 @@
 namespace Xua\Core\Services;
 
 
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
 
 final class LocaleLanguage extends Service
@@ -15,13 +14,7 @@ final class LocaleLanguage extends Service
     private static string $locale;
     private static string $language;
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `LocaleLanguage`.');
-    }
+    private function __construct() {}
 
     protected static function _init(): void
     {

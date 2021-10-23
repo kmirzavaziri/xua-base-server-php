@@ -3,7 +3,6 @@
 
 namespace Xua\Core\Services;
 
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Exceptions\XRMLException;
 use Xua\Core\Exceptions\RouteException;
 use Xua\Core\Eves\Service;
@@ -16,13 +15,7 @@ final class RouteService extends Service
     public static array $routeArgs = [];
     public static ?string $method = null;
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `RouteService`.');
-    }
+    private function __construct() {}
 
     /**
      * @throws XRMLException

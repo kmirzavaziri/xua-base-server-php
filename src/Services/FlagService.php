@@ -3,20 +3,13 @@
 
 namespace Xua\Core\Services;
 
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
 
 final class FlagService extends Service
 {
     private static array $flags = [];
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `FlagService`.');
-    }
+    private function __construct() {}
 
     public static function get(string $key) : mixed
     {

@@ -4,7 +4,6 @@
 namespace Xua\Core\Services;
 
 
-use Xua\Core\Exceptions\InstantiationException;
 use Xua\Core\Eves\Service;
 use Xua\Core\Tools\Entity\Database;
 
@@ -38,13 +37,7 @@ final class ConstantService extends Service
 
     private static array $cache = [];
 
-    /**
-     * @throws InstantiationException
-     */
-    function __construct()
-    {
-        throw new InstantiationException('Cannot instantiate class `ConstantService`.');
-    }
+    private function __construct() {}
 
     public static function get(string $treeName, string $nodePath = '') : mixed
     {
