@@ -36,6 +36,7 @@ class MainService extends Service
             RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
             self::after();
         } catch (Throwable $throwable) {
+            self::afterException();
             self::catch($throwable);
         }
     }
@@ -43,6 +44,11 @@ class MainService extends Service
     public static function after()
     {
         Entity::commit();
+    }
+
+    public static function afterException()
+    {
+        Entity::rollback();
     }
 
     public static function catch(Throwable $throwable)

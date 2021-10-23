@@ -1165,6 +1165,14 @@ abstract class Entity extends Xua
     }
 
     /**
+     * @throws EntityFieldException
+     */
+    final public static function rollback(): void
+    {
+        static::execute("ROLLBACK");
+    }
+
+    /**
      * @param Entity|null $entity
      * @return array
      */
