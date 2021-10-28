@@ -17,13 +17,13 @@ use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\EntitySupers\DatabaseVirtualField;
 use Xua\Core\Supers\EntitySupers\EntityRelation;
 use Xua\Core\Supers\EntitySupers\PhpVirtualField;
-use Xua\Core\Supers\Numerics\Decimal;
 use Throwable;
 use Xua\Core\Exceptions\EntityException;
 use Xua\Core\Exceptions\MagicCallException;
 use Xua\Core\Exceptions\EntityDeleteException;
 use Xua\Core\Exceptions\EntityFieldException;
 use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Supers\Numerics\Identifier;
 use Xua\Core\Tools\Entity\EntityBuffer;
 use Xua\Core\Tools\Entity\EntityLock;
 use Xua\Core\Tools\Entity\Query;
@@ -39,7 +39,7 @@ use Xua\Core\Tools\Entity\TableScheme;
 use Xua\Core\Tools\Visibility;
 
 /**
- * @property int id
+ * @property mixed id
  * @method static EntityFieldSignature F_id() The Signature of: Field `id`
  * @method static ConditionField C_id() The Condition Field of: Field `id`
  */
@@ -335,7 +335,7 @@ abstract class Entity extends Xua
     protected static function _fieldSignatures(): array
     {
         return [
-            'id' => new EntityFieldSignature(static::class, 'id', new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2]), null),
+            'id' => new EntityFieldSignature(static::class, 'id', new Identifier([]), null),
         ];
     }
 
@@ -1087,11 +1087,10 @@ abstract class Entity extends Xua
     final public static function alter(): array
     {
         $signatures = static::fieldSignatures();
-        unset($signatures['id']);
 
         $tables = [];
 
-        $columns = ['id' => Column::fromQuery("id " . static::fieldSignatures()['id']->type->databaseType() . " NOT NULL AUTO_INCREMENT")];
+        $columns = [];
         foreach ($signatures as $key => $signature) {
             if ($signature->type->databaseType() != 'DONT STORE') {
                 $columns[$key] = Column::fromQuery("$key {$signature->type->databaseType()}");
