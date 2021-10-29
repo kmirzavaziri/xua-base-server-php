@@ -10,22 +10,23 @@ use Xua\Core\Eves\Entity;
 use Xua\Core\Exceptions\DefinitionException;
 use Xua\Core\Exceptions\EntityFieldException;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Signature\Signature;
 
-class EntityFieldSignatureTree
+class SignatureTree
 {
     /**
-     * @var EntityFieldSignatureTree[]
+     * @var SignatureTree[]
      */
     public array $children = [];
+    private ?Signature $value;
 
-    public function __construct(
-        private ?EntityFieldSignature $value
-    ){}
+    public function __construct(string $signatureName){
+        $this->value = Signature::_($signatureName);
+    }
 
-    public function addChild(EntityFieldSignatureTree|EntityFieldSignature $child): self
+    public function addChild(SignatureTree|string $child): self
     {
-        if (is_a($child, EntityFieldSignature::class)) {
+        if (is_string($child)) {
             $child = new self($child);
         }
 
@@ -33,8 +34,8 @@ class EntityFieldSignatureTree
             throw new DefinitionException("Cannot append children to a non-relational field {$this->name()}.");
         }
 
-        if ($this->value->type->relatedEntity != $child->value->entity) {
-            throw new DefinitionException("Cannot append a child from entity {$child->value->entity} to a relational field on entity {$this->value->type->relatedEntity}.");
+        if ($this->value->type->relatedEntity != $child->value->class) {
+            throw new DefinitionException("Cannot append a child from entity {$child->value->class} to a relational field on entity {$this->value->type->relatedEntity}.");
         }
 
         $this->children[] = $child;
@@ -64,7 +65,7 @@ class EntityFieldSignatureTree
                 }
                 $type = new StructuredMap(['structure' => $structure]);
             } else {
-                $type = $this->value->type->relatedEntity::F_id()->type;
+                $type = $this->value->type->relatedEntity::id->type;
             }
             $type = $this->value->type->toMany ? new Sequence(['type' => $type]) : $type;
             $type->nullable = $this->value->type->nullable;
@@ -146,8 +147,9 @@ class EntityFieldSignatureTree
                     ]));
                 }
                 if ($return->{$this->value->type->invName}) {
+                    /** @noinspection PhpUndefinedMethodInspection */
                     throw new EntityFieldException(ExpressionService::get('errormessage.related.entity.with.id.id.is.already.in.rel', [
-                        'entityLeft' => ExpressionService::get('entityclass.' . $this->value->entity::table()),
+                        'entityLeft' => ExpressionService::get('entityclass.' . $this->value->class::table()),
                         'entityRight' => ExpressionService::get('entityclass.' . $this->value->type->relatedEntity::table()),
                         'id' => $value,
                     ]));
@@ -166,7 +168,7 @@ class EntityFieldSignatureTree
                     return $return;
             }
         } elseif (is_array($value)) { // case: DATA
-            $hasId = in_array('id', array_map(function (EntityFieldSignatureTree $tree) { return $tree->name(); }, $this->children));
+            $hasId = in_array('id', array_map(function (SignatureTree $tree) { return $tree->name(); }, $this->children));
             if ($this->value->type->toOne) {
                 if ($hasId) {
                     throw (new DefinitionException())->setError($this->name(), ExpressionService::get('errormessage.toOne.fields.cannot.include.id'));

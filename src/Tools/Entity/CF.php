@@ -1,0 +1,55 @@
+<?php
+
+namespace Xua\Core\Tools\Entity;
+
+use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Exceptions\EntityConditionException;
+use Xua\Core\Tools\Signature\Signature;
+
+final class CF
+{
+    private array $joins = [];
+    private string $alias;
+
+    public Signature $signature;
+
+    private function __construct() {
+    }
+
+    public static function _(string $signatureName): self
+    {
+        $instance = new self();
+        $instance->signature = Signature::_($signatureName);
+        /** @noinspection PhpUndefinedMethodInspection */
+        $instance->alias = $instance->signature->class::table();
+        return $instance;
+    }
+
+    public function rel(string $signatureName): self
+    {
+        $signature = Signature::_($signatureName);
+        if (!is_a($this->signature->type, EntityRelation::class)) {
+            throw (new EntityConditionException())->setError($signature->name, 'Cannot relate on non-relational field.');
+        }
+        if ($signature->class != $this->signature->type->relatedEntity) {
+            throw (new EntityConditionException())->setError($signature->name, 'Expected a field in ' . $this->signature->type->relatedEntity . ', got a field in ' . $signature->class . '.');
+        }
+
+        $join = new Join(Join::LEFT, $this->alias, $this->signature);
+        $this->joins[] = $join;
+        $this->alias = $join->rightTableNameAlias();
+        $this->signature = $signature;
+
+        return $this;
+    }
+
+    public function name() : string
+    {
+        return '`' . $this->alias . '`.`' . $this->signature->name . '`';
+    }
+
+    public function joins(): array
+    {
+        return $this->joins;
+    }
+}

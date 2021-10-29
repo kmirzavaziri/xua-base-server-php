@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Services;
-
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;

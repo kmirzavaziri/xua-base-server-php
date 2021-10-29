@@ -30,21 +30,21 @@ use Xua\Core\Tools\Entity\Query;
 use Xua\Core\Tools\Entity\QueryBinder;
 use Xua\Core\Tools\Entity\Column;
 use Xua\Core\Tools\Entity\Condition;
-use Xua\Core\Tools\Entity\ConditionField;
-use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Entity\CF;
 use Xua\Core\Tools\Entity\Index;
 use Xua\Core\Tools\Entity\Order;
 use Xua\Core\Tools\Entity\Pager;
 use Xua\Core\Tools\Entity\TableScheme;
+use Xua\Core\Tools\Signature\Signature;
 use Xua\Core\Tools\Visibility;
 
 /**
  * @property mixed id
- * @method static EntityFieldSignature F_id() The Signature of: Field `id`
- * @method static ConditionField C_id() The Condition Field of: Field `id`
  */
 abstract class Entity extends Xua
 {
+    const id = 'Xua\\Core\\Eves\\Entity::id';
+
     ####################################################################################################################
     # Database Engine Connection #######################################################################################
     ####################################################################################################################
@@ -90,7 +90,7 @@ abstract class Entity extends Xua
     private static array $_x_table = [];
 
     /**
-     * @var EntityFieldSignature[][]
+     * @var Signature[][]
      */
     private static array $_x_field_signatures = [];
     /**
@@ -278,7 +278,7 @@ abstract class Entity extends Xua
             throw (new MagicCallException())->setError($key, 'An entity field signature method does not accept arguments');
         }
 
-        return $conditionField ? new ConditionField(static::fieldSignatures()[$key]): static::fieldSignatures()[$key];
+        return $conditionField ? CF::_(static::fieldSignatures()[$key]->signatureName): static::fieldSignatures()[$key];
     }
 
     /**
@@ -296,10 +296,18 @@ abstract class Entity extends Xua
     }
 
     /**
-     * @return EntityFieldSignature[]
+     * @return Signature[]
      */
     final public static function fieldSignatures(): array {
         return self::$_x_field_signatures[static::class];
+    }
+
+    /**
+     * @param string $name
+     * @return ?Signature
+     */
+    final public static function signature(string $name): ?Signature {
+        return self::$_x_field_signatures[static::class][$name] ?? null;
     }
 
     /**
@@ -329,13 +337,14 @@ abstract class Entity extends Xua
     # Overridable Methods ##############################################################################################
     ####################################################################################################################
     /**
+     * @return Signature[]
      * @throws SuperValidationException
      * @noinspection PhpArrayShapeAttributeCanBeAddedInspection
      */
     protected static function _fieldSignatures(): array
     {
         return [
-            'id' => new EntityFieldSignature(static::class, 'id', new Identifier([]), null),
+            'id' => new Signature(null, static::id, null, null, new Identifier([])),
         ];
     }
 
@@ -496,11 +505,12 @@ abstract class Entity extends Xua
     # Overridable Method Wrappers ######################################################################################
     ####################################################################################################################
     /**
-     * @throws SuperValidationException
+     * @return Signature[]
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     private static function fieldSignaturesCalculator(): array
     {
-        return static::_fieldSignatures();
+        return Signature::associate(static::_fieldSignatures());
     }
 
     /**
@@ -731,7 +741,6 @@ abstract class Entity extends Xua
      * @throws EntityConditionException
      * @throws EntityException
      * @throws EntityFieldException
-     * @throws ReflectionException
      * @throws SuperMarshalException
      * @throws SuperValidationException
      */
@@ -757,7 +766,7 @@ abstract class Entity extends Xua
             $this->_x_must_store['id'] = false;
         } else {
             if ($array) {
-                $queries[] = Query::update(static::table(), $array, Condition::leaf(static::C_id(), Condition::EQ, $this->_x_fields['id']));
+                $queries[] = Query::update(static::table(), $array, Condition::leaf(CF::_(static::id), Condition::EQ, $this->_x_fields['id']));
             }
         }
 
@@ -788,7 +797,7 @@ abstract class Entity extends Xua
                         $queries[] = Query::update(
                             $signature->type->relatedEntity::table(),
                             [$signature->type->invName => null],
-                            Condition::leaf($signature->type->relatedEntity::C_id(), Condition::IN, $removingIds)
+                            Condition::leaf(CF::_($signature->type->relatedEntity::id), Condition::IN, $removingIds)
                         );
                     } else {
                         $queries[] = Query::delete(
@@ -838,7 +847,7 @@ abstract class Entity extends Xua
     {
         // @TODO use buffer
         foreach (static::fieldSignatures() as $key => $signature) {
-            /** @var EntityFieldSignature $signature */
+            /** @var Signature $signature */
             if (is_a($signature->type, EntityRelation::class) and $signature->type->fromOne and $signature->type->invRequired and $this->$key) {
                 throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
             }
@@ -1180,7 +1189,7 @@ abstract class Entity extends Xua
         $columnExpressions = [];
         $keys = [];
         foreach (static::fieldSignatures() as $key => $signature) {
-            /** @var EntityFieldSignature $signature */
+            /** @var Signature $signature */
             if ($entity and !$entity->_x_must_fetch[$key]) {
                 continue;
             }

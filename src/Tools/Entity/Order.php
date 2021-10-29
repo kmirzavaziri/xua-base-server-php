@@ -23,7 +23,7 @@ class Order
         return $this;
     }
 
-    public function add(ConditionField $field, string $direction): static
+    public function add(CF $field, string $direction): static
     {
         return $this->addRaw($field->name() . ' ' . $direction);
     }

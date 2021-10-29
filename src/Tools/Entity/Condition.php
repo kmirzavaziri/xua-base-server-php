@@ -81,7 +81,7 @@ final class Condition
     private function __construct() {}
 
     /**
-     * @param ConditionField $field
+     * @param CF $field
      * @param string $relation
      * @param mixed|null $value
      * @return Condition
@@ -89,7 +89,7 @@ final class Condition
      * @throws SuperValidationException
      * @throws SuperMarshalException
      */
-    public static function leaf (ConditionField $field, string $relation, mixed $value = null) : Condition
+    public static function leaf (CF $field, string $relation, mixed $value = null) : Condition
     {
         if (!in_array($relation, self::RELATION_)) {
             throw new EntityConditionException('Invalid relation provided. Relation must be a constant of class Condition.');
@@ -161,7 +161,7 @@ final class Condition
     }
 
     /**
-     * @param ConditionField $field
+     * @param CF $field
      * @param string $relation
      * @param mixed|null $value
      * @return $this
@@ -169,13 +169,13 @@ final class Condition
      * @throws SuperMarshalException
      * @throws SuperValidationException
      */
-    public function and(ConditionField $field, string $relation, mixed $value = null) : Condition
+    public function and(CF $field, string $relation, mixed $value = null) : Condition
     {
         return $this->andC(Condition::leaf($field, $relation, $value));
     }
 
     /**
-     * @param ConditionField $field
+     * @param CF $field
      * @param string $relation
      * @param mixed|null $value
      * @return $this
@@ -183,13 +183,13 @@ final class Condition
      * @throws SuperValidationException
      * @throws SuperMarshalException
      */
-    public function or(ConditionField $field, string $relation, mixed $value = null) : Condition
+    public function or(CF $field, string $relation, mixed $value = null) : Condition
     {
         return $this->orC(Condition::leaf($field, $relation, $value));
     }
 
     /**
-     * @param ConditionField $field
+     * @param CF $field
      * @param string $relation
      * @param mixed|null $value
      * @return $this
@@ -197,7 +197,7 @@ final class Condition
      * @throws SuperMarshalException
      * @throws SuperValidationException
      */
-    public function xor(ConditionField $field, string $relation, mixed $value = null) : Condition
+    public function xor(CF $field, string $relation, mixed $value = null) : Condition
     {
         return $this->xorC(Condition::leaf($field, $relation, $value));
     }

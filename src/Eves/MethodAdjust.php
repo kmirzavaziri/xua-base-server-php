@@ -44,6 +44,7 @@ abstract class MethodAdjust extends MethodEve
                             if ($feed->{$field->root->name()} and file_exists($feed->{$field->root->name()}->path)) {
                                 unlink($feed->{$field->root->name()}->path);
                             }
+                            /** @noinspection PhpUndefinedMethodInspection */
                             $this->{'Q_' . $field->root->name()}?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . static::entity()::table() . DIRECTORY_SEPARATOR . $feed->id);
                             $feed->{$field->root->name()} = $this->{'Q_' . $field->root->name()};
                         }

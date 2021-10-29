@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Xua\Core\Tools\Entity;
-
 
 use Xua\Core\Supers\EntitySupers\EntityRelation;
 use Xua\Core\Exceptions\EntityJoinException;
-use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 class Join
 {
@@ -21,7 +19,7 @@ class Join
     public function __construct(
         private string $type,
         private string $leftTableNameAlias,
-        private EntityFieldSignature $joiningField,
+        private Signature $joiningField,
     ) {
         if (!is_a($this->joiningField->type, EntityRelation::class)) {
             throw (new EntityJoinException)->setError($this->joiningField->name, 'Cannot create JOIN for non-relational field.');
@@ -48,10 +46,12 @@ class Join
             $name = $type->invName;
             return "$this->type JOIN `$rightTableName` `$rightTableNameAlias` ON `$this->leftTableNameAlias`.`id` = `$rightTableNameAlias`.`$name`";
         } else { // $type->hasJunction
-            $junctionTableName = $this->joiningField->entity::junctionTableName($this->joiningField->name);
+            /** @noinspection PhpUndefinedMethodInspection */
+            $junctionTableName = $this->joiningField->class::junctionTableName($this->joiningField->name);
             $junctionEntityAlias = $this->leftTableNameAlias . '_j_' . $this->joiningField->name;
 
-            $leftTableName = $this->joiningField->entity::table();
+            /** @noinspection PhpUndefinedMethodInspection */
+            $leftTableName = $this->joiningField->class::table();
 
             return
                 "$this->type JOIN $junctionTableName $junctionEntityAlias ON $this->leftTableNameAlias.id = $junctionEntityAlias.$leftTableName" . PHP_EOL .

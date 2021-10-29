@@ -2,7 +2,7 @@
 
 namespace Xua\Core\Tools\Entity;
 
-use Xua\Core\Tools\Signature\EntityFieldSignature;
+use Xua\Core\Tools\Signature\Signature;
 use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
 class EntityArray
@@ -11,10 +11,10 @@ class EntityArray
     /**
      * @param array $feed
      * @param VarqueMethodFieldSignature[] $fields
-     * @param EntityFieldSignature|null $association
+     * @param Signature|null $association
      * @return array[]
      */
-    public static function manyToArray(array $feed, array $fields, ?EntityFieldSignature $association = null): array
+    public static function manyToArray(array $feed, array $fields, ?Signature $association = null): array
     {
         $result = [];
         foreach ($feed as $entity) {

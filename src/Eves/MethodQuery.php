@@ -9,8 +9,8 @@ use Xua\Core\Tools\Entity\Condition;
 use Xua\Core\Tools\Entity\EntityArray;
 use Xua\Core\Tools\Entity\Order;
 use Xua\Core\Tools\Entity\Pager;
-use Xua\Core\Tools\Signature\EntityFieldSignature;
 use Xua\Core\Tools\Signature\MethodItemSignature;
+use Xua\Core\Tools\Signature\Signature;
 use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
 abstract class MethodQuery extends MethodEve
@@ -82,6 +82,7 @@ abstract class MethodQuery extends MethodEve
      * @return Entity[]
      */
     protected function _feed(): array {
+        /** @noinspection PhpUndefinedMethodInspection */
         return static::entity()::getMany(static::condition(), static::order(), static::pager());
     }
 
@@ -102,7 +103,7 @@ abstract class MethodQuery extends MethodEve
         return 'result';
     }
 
-    protected static function association(): ?EntityFieldSignature
+    protected static function association(): ?Signature
     {
         return null;
     }
