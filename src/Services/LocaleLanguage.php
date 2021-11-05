@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Services;
-
 
 use Xua\Core\Eves\Service;
 

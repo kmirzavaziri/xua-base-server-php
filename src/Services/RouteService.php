@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Services;
 
 use Xua\Core\Exceptions\XRMLException;

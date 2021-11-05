@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Services;
-
 
 use DateTime;
 use Xua\Core\Eves\Service;
