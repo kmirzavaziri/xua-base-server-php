@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Eves;
 
 abstract class InterfaceEve extends Xua

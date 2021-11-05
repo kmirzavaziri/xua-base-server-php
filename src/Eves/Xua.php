@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Eves;
-
 
 abstract class Xua
 {
