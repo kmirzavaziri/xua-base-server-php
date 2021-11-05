@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Tools\Entity;
 
-
 use ReflectionObject;
 use Throwable;
 use Xua\Core\Eves\Entity;

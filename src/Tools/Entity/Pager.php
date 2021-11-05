@@ -1,9 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Tools\Entity;
-
-
 
 class Pager
 {

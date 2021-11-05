@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Tools\Entity;
 
 abstract class QueryBinder

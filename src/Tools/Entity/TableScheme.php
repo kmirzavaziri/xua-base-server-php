@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Tools\Entity;
-
 
 use PDO;
 use PDOException;

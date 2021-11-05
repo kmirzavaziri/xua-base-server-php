@@ -2,9 +2,6 @@
 
 namespace Xua\Core\Tools\Entity;
 
-
-use Xua\Core\Eves\Entity;
-
 final class Query {
     private function __construct(
         public string $query,

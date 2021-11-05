@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Tools\Entity;
 
 use Xua\Core\Exceptions\SuperMarshalException;
