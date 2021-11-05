@@ -1,9 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\Highers;
-
-
 
 use Xua\Core\Services\DateTimeInstance;
 use Xua\Core\Services\LocaleLanguage;

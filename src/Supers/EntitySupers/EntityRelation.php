@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\EntitySupers;
-
 
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\FlagService;
@@ -13,7 +11,6 @@ use Xua\Core\Supers\Numerics\Decimal;
 use Xua\Core\Supers\Strings\Enum;
 use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Supers\Universal;
-use Xua\Core\Eves\Entity;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Eves\Super;
 use Xua\Core\Tools\Signature\SuperArgumentSignature;

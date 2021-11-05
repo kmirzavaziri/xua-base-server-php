@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\EntitySupers;
-
 
 use Xua\Core\Supers\Highers\Callback;
 use Xua\Core\Eves\Super;

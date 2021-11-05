@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\Numerics;
-
 
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Exceptions\SuperValidationException;

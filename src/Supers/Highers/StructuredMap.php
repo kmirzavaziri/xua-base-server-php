@@ -1,11 +1,8 @@
 <?php
 
-
 namespace Xua\Core\Supers\Highers;
 
-
 use Xua\Core\Services\ExpressionService;
-use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Eves\Super;
 use Xua\Core\Tools\Signature\SuperArgumentSignature;

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Supers\Highers;
 
 use Closure;

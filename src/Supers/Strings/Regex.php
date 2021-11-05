@@ -1,12 +1,8 @@
 <?php
 
-
 namespace Xua\Core\Supers\Strings;
 
-use Xua\Core\Supers\Boolean;
-use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Exceptions\SuperValidationException;
-use Xua\Core\Eves\Super;
 use Xua\Core\Tools\Signature\SuperArgumentSignature;
 
 /**

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\Strings;
-
 
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Numerics\Integer;

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\Strings;
-
 
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Highers\Sequence;

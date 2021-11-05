@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Supers\Files;
 
 use Xua\Core\Services\Mime;

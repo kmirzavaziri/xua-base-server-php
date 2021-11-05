@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers;
-
 
 use Xua\Core\Eves\Super;
 

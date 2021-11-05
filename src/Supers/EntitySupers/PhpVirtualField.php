@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Xua\Core\Supers\EntitySupers;
 
 use Closure;

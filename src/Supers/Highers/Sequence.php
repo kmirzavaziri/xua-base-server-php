@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Xua\Core\Supers\Highers;
-
 
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Exceptions\SuperValidationException;
