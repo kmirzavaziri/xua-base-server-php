@@ -34,4 +34,9 @@ class Identifier extends Super
             "8" => 'BIGINT',
         } . ' UNSIGNED NOT NULL AUTO_INCREMENT';
     }
+
+    protected function _phpType(): string
+    {
+        return 'int';
+    }
 }
