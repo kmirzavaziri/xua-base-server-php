@@ -43,7 +43,7 @@ class EntityFieldScheme extends Super
                     'name' => new Symbol(['nullable' => false]),
                     'type' => new Instance(['nullable' => true, 'of' => Super::class]),
                     'getter' => new Callback([
-                        'nullable' => false,
+                        'nullable' => true,
                         'parameters' => [
                             [
                                 'name' => null,
