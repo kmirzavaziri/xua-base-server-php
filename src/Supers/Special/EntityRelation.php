@@ -1,6 +1,6 @@
 <?php
 
-namespace Xua\Core\Supers\EntitySupers;
+namespace Xua\Core\Supers\Special;
 
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\FlagService;
