@@ -5,54 +5,62 @@ namespace Xua\Core\Eves;
 use Xua\Core\Supers\Highers\Map;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Highers\StructuredMap;
+use Xua\Core\Supers\Special\EntityFieldScheme;
 use Xua\Core\Tools\Entity\Condition;
 use Xua\Core\Tools\Entity\EntityArray;
 use Xua\Core\Tools\Entity\Order;
 use Xua\Core\Tools\Entity\Pager;
-use Xua\Core\Tools\Signature\MethodItemSignature;
 use Xua\Core\Tools\Signature\Signature;
-use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
 
-abstract class MethodQuery extends MethodEve
+/**
+ * Request *************************************************************************************************************
+ * ---
+ * Response ************************************************************************************************************
+ * @property array result
+ */
+abstract class MethodQuery extends FieldedMethod
 {
+    /* Request ****************************************************************************************************** */
+    /* --- */
+    /* Response ***************************************************************************************************** */
+    const result = self::class . '::result';
+    /* ************************************************************************************************************** */
+
     /** @var Entity[] $_cache_feed */
     private ?array $_cache_feed = null;
 
-    # Finalize Eve Methods
-    final protected static function requestSignaturesCalculator(): array
+    protected static function _responseSignatures(): array
     {
-        return parent::requestSignaturesCalculator();
-    }
-
-    final protected static function responseSignaturesCalculator(): array
-    {
-        $fields = static::fields();
-        $fieldsType = [];
-        foreach ($fields as $field) {
-            $fieldsType[$field->root->name()] = $field->root->type();
+        $structure = [];
+        foreach (static::fieldSignatures() as $field) {
+            /** @var EntityFieldScheme $scheme */
+            $scheme = $field->declaration;
+            $structure[$scheme->name] = $scheme->type;
         }
-        $fieldsType = new StructuredMap(['structure' => $fieldsType]);
         $association = static::association();
-        return array_merge(parent::responseSignaturesCalculator(), [
-            static::wrapper() => new MethodItemSignature(
-                $association
-                    ? new Map(['keyType' => $association->type, 'valueType' => $fieldsType])
-                    : new Sequence(['type' => $fieldsType]),
-                true, null, false
-            ),
+        $itemSignature = new StructuredMap(['structure' => $structure]);
+        $wrapperType = $association
+            ? new Map(['keyType' => $association->declaration, 'valueType' => $itemSignature])
+            : new Sequence(['type' => $itemSignature]);
+
+        return array_merge(parent::_responseSignatures(), [
+            Signature::new(false, static::result, true, null, $wrapperType)
         ]);
     }
 
     protected function body(): void
     {
-        $feed = $this->feed();
-        $fields = static::fields();
-        $association = static::association();
-
-        $this->{static::wrapper()} = EntityArray::manyToArray($feed, $fields, $association);
+        $this->result = EntityArray::manyToArray(
+            $this->feed(),
+            array_map(function (Signature $signature) { return $signature->declaration; }, static::fieldSignatures()),
+            static::association()
+        );
     }
 
-    # Overridable Methods Wrappers
+    protected static function entity(): string
+    {
+        return Entity::class;
+    }
 
     /**
      * @return Entity[]
@@ -62,20 +70,6 @@ abstract class MethodQuery extends MethodEve
             $this->_cache_feed = $this->_feed();
         }
         return $this->_cache_feed;
-    }
-
-    # New Overridable Methods
-    protected static function entity(): string
-    {
-        return Entity::class;
-    }
-
-    /**
-     * @return VarqueMethodFieldSignature[]
-     */
-    protected static function fields(): array
-    {
-        return [];
     }
 
     /**
@@ -96,11 +90,6 @@ abstract class MethodQuery extends MethodEve
 
     protected function pager(): Pager {
         return Pager::unlimited();
-    }
-
-    protected static function wrapper(): string
-    {
-        return 'result';
     }
 
     protected static function association(): ?Signature

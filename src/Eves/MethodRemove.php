@@ -2,22 +2,27 @@
 
 namespace Xua\Core\Eves;
 
+/**
+ * Request *************************************************************************************************************
+ * ---
+ * Response ************************************************************************************************************
+ * ---
+ */
 abstract class MethodRemove extends MethodEve
 {
-    private ?Entity $_cache_feed = null;
+    /* Request ****************************************************************************************************** */
+    /* --- */
+    /* Response ***************************************************************************************************** */
+    /* --- */
+    /* ************************************************************************************************************** */
 
-    # Finalize Eve Methods
-    final protected static function responseSignaturesCalculator(): array
-    {
-        return parent::responseSignaturesCalculator();
-    }
+    private ?Entity $_cache_feed = null;
 
     protected function body(): void
     {
         $this->feed()->delete();
     }
 
-    # Overridable Methods Wrappers
     final protected function feed(): Entity {
         if ($this->_cache_feed === null) {
             $this->_cache_feed = $this->_feed();
@@ -25,7 +30,6 @@ abstract class MethodRemove extends MethodEve
         return $this->_cache_feed;
     }
 
-    # New Overridable Methods
     protected static function entity(): string
     {
         return Entity::class;

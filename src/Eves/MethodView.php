@@ -3,33 +3,43 @@
 namespace Xua\Core\Eves;
 
 use Xua\Core\Exceptions\MagicCallException;
-use Xua\Core\Tools\Signature\MethodItemSignature;
-use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
+use Xua\Core\Supers\Highers\Nullable;
+use Xua\Core\Supers\Special\EntityFieldScheme;
+use Xua\Core\Tools\Signature\Signature;
+use Xua\Core\Tools\SignatureValueCalculator;
 
-abstract class MethodView extends MethodEve
+/**
+ * Request *************************************************************************************************************
+ * ---
+ * Response ************************************************************************************************************
+ * ---
+ */
+abstract class MethodView extends FieldedMethod
 {
+    /* Request ****************************************************************************************************** */
+    /* --- */
+    /* Response ***************************************************************************************************** */
+    /* --- */
+    /* ************************************************************************************************************** */
+
     private ?Entity $_cache_feed = null;
 
-    # Finalize Eve Methods
-    final protected static function requestSignaturesCalculator(): array
+    protected static function _responseSignatures(): array
     {
-        return parent::requestSignaturesCalculator();
-    }
-
-    final protected static function responseSignaturesCalculator(): array
-    {
-        $response = parent::responseSignaturesCalculator();
-        $fields = static::fields();
-        foreach ($fields as $field) {
-            $type = $field->root->type();
-            try {
-                @$type->nullable = true;
-            } catch (MagicCallException $e) {
-                // It's OK
-            }
-            $response[$field->root->name()] = new MethodItemSignature($type, true, null, false);
+        $signatures = parent::_responseSignatures();
+        foreach (static::fieldSignatures() as $field) {
+            /** @var EntityFieldScheme $scheme */
+            $scheme = $field->declaration;
+            $signature = Signature::new(
+                $field->const,
+                static::class . '::' . self::RESPONSE_PREFIX . $scheme->name,
+                $field->required,
+                $field->default,
+                new Nullable(['type' => $scheme->type])
+            );
+            $signatures[] = $signature;
         }
-        return $response;
+        return $signatures;
     }
 
     protected function body(): void
@@ -38,32 +48,24 @@ abstract class MethodView extends MethodEve
         if (!$feed) {
             return;
         }
-        $fields = static::fields();
+        $fields = static::fieldSignatures();
         foreach ($fields as $field) {
-            $this->{$field->root->name()} = $field->root->valueFromEntity($feed);
+            /** @var EntityFieldScheme $scheme */
+            $scheme = $field->declaration;
+            $this->{MethodEve::RESPONSE_PREFIX . $scheme->name} = SignatureValueCalculator::getEntityField($feed, $scheme);
         }
     }
 
-    # Overridable Methods Wrappers
-    final protected function feed(): Entity {
-        if ($this->_cache_feed === null) {
-            $this->_cache_feed = $this->_feed();
-        }
-        return $this->_cache_feed;
-    }
-
-    # New Overridable Methods
     protected static function entity(): string
     {
         return Entity::class;
     }
 
-    /**
-     * @return VarqueMethodFieldSignature[]
-     */
-    protected static function fields(): array
-    {
-        return [];
+    final protected function feed(): Entity {
+        if ($this->_cache_feed === null) {
+            $this->_cache_feed = $this->_feed();
+        }
+        return $this->_cache_feed;
     }
 
     abstract protected function _feed(): Entity;

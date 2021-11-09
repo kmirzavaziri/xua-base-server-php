@@ -2,36 +2,28 @@
 
 namespace Xua\Core\Eves;
 
-use ReflectionClass;
+use JetBrains\PhpStorm\Pure;
 use Xua\Core\Exceptions\MagicCallException;
 use Xua\Core\Exceptions\MethodRequestException;
 use Xua\Core\Exceptions\MethodResponseException;
-use Xua\Core\Tools\Signature\MethodItemSignature;
+use Xua\Core\Services\ExpressionService;
+use Xua\Core\Tools\Signature\Signature;
 
-abstract class MethodEve extends Xua
+/**
+ * Request *************************************************************************************************************
+ * ---
+ * Response ************************************************************************************************************
+ * ---
+ */
+abstract class MethodEve extends Block
 {
-    // @TODO rename add underline
-    protected MethodRequestException $error;
-
-    # Magics
+    ####################################################################################################################
+    # Magics ###########################################################################################################
+    ####################################################################################################################
     /**
-     * @var MethodItemSignature[][]
+     * @var MethodRequestException
      */
-    private static array $_x_request_signatures = [];
-    /**
-     * @var MethodItemSignature[][]
-     */
-    private static array $_x_response_signatures = [];
-    private array $_x_response = [];
-    private array $_x_request;
-
-    protected static function _init(): void
-    {
-        if (!(new ReflectionClass(static::class))->isAbstract()) {
-            self::$_x_request_signatures[static::class] = static::requestSignaturesCalculator();
-            self::$_x_response_signatures[static::class] = static::responseSignaturesCalculator();
-        }
-    }
+    protected MethodRequestException $_x_error;
 
     /**
      * @throws MethodRequestException
@@ -39,148 +31,272 @@ abstract class MethodEve extends Xua
      */
     final public function __construct(array $request)
     {
-        $this->error = new MethodRequestException();
-        $this->_x_request = $request;
-        MethodItemSignature::processRequest(static::requestSignatures(), $this->_x_request);
-        MethodItemSignature::preprocessResponse(static::responseSignatures(), $this->_x_response);
+        $this->_x_error = new MethodRequestException();
+
+        $this->_x_values[self::REQUEST_PREFIX] = $request;
+        $this->_x_values[self::RESPONSE_PREFIX] = [];
+
+        self::processRequest(static::requestSignatures(), $this->_x_values[self::REQUEST_PREFIX]);
+        self::preprocessResponse(static::responseSignatures(), $this->_x_values[self::RESPONSE_PREFIX]);
+
         $this->validations();
         $this->body();
         $this->logs();
-        MethodItemSignature::processResponse(static::responseSignatures(), $this->_x_response);
+
+        self::processResponse(static::responseSignatures(), $this->_x_values[self::RESPONSE_PREFIX]);
     }
 
     /**
-     * @throws MagicCallException
+     * @return array
      */
-    final function __get(string $key)
-    {
-        if (str_starts_with($key, 'Q_')) {
-            $key = substr($key, 2, strlen($key) - 2);
-            if (!isset(static::requestSignatures()[$key])) {
-                throw (new MagicCallException())->setError($key, 'Unknown request item');
-            }
-            return $this->_x_request[$key];
-        } else {
-            if (! isset(static::responseSignatures()[$key])) {
-                throw (new MagicCallException())->setError($key, 'Unknown response item.');
-            }
-            return $this->_x_response[$key];
-        }
-    }
-
-    /**
-     * @throws MagicCallException
-     */
-    final function __set($key, $value) : void
-    {
-        if (!isset(static::responseSignatures()[$key])) {
-            throw (new MagicCallException())->setError($key, 'Unknown response item');
-        }
-        $signature = static::responseSignatures()[$key];
-        if (!$signature->type->accepts($value, $messages)) {
-            throw (new MagicCallException())->setError($key, $messages);
-        }
-        $this->_x_response[$key] = $value;
-    }
-
-    /**
-     * @throws MagicCallException
-     */
-    public static function __callStatic(string $name, array $arguments)
-    {
-        if (str_starts_with($name, 'Q_')) {
-            $key = substr($name, 2, strlen($name) - 2);
-            if (!isset(static::requestSignatures()[$key])) {
-                throw (new MagicCallException())->setError($key, 'Unknown request item signature');
-            }
-            $result = static::requestSignatures()[$key];
-        } elseif (str_starts_with($name, 'R_')) {
-            $key = substr($name, 2, strlen($name) - 2);
-            if (!isset(static::responseSignatures()[$key])) {
-                throw (new MagicCallException())->setError($key, 'Unknown response item signature');
-            }
-            $result = static::responseSignatures()[$key];
-        } else {
-            throw (new MagicCallException("Method $name does not exist."));
-        }
-        if ($arguments) {
-            throw (new MagicCallException())->setError($key, 'A request/response item signature method does not accept arguments');
-        }
-
-        return $result;
-    }
-
-
     public function __debugInfo(): array
     {
         return $this->toArray();
     }
 
+    ####################################################################################################################
+    # Signatures #######################################################################################################
+    ####################################################################################################################
+    const REQUEST_PREFIX = 'Q_';
+    const RESPONSE_PREFIX = '';
+
+    /**
+     *
+     */
+    protected static function registerSignatures(): void
+    {
+        parent::registerSignatures();
+        Signature::registerSignatures(static::class, self::REQUEST_PREFIX, Signature::associate(static::_requestSignatures()));
+        Signature::registerSignatures(static::class, self::RESPONSE_PREFIX, Signature::associate(static::_responseSignatures()));
+    }
+
+    /**
+     * @param string $prefix
+     * @param string $name
+     * @param Signature $signature
+     * @param mixed $value
+     */
+    final protected function getterProcedure(string $prefix, string $name, Signature $signature, mixed $value): void {}
+
+    /**
+     * @param string $prefix
+     * @param string $name
+     * @param Signature $signature
+     * @param mixed $value
+     * @throws MagicCallException
+     */
+    final protected function setterProcedure(string $prefix, string $name, Signature $signature, mixed $value): void
+    {
+        if (!$signature->declaration->accepts($value, $messages)) {
+            throw (new MagicCallException())->setError($name, $messages);
+        }
+    }
+
+    /**
+     * @return Signature[]
+     */
     final public static function requestSignatures() : array
     {
-        return self::$_x_request_signatures[static::class];
+        return Signature::signatures(static::class, self::REQUEST_PREFIX);
     }
 
+    /**
+     * @return Signature[]
+     */
+    protected static function _requestSignatures() : array
+    {
+        return [];
+    }
+
+    /**
+     * @return Signature[]
+     */
     final public static function responseSignatures() : array
     {
-        return self::$_x_response_signatures[static::class];
+        return Signature::signatures(static::class, self::RESPONSE_PREFIX);
     }
 
-    # Overridable Methods
+    /**
+     * @return Signature[]
+     */
+    protected static function _responseSignatures() : array
+    {
+        return [];
+    }
+
+    ####################################################################################################################
+    # Overridable Methods ##############################################################################################
+    ####################################################################################################################
+    /**
+     * @return bool
+     */
     static public function isPublic() : bool
     {
         return true;
     }
 
-    static protected function _requestSignatures() : array
-    {
-        return [];
-    }
-
-    static protected function _responseSignatures() : array
-    {
-        return [];
-    }
-
+    /**
+     *
+     */
     protected function validations() : void {
         // Nothing
     }
 
+    /**
+     *
+     */
     abstract protected function body() : void;
 
+    /**
+     *
+     */
     protected function logs() : void {
         // Nothing
     }
 
-    # Overridable Method Wrappers
-    static protected function requestSignaturesCalculator() : array
-    {
-        return static::_requestSignatures();
-    }
-
-    static protected function responseSignaturesCalculator() : array
-    {
-        return static::_responseSignatures();
-    }
-
-    # Predefined Methods
+    ####################################################################################################################
+    # Predefined Methods (Array Casts) #################################################################################
+    ####################################################################################################################
+    /**
+     * @return array
+     */
     public function toArray(): array
     {
-        return $this->_x_response;
+        return $this->_x_values[self::RESPONSE_PREFIX];
     }
 
+    ####################################################################################################################
+    # Predefined Methods (Errors) ######################################################################################
+    ####################################################################################################################
+    /**
+     * @param string $key
+     * @param string|array|null $message
+     */
     protected function addError(string $key, null|string|array $message): void
     {
-        $this->error->setError($key, $message);
+        if ($signature = Signature::_($key)) {
+            $key = $signature->name;
+        }
+        $this->_x_error->setError($key, $message);
     }
 
+    /**
+     * @throws MethodRequestException
+     */
     protected function throwError(): void
     {
-        throw $this->error;
+        throw $this->_x_error;
     }
 
+    /**
+     * @param string $key
+     * @param string|array|null $message
+     * @throws MethodRequestException
+     */
     protected function addAndThrowError(string $key, null|string|array $message): void
     {
-        throw $this->error->setError($key, $message);
+        $this->addError($key, $message);
+        $this->throwError();
+    }
+
+    ####################################################################################################################
+    # Predefined Methods (Signature Value Processors) ##################################################################
+    ####################################################################################################################
+    /**
+     * @param Signature[] $signatures
+     * @param array $request
+     * @throws MethodRequestException
+     */
+    private static function processRequest(array $signatures, array &$request) {
+        $exception = new MethodRequestException();
+
+        $unknownKeys = array_diff(array_keys($request), array_keys($signatures));
+        foreach ($unknownKeys as $unknownKey) {
+            $exception->setError($unknownKey, ExpressionService::get('errormessage.unknown.request.item'));
+        }
+        $newRequest = [];
+        foreach ($signatures as $key => $signature) {
+            if (in_array($key, array_keys($request))) {
+                if ($signature->const) {
+                    $exception->setError($key, ExpressionService::get('errormessage.cannot.set.constant.request.item'));
+                    continue;
+                }
+            } else {
+                if ($signature->required) {
+                    $exception->setError($key, ExpressionService::get('errormessage.required.request.item.not.provided'));
+                    continue;
+                } else {
+                    $request[$key] = $signature->default;
+                }
+            }
+
+            if (!$signature->declaration->accepts($request[$key], $messages, [Super::METHOD_UNMARSHAL])) {
+                $exception->setError($key, $messages[Super::METHOD_UNMARSHAL]);
+            }
+
+            $newRequest[$key] = $request[$key];
+        }
+
+        if ($exception->getErrors()) {
+            throw $exception;
+        }
+
+        $request = $newRequest;
+    }
+
+    /**
+     * @param Signature[] $signatures
+     * @param array $response
+     */
+    private static function preprocessResponse(array $signatures, array &$response)
+    {
+        foreach ($signatures as $key => $signature) {
+            if (!$signature->required) {
+                $response[$key] = $signature->default;
+            }
+        }
+    }
+
+    /**
+     * @param Signature[] $signatures
+     * @param array $response
+     * @throws MethodResponseException
+     */
+    private static function processResponse(array $signatures, array &$response)
+    {
+        $exception = new MethodResponseException();
+
+        $unknownKeys = array_diff(array_keys($response), array_keys($signatures));
+        foreach ($unknownKeys as $unknownKey) {
+            $exception->setError($unknownKey, 'Unknown response item');
+        }
+        $newResponse = [];
+        foreach ($signatures as $key => $signature) {
+            if (in_array($key, array_keys($response))) {
+                if ($signature->const) {
+                    $exception->setError($key, 'Cannot set constant response item');
+                    continue;
+                }
+            } else {
+                if ($signature->required) {
+                    $exception->setError($key, 'Required response item not provided');
+                    continue;
+                } else {
+                    $response[$key] = $signature->default;
+                }
+            }
+
+            if (!$signature->declaration->accepts($response[$key], $messages)) {
+                $exception->setError($key, $messages);
+            }
+
+            $newResponse[$key] = $response[$key];
+        }
+
+        if ($exception->getErrors()) {
+            throw $exception;
+        }
+
+        $response = $newResponse;
     }
 }

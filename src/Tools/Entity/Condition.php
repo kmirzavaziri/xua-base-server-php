@@ -3,7 +3,7 @@
 namespace Xua\Core\Tools\Entity;
 
 use Xua\Core\Exceptions\SuperMarshalException;
-use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Exceptions\SuperValidationException;
@@ -94,7 +94,7 @@ final class Condition
             throw new EntityConditionException('Invalid relation provided. Relation must be a constant of class Condition.');
         }
 
-        if (is_a($field->signature->type, EntityRelation::class)) {
+        if (is_a($field->signature->declaration, EntityRelation::class)) {
             throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use rel function on the it.');
         }
 
@@ -103,7 +103,7 @@ final class Condition
         $condition->template = str_replace('$', $field->name(), $relation);
         $condition->joins = $field->joins();
 
-        $fieldType = $field->signature->type;
+        $fieldType = $field->signature->declaration;
 
         if ($relation == self::BETWEEN or $relation == self::NBETWEEN) {
             if ((new Sequence(['minLength' => 2, 'maxLength' => 2]))->explicitlyAccepts($value, $message)) {

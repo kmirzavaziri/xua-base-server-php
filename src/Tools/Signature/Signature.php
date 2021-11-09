@@ -2,31 +2,173 @@
 
 namespace Xua\Core\Tools\Signature;
 
+use JetBrains\PhpStorm\Pure;
 use Xua\Core\Eves\Super;
+use Xua\Core\Exceptions\DefinitionException;
+use Xua\Core\Exceptions\MagicCallException;
+use Xua\Core\Supers\Special\EntityRelation;
+use Xua\Core\Supers\Highers\Sequence;
+use Xua\Core\Supers\Highers\StructuredMap;
 
-class Signature
+/**
+ * @property string fullName
+ * @property string halfName
+ */
+final class Signature
 {
-    private array $params = [];
+    ####################################################################################################################
+    # Getter & Setter ##################################################################################################
+    ####################################################################################################################
+    public function __get(string $name)
+    {
+        return match ($name) {
+            'fullName' => $this->class . '::' . $this->prefix . $this->name,
+            'halfName' => $this->prefix . $this->name,
+            default => throw new MagicCallException(),
+        };
+    }
 
-    public string $class;
-    public string $name;
-    public Super $type;
-    public array $order;
+    ####################################################################################################################
+    # Signatures Holder ################################################################################################
+    ####################################################################################################################
+    /**
+     * @var Signature[][][]
+     */
+    private static array $_x_signatures = [];
 
-    public function __construct(
-        public ?bool $const,
-        public ?string $signatureName,
-        public ?bool $required,
-        public mixed $default,
-        null|Super|array $declaration,
-    ) {
-        [$this->class, $this->name] = explode('::', $this->signatureName, 2);
-        if (is_a($declaration, Super::class)) {
-            $this->type = $declaration;
-        } else {
-            $this->order = $declaration;
+    public static function _(string $classOrFullName, ?string $prefixOrHalfName = null, ?string $name = null): ?Signature
+    {
+        if ($prefixOrHalfName === null) {
+            [$class, $prefix, $name] = self::explodeSignatureName($classOrFullName);
+            return self::$_x_signatures[$class][$prefix][$name];
         }
 
+        class_exists($classOrFullName);
+
+        if ($name === null) {
+            [$prefix, $name] = self::explodeSignatureHalfName($prefixOrHalfName);
+            return self::$_x_signatures[$classOrFullName][$prefix][$name];
+        }
+        return self::$_x_signatures[$classOrFullName][$prefixOrHalfName][$name];
+    }
+
+    /**
+     * @param string $class
+     * @param string|null $prefix
+     * @return array|Signature
+     */
+    public static function signatures(string $class, ?string $prefix = null): array|Signature
+    {
+        class_exists($class);
+
+        if ($prefix === null) {
+            return array_merge(...(isset(self::$_x_signatures[$class]) ? array_values(self::$_x_signatures[$class]) : []));
+        }
+        return (self::$_x_signatures[$class][$prefix]) ?? [];
+    }
+
+    /**
+     * @param string $class
+     * @param string $prefix
+     * @param array $signatures
+     */
+    public static function registerSignatures(string $class, string $prefix, array $signatures): void
+    {
+        self::$_x_signatures[$class][$prefix] = $signatures;
+    }
+
+    ####################################################################################################################
+    # Signature Properties #############################################################################################
+    ####################################################################################################################
+    /**
+     * @var string
+     */
+    public string $class;
+
+    /**
+     * @var string
+     */
+    public string $prefix;
+
+    /**
+     * @var string
+     */
+    public string $name;
+
+    /**
+     * @param bool|null $const
+     * @param string|null $fullName
+     * @param bool|null $required
+     * @param mixed $default
+     * @param \Xua\Core\Eves\Super $declaration
+     */
+    private function __construct(
+        public ?bool $const,
+        ?string      $fullName,
+        public ?bool $required,
+        public mixed $default,
+        public Super $declaration,
+    ) {
+        if ($fullName !== null) {
+            $this->setFullName($fullName);
+        }
+    }
+
+    /**
+     * @param bool|null $const
+     * @param string|null $fullName
+     * @param bool|null $required
+     * @param mixed $default
+     * @param Super $declaration
+     * @return Signature
+     */
+    public static function new(
+        ?bool   $const,
+        ?string $fullName,
+        ?bool   $required,
+        mixed   $default,
+        Super   $declaration,
+    ): Signature
+    {
+        return new self($const, $fullName, $required, $default, $declaration);
+    }
+
+    ####################################################################################################################
+    # Parametric Signatures ############################################################################################
+    ####################################################################################################################
+    /**
+     * @var array
+     */
+    private array $params = [];
+
+    /**
+     * @param array|null $params
+     * @return array|$this
+     */
+    public function p(?array $params = null) : array|self
+    {
+        if ($params === null) {
+            return $this->params;
+        } else {
+            $this->params = $params;
+            return $this;
+        }
+    }
+
+    ####################################################################################################################
+    # Static Helpers ###################################################################################################
+    ####################################################################################################################
+    /**
+     * @param string $fullName
+     * @return $this
+     */
+    public function setFullName(string $fullName): self
+    {
+        [$class, $prefix, $name] = self::explodeSignatureName($fullName);
+        $this->class = $class;
+        $this->prefix = $prefix;
+        $this->name = $name;
+        return $this;
     }
 
     /**
@@ -42,20 +184,28 @@ class Signature
         return $result;
     }
 
-    public static function _(string $signatureName): Signature
+    /**
+     * @param string $fullName
+     * @return array
+     */
+    #[Pure] public static function explodeSignatureName(string $fullName): array
     {
-        [$class, $name] = explode('::', $signatureName, 2);
-        /** @noinspection PhpUndefinedMethodInspection */
-        return $class::signature($name);
+        [$class, $halfName] = explode('::', $fullName, 2);
+        [$prefix, $name] = self::explodeSignatureHalfName($halfName);
+        return [$class, $prefix, $name];
     }
 
-    public function p(?array $params = null) : array|static
+    /**
+     * @param string $halfName
+     * @return string[]
+     */
+    public static function explodeSignatureHalfName(string $halfName): array
     {
-        if ($params === null) {
-            return $this->params;
+        if (str_contains($halfName, '_')) {
+            [$prefix, $name] = explode('_', $halfName, 2);
+            return [$prefix . '_', $name];
         } else {
-            $this->params = $params;
-            return $this;
+            return ['', $halfName];
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Xua\Core\Tools\Entity;
 
-use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Tools\Signature\Signature;
 
@@ -28,11 +28,11 @@ final class CF
     public function rel(string $signatureName): self
     {
         $signature = Signature::_($signatureName);
-        if (!is_a($this->signature->type, EntityRelation::class)) {
+        if (!is_a($this->signature->declaration, EntityRelation::class)) {
             throw (new EntityConditionException())->setError($signature->name, 'Cannot relate on non-relational field.');
         }
-        if ($signature->class != $this->signature->type->relatedEntity) {
-            throw (new EntityConditionException())->setError($signature->name, 'Expected a field in ' . $this->signature->type->relatedEntity . ', got a field in ' . $signature->class . '.');
+        if ($signature->class != $this->signature->declaration->relatedEntity) {
+            throw (new EntityConditionException())->setError($signature->name, 'Expected a field in ' . $this->signature->declaration->relatedEntity . ', got a field in ' . $signature->class . '.');
         }
 
         $join = new Join(Join::LEFT, $this->alias, $this->signature);

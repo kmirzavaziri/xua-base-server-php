@@ -2,86 +2,77 @@
 
 namespace Xua\Core\Eves;
 
-use Xua\Core\Services\ConstantService;
-use Xua\Core\Services\FileInstanceSame;
-use Xua\Core\Supers\Files\Generic;
+use Xua\Core\Exceptions\DefinitionException;
 use Xua\Core\Exceptions\EntityFieldException;
-use Xua\Core\Tools\Signature\MethodItemSignature;
-use Xua\Core\Tools\Signature\VarqueMethodFieldSignature;
+use Xua\Core\Supers\Special\EntityFieldScheme;
+use Xua\Core\Tools\Signature\Signature;
+use Xua\Core\Tools\SignatureValueCalculator;
 
-abstract class MethodAdjust extends MethodEve
+/**
+ * Request *************************************************************************************************************
+ * ---
+ * Response ************************************************************************************************************
+ * ---
+ */
+abstract class MethodAdjust extends FieldedMethod
 {
+    /* Request ****************************************************************************************************** */
+    /* --- */
+    /* Response ***************************************************************************************************** */
+    /* --- */
+    /* ************************************************************************************************************** */
+
     private ?Entity $_cache_feed = null;
 
-    # Finalize Eve Methods
-    final protected static function requestSignaturesCalculator(): array
+    protected static function _requestSignatures(): array
     {
-        $request = parent::requestSignaturesCalculator();
-        $fields = static::fields();
-        foreach ($fields as $field) {
-            $request[$field->root->name()] = new MethodItemSignature($field->root->type(), $field->required, $field->default, $field->const);
+        $signatures = parent::_requestSignatures();
+        foreach (static::fieldSignatures() as $field) {
+            $signatures[] = Signature::new(
+                $field->const,
+                static::class . '::' . self::REQUEST_PREFIX . $field->declaration->name,
+                $field->required,
+                $field->default,
+                $field->declaration->type
+            );
         }
-        return $request;
-    }
-
-    final protected static function responseSignaturesCalculator(): array
-    {
-        return parent::responseSignaturesCalculator();
+        return $signatures;
     }
 
     protected function body(): void
     {
         $feed = $this->feed();
-        $fields = static::fields();
+        $fields = static::fieldSignatures();
         foreach ($fields as $field) {
+            /** @var EntityFieldScheme $scheme */
+            $scheme = $field->declaration;
             try {
-                if ($field->root->name() != 'id') {
-                    if (!is_a($field->root->type(), Generic::class)) {
-                        $feed->{$field->root->name()} = $field->root->valueFromRequest($this->{'Q_' . $field->root->name()}, $feed);
-                    } else {
-                        // What about Recursive fields in children?
-                        if (!is_a($this->{'Q_' . $field->root->name()}, FileInstanceSame::class)) {
-                            if ($feed->{$field->root->name()} and file_exists($feed->{$field->root->name()}->path)) {
-                                unlink($feed->{$field->root->name()}->path);
-                            }
-                            /** @noinspection PhpUndefinedMethodInspection */
-                            $this->{'Q_' . $field->root->name()}?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . static::entity()::table() . DIRECTORY_SEPARATOR . $feed->id);
-                            $feed->{$field->root->name()} = $this->{'Q_' . $field->root->name()};
-                        }
-                    }
+                if ($scheme->name == 'id') {
+                    throw new DefinitionException('Cannot modify id');
                 }
+                SignatureValueCalculator::setEntityField($feed, $scheme, $this->{MethodEve::REQUEST_PREFIX . $scheme->name});
             } catch (EntityFieldException $e) {
-                $this->error->fromException($e);
+                $this->_x_error->fromException($e);
                 $this->throwError();
             }
         }
         try {
             $feed->store();
         } catch (EntityFieldException $e) {
-            throw $this->error->fromException($e);
+            throw $this->_x_error->fromException($e);
         }
     }
 
-    # Overridable Methods Wrappers
-    final protected function feed(): Entity {
-        if ($this->_cache_feed === null) {
-            $this->_cache_feed = $this->_feed();
-        }
-        return $this->_cache_feed;
-    }
-
-    # New Overridable Methods
     protected static function entity(): string
     {
         return Entity::class;
     }
 
-    /**
-     * @return VarqueMethodFieldSignature[]
-     */
-    protected static function fields(): array
-    {
-        return [];
+    final protected function feed(): Entity {
+        if ($this->_cache_feed === null) {
+            $this->_cache_feed = $this->_feed();
+        }
+        return $this->_cache_feed;
     }
 
     abstract protected function _feed(): Entity;

@@ -2,7 +2,7 @@
 
 namespace Xua\Core\Tools\Entity;
 
-use Xua\Core\Supers\EntitySupers\EntityRelation;
+use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Exceptions\EntityJoinException;
 use Xua\Core\Tools\Signature\Signature;
 
@@ -21,7 +21,7 @@ class Join
         private string $leftTableNameAlias,
         private Signature $joiningField,
     ) {
-        if (!is_a($this->joiningField->type, EntityRelation::class)) {
+        if (!is_a($this->joiningField->declaration, EntityRelation::class)) {
             throw (new EntityJoinException)->setError($this->joiningField->name, 'Cannot create JOIN for non-relational field.');
         }
     }
@@ -34,7 +34,7 @@ class Join
     public function expression() : string
     {
         /** @var EntityRelation $type */
-        $type = $this->joiningField->type;
+        $type = $this->joiningField->declaration;
 
         $rightTableName = $type->relatedEntity::table();
         $rightTableNameAlias = $this->rightTableNameAlias();
