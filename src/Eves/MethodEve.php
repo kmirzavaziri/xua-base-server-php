@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Eves;
 
-use JetBrains\PhpStorm\Pure;
 use Xua\Core\Exceptions\MagicCallException;
 use Xua\Core\Exceptions\MethodRequestException;
 use Xua\Core\Exceptions\MethodResponseException;
