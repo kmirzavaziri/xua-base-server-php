@@ -10,41 +10,50 @@ use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Supers\Trilean;
 use Xua\Core\Supers\Universal;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property ?array parameters
- * @method static SuperArgumentSignature A_parameters() The Signature of: Argument `parameters`
  * @property ?string returnType
- * @method static SuperArgumentSignature A_returnType() The Signature of: Argument `returnType`
  * @property bool allowSubtype
- * @method static SuperArgumentSignature A_allowSubtype() The Signature of: Argument `allowSubtype`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Callback extends Super
 {
+    const parameters = self::class . '::parameters';
+    const returnType = self::class . '::returnType';
+    const allowSubtype = self::class . '::allowSubtype';
+    const nullable = self::class . '::nullable';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'parameters' => new SuperArgumentSignature(new Sequence([
-                'type' => new StructuredMap([
-                    'structure' => [
-                        'name' => new Symbol(['nullable' => true]),
-                        'type' => new Text(['nullable' => true]),
-                        'allowSubtype' => new Boolean([]),
-                        'required' => new Trilean([]),
-                        'checkDefault' => new Boolean([]),
-                        'default' => new Universal([]),
-                        'passByReference' => new Trilean([]),
-                    ],
-                    'nullable' => true
-                ]),
-                'nullable' => true,
-            ]), false, null, false),
-            'returnType' => new SuperArgumentSignature(new Text(['nullable' => true]), false, null, false),
-            'allowSubtype' => new SuperArgumentSignature(new Boolean([]), false, false, false),
-            'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            Signature::new(false, static::parameters, false, null,
+                new Sequence([
+                    Sequence::type => new StructuredMap([
+                        StructuredMap::structure => [
+                            'name' => new Symbol([Symbol::nullable => true]),
+                            'type' => new Text([Text::nullable => true]),
+                            'allowSubtype' => new Boolean([]),
+                            'required' => new Trilean([]),
+                            'checkDefault' => new Boolean([]),
+                            'default' => new Universal([]),
+                            'passByReference' => new Trilean([]),
+                        ],
+                        StructuredMap::nullable => true
+                    ]),
+                    Sequence::nullable => true,
+                ])
+            ),
+            Signature::new(false, static::returnType, false, null,
+                new Text([Text::nullable => true])
+            ),
+            Signature::new(false, static::allowSubtype, false, false,
+                new Boolean([])
+            ),
+            Signature::new(false, static::nullable, false, false,
+                new Boolean([])
+            ),
             ]);
     }
 

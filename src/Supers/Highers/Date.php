@@ -7,20 +7,30 @@ use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\LocaleLanguage;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Strings\Text;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
+ * @property string of
+ * @property bool strict
+ * @property bool acceptClass
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Date extends Instance
 {
+    const nullable = self::class . '::nullable';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'of' => new SuperArgumentSignature(new Text([]), false, DateTimeInstance::class, true),
-            'strict' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'acceptClass' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            Signature::new(true, static::of, false, DateTimeInstance::class,
+                new Text([])
+            ),
+            Signature::new(true, static::strict, false, false,
+                new Boolean([])
+            ),
+            Signature::new(true, static::acceptClass, false, false,
+                new Boolean([])
+            ),
         ]);
     }
 

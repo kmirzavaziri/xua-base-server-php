@@ -5,20 +5,24 @@ namespace Xua\Core\Supers\Highers;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
- * @property array|object structure
- * @method static SuperArgumentSignature A_structure() The Signature of: Argument `structure`
+ * @property int marshalFlags
+ * @property array structure
  */
 class StructuredMap extends Json
 {
+    const nullable = self::class . '::nullable';
+    const structure = self::class . '::structure';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'structure' => new SuperArgumentSignature(new Map(['keyType' => new Symbol([]), 'valueType' => new Instance(['of' => Super::class, 'nullable' => true])]), true, null, false),
+            Signature::new(false, static::structure, true, null,
+                new Map([Map::keyType => new Symbol([]), Map::valueType => new Instance([Instance::of => Super::class, Instance::nullable => true])])
+            ),
         ]);
     }
 

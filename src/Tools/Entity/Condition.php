@@ -106,12 +106,12 @@ final class Condition
         $fieldType = $field->signature->declaration;
 
         if ($relation == self::BETWEEN or $relation == self::NBETWEEN) {
-            if ((new Sequence(['minLength' => 2, 'maxLength' => 2]))->explicitlyAccepts($value, $message)) {
+            if ((new Sequence([Sequence::minLength => 2, Sequence::maxLength => 2]))->explicitlyAccepts($value, $message)) {
                 throw new EntityConditionException('When using BETWEEN or NBETWEEN, the provided value must be an array of length 2.' . PHP_EOL . $message);
             }
             $condition->parameters = [$fieldType->marshalDatabase($value[0]), $fieldType->marshalDatabase($value[1])];
         } elseif ($relation == self::IN or $relation == self::NIN) {
-            $fieldTypeArray = new Sequence(['type' => $fieldType]);
+            $fieldTypeArray = new Sequence([Sequence::type => $fieldType]);
             if (!$fieldTypeArray->explicitlyAccepts($value, $message)) {
                 throw new EntityConditionException('When using IN or NIN, the provided value must be an array.' . PHP_EOL . $message);
             }

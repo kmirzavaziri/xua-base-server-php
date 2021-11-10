@@ -13,56 +13,57 @@ use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Supers\Universal;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
- * @property \Xua\Core\Eves\Entity|string relatedEntity
- * @method static SuperArgumentSignature A_relatedEntity() The Signature of: Argument `relatedEntity`
+ * @property mixed relatedEntity
  * @property string relation
- * @method static SuperArgumentSignature A_relation() The Signature of: Argument `relation`
  * @property ?string invName
- * @method static SuperArgumentSignature A_invName() The Signature of: Argument `invName`
  * @property string definedOn
- * @method static SuperArgumentSignature A_definedOn() The Signature of: Argument `definedOn`
  * @property bool fromMany
- * @method static SuperArgumentSignature A_fromMany() The Signature of: Argument `fromMany`
  * @property bool fromOne
- * @method static SuperArgumentSignature A_fromOne() The Signature of: Argument `fromOne`
  * @property bool toMany
- * @method static SuperArgumentSignature A_toMany() The Signature of: Argument `toMany`
  * @property bool toOne
- * @method static SuperArgumentSignature A_toOne() The Signature of: Argument `toOne`
  * @property bool is11
- * @method static SuperArgumentSignature A_is11() The Signature of: Argument `is11`
  * @property bool isN1
- * @method static SuperArgumentSignature A_isN1() The Signature of: Argument `isN1`
  * @property bool is1N
- * @method static SuperArgumentSignature A_is1N() The Signature of: Argument `is1N`
  * @property bool isNN
- * @method static SuperArgumentSignature A_isNN() The Signature of: Argument `isNN`
  * @property bool optional
- * @method static SuperArgumentSignature A_optional() The Signature of: Argument `optional`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property bool required
- * @method static SuperArgumentSignature A_required() The Signature of: Argument `required`
  * @property bool invOptional
- * @method static SuperArgumentSignature A_invOptional() The Signature of: Argument `invOptional`
  * @property bool invRequired
- * @method static SuperArgumentSignature A_invRequired() The Signature of: Argument `invRequired`
- * @property bool definedHere
- * @method static SuperArgumentSignature A_definedHere() The Signature of: Argument `definedHere`
- * @property bool definedThere
- * @method static SuperArgumentSignature A_definedThere() The Signature of: Argument `definedThere`
- * @property bool columnHere
- * @method static SuperArgumentSignature A_columnHere() The Signature of: Argument `columnHere`
- * @property bool columnThere
- * @method static SuperArgumentSignature A_columnThere() The Signature of: Argument `columnThere`
  * @property bool hasJunction
- * @method static SuperArgumentSignature A_hasJunction() The Signature of: Argument `hasJunction`
+ * @property bool definedHere
+ * @property bool definedThere
+ * @property bool columnHere
+ * @property bool columnThere
  */
 class EntityRelation extends Super
 {
+    const relatedEntity = self::class . '::relatedEntity';
+    const relation = self::class . '::relation';
+    const invName = self::class . '::invName';
+    const definedOn = self::class . '::definedOn';
+    const fromMany = self::class . '::fromMany';
+    const fromOne = self::class . '::fromOne';
+    const toMany = self::class . '::toMany';
+    const toOne = self::class . '::toOne';
+    const is11 = self::class . '::is11';
+    const isN1 = self::class . '::isN1';
+    const is1N = self::class . '::is1N';
+    const isNN = self::class . '::isNN';
+    const optional = self::class . '::optional';
+    const nullable = self::class . '::nullable';
+    const required = self::class . '::required';
+    const invOptional = self::class . '::invOptional';
+    const invRequired = self::class . '::invRequired';
+    const definedHere = self::class . '::definedHere';
+    const definedThere = self::class . '::definedThere';
+    const columnHere = self::class . '::columnHere';
+    const columnThere = self::class . '::columnThere';
+    const hasJunction = self::class . '::hasJunction';
+
     const REL_O11O = 'O11O'; // one-to-one relation;   optional on both sides
     const REL_O11R = 'O11R'; // one-to-one relation;   optional on left and required on right side
     const REL_R11O = 'R11O'; // one-to-one relation;   required on left and optional on right side
@@ -94,28 +95,36 @@ class EntityRelation extends Super
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'relatedEntity' => new SuperArgumentSignature(new Universal([]), true, null, false),
-            'relation' => new SuperArgumentSignature(new Enum(['values' => self::REL_]), true, null, false),
-            'invName' => new SuperArgumentSignature(new Symbol(['nullable' => true]), false, null, false),
-            'definedOn' => new SuperArgumentSignature(new Enum(['values' => self::DEFINED_ON_]), false, EntityRelation::DEFINED_ON_HERE, false),
-            'fromMany' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'fromOne' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'toMany' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'toOne' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'is11' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'isN1' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'is1N' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'isNN' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'optional' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'required' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'invOptional' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'invRequired' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'hasJunction' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'definedHere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'definedThere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'columnHere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'columnThere' => new SuperArgumentSignature(new Boolean([]), false, false, true),
+            Signature::new(false, static::relatedEntity, true, null,
+                new Universal([])
+            ),
+            Signature::new(false, static::relation, true, null,
+                new Enum([Enum::values => self::REL_])
+            ),
+            Signature::new(false, static::invName, false, null,
+                new Symbol([Symbol::nullable => true])
+            ),
+            Signature::new(false, static::definedOn, false, EntityRelation::DEFINED_ON_HERE,
+                new Enum([Enum::values => self::DEFINED_ON_])
+            ),
+            Signature::new(true, static::fromMany, false, false,new Boolean([])),
+            Signature::new(true, static::fromOne, false, false,new Boolean([])),
+            Signature::new(true, static::toMany, false, false,new Boolean([])),
+            Signature::new(true, static::toOne, false, false,new Boolean([])),
+            Signature::new(true, static::is11, false, false,new Boolean([])),
+            Signature::new(true, static::isN1, false, false,new Boolean([])),
+            Signature::new(true, static::is1N, false, false,new Boolean([])),
+            Signature::new(true, static::isNN, false, false,new Boolean([])),
+            Signature::new(true, static::optional, false, false,new Boolean([])),
+            Signature::new(true, static::nullable, false, false,new Boolean([])),
+            Signature::new(true, static::required, false, false,new Boolean([])),
+            Signature::new(true, static::invOptional, false, false,new Boolean([])),
+            Signature::new(true, static::invRequired, false, false,new Boolean([])),
+            Signature::new(true, static::hasJunction, false, false,new Boolean([])),
+            Signature::new(true, static::definedHere, false, false,new Boolean([])),
+            Signature::new(true, static::definedThere, false, false,new Boolean([])),
+            Signature::new(true, static::columnHere, false, false,new Boolean([])),
+            Signature::new(true, static::columnThere, false, false,new Boolean([])),
         ]);
     }
 
@@ -144,7 +153,7 @@ class EntityRelation extends Super
     protected function _predicate($input, null|string|array &$message = null) : bool
     {
         if ($this->toOne) {
-            if (!(new Instance(['of' => $this->relatedEntity, 'nullable' => $this->optional]))->explicitlyAccepts($input, $message)) {
+            if (!(new Instance([Instance::of => $this->relatedEntity, Instance::nullable => $this->optional]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
             if ($input !== null and $input->id === null) {
@@ -169,7 +178,7 @@ class EntityRelation extends Super
             }
             return true;
         } elseif ($this->toMany) {
-            if (!(new Sequence(['type' => new Instance(['of' => $this->relatedEntity])]))->explicitlyAccepts($input, $message)) {
+            if (!(new Sequence([Sequence::type => new Instance([Instance::of => $this->relatedEntity])]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
             foreach ($input as $item) {
@@ -197,7 +206,7 @@ class EntityRelation extends Super
     protected function _databaseType(): ?string
     {
         if ($this->columnHere) {
-            return (new Decimal(['unsigned' => true, 'integerLength' => 32, 'base' => 2, 'nullable' => $this->optional]))->databaseType();
+            return (new Decimal([Decimal::unsigned => true, Decimal::integerLength => 32, Decimal::base => 2, Decimal::nullable => $this->optional]))->databaseType();
         } else {
             return 'DONT STORE';
         }

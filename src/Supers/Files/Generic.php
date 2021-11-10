@@ -12,27 +12,36 @@ use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property ?array allowedMimeTypes
- * @method static SuperArgumentSignature A_allowedMimeTypes() The Signature of: Argument `allowedMimeTypes`
  * @property ?int maxSize
- * @method static SuperArgumentSignature A_maxSize() The Signature of: Argument `maxSize`
  * @property ?string storageDir
- * @method static SuperArgumentSignature A_storageDir() The Signature of: Argument `storageDir`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Generic extends Super
 {
+    const allowedMimeTypes = self::class . '::allowedMimeTypes';
+    const maxSize = self::class . '::maxSize';
+    const storageDir = self::class . '::storageDir';
+    const nullable = self::class . '::nullable';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'allowedMimeTypes' => new SuperArgumentSignature(new Sequence(['type' => new Text([]), 'nullable' => true]), false, null, false),
-            'maxSize' => new SuperArgumentSignature(new Integer(['nullable' => true]), false, null, false),
-            'storageDir' => new SuperArgumentSignature(new Text(['nullable' => true]), false, null, false),
-            'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            Signature::new(false, static::allowedMimeTypes, false, null,
+                new Sequence([Sequence::type => new Text([]), Sequence::nullable => true])
+            ),
+            Signature::new(false, static::maxSize, false, null,
+                new Integer([Integer::nullable => true])
+            ),
+            Signature::new(false, static::storageDir, false, null,
+                new Text([Text::nullable => true])
+            ),
+            Signature::new(false, static::nullable, false, false,
+                new Boolean([])
+            ),
         ]);
     }
 

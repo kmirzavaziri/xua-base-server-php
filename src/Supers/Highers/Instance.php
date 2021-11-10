@@ -5,27 +5,36 @@ namespace Xua\Core\Supers\Highers;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property string of
- * @method static SuperArgumentSignature A_of() The Signature of: Argument `of`
  * @property bool strict
- * @method static SuperArgumentSignature A_strict() The Signature of: Argument `strict`
  * @property bool acceptClass
- * @method static SuperArgumentSignature A_acceptClass() The Signature of: Argument `acceptClass`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Instance extends Super
 {
+    const of = self::class . '::of';
+    const strict = self::class . '::strict';
+    const acceptClass = self::class . '::acceptClass';
+    const nullable = self::class . '::nullable';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                'of' => new SuperArgumentSignature(new Text([]), true, null, false),
-                'strict' => new SuperArgumentSignature(new Boolean([]), false, false, false),
-                'acceptClass' => new SuperArgumentSignature(new Boolean([]), false, false, false),
-                'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            Signature::new(false, static::of, true, null,
+                new Text([])
+            ),
+            Signature::new(false, static::strict, false, false,
+                new Boolean([])
+            ),
+            Signature::new(false, static::acceptClass, false, false,
+                new Boolean([])
+            ),
+            Signature::new(false, static::nullable, false, false,
+                new Boolean([])
+            ),
             ]);
     }
 

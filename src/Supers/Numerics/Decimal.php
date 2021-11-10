@@ -4,29 +4,38 @@ namespace Xua\Core\Supers\Numerics;
 
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Exceptions\SuperValidationException;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property ?int integerLength
- * @method static SuperArgumentSignature A_integerLength() The Signature of: Argument `integerLength`
  * @property ?int fractionalLength
- * @method static SuperArgumentSignature A_fractionalLength() The Signature of: Argument `fractionalLength`
  * @property ?int base
- * @method static SuperArgumentSignature A_base() The Signature of: Argument `base`
  * @property bool unsigned
- * @method static SuperArgumentSignature A_unsigned() The Signature of: Argument `unsigned`
  */
 class Decimal extends Number
 {
+    const nullable = self::class . '::nullable';
+    const integerLength = self::class . '::integerLength';
+    const fractionalLength = self::class . '::fractionalLength';
+    const base = self::class . '::base';
+    const unsigned = self::class . '::unsigned';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'integerLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
-            'fractionalLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
-            'base' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 2, false),
-            'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            Signature::new(false, static::integerLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::fractionalLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::base, false, 2,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::unsigned, false, false,
+                new Boolean([])
+            ),
         ]);
     }
 

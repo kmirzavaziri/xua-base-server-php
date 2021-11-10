@@ -35,7 +35,7 @@ abstract class MethodView extends FieldedMethod
                 static::class . '::' . self::RESPONSE_PREFIX . $scheme->name,
                 $field->required,
                 $field->default,
-                new Nullable(['type' => $scheme->type])
+                new Nullable([Nullable::type => $scheme->type])
             );
             $signatures[] = $signature;
         }

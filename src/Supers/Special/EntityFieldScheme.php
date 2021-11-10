@@ -14,18 +14,24 @@ use Xua\Core\Supers\Strings\Enum;
 use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Supers\Universal;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 use Xua\Core\Tools\SignatureValueCalculator;
 
 /**
  * @property ?array tree
  * @property ?array instant
- * @property string name
- * @property \Xua\Core\Eves\Super type
- * @property string mode
+ * @property ?string name
+ * @property null|\Xua\Core\Eves\Super type
+ * @property ?string mode
  */
 class EntityFieldScheme extends Super
 {
+    const tree = self::class . '::tree';
+    const instant = self::class . '::instant';
+    const name = self::class . '::name';
+    const type = self::class . '::type';
+    const mode = self::class . '::mode';
+
     const MODE_TREE = 'tree';
     const MODE_INSTANT = 'instant';
     const MODE_ = [
@@ -36,55 +42,65 @@ class EntityFieldScheme extends Super
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'tree' => new SuperArgumentSignature(new Map(['nullable' => true]), false, null, false),
-            'instant' => new SuperArgumentSignature(new StructuredMap([
-                'nullable' => true,
-                'structure' => [
-                    'name' => new Symbol(['nullable' => false]),
-                    'type' => new Instance(['nullable' => true, 'of' => Super::class]),
-                    'getter' => new Callback([
-                        'nullable' => true,
-                        'parameters' => [
-                            [
-                                'name' => null,
-                                'type' => Entity::class,
-                                'allowSubtype' => true,
-                                'required' => true,
-                                'checkDefault' => false,
-                                'default' => null,
-                                'passByReference' => false,
-                            ],
-                        ]
-                    ]),
-                    'setter' => new Callback([
-                        'nullable' => true,
-                        // @TODO must set return to void
-                        'parameters' => [
-                            [
-                                'name' => null,
-                                'type' => Entity::class,
-                                'allowSubtype' => true,
-                                'required' => true,
-                                'checkDefault' => false,
-                                'default' => null,
-                                'passByReference' => true,
-                            ],
-                            [
-                                'name' => null,
-                                'type' => null,
-                                'allowSubtype' => true,
-                                'required' => true,
-                                'checkDefault' => false,
-                                'default' => null,
-                                'passByReference' => false,
-                            ],
-                        ]
-                    ]),
-                ]
-            ]), false, null, false),
-            'name' => new SuperArgumentSignature(new Text(['nullable' => true]), false, null, true),
-            'type' => new SuperArgumentSignature(new Instance(['nullable' => true, 'of' => Super::class]), false, null, true),
-            'mode' => new SuperArgumentSignature(new Enum(['nullable' => true, 'values' => self::MODE_]), false, null, true),
+            Signature::new(false, static::tree, false, null,
+                new Map([Map::nullable => true])
+            ),
+            Signature::new(false, static::instant, false, null,
+                new StructuredMap([
+                    StructuredMap::nullable => true,
+                    StructuredMap::structure => [
+                        'name' => new Symbol([Symbol::nullable => false]),
+                        'type' => new Instance([Instance::nullable => true, Instance::of => Super::class]),
+                        'getter' => new Callback([
+                            Callback::nullable => true,
+                            Callback::parameters => [
+                                [
+                                    'name' => null,
+                                    'type' => Entity::class,
+                                    'allowSubtype' => true,
+                                    'required' => true,
+                                    'checkDefault' => false,
+                                    'default' => null,
+                                    'passByReference' => false,
+                                ],
+                            ]
+                        ]),
+                        'setter' => new Callback([
+                            Callback::nullable => true,
+                            // @TODO must set return to void
+                            Callback::parameters => [
+                                [
+                                    'name' => null,
+                                    'type' => Entity::class,
+                                    'allowSubtype' => true,
+                                    'required' => true,
+                                    'checkDefault' => false,
+                                    'default' => null,
+                                    'passByReference' => true,
+                                ],
+                                [
+                                    'name' => null,
+                                    'type' => null,
+                                    'allowSubtype' => true,
+                                    'required' => true,
+                                    'checkDefault' => false,
+                                    'default' => null,
+                                    'passByReference' => false,
+                                ],
+                            ]
+                        ]),
+                    ]
+                ])
+            ),
+            Signature::new(true, static::name, false, null,
+                new Text([Text::nullable => true])
+            ),
+            Signature::new(true, static::type, false, null,
+                new Instance([Instance::nullable => true, Instance::of => Super::class])
+            ),
+            Signature::new(true, static::mode, false, null,
+                new Enum([Enum::nullable => true, Enum::values => self::MODE_])
+            ),
         ]);
     }
 

@@ -9,45 +9,62 @@ use Xua\Core\Services\FileInstanceSame;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Supers\Strings\Enum;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property ?array allowedMimeTypes
- * @method static SuperArgumentSignature A_allowedMimeTypes() The Signature of: Argument `allowedMimeTypes`
  * @property ?int maxSize
- * @method static SuperArgumentSignature A_maxSize() The Signature of: Argument `maxSize`
  * @property ?string storageDir
- * @method static SuperArgumentSignature A_storageDir() The Signature of: Argument `storageDir`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property ?int minWidth
- * @method static SuperArgumentSignature A_minWidth() The Signature of: Argument `minWidth`
  * @property ?int maxWidth
- * @method static SuperArgumentSignature A_maxWidth() The Signature of: Argument `maxWidth`
  * @property ?int minHeight
- * @method static SuperArgumentSignature A_minHeight() The Signature of: Argument `minHeight`
  * @property ?int maxHeight
- * @method static SuperArgumentSignature A_maxHeight() The Signature of: Argument `maxHeight`
  * @property ?int ratioWidth
- * @method static SuperArgumentSignature A_ratioWidth() The Signature of: Argument `ratioWidth`
  * @property ?int ratioHeight
- * @method static SuperArgumentSignature A_ratioHeight() The Signature of: Argument `ratioHeight`
  * @property ?string unifier
- * @method static SuperArgumentSignature A_unifier() The Signature of: Argument `unifier`
  */
 class Image extends Generic
 {
+    const allowedMimeTypes = self::class . '::allowedMimeTypes';
+    const maxSize = self::class . '::maxSize';
+    const storageDir = self::class . '::storageDir';
+    const nullable = self::class . '::nullable';
+    const minWidth = self::class . '::minWidth';
+    const maxWidth = self::class . '::maxWidth';
+    const minHeight = self::class . '::minHeight';
+    const maxHeight = self::class . '::maxHeight';
+    const ratioWidth = self::class . '::ratioWidth';
+    const ratioHeight = self::class . '::ratioHeight';
+    const unifier = self::class . '::unifier';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'minWidth' => new SuperArgumentSignature(new Integer(['nullable' => true, 'unsigned' => true]), false, null, false),
-            'maxWidth' => new SuperArgumentSignature(new Integer(['nullable' => true, 'unsigned' => true]), false, null, false),
-            'minHeight' => new SuperArgumentSignature(new Integer(['nullable' => true, 'unsigned' => true]), false, null, false),
-            'maxHeight' => new SuperArgumentSignature(new Integer(['nullable' => true, 'unsigned' => true]), false, null, false),
-            'ratioWidth' => new SuperArgumentSignature(new Integer(['nullable' => true, 'unsigned' => true]), false, null, false),
-            'ratioHeight' => new SuperArgumentSignature(new Integer(['nullable' => true, 'unsigned' => true]), false, null, false),
-            'allowedMimeTypes' => new SuperArgumentSignature(new Sequence(['type' => new Enum(['values' => Mime::MIME_IMAGE]), 'nullable' => true]), false, Mime::MIME_IMAGE, false),
-            'unifier' => new SuperArgumentSignature(new Enum(['values' => Mime::MIME_IMAGE, 'nullable' => true]), false, null, false),
+            Signature::new(false, static::minWidth, false, null,
+                new Integer([Integer::nullable => true, Integer::unsigned => true])
+            ),
+            Signature::new(false, static::maxWidth, false, null,
+                new Integer([Integer::nullable => true, Integer::unsigned => true])
+            ),
+            Signature::new(false, static::minHeight, false, null,
+                new Integer([Integer::nullable => true, Integer::unsigned => true])
+            ),
+            Signature::new(false, static::maxHeight, false, null,
+                new Integer([Integer::nullable => true, Integer::unsigned => true])
+            ),
+            Signature::new(false, static::ratioWidth, false, null,
+                new Integer([Integer::nullable => true, Integer::unsigned => true])
+            ),
+            Signature::new(false, static::ratioHeight, false, null,
+                new Integer([Integer::nullable => true, Integer::unsigned => true])
+            ),
+            Signature::new(false, static::allowedMimeTypes, false, Mime::MIME_IMAGE,
+                new Sequence([Sequence::type => new Enum([Enum::values => Mime::MIME_IMAGE]), Sequence::nullable => true])
+            ),
+            Signature::new(false, static::unifier, false, null,
+                new Enum([Enum::values => Mime::MIME_IMAGE, Enum::nullable => true])
+            ),
         ]);
     }
 

@@ -3,24 +3,27 @@
 namespace Xua\Core\Supers\Strings;
 
 use Xua\Core\Exceptions\SuperValidationException;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property ?int minLength
- * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
- * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property string pattern
- * @method static SuperArgumentSignature A_pattern() The Signature of: Argument `pattern`
  */
 class Regex extends Text
 {
+    const minLength = self::class . '::minLength';
+    const maxLength = self::class . '::maxLength';
+    const nullable = self::class . '::nullable';
+    const pattern = self::class . '::pattern';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'pattern' => new SuperArgumentSignature(new Text([]), true, null, false)
+            Signature::new(false, static::pattern, true, null,
+                new Text([])
+            )
         ]);
     }
 

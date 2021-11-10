@@ -5,32 +5,39 @@ namespace Xua\Core\Supers\Numerics;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Exceptions\SuperValidationException;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property ?int integerLength
- * @method static SuperArgumentSignature A_integerLength() The Signature of: Argument `integerLength`
  * @property ?int fractionalLength
- * @method static SuperArgumentSignature A_fractionalLength() The Signature of: Argument `fractionalLength`
  * @property ?int base
- * @method static SuperArgumentSignature A_base() The Signature of: Argument `base`
  * @property bool unsigned
- * @method static SuperArgumentSignature A_unsigned() The Signature of: Argument `unsigned`
- * @property int|float min
- * @method static SuperArgumentSignature A_min() The Signature of: Argument `min`
- * @property int|float max
- * @method static SuperArgumentSignature A_max() The Signature of: Argument `max`
+ * @property null|int|float min
+ * @property null|int|float max
  */
 class DecimalRange extends Decimal
 {
+    const nullable = self::class . '::nullable';
+    const integerLength = self::class . '::integerLength';
+    const fractionalLength = self::class . '::fractionalLength';
+    const base = self::class . '::base';
+    const unsigned = self::class . '::unsigned';
+    const min = self::class . '::min';
+    const max = self::class . '::max';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, true),
-            'min' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30, 'nullable' => true]), false, null, false),
-            'max' => new SuperArgumentSignature(new Decimal(['integerLength' => 255, 'fractionalLength' => 30, 'nullable' => true]), false, null, false),
+            Signature::new(true, static::unsigned, false, false,
+                new Boolean([])
+            ),
+            Signature::new(false, static::min, false, null,
+                new Decimal([Decimal::integerLength => 255, Decimal::fractionalLength => 30, Decimal::nullable => true])
+            ),
+            Signature::new(false, static::max, false, null,
+                new Decimal([Decimal::integerLength => 255, Decimal::fractionalLength => 30, Decimal::nullable => true])
+            ),
         ]);
     }
 

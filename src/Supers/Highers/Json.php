@@ -7,22 +7,27 @@ use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property int marshalFlags
- * @method static SuperArgumentSignature A_marshalFlags() The Signature of: Argument `marshalFlags`
  */
 class Json extends Super
 {
+    const nullable = self::class . '::nullable';
+    const marshalFlags = self::class . '::marshalFlags';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
-                'marshalFlags' => new SuperArgumentSignature(new Integer([]), false, 0, false),
-            ]);
+            Signature::new(false, static::nullable, false, false,
+                new Boolean([])
+            ),
+            Signature::new(false, static::marshalFlags, false, 0,
+                new Integer([])
+            ),
+        ]);
     }
 
     protected function _predicate($input, null|string|array &$message = null): bool
@@ -72,7 +77,7 @@ class Json extends Super
 
     protected function _databaseType(): ?string
     {
-        return (new Text(['nullable' => $this->nullable]))->databaseType();
+        return (new Text([Text::nullable => $this->nullable]))->databaseType();
     }
 
     protected function _phpType(): string

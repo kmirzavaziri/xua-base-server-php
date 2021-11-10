@@ -5,26 +5,34 @@ namespace Xua\Core\Supers\Highers;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
+ * @property int marshalFlags
  * @property null|\Xua\Core\Eves\Super type
- * @method static SuperArgumentSignature A_type() The Signature of: Argument `type`
  * @property ?int minLength
- * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
- * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  */
 class Sequence extends Json
 {
+    const nullable = self::class . '::nullable';
+    const type = self::class . '::type';
+    const minLength = self::class . '::minLength';
+    const maxLength = self::class . '::maxLength';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'type' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => true]), false, null, false),
-            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
-            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
+            Signature::new(false, static::type, false, null,
+                new Instance([Instance::of => Super::class, Instance::nullable => true])
+            ),
+            Signature::new(false, static::minLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::maxLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
         ]);
     }
 

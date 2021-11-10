@@ -23,7 +23,7 @@ final class SecurityService extends Service
 
     public static function getRandomSalt(int $length): string
     {
-        if (!(new DecimalRange(['min' => 1, 'max' => 100, 'fractionalLength' => 0]))->accepts($length)) {
+        if (!(new DecimalRange([DecimalRange::min => 1, DecimalRange::max => 100, DecimalRange::fractionalLength => 0]))->accepts($length)) {
             $length = 32;
         }
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

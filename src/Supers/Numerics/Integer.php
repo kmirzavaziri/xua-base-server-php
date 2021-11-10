@@ -4,20 +4,23 @@ namespace Xua\Core\Supers\Numerics;
 
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Boolean;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property bool unsigned
- * @method static SuperArgumentSignature A_unsigned() The Signature of: Argument `unsigned`
  */
 class Integer extends Number
 {
+    const nullable = self::class . '::nullable';
+    const unsigned = self::class . '::unsigned';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'unsigned' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+            Signature::new(false, static::unsigned, false, false,
+                    new Boolean([])
+                ),
         ]);
     }
 

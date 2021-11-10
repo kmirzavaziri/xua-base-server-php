@@ -6,24 +6,31 @@ use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property ?int minLength
- * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
- * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  */
 class Text extends Super
 {
+    const minLength = self::class . '::minLength';
+    const maxLength = self::class . '::maxLength';
+    const nullable = self::class . '::nullable';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
-                'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, 65_535, false),
-                'nullable' => new SuperArgumentSignature(new Boolean([]), false, false, false),
+                Signature::new(false, static::minLength, false, null,
+                    new Integer([Integer::unsigned => true, Integer::nullable => true])
+                ),
+                Signature::new(false, static::maxLength, false, 65_535,
+                    new Integer([Integer::unsigned => true, Integer::nullable => true])
+                ),
+                Signature::new(false, static::nullable, false, false,
+                    new Boolean([])
+                ),
             ]);
     }
 

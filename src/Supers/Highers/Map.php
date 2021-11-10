@@ -4,29 +4,39 @@ namespace Xua\Core\Supers\Highers;
 
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
+ * @property int marshalFlags
  * @property null|\Xua\Core\Eves\Super keyType
- * @method static SuperArgumentSignature A_keyType() The Signature of: Argument `keyType`
  * @property null|\Xua\Core\Eves\Super valueType
- * @method static SuperArgumentSignature A_valueType() The Signature of: Argument `valueType`
  * @property ?int minSize
- * @method static SuperArgumentSignature A_minSize() The Signature of: Argument `minSize`
  * @property ?int maxSize
- * @method static SuperArgumentSignature A_maxSize() The Signature of: Argument `maxSize`
  */
 class Map extends Json
 {
+    const nullable = self::class . '::nullable';
+    const keyType = self::class . '::keyType';
+    const valueType = self::class . '::valueType';
+    const minSize = self::class . '::minSize';
+    const maxSize = self::class . '::maxSize';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'keyType' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => true]), false, null, false),
-            'valueType' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => true]), false, null, false),
-            'minSize' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
-            'maxSize' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, false),
+            Signature::new(false, static::keyType, false, null,
+                new Instance([Instance::of => Super::class, Instance::nullable => true])
+            ),
+            Signature::new(false, static::valueType, false, null,
+                new Instance([Instance::of => Super::class, Instance::nullable => true])
+            ),
+            Signature::new(false, static::minSize, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::maxSize, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
         ]);
     }
 

@@ -38,10 +38,10 @@ abstract class MethodQuery extends FieldedMethod
             $structure[$scheme->name] = $scheme->type;
         }
         $association = static::association();
-        $itemSignature = new StructuredMap(['structure' => $structure]);
+        $itemSignature = new StructuredMap([StructuredMap::structure => $structure]);
         $wrapperType = $association
-            ? new Map(['keyType' => $association->declaration, 'valueType' => $itemSignature])
-            : new Sequence(['type' => $itemSignature]);
+            ? new Map([Map::keyType => $association->declaration, Map::valueType => $itemSignature])
+            : new Sequence([Sequence::type => $itemSignature]);
 
         return array_merge(parent::_responseSignatures(), [
             Signature::new(false, static::result, true, null, $wrapperType)

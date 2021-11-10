@@ -4,24 +4,27 @@ namespace Xua\Core\Supers\Numerics;
 
 use Xua\Core\Eves\Super;
 use Xua\Core\Supers\Strings\Enum;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property string bytes
- * @method static SuperArgumentSignature A_bytes() The Signature of: Argument `bytes`
  */
 class Identifier extends Super
 {
+    const bytes = self::class . '::bytes';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'bytes' => new SuperArgumentSignature(new Enum(['values' => ["1", "2", "3", "4", "8"], 'nullable' => false]), false, 4, false),
+            Signature::new(false, static::bytes, false, 4,
+                new Enum([Enum::values => ["1", "2", "3", "4", "8"], Enum::nullable => false])
+            ),
         ]);
     }
 
     protected function _predicate($input, null|string|array &$message = null): bool
     {
-        return (new Decimal(['nullable' => false, 'unsigned' => true, 'integerLength' => 8 * $this->bytes, 'base' => 2]))->_predicate($input, $message);
+        return (new Decimal([Decimal::nullable => false, Decimal::unsigned => true, Decimal::integerLength => 8 * $this->bytes, Decimal::base => 2]))->_predicate($input, $message);
     }
 
     protected function _databaseType(): ?string

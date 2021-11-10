@@ -4,30 +4,33 @@ namespace Xua\Core\Supers\Special;
 
 use Xua\Core\Supers\Highers\Callback;
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property callable getter
- * @method static SuperArgumentSignature A_getter() The Signature of: Argument `getter`
  */
 class DatabaseVirtualField extends Super
 {
+    const getter = self::class . '::getter';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'getter' => new SuperArgumentSignature(new Callback([
-                'parameters' => [
-                    [
-                        'name' => 'param',
-                        'type' => 'array',
-                        'allowSubtype' => true,
-                        'required' => true,
-                        'checkDefault' => false,
-                        'default' => null,
-                        'passByReference' => false,
-                    ],
-                ]
-            ]), true, null, false),
+            Signature::new(false, static::getter, true, null,
+                new Callback([
+                    Callback::parameters => [
+                        [
+                            'name' => 'param',
+                            'type' => 'array',
+                            'allowSubtype' => true,
+                            'required' => true,
+                            'checkDefault' => false,
+                            'default' => null,
+                            'passByReference' => false,
+                        ],
+                    ]
+                ])
+            ),
         ]);
     }
 

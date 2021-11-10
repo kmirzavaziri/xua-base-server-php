@@ -258,13 +258,13 @@ class SignatureValueCalculator
                     }
                     $structure[$child->name] = $childType;
                 }
-                $type = new StructuredMap(['structure' => $structure]);
+                $type = new StructuredMap([StructuredMap::structure => $structure]);
             } else {
                 $type = Signature::_($root->declaration->relatedEntity::id)->declaration;
             }
-            $type = $root->declaration->toMany ? new Sequence(['type' => $type]) : $type;
+            $type = $root->declaration->toMany ? new Sequence([Sequence::type => $type]) : $type;
             if ($root->declaration->nullable and !@$type->nullable) {
-                $type = new Nullable(['type' => $type]);
+                $type = new Nullable([Nullable::type => $type]);
             }
 
             return [$root, $type];

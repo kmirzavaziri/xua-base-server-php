@@ -40,16 +40,16 @@ final class Signature
     {
         if ($prefixOrHalfName === null) {
             [$class, $prefix, $name] = self::explodeSignatureName($classOrFullName);
-            return self::$_x_signatures[$class][$prefix][$name];
+            return @self::$_x_signatures[$class][$prefix][$name];
         }
 
         class_exists($classOrFullName);
 
         if ($name === null) {
             [$prefix, $name] = self::explodeSignatureHalfName($prefixOrHalfName);
-            return self::$_x_signatures[$classOrFullName][$prefix][$name];
+            return @self::$_x_signatures[$classOrFullName][$prefix][$name];
         }
-        return self::$_x_signatures[$classOrFullName][$prefixOrHalfName][$name];
+        return @self::$_x_signatures[$classOrFullName][$prefixOrHalfName][$name];
     }
 
     /**
@@ -190,7 +190,11 @@ final class Signature
      */
     #[Pure] public static function explodeSignatureName(string $fullName): array
     {
-        [$class, $halfName] = explode('::', $fullName, 2);
+        if (str_contains($fullName, '::')) {
+            [$class, $halfName] = explode('::', $fullName, 2);
+        } else {
+            [$class, $halfName] = [null, $fullName];
+        }
         [$prefix, $name] = self::explodeSignatureHalfName($halfName);
         return [$class, $prefix, $name];
     }

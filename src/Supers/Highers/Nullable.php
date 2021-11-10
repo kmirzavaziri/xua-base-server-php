@@ -3,18 +3,22 @@
 namespace Xua\Core\Supers\Highers;
 
 use Xua\Core\Eves\Super;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property \Xua\Core\Eves\Super type
  */
 class Nullable extends Super
 {
+    const type = self::class . '::type';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                'type' => new SuperArgumentSignature(new Instance(['of' => Super::class, 'nullable' => false]), true, null, false),
-            ]);
+            Signature::new(false, static::type, true, null,
+                new Instance([Instance::of => Super::class, Instance::nullable => false])
+            ),
+        ]);
     }
 
     protected function _predicate($input, null|string|array &$message = null): bool

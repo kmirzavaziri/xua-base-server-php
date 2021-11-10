@@ -5,26 +5,33 @@ namespace Xua\Core\Supers\Strings;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Numerics\Integer;
-use Xua\Core\Tools\Signature\SuperArgumentSignature;
+use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property ?int minLength
- * @method static SuperArgumentSignature A_minLength() The Signature of: Argument `minLength`
  * @property ?int maxLength
- * @method static SuperArgumentSignature A_maxLength() The Signature of: Argument `maxLength`
  * @property bool nullable
- * @method static SuperArgumentSignature A_nullable() The Signature of: Argument `nullable`
  * @property array values
- * @method static SuperArgumentSignature A_values() The Signature of: Argument `values`
  */
 class Enum extends Text
 {
+    const minLength = self::class . '::minLength';
+    const maxLength = self::class . '::maxLength';
+    const nullable = self::class . '::nullable';
+    const values = self::class . '::values';
+
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            'minLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
-            'maxLength' => new SuperArgumentSignature(new Integer(['unsigned' => true, 'nullable' => true]), false, null, true),
-            'values' => new SuperArgumentSignature(new Sequence(['type' => new Text([]), 'minLength' => 1]), true, null, false)
+            Signature::new(true, static::minLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(true, static::maxLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::values, true, null,
+                new Sequence([Sequence::type => new Text([]), Sequence::minLength => 1])
+            )
         ]);
     }
 
