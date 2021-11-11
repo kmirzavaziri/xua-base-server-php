@@ -16,6 +16,7 @@ use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Special\DatabaseVirtualField;
 use Xua\Core\Supers\Special\EntityRelation;
+use Xua\Core\Supers\Special\OrderScheme;
 use Xua\Core\Supers\Special\PhpVirtualField;
 use Throwable;
 use Xua\Core\Exceptions\EntityException;
@@ -31,7 +32,6 @@ use Xua\Core\Tools\Entity\QueryBinder;
 use Xua\Core\Tools\Entity\Column;
 use Xua\Core\Tools\Entity\Condition;
 use Xua\Core\Tools\Entity\CF;
-use Xua\Core\Tools\Entity\Index;
 use Xua\Core\Tools\Entity\Order;
 use Xua\Core\Tools\Entity\Pager;
 use Xua\Core\Tools\Entity\TableScheme;
@@ -198,6 +198,7 @@ abstract class Entity extends Block
     # Signatures #######################################################################################################
     ####################################################################################################################
     const FIELD_PREFIX = '';
+    const INDEX_PREFIX = 'I_';
 
     /**
      *
@@ -206,6 +207,7 @@ abstract class Entity extends Block
     {
         parent::registerSignatures();
         Signature::registerSignatures(static::class, self::FIELD_PREFIX, Signature::associate(static::_fieldSignatures()));
+        Signature::registerSignatures(static::class, self::INDEX_PREFIX, static::_fieldSignatures());
     }
 
     /**
@@ -298,20 +300,51 @@ abstract class Entity extends Block
         ];
     }
 
-    ####################################################################################################################
-    # Overridable Methods ##############################################################################################
-    ####################################################################################################################
     /**
-     * @return Index[]
+     * @return Signature[]
      */
-    #[Pure]
-    protected static function _indexes(): array
+    final public static function indexSignatures(): array
+    {
+        $relIndexes = [];
+        foreach (static::fieldSignatures() as $key => $signature) {
+            if (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->columnHere) {
+                $relIndexes[] = Signature::new(null, null, null, null, new OrderScheme([
+                    OrderScheme::fields => [
+                        [
+                            OrderScheme::direction => OrderScheme::DIRECTION_ASC,
+                            OrderScheme::field => $key,
+                        ]
+                    ],
+                    OrderScheme::unique => $signature->declaration->fromOne,
+                ]));
+            }
+        }
+        return array_merge(static::_indexSignatures(), $relIndexes);
+    }
+
+    /**
+     * @return Signature[]
+     */
+    protected static function _indexSignatures(): array
     {
         return [
-            new Index(['id' => Index::ASC], true, 'PRIMARY'),
+            Signature::new(null, null, null, null, new OrderScheme([
+                OrderScheme::fields => [
+                    [
+                        OrderScheme::direction => OrderScheme::DIRECTION_ASC,
+                        OrderScheme::field => Signature::_(static::id)->name,
+                    ],
+                ],
+                OrderScheme::unique => true,
+                OrderScheme::name => 'PRIMARY',
+            ])),
         ];
     }
 
+
+    ####################################################################################################################
+    # Overridable Methods ##############################################################################################
+    ####################################################################################################################
     /**
      * @param EntityFieldException $exception
      */
@@ -457,20 +490,6 @@ abstract class Entity extends Block
     ####################################################################################################################
     # Overridable Method Wrappers ######################################################################################
     ####################################################################################################################
-    /**
-     * @return array
-     */
-    final public static function indexes(): array
-    {
-        $relIndexes = [];
-        foreach (static::fieldSignatures() as $key => $signature) {
-            if (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->columnHere) {
-                $relIndexes[] = new Index([$key => 'ASC'], $signature->declaration->fromOne);
-            }
-        }
-        return array_merge(static::_indexes(), $relIndexes);
-    }
-
     /**
      * @throws EntityFieldException
      */
@@ -886,13 +905,13 @@ abstract class Entity extends Block
             $table = $matches[2];
             $duplicateIndexName = $matches[3];
             $entity = str_replace('_', '\\', $table);
-            $duplicateIndexes = array_filter($entity::indexes(), function (Index $index) use($duplicateIndexName) {
-                return $index->name == $duplicateIndexName;
+            $duplicateIndexes = array_filter($entity::indexSignatures(), function (Signature $signature) use($duplicateIndexName) {
+                return $signature->declaration->name == $duplicateIndexName;
             });
             $duplicateIndex = array_pop($duplicateIndexes);
             $duplicateExpressions = [];
             $iterator = 0;
-            $fieldNames = array_keys($duplicateIndex->fields);
+            $fieldNames = array_keys($duplicateIndex->declaration->fields);
             foreach ($fieldNames as $fieldName) {
                 $duplicateExpressions[] = ExpressionService::get('entity.column.equal.to.value', [
                     'column' => ExpressionService::get("entityclass.$table.$fieldName"),
@@ -1057,12 +1076,25 @@ abstract class Entity extends Block
                     $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->declaration->relatedEntity::signature('id')->declaration->databaseType() . " NOT NULL"),
                     $rightColumn => Column::fromQuery($signature->declaration->relatedEntity::table() . ' ' . $signature->declaration->relatedEntity::signature('id')->declaration->databaseType() . " NOT NULL"),
                 ], [
-                    new Index([$leftColumn => 'ASC', $rightColumn => 'ASC'], true, 'PRIMARY')
+                    Signature::new(null, null, null, null, new OrderScheme([
+                        OrderScheme::fields => [
+                            [
+                                OrderScheme::direction => OrderScheme::DIRECTION_ASC,
+                                OrderScheme::field => $leftColumn,
+                            ],
+                            [
+                                OrderScheme::direction => OrderScheme::DIRECTION_ASC,
+                                OrderScheme::field => $rightColumn,
+                            ],
+                        ],
+                        OrderScheme::unique => true,
+                        OrderScheme::name => 'PRIMARY',
+                    ])),
                 ]);
             }
         }
 
-        $tables[] = new TableScheme(static::table(), $columns, static::indexes());
+        $tables[] = new TableScheme(static::table(), $columns, static::indexSignatures());
         $alters = [];
         $tableNames = [];
         foreach ($tables as $table) {
