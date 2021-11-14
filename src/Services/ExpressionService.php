@@ -12,13 +12,13 @@ final class ExpressionService extends Service
 
     protected static function _init(): void
     {
-        $filename = ConstantService::DICTIONARIES_PATH . DIRECTORY_SEPARATOR . self::lang() . '.yml';
+        $filename = ConstantService::get('config', 'services.expression.path') . DIRECTORY_SEPARATOR . self::lang() . '.yml';
         self::$dict = self::dictParse($filename);
     }
 
     private static function lang()
     {
-        return $_SERVER['HTTP_XUA_LANG_SPEC'] ?? ConstantService::DEFAULT_LANG;
+        return $_SERVER['HTTP_XUA_LANG_SPEC'] ?? LocaleLanguage::getLanguage();
     }
 
     public static function get(string $key, array $bind = []): string

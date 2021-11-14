@@ -71,7 +71,7 @@ class SignatureValueCalculator
                     unlink($entity->{$root->name}->path);
                 }
                 /** @noinspection PhpUndefinedMethodInspection */
-                $value?->store(ConstantService::STORAGE_PATH . DIRECTORY_SEPARATOR . static::entity()::table() . DIRECTORY_SEPARATOR . $entity->id);
+                $value?->store(ConstantService::get('config', 'paths.storage') . DIRECTORY_SEPARATOR . $entity::table() . DIRECTORY_SEPARATOR . $entity->id);
                 $entity->{$root->name} = $value;
             }
         } else {
@@ -258,14 +258,11 @@ class SignatureValueCalculator
                     }
                     $structure[$child->name] = $childType;
                 }
-                $type = new StructuredMap([StructuredMap::structure => $structure]);
+                $type = new StructuredMap([StructuredMap::structure => $structure, StructuredMap::nullable => $root->declaration->nullable]);
             } else {
-                $type = Signature::_($root->declaration->relatedEntity::id)->declaration;
+                $type = new Nullable([Nullable::type => Signature::_($root->declaration->relatedEntity::id)->declaration]);
             }
-            $type = $root->declaration->toMany ? new Sequence([Sequence::type => $type]) : $type;
-            if ($root->declaration->nullable and !@$type->nullable) {
-                $type = new Nullable([Nullable::type => $type]);
-            }
+            $type = $root->declaration->toMany ? new Sequence([Sequence::type => $type, Sequence::nullable => $root->declaration->nullable]) : $type;
 
             return [$root, $type];
         } else {

@@ -16,8 +16,8 @@ final class LocaleLanguage extends Service
 
     protected static function _init(): void
     {
-        self::$locale = self::DEFAULT_LOCALE;
-        self::$language = self::DEFAULT_LANGUAGE;
+        self::$locale = ConstantService::get('config', 'services.ll.locale');
+        self::$language = ConstantService::get('config', 'services.ll.language');
     }
 
     /**

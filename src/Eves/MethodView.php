@@ -30,12 +30,13 @@ abstract class MethodView extends FieldedMethod
         foreach (static::fieldSignatures() as $field) {
             /** @var EntityFieldScheme $scheme */
             $scheme = $field->declaration;
+            // @TODO fix Nullable $scheme->type
             $signature = Signature::new(
                 $field->const,
                 static::class . '::' . self::RESPONSE_PREFIX . $scheme->name,
                 $field->required,
                 $field->default,
-                new Nullable([Nullable::type => $scheme->type])
+                $scheme->type
             );
             $signatures[] = $signature;
         }

@@ -13,7 +13,7 @@ final class SecurityService extends Service
 
     protected static function _init(): void
     {
-        self::$hasPrivateMethodAccess = (isset($_SERVER['HTTP_XUA_INTERNAL_URPI_KEY']) and $_SERVER['HTTP_XUA_INTERNAL_URPI_KEY'] == ConstantService::get('config/Xua/sec', 'urpikey'));
+        self::$hasPrivateMethodAccess = (isset($_SERVER['HTTP_XUA_INTERNAL_URPI_KEY']) and $_SERVER['HTTP_XUA_INTERNAL_URPI_KEY'] == ConstantService::get('config', 'services.sec.urpiKey'));
     }
 
     public static function verifyPrivateMethodAccess() : bool
@@ -34,5 +34,4 @@ final class SecurityService extends Service
         }
         return implode('', $result);
     }
-
 }

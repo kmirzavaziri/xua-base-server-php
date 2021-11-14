@@ -21,7 +21,7 @@ final class RouteService extends Service
      */
     protected static function _init(): void
     {
-        self::$routes = (new XRMLParser(file_get_contents(ConstantService::ROUTE_FILE)))->parse();
+        self::$routes = (new XRMLParser(file_get_contents(ConstantService::get('config', 'services.route.path'))))->parse();
     }
 
     /**

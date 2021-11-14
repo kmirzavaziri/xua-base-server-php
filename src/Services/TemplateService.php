@@ -14,8 +14,8 @@ final class TemplateService extends Service
 
     protected static function _init(): void
     {
-        self::$twig = new Environment(new FilesystemLoader(ConstantService::TEMPLATES_PATH), [
-            'cache' => ConstantService::TEMPLATES_CACHE_PATH,
+        self::$twig = new Environment(new FilesystemLoader(ConstantService::get('config', 'services.template.path')), [
+            'cache' => ConstantService::get('config', 'services.template.cachePath'),
         ]);
     }
 

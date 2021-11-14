@@ -119,7 +119,7 @@ abstract class PersianExpressionService extends Service
 
     public static function changeNumerics(string $text, ?string $numericsLang = null): string
     {
-        $numericsLang = $numericsLang ?? ConstantService::DEFAULT_LANG;
+        $numericsLang = $numericsLang ?? LocaleLanguage::getLanguage();
         $result = '';
         for ($i = 0; $i < mb_strlen($text); $i++) {
             $t = mb_substr($text, $i, 1);

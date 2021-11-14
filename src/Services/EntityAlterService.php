@@ -15,7 +15,7 @@ final class EntityAlterService extends Service
 {
     public static function alters(): string
     {
-        return self::alterTransaction() . self::altersInDir(ConstantService::ENTITIES_DIR);
+        return self::alterTransaction() . self::altersInDir(ConstantService::get('config', 'paths.entities'));
     }
 
     private static function altersInDir(string $dir): string
@@ -67,7 +67,7 @@ final class EntityAlterService extends Service
 
     private static function alterTransaction(): string
     {
-        $expectedTransactionIsolationLevel = ConstantService::DB_TRANSACTION_ISOLATION_LEVEL;
+        $expectedTransactionIsolationLevel = ConstantService::get('config', 'db.isolationLevel');
         $realTransactionIsolationLevel = Entity::execute('SELECT @@GLOBAL.TRANSACTION_ISOLATION')->fetch(PDO::FETCH_NUM)[0];
         if ($realTransactionIsolationLevel != $expectedTransactionIsolationLevel) {
             $expectedTransactionIsolationLevelSyntax = Database::transactionIsolationLevel($expectedTransactionIsolationLevel);

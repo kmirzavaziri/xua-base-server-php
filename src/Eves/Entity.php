@@ -3,7 +3,6 @@
 namespace Xua\Core\Eves;
 
 use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use PDO;
 use PDOException;
 use PDOStatement;
@@ -123,7 +122,7 @@ abstract class Entity extends Block
         $tableNameTemp = explode("\\", static::class);
         self::$_x_table[static::class] = implode('_', $tableNameTemp);
 
-        $dbInfo = ConstantService::get('config/Xua/db');
+        $dbInfo = ConstantService::get('config', 'db');
         if (!$dbInfo) {
             throw new EntityException('Database connection config not found.');
         }
