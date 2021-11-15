@@ -912,15 +912,15 @@ abstract class Entity extends Block
             $iterator = 0;
             $fieldNames = array_keys($duplicateIndex->declaration->fields);
             foreach ($fieldNames as $fieldName) {
-                $duplicateExpressions[] = ExpressionService::get('entity.column.equal.to.value', [
-                    'column' => ExpressionService::get("entityclass.$table.$fieldName"),
+                $duplicateExpressions[] = ExpressionService::get('xua.eves.entity.column_equal_to_value', [
+                    'column' => ExpressionService::get("column_name.$table.$fieldName"),
                     'value' => $duplicateValues[$iterator],
                 ]);
                 $iterator++;
             }
-            throw (new EntityFieldException())->setError($fieldNames[0], ExpressionService::get('errormessage.a.entity.with.expression.already.exists', [
-                'entity' => ExpressionService::get('entityclass.' . $table),
-                'expression' => ExpressionService::implode($duplicateExpressions),
+            throw (new EntityFieldException())->setError($fieldNames[0], ExpressionService::get('xua.eves.entity.error_message.an_entity_with_expression_already_exists', [
+                'entity' => ExpressionService::get('table_name.' . $table),
+                'expression' => $duplicateExpressions,
             ]));
         } else {
             throw new PDOException($e->getMessage() . PHP_EOL . $query, 0, $e);

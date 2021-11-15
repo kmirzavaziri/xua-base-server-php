@@ -46,8 +46,8 @@ class Enum extends Text
         }
 
         if (!in_array($input, $this->values)) {
-            $message = ExpressionService::get('errormessage.please.enter.a.valid.value.from.values', [
-                'values' => implode(ExpressionService::get('comma.separator'), $this->values)
+            $message = ExpressionService::get('xua.supers.strings.enum.error_message.please_enter_a_valid_value_from_values', [
+                'values' => ExpressionService::implode($this->values, ExpressionService::IMPLODE_MODE_DISJUNCTION)
             ]);
             return false;
         }

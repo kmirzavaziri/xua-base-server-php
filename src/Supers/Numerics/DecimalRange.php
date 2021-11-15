@@ -58,7 +58,7 @@ class DecimalRange extends Decimal
         }
 
         if ($this->min !== null and $input < $this->min) {
-            $message = ExpressionService::get('errormessage.value.value.must.be.at.least.min', [
+            $message = ExpressionService::get('xua.supers.numerics.decimal_range.error_message.value_must_be_at_least_min', [
                 'value' => $input,
                 'min' => $this->min
             ]);
@@ -66,7 +66,7 @@ class DecimalRange extends Decimal
         }
 
         if ($this->max !== null and $input > $this->max) {
-            $message = ExpressionService::get('errormessage.value.value.must.be.at.most.max', [
+            $message = ExpressionService::get('xua.supers.numerics.decimal_range.error_message.value_must_be_at_most_max', [
                 'value' => $input,
                 'max' => $this->max
             ]);

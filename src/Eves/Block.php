@@ -23,7 +23,7 @@ abstract class Block extends Xua
         $signature = Signature::_(static::class, $halfName);
 
         if ($signature === null) {
-            throw (new MagicCallException())->setError($halfName, ExpressionService::get('unknown.signature.name', ['signatureName' => static::class . '::' . $halfName]));
+            throw (new MagicCallException())->setError($halfName, ExpressionService::get('xua.eves.block.error_message.unknown_signature_name', ['signatureName' => static::class . '::' . $halfName]));
         }
 
         $value = &$this->_x_values[$signature->prefix][$signature->name];
@@ -37,7 +37,7 @@ abstract class Block extends Xua
         $signature = Signature::_(static::class, $halfName);
 
         if ($signature === null) {
-            throw (new MagicCallException())->setError($halfName, ExpressionService::get('unknown.signature.name', ['signatureName' => static::class . '::' . $halfName]));
+            throw (new MagicCallException())->setError($halfName, ExpressionService::get('xua.eves.block.error_message.unknown_signature_name', ['signatureName' => static::class . '::' . $halfName]));
         }
 
         $this->setterProcedure($signature->prefix, $signature->name, $signature, $value);

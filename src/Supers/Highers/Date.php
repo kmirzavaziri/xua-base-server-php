@@ -36,7 +36,7 @@ class Date extends Instance
 
     protected function _predicate($input, array|string|null &$message = null): bool
     {
-        $message = ExpressionService::get('errormessage.invalid.date', ['date' => is_string($input) ? $input : xua_var_dump($input)]);
+        $message = ExpressionService::get('xua.supers.highers.date.error_message.invalid_date', ['date' => is_string($input) ? $input : xua_var_dump($input)]);
         return parent::_predicate($input);
     }
 

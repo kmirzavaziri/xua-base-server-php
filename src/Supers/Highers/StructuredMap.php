@@ -44,12 +44,12 @@ class StructuredMap extends Json
         $unknownKeys = array_diff(array_keys($input), array_keys($this->structure));
         if ($unknownKeys) {
             if (count($unknownKeys) == 1) {
-                $message = ExpressionService::get('errormessage.unknown.key.key', [
-                    'key' => implode('', $unknownKeys)
+                $message = ExpressionService::get('xua.supers.highers.structured_map.error_message.unknown_key', [
+                    'key' => $unknownKeys
                 ]);
             } else {
-                $message = ExpressionService::get('errormessage.unknown.keys.keys', [
-                    'keys' => implode(ExpressionService::get('comma.separator'), $unknownKeys)
+                $message = ExpressionService::get('xua.supers.highers.structured_map.error_message.unknown_keys', [
+                    'keys' => $unknownKeys
                 ]);
             }
             return false;
@@ -64,7 +64,7 @@ class StructuredMap extends Json
                     return false;
                 }
             } else {
-                $message = ExpressionService::get('errormessage.key.key.is.missing', ['key' => $key]);
+                $message = ExpressionService::get('xua.supers.highers.structured_map.error_message.key_is_missing', ['key' => $key]);
                 return false;
             }
         }

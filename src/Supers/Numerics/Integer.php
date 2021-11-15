@@ -36,15 +36,15 @@ class Integer extends Number
         }
 
         if ($input != floor($input)) {
-            $message = ExpressionService::get('errormessage.value.input.is.not.an.integer', [
-                'input' => $input
+            $message = ExpressionService::get('xua.supers.numerics.integer.error_message.value_is_not_an_integer', [
+                'value' => $input
             ]);
             return false;
         }
 
         if ($this->unsigned and $input < 0) {
-            $message = ExpressionService::get('errormessage.input.is.less.than.zero.therefore.is.not.unsigned', [
-                'input' => $input
+            $message = ExpressionService::get('xua.supers.numerics.integer.error_message.value_is_less_than_zero_therefore_is_not_unsigned', [
+                'value' => $input
             ]);
             return false;
         }

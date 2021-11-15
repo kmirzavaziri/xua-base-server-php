@@ -19,9 +19,13 @@ final class ConstantService extends Service
         $nodeNames = array_filter(explode('.', $nodePath));
         $tmp = self::$cache[$treeName];
         foreach ($nodeNames as $nodeName) {
-            $tmp = $tmp[$nodeName] ?? null;
+            if (isset($tmp[$nodeName])) {
+                $tmp = $tmp[$nodeName];
+            } else {
+                $tmp = null;
+                break;
+            }
         }
-
         return $tmp;
     }
 

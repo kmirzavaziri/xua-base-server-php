@@ -96,22 +96,22 @@ class Image extends Generic
         $height = imagesy($image);
 
         if ($this->minWidth !== null and $width < $this->minWidth) {
-            $message = ExpressionService::get('errormessage.image.min.width.violated', ['minWidth' => $this->minWidth, 'width' => $width]);
+            $message = ExpressionService::get('xua.supers.files.image.error_message.image.min.width.violated', ['minWidth' => $this->minWidth, 'width' => $width]);
             return false;
         }
 
         if ($this->maxWidth !== null and $width > $this->maxWidth) {
-            $message = ExpressionService::get('errormessage.image.max.width.violated', ['maxWidth' => $this->maxWidth, 'width' => $width]);
+            $message = ExpressionService::get('xua.supers.files.image.error_message.image.max.width.violated', ['maxWidth' => $this->maxWidth, 'width' => $width]);
             return false;
         }
 
         if ($this->minHeight !== null and $height < $this->minHeight) {
-            $message = ExpressionService::get('errormessage.image.min.height.violated', ['minHeight' => $this->minHeight, 'height' => $height]);
+            $message = ExpressionService::get('xua.supers.files.image.error_message.image.min.height.violated', ['minHeight' => $this->minHeight, 'height' => $height]);
             return false;
         }
 
         if ($this->maxHeight !== null and $height > $this->maxHeight) {
-            $message = ExpressionService::get('errormessage.image.max.height.violated', ['maxHeight' => $this->maxHeight, 'height' => $height]);
+            $message = ExpressionService::get('xua.supers.files.image.error_message.image.max.height.violated', ['maxHeight' => $this->maxHeight, 'height' => $height]);
             return false;
         }
 
@@ -132,7 +132,7 @@ class Image extends Generic
             $gcd = $lesser;
             $numerator = $width / $gcd;
             $denominator = $height / $gcd;
-            $message = ExpressionService::get('errormessage.image.ratio.violated', [
+            $message = ExpressionService::get('xua.supers.files.image.error_message.image.ratio.violated', [
                 'formalRatio' => "$this->ratioWidth:$this->ratioHeight",
                 'actualRatio' => "$numerator:$denominator"
             ]);
