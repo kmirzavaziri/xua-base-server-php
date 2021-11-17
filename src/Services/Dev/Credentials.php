@@ -22,7 +22,7 @@ final class Credentials extends Service
     {
         if (isset($_SERVER['HTTP_XUA_DEV_CREDENTIALS'])){
             $headerStringValue = explode(':', $_SERVER['HTTP_XUA_DEV_CREDENTIALS']);
-            $devs = ConstantService::get('xua', 'services.sec.devs');
+            $devs = ConstantService::get('config', 'services.sec.devs');
             if (count($headerStringValue) == 2
                 and isset($devs[$headerStringValue[0]])
                 and password_verify($headerStringValue[1], $devs[$headerStringValue[0]])
