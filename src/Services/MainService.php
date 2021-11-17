@@ -36,7 +36,11 @@ class MainService extends Service
             RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
             self::after();
         } catch (Throwable $throwable) {
-            self::afterException();
+            try {
+                self::afterException();
+            } catch (Throwable $t) {
+                self::catch($t);
+            }
             self::catch($throwable);
         }
     }
@@ -60,11 +64,20 @@ class MainService extends Service
                 "Trace:\n" .
                 $throwable->getTraceAsString() .
                 "</pre>";
+            exit();
         } else {
-            if ($throwable instanceof RouteException) {
-                NotFoundInterface::execute();
-            } else {
-                TemplateService::render('errors/500.twig', []);
+            try {
+                if ($throwable instanceof RouteException) {
+                    NotFoundInterface::execute();
+                } else {
+                    http_response_code(500);
+                    TemplateService::render('errors/500.twig', []);
+                }
+            } catch (Throwable) {
+                http_response_code(500);
+                echo '<h2>500 Internal Server Error</h2><br />';
+            } finally {
+                exit();
             }
         }
     }
