@@ -31,6 +31,13 @@ final class ExpressionService extends Service
     {
         $filename = ConstantService::get('config', 'services.expression.path') . DIRECTORY_SEPARATOR . self::lang() . '.yml';
         self::$tree = self::parse($filename);
+        $xuaFilename = dirname(__FILE__) . DIRECTORY_SEPARATOR .
+            '..' . DIRECTORY_SEPARATOR .
+            '..' . DIRECTORY_SEPARATOR .
+            'private' . DIRECTORY_SEPARATOR .
+            'dictionaries' . DIRECTORY_SEPARATOR .
+            self::lang() . '.yml';
+        self::$tree['xua'] = self::parse($xuaFilename);
     }
 
     private static function lang()
