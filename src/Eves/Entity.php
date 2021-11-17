@@ -65,11 +65,15 @@ abstract class Entity extends Block
      * @param string $query
      * @param array $bind
      * @return false|PDOStatement
+     * @throws EntityException
      * @throws EntityFieldException
      */
     final public static function execute(string $query, array $bind = []): false|PDOStatement
     {
         [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
+        if (!self::connection()) {
+            throw new EntityException(ExpressionService::get('xua.eves.entity.error_message.db_connection_failed'));
+        }
         try {
             $statement = self::connection()->prepare($query);
             $statement->execute($bind);

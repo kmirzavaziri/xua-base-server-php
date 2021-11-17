@@ -45,7 +45,7 @@ final class ExpressionService extends Service
 
     private static function parse(string $filename) : array
     {
-        return @yaml_parse_file($filename);
+        return @yaml_parse_file($filename) ?: [];
     }
 
     private static function getKey(string $key)

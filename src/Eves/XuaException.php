@@ -13,6 +13,19 @@ abstract class XuaException extends Exception
         return $this->errors ?: ($this->getMessage() ? ['' => $this->getMessage()] : []);
     }
 
+    public function displayErrors() : string
+    {
+        if ($this->errors) {
+            $result = '';
+            foreach ($this->errors as $key => $message) {
+                $result .= "$key: $message";
+            }
+        } else {
+            $result = $this->getMessage() ?: '';
+        }
+        return $result;
+    }
+
     public function setError(string $key, null|string|array $message) : static
     {
         $this->errors[$key] = $message;

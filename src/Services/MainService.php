@@ -60,7 +60,7 @@ class MainService extends Service
         if (Credentials::developer()) {
             echo
                 "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
-                (is_a($throwable, XuaException::class) ? xua_var_dump($throwable->getErrors()) : $throwable->getMessage()) . "\n\n" .
+                (is_a($throwable, XuaException::class) ? $throwable->displayErrors() : $throwable->getMessage()) . "\n\n" .
                 "Trace:\n" .
                 $throwable->getTraceAsString() .
                 "</pre>";
