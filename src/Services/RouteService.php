@@ -27,10 +27,34 @@ final class RouteService extends Service
     /**
      * @throws RouteException
      */
-    public static function getInterface(string $route, string $method) : string
+    public static function execute(string $route, string $method) : void
     {
         self::$method = $method;
-        $route = trim($route, '/');
+        $route = preg_replace('~/+~', '/', trim($route, '/'));
+
+        if ($method == XRMLParser::METHOD_GET) {
+            $isPublicResourcePath = false;
+            foreach (ConstantService::get('config', 'paths.public') as $publicPath) {
+                if (str_starts_with($route, $publicPath)) {
+                    $isPublicResourcePath = true;
+                    break;
+                }
+            }
+            if ($isPublicResourcePath) {
+                if (!is_file($route)) {
+                    throw new RouteException();
+                }
+                header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
+                header('Cache-Control: public');
+                header('Content-Transfer-Encoding: Binary');
+                header('Content-Length:'.filesize($route));
+                header('Content-Disposition: filename="' . basename($route) . '"');
+                header('Content-Type:');
+                readfile($route);
+                return;
+            }
+        }
+
         $route = explode('/', $route);
         $route[] = '';
         $search = self::$routes;
@@ -51,9 +75,9 @@ final class RouteService extends Service
             }
         }
         if (isset($search[XRMLParser::LINE_INTERFACES][$method])) {
-            return $search[XRMLParser::LINE_INTERFACES][$method];
+            $search[XRMLParser::LINE_INTERFACES][$method]::execute();
         } elseif ($lastSARoute and isset($lastSARoute[XRMLParser::LINE_INTERFACES][$method])) {
-            return $lastSARoute[XRMLParser::LINE_INTERFACES][$method];
+            $lastSARoute[XRMLParser::LINE_INTERFACES][$method]::execute();
         }
         else {
             throw (new RouteException())->setError($routePart, 'Not found');
