@@ -34,6 +34,8 @@ final class ConstantService extends Service
         foreach ($tree as $key => $node) {
             if (is_string($node) and str_starts_with($node, '$')) {
                 $tree[$key] = getenv(substr($node, 1, strlen($node) - 1)) ?: $node;
+            } elseif (is_string($node) and str_starts_with($node, '@php')) {
+                $tree[$key] = @eval('return ' . substr($node, 4, strlen($node) - 4) . ';') ?: $node;
             } elseif (is_array($node)) {
                 $tree[$key] = self::envSub($node);
             }
