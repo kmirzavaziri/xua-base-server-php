@@ -32,8 +32,7 @@ class MainService extends Service
 
         try {
             self::before();
-            /** @noinspection PhpUndefinedMethodInspection */
-            RouteService::getInterface($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD'])::execute();
+            RouteService::execute($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
             self::after();
         } catch (Throwable $throwable) {
             try {
