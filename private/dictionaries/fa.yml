@@ -9,7 +9,6 @@ eves:
   entity:
     error_message:
       an_entity_with_expression_already_exists: یک $entity با $expression وجود دارد.
-      db_connection_failed: خطا در اتصال به پایگاه داده.
     column_equal_to_value: $column «$value»
   method_eve:
     error_message:

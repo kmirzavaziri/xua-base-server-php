@@ -52,6 +52,11 @@ abstract class Entity extends Block
      */
     private static ?PDO $connection = null;
 
+    /**
+     * @var PDOException
+     */
+    private static PDOException $connection_exception;
+
     // @TODO remove usages
     /**
      * @return PDO|null
@@ -72,7 +77,7 @@ abstract class Entity extends Block
     {
         [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
         if (!self::connection()) {
-            throw new EntityException(ExpressionService::get('xua.eves.entity.error_message.db_connection_failed'));
+            throw self::$connection_exception;
         }
         try {
             $statement = self::connection()->prepare($query);
@@ -136,8 +141,13 @@ abstract class Entity extends Block
         $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['database'];
 
         if (!self::$connection) {
-            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
-            self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            try {
+                self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
+                self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                self::$connection_exception = $e;
+                throw $e;
+            }
         }
     }
 
