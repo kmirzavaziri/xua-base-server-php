@@ -190,7 +190,8 @@ final class XRMLParser extends Service
 
     private function removeComment(string $line): string
     {
-        return strstr($line, '#', true) ?: $line;
+        $result = strstr($line, '#', true);
+        return ($result !== false) ? $result : $line;
     }
 
     private function parseKey(string $keyText): array
