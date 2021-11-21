@@ -227,7 +227,7 @@ final class XRMLParser extends Service
         }
 
         $result = [];
-        $interfaces = preg_split('/\s+/', ltrim($interfacesText));
+        $interfaces = preg_split('/\s+/', trim($interfacesText));
         foreach ($interfaces as $interface) {
             $pattern = '/((' . $this->methodRegx . ')\(([^)(]*)\))|([^)(]*)/';
             preg_match($pattern, $interface,$matches);
