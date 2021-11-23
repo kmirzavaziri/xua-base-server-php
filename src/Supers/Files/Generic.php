@@ -7,6 +7,7 @@ use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\FileInstance;
 use Xua\Core\Services\FileInstanceSame;
+use Xua\Core\Services\RouteService;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Numerics\Integer;
@@ -97,7 +98,7 @@ class Generic extends Super
     protected function _marshal(mixed $input): mixed
     {
         /** @var FileInstance $input */
-        return $input ? (ConstantService::get('config', 'site.url') . '/' . $input->path) : null;
+        return $input ? (RouteService::getSiteUrl() . '/' . $input->path) : null;
     }
 
     protected function _marshalDatabase(mixed $input): mixed

@@ -34,7 +34,7 @@ final class RouteService extends Service
         $route = self::fixRoute($route);
         if ($route != self::fixRoute($route)) {
             header("HTTP/1.1 301 Moved Permanently");
-            header("Location: " . self::getHttpProtocol() . $_SERVER['HTTP_HOST'] . ($route ? '/' . $route : ''));
+            header("Location: " . self::getSiteUrl() . ($route ? '/' . $route : ''));
             header("Connection: close");
             return;
         }
@@ -103,5 +103,15 @@ final class RouteService extends Service
     private static function fixRoute(string $route): string
     {
         return preg_replace('~/+~', '/', trim($route, '/'));
+    }
+
+    public static function getSiteUrl()
+    {
+        return (isset($_SERVER['HTTP_HOST']) and isset($_SERVER['SERVER_PROTOCOL']))
+            ? ((str_starts_with($_SERVER['SERVER_PROTOCOL'], 'https')
+                ? 'https://'
+                : 'http://'
+            ) . $_SERVER['HTTP_HOST'])
+            : ConstantService::get('config', 'site.url');
     }
 }
