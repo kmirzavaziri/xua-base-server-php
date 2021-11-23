@@ -31,14 +31,13 @@ final class RouteService extends Service
     public static function execute(string $route, string $method) : void
     {
         self::$method = $method;
-        if (str_ends_with($route, '/')) {
-            $route = self::fixRoute($route);
+        $route = self::fixRoute($route);
+        if ($route != self::fixRoute($route)) {
             header("HTTP/1.1 301 Moved Permanently");
             header("Location: " . self::getHttpProtocol() . $_SERVER['HTTP_HOST'] . ($route ? '/' . $route : ''));
             header("Connection: close");
             return;
         }
-        $route = self::fixRoute($route);
         self::$route = $route;
 
         if ($method == XRMLParser::METHOD_GET) {
@@ -64,7 +63,10 @@ final class RouteService extends Service
             }
         }
 
-        $route = [...explode('/', $route), ''];
+        $route = [...explode('/', $route)];
+        if (end($route) != '') {
+            $route[] = '';
+        }
         $search = self::$routes;
         $lastSARoute = null;
         foreach ($route as $i => $routePart) {
