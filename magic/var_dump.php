@@ -46,16 +46,18 @@ function xua_var_dump(mixed $value, int $level = 0, $visited = []) : string
         if (XUA_VAR_DUMP_MAX_DEPTH and $level >= XUA_VAR_DUMP_MAX_DEPTH) {
             $result .= ' *MAX_DEPTH_REACHED* ';
         } else {
-            $result .= PHP_EOL;
-            $items = [];
-            foreach ($value as $k => $v) {
-                $tmp = (is_numeric($k) ? $k : "'$k'") . " => " . xua_var_dump($v, $level + 1, $visited);
-                $tmp = implode(PHP_EOL, array_map(function (string $line) {
-                    return XUA_VAR_DUMP_TAB . $line;
-                }, explode(PHP_EOL, $tmp)));
-                $items[] = $tmp;
+            if ($value) {
+                $result .= PHP_EOL;
+                $items = [];
+                foreach ($value as $k => $v) {
+                    $tmp = (is_numeric($k) ? $k : "'$k'") . " => " . xua_var_dump($v, $level + 1, $visited);
+                    $tmp = implode(PHP_EOL, array_map(function (string $line) {
+                        return XUA_VAR_DUMP_TAB . $line;
+                    }, explode(PHP_EOL, $tmp)));
+                    $items[] = $tmp;
+                }
+                $result .= implode(',' . PHP_EOL, $items) . PHP_EOL;
             }
-            $result .= implode(',' . PHP_EOL, $items) . PHP_EOL;
         }
         $result .= ($isArray ? ']' : '}');
     }
