@@ -32,8 +32,9 @@ final class RouteService extends Service
     {
         self::$method = $method;
         if (str_ends_with($route, '/')) {
+            $route = self::fixRoute($route);
             header("HTTP/1.1 301 Moved Permanently");
-            header("Location: " . self::getHttpProtocol() . $_SERVER['HTTP_HOST'] . '/' . self::fixRoute($route));
+            header("Location: " . self::getHttpProtocol() . $_SERVER['HTTP_HOST'] . ($route ? '/' . $route : ''));
             header("Connection: close");
             return;
         }
@@ -63,19 +64,19 @@ final class RouteService extends Service
             }
         }
 
-        $route = explode('/', $route);
+        $route = [...explode('/', $route), ''];
         $search = self::$routes;
         $lastSARoute = null;
         foreach ($route as $i => $routePart) {
             if (isset($search[$routePart])) {
                 $search = $search[$routePart];
             } elseif (isset($search[XRMLParser::KEY_KEY_VAR])) {
-                $search = $search[XRMLParser::KEY_KEY_VAR][''];
-                if (isset($search[XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
-                    self::$routeArgs[$search[XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
+                $search = $search[XRMLParser::KEY_KEY_VAR];
+                if (isset($search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
+                    self::$routeArgs[$search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
                     $lastSARoute = $search;
                 } else {
-                    self::$routeArgs[$search[XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = $routePart;
+                    self::$routeArgs[$search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = $routePart;
                 }
             } else {
                 throw (new RouteException())->setError($routePart, 'Not found');
