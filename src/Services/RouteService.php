@@ -55,9 +55,9 @@ final class RouteService extends Service
                 header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
                 header('Cache-Control: public');
                 header('Content-Transfer-Encoding: Binary');
-                header('Content-Length:'.filesize($route));
+                header('Content-Length:' . filesize($route));
                 header('Content-Disposition: filename="' . basename($route) . '"');
-                header('Content-Type:');
+                header('Content-Type:' . self::getMimeType($route));
                 readfile($route);
                 return;
             }
@@ -113,5 +113,11 @@ final class RouteService extends Service
                 : 'http://'
             ) . $_SERVER['HTTP_HOST'])
             : ConstantService::get('config', 'site.url');
+    }
+
+    private static function getMimeType(string $route): string
+    {
+        $map = ['txt' => 'text/plain', 'htm' => 'text/html', 'html' => 'text/html', 'php' => 'text/html', 'css' => 'text/css', 'js' => 'application/javascript', 'json' => 'application/json', 'xml' => 'application/xml', 'swf' => 'application/x-shockwave-flash', 'flv' => 'video/x-flv', 'png' => 'image/png', 'jpe' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'gif' => 'image/gif', 'bmp' => 'image/bmp', 'ico' => 'image/vnd.microsoft.icon', 'tiff' => 'image/tiff', 'tif' => 'image/tiff', 'svg' => 'image/svg+xml', 'svgz' => 'image/svg+xml', 'zip' => 'application/zip', 'rar' => 'application/x-rar-compressed', 'exe' => 'application/x-msdownload', 'msi' => 'application/x-msdownload', 'cab' => 'application/vnd.ms-cab-compressed', 'mp3' => 'audio/mpeg', 'qt' => 'video/quicktime', 'mov' => 'video/quicktime', 'pdf' => 'application/pdf', 'psd' => 'image/vnd.adobe.photoshop', 'ai' => 'application/postscript', 'eps' => 'application/postscript', 'ps' => 'application/postscript', 'doc' => 'application/msword', 'rtf' => 'application/rtf', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint', 'docx' => 'application/msword', 'xlsx' => 'application/vnd.ms-excel', 'pptx' => 'application/vnd.ms-powerpoint', 'odt' => 'application/vnd.oasis.opendocument.text', 'ods' => 'application/vnd.oasis.opendocument.spreadsheet'];
+        return $map[strtolower(pathinfo($route, PATHINFO_EXTENSION))] ?? 'application/octet-stream';
     }
 }
