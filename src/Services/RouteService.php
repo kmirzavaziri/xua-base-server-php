@@ -33,11 +33,10 @@ final class RouteService extends Service
         self::$method = $method;
         $route = self::fixRoute($route);
         if ($route != self::fixRoute($route)) {
-            header("HTTP/1.1 301 Moved Permanently");
-            header("Location: " . self::getSiteUrl() . ($route ? '/' . $route : ''));
-            header("Connection: close");
+            self::redirect301(self::getSiteRoot() . ($route ? '/' . $route : ''));
             return;
         }
+        $route = strtok($route, '?');
         self::$route = $route;
 
         if ($method == XRMLParser::METHOD_GET) {
@@ -94,10 +93,12 @@ final class RouteService extends Service
         }
     }
 
-    private static function getHttpProtocol(): string
+    public static function getHttpProtocol(): string
     {
         /** @noinspection HttpUrlsUsage */
-        return str_starts_with($_SERVER['SERVER_PROTOCOL'],'https') ? 'https://' : 'http://';
+        return ($_SERVER['SERVER_PROTOCOL'] and str_starts_with($_SERVER['SERVER_PROTOCOL'], 'https'))
+            ? 'https://'
+            : 'http://';
     }
 
     private static function fixRoute(string $route): string
@@ -105,13 +106,10 @@ final class RouteService extends Service
         return preg_replace('~/+~', '/', trim($route, '/'));
     }
 
-    public static function getSiteUrl()
+    public static function getSiteRoot()
     {
         return (isset($_SERVER['HTTP_HOST']) and isset($_SERVER['SERVER_PROTOCOL']))
-            ? ((str_starts_with($_SERVER['SERVER_PROTOCOL'], 'https')
-                ? 'https://'
-                : 'http://'
-            ) . $_SERVER['HTTP_HOST'])
+            ? self::getHttpProtocol() . $_SERVER['HTTP_HOST']
             : ConstantService::get('config', 'site.url');
     }
 
@@ -119,5 +117,20 @@ final class RouteService extends Service
     {
         $map = ['txt' => 'text/plain', 'htm' => 'text/html', 'html' => 'text/html', 'php' => 'text/html', 'css' => 'text/css', 'js' => 'application/javascript', 'json' => 'application/json', 'xml' => 'application/xml', 'swf' => 'application/x-shockwave-flash', 'flv' => 'video/x-flv', 'png' => 'image/png', 'jpe' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'gif' => 'image/gif', 'bmp' => 'image/bmp', 'ico' => 'image/vnd.microsoft.icon', 'tiff' => 'image/tiff', 'tif' => 'image/tiff', 'svg' => 'image/svg+xml', 'svgz' => 'image/svg+xml', 'zip' => 'application/zip', 'rar' => 'application/x-rar-compressed', 'exe' => 'application/x-msdownload', 'msi' => 'application/x-msdownload', 'cab' => 'application/vnd.ms-cab-compressed', 'mp3' => 'audio/mpeg', 'qt' => 'video/quicktime', 'mov' => 'video/quicktime', 'pdf' => 'application/pdf', 'psd' => 'image/vnd.adobe.photoshop', 'ai' => 'application/postscript', 'eps' => 'application/postscript', 'ps' => 'application/postscript', 'doc' => 'application/msword', 'rtf' => 'application/rtf', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint', 'docx' => 'application/msword', 'xlsx' => 'application/vnd.ms-excel', 'pptx' => 'application/vnd.ms-powerpoint', 'odt' => 'application/vnd.oasis.opendocument.text', 'ods' => 'application/vnd.oasis.opendocument.spreadsheet'];
         return $map[strtolower(pathinfo($route, PATHINFO_EXTENSION))] ?? 'application/octet-stream';
+    }
+
+
+    public static function redirect301(string $location): void
+    {
+        header("HTTP/1.1 301 Moved Permanently");
+        header("Location: $location", true, 301);
+        header("Connection: close");
+    }
+
+    public static function redirect302(string $location): void
+    {
+        header("HTTP/1.1 302 Found");
+        header("Location: $location", true, 302);
+        header("Connection: close");
     }
 }
