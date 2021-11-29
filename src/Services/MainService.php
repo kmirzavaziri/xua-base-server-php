@@ -32,16 +32,16 @@ class MainService extends Service
         }
 
         try {
-            self::before();
+            static::before();
             RouteService::execute($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
-            self::after();
+            static::after();
         } catch (Throwable $throwable) {
             try {
-                self::afterException();
+                static::afterException();
             } catch (Throwable $t) {
-                self::catch($t);
+                static::catch($t);
             }
-            self::catch($throwable);
+            static::catch($throwable);
         }
     }
 
