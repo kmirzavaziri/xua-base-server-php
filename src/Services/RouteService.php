@@ -36,7 +36,7 @@ final class RouteService extends Service
             self::redirect301(self::getSiteRoot() . ($route ? '/' . $route : ''));
             return;
         }
-        $route = strtok($route, '?');
+        $route = explode('?', $route, 2)[0];
         self::$route = $route;
 
         if ($method == XRMLParser::METHOD_GET) {
