@@ -54,7 +54,7 @@ supers:
   special:
     entity_relation:
       error_message:
-        entity_with_id_does_not_exists: $entity با شناسه $id یافت نشد.
+        entity_with_id_does_not_exist: $entity با شناسه $id یافت نشد.
   strings:
     enum:
       error_message:

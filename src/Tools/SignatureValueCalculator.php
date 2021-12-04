@@ -93,7 +93,7 @@ class SignatureValueCalculator
             if ($relation->relation == EntityRelation::REL_R11O) {
                 $return = new ($relation->relatedEntity)($value);
                 if (!$return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exists', [
+                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
                         'id' => $value,
                     ]));
@@ -112,7 +112,7 @@ class SignatureValueCalculator
             } else {
                 $return = new ($relation->relatedEntity)($value);
                 if (!$return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exists', [
+                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $root->declaration->relatedEntity::table()),
                         'id' => $value,
                     ]));
@@ -138,7 +138,7 @@ class SignatureValueCalculator
                 }
                 $return = new ($relation->relatedEntity)($value['id']);
                 if ($value['id'] != $return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exists', [
+                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
                         'id' => $value['id'],
                     ]));

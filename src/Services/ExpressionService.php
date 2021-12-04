@@ -59,7 +59,7 @@ final class ExpressionService extends Service
 
     private static function stringify(mixed $value)
     {
-        if (is_string($value)) {
+        if (is_scalar($value)) {
             return $value;
         } elseif (is_null($value)) {
             return 'NULL';

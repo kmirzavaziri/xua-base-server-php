@@ -168,7 +168,7 @@ class EntityRelation extends Super
                     }
                 }
                 if ($this->required) {
-                    $message = ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exists', [
+                    $message = ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $this->relatedEntity::table()),
                         'id' => $input->givenId() === null,
                     ]);
@@ -183,7 +183,7 @@ class EntityRelation extends Super
             }
             foreach ($input as $item) {
                 if ($item->id === null and $item->givenId() !== 0) {
-                    $message = ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exists', [
+                    $message = ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $this->relatedEntity::table()),
                         'id' => $input->givenId(),
                     ]);

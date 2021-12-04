@@ -1,0 +1,68 @@
+generic:
+  error_message:
+    access_denied: Access denied.
+    required_field_not_provided: Required field not provided.
+eves:
+  block:
+    error_message:
+      unknown_signature_name: Unknown signature name.
+  entity:
+    error_message:
+      an_entity_with_expression_already_exists: An $entity with $expression already exists.
+    column_equal_to_value: $column "$value"
+  method_eve:
+    error_message:
+      unknown_request_item: Unknown request item.
+      cannot_set_constant_request_item: Unknown request item.
+services:
+  expression_service:
+    comma_separator: ", "
+    conjunction_separator: ", and "
+    disjunction_separator: ", or "
+supers:
+  files:
+    generic:
+      error_message:
+        invalid_file: Invalid file.
+        invalid_file_format: Invalid file format.
+        invalid_file_size: File size is $size but must be at most $maxSize.
+    image:
+      error_message:
+        min_width_violated: Image width is $width but must be at least $minWidth.
+        max_width_violated: Image width is $width but must be at most $maxWidth.
+        min_height_violated: Image height is $height but must be at least $minHeight.
+        max_height_violated: Image height is $height but must be at most $maxHeight.
+        ratio_violated: The image has the aspect ratio of $actualRatio but must have the aspect ratio of $formalRatio.
+  highers:
+    date:
+      error_message:
+        invalid_date: Invalid date $date.
+    structured_map:
+      error_message:
+        unknown_key: Unknown key $key.
+        unknown_keys: Unknown keys $keys.
+        key_is_missing: The key $key is missing.
+  numerics:
+    decimal_range:
+      error_message:
+        value_must_be_at_least_min: The value $value must be at least $min.
+        value_must_be_at_most_max: The value $value must be at most $max.
+    integer:
+      error_message:
+        value_is_not_an_integer: Value $value is not an integer.
+        value_is_less_than_zero_therefore_is_not_unsigned: Value $value is less than zero and therefore is not unsigned.
+  special:
+    entity_relation:
+      error_message:
+        entity_with_id_does_not_exist: $entity with id $id does not exist.
+  strings:
+    enum:
+      error_message:
+        please_enter_a_valid_value_from_values: Please enter a valid value from values $values.
+tools:
+  signature_value_calculator:
+    error_message:
+      related_entity_with_id_is_already_in_rel: $entityRight with id $id is already in relationship with another $entityLeft.
+      cannot_change_R11R_by_id: Cannot change a R11R relation by id.
+      toOne_fields_cannot_include_id: ?-to-one fields cannot include id, if you want to change the id, don't add children to the field.
+      toMany_fields_must_include_id: ?-to-many fields must include id.
