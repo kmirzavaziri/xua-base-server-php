@@ -96,7 +96,7 @@ final class RouteService extends Service
     public static function getHttpProtocol(): string
     {
         /** @noinspection HttpUrlsUsage */
-        return ($_SERVER['SERVER_PROTOCOL'] and str_starts_with($_SERVER['SERVER_PROTOCOL'], 'https'))
+        return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
             ? 'https://'
             : 'http://';
     }
@@ -108,7 +108,7 @@ final class RouteService extends Service
 
     public static function getSiteRoot()
     {
-        return (isset($_SERVER['HTTP_HOST']) and isset($_SERVER['SERVER_PROTOCOL']))
+        return isset($_SERVER['HTTP_HOST'])
             ? self::getHttpProtocol() . $_SERVER['HTTP_HOST']
             : ConstantService::get('config', 'site.url');
     }
