@@ -15,13 +15,21 @@ abstract class XuaException extends Exception
 
     public function displayErrors() : string
     {
-        if ($this->errors) {
-            $result = '';
-            foreach ($this->errors as $key => $message) {
-                $result .= "$key: $message";
+        if (!$this->errors) {
+            return $this->getMessage() ?: '';
+        }
+        return self::displayErrorsRecursive($this->errors);
+    }
+
+    public static function displayErrorsRecursive(array $errors): string
+    {
+        $result = '';
+        foreach ($errors as $key => $message) {
+            if (is_array($message)) {
+                $result .= "$key: " . self::displayErrorsRecursive($message);
+            } else {
+                $result .= "$key: " . $message;
             }
-        } else {
-            $result = $this->getMessage() ?: '';
         }
         return $result;
     }
