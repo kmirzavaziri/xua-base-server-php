@@ -45,6 +45,11 @@ abstract class Block extends Xua
         $this->_x_values[$signature->prefix][$signature->name] = $value;
     }
 
+    public function __isset(string $halfName)
+    {
+        return Signature::_(static::class, $halfName) !== null;
+    }
+
     protected static function _init(): void
     {
         static::registerSignatures();
