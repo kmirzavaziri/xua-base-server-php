@@ -8,7 +8,7 @@ eves:
       unknown_signature_name: Unknown signature name.
   entity:
     error_message:
-      an_entity_with_expression_already_exists: An $entity with $expression already exists.
+      an_entity_with_expression_already_exists: $entity with $expression already exists.
     column_equal_to_value: $column "$value"
   method_eve:
     error_message:

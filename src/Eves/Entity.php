@@ -13,6 +13,7 @@ use Xua\Core\Exceptions\NotImplementedException;
 use Xua\Core\Exceptions\SuperMarshalException;
 use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\ExpressionService;
+use Xua\Core\Services\LocaleLanguage;
 use Xua\Core\Supers\Special\DatabaseVirtualField;
 use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Supers\Special\OrderScheme;
@@ -924,7 +925,7 @@ abstract class Entity extends Block
             $duplicateIndex = array_pop($duplicateIndexes);
             $duplicateExpressions = [];
             $iterator = 0;
-            $fieldNames = array_keys($duplicateIndex->declaration->fields);
+            $fieldNames = array_map(function (array $field) { return $field['field']; }, $duplicateIndex->declaration->fields);
             foreach ($fieldNames as $fieldName) {
                 $duplicateExpressions[] = ExpressionService::get('xua.eves.entity.column_equal_to_value', [
                     'column' => ExpressionService::get("column_name.$table.$fieldName"),
@@ -932,10 +933,14 @@ abstract class Entity extends Block
                 ]);
                 $iterator++;
             }
-            throw (new EntityFieldException())->setError($fieldNames[0], ExpressionService::get('xua.eves.entity.error_message.an_entity_with_expression_already_exists', [
+            $message = ExpressionService::get('xua.eves.entity.error_message.an_entity_with_expression_already_exists', [
                 'entity' => ExpressionService::get('table_name.' . $table),
                 'expression' => $duplicateExpressions,
-            ]));
+            ]);
+            if (LocaleLanguage::getLanguage() == LocaleLanguage::LANG_EN) {
+                $message = ucfirst($message);
+            }
+            throw (new EntityFieldException())->setError($fieldNames[0], $message);
         } else {
             throw new PDOException($e->getMessage() . PHP_EOL . $query, 0, $e);
         }

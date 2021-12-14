@@ -212,8 +212,8 @@ abstract class Super extends Block
      */
     final public function marshal($input): mixed
     {
-        if (!$this->explicitlyAccepts($input, $message)) {
-            throw new SuperMarshalException($message);
+        if (!$this->explicitlyAccepts($input, $messages)) {
+            throw (new SuperMarshalException())->fromErrors($messages);
         }
         return $this->_marshal($input);
     }
