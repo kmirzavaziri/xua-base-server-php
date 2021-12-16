@@ -5,6 +5,7 @@ namespace Xua\Core\Services;
 use PDO;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use ReflectionClass;
 use RegexIterator;
 use Xua\Core\Eves\Entity;
 use Xua\Core\Eves\Service;
@@ -28,8 +29,7 @@ final class EntityAlterService extends Service
 
         foreach ($phpFiles as $phpFile) {
             $className = self::getClassName(file_get_contents($phpFile->getRealPath()));
-            // @TODO check className is not abstract
-            if ($className and is_a($className, Entity::class, true)) {
+            if ($className and is_a($className, Entity::class, true) and !(new ReflectionClass($className))->isAbstract()) {
                 $tableNamesAndAlter = $className::alter();
                 $newTables = array_merge($newTables, $tableNamesAndAlter['tableNames']);
                 if ($tableNamesAndAlter['alters']) {

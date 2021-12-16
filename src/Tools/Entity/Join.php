@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Tools\Entity;
 
+use Xua\Core\Eves\Entity;
 use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Exceptions\EntityJoinException;
 use Xua\Core\Tools\Signature\Signature;
@@ -50,12 +51,17 @@ class Join
             $junctionTableName = $this->joiningField->class::junctionTableName($this->joiningField->name);
             $junctionEntityAlias = $this->leftTableNameAlias . '_j_' . $this->joiningField->name;
 
-            /** @noinspection PhpUndefinedMethodInspection */
-            $leftTableName = $this->joiningField->class::table();
+            if ($type->definedHere) {
+                $here = Entity::JUNCTION_LEFT;
+                $there = Entity::JUNCTION_RIGHT;
+            } else {
+                $here = Entity::JUNCTION_RIGHT;
+                $there = Entity::JUNCTION_LEFT;
+            }
 
             return
-                "$this->type JOIN $junctionTableName $junctionEntityAlias ON $this->leftTableNameAlias.id = $junctionEntityAlias.$leftTableName" . PHP_EOL .
-                "$this->type JOIN $rightTableName $rightTableNameAlias ON $junctionEntityAlias.$rightTableName = $rightTableNameAlias.id";
+                "$this->type JOIN $junctionTableName $junctionEntityAlias ON $this->leftTableNameAlias.id = $junctionEntityAlias.$here" . PHP_EOL .
+                "$this->type JOIN $rightTableName $rightTableNameAlias ON $junctionEntityAlias.$there = $rightTableNameAlias.id";
         }
     }
 }

@@ -45,6 +45,8 @@ abstract class Entity extends Block
 {
     const id = 'Xua\\Core\\Eves\\Entity::id';
 
+    const JUNCTION_LEFT = 'left';
+    const JUNCTION_RIGHT = 'right';
     ####################################################################################################################
     # Database Engine Connection #######################################################################################
     ####################################################################################################################
@@ -792,20 +794,18 @@ abstract class Entity extends Block
                     }
                 }
                 [$addingIds, $removingIds] = $this->getAddingRemovingIds($key);
-                $leftColumn = static::table();
-                $rightColumn = $signature->declaration->relatedEntity::table();
                 if ($addingIds) {
                     $queries[] = Query::insertMany(
                         static::junctionTableName($key),
-                        [$leftColumn, $rightColumn],
+                        [self::JUNCTION_LEFT, self::JUNCTION_RIGHT],
                         array_map(function ($addingId) { return [$this->_x_values[self::FIELD_PREFIX]['id'], $addingId]; }, $addingIds)
                     );
                 }
                 if ($removingIds) {
                     $queries[] = Query::delete(
                         static::junctionTableName($key),
-                        Condition::rawLeaf("`$leftColumn` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']])
-                            ->andR("`$rightColumn` IN (?)", [$removingIds])
+                        Condition::rawLeaf('`' . self::JUNCTION_LEFT . '` = ?', [$this->_x_values[self::FIELD_PREFIX]['id']])
+                            ->andR('`' . self::JUNCTION_RIGHT . '` IN (?)', [$removingIds])
                     );
                 }
             }
@@ -1039,7 +1039,14 @@ abstract class Entity extends Block
                     }
                 }
             } elseif ($signature->declaration->isNN) {
-                $statement = self::execute("SELECT `" . $signature->declaration->relatedEntity::table() . "` FROM `" . static::junctionTableName($fieldName) . "` WHERE `" . static::table() . "` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
+                if ($signature->declaration->definedHere) {
+                    $here = self::JUNCTION_LEFT;
+                    $there = self::JUNCTION_RIGHT;
+                } else {
+                    $here = self::JUNCTION_RIGHT;
+                    $there = self::JUNCTION_LEFT;
+                }
+                $statement = self::execute("SELECT `$there` FROM `" . static::junctionTableName($fieldName) . "` WHERE `$here` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
                 $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
                 if ($rawArray) {
                     $array[$fieldName] = [];
@@ -1088,21 +1095,19 @@ abstract class Entity extends Block
                 $signature->declaration->hasJunction and
                 $signature->declaration->definedHere
             ) {
-                $leftColumn = static::table();
-                $rightColumn = $signature->declaration->relatedEntity::table();
                 $tables[] = new TableScheme(static::junctionTableName($key), [
-                    $leftColumn => Column::fromQuery(static::table() . ' ' . $signature->declaration->relatedEntity::signature('id')->declaration->databaseType() . " NOT NULL"),
-                    $rightColumn => Column::fromQuery($signature->declaration->relatedEntity::table() . ' ' . $signature->declaration->relatedEntity::signature('id')->declaration->databaseType() . " NOT NULL"),
+                    self::JUNCTION_LEFT => Column::fromQuery(self::JUNCTION_LEFT . ' ' . str_replace('AUTO_INCREMENT', '', $signature->declaration->relatedEntity::signature('id')->declaration->databaseType()) . " NOT NULL"),
+                    self::JUNCTION_RIGHT => Column::fromQuery(self::JUNCTION_RIGHT . ' ' . str_replace('AUTO_INCREMENT', '', $signature->declaration->relatedEntity::signature('id')->declaration->databaseType()) . " NOT NULL"),
                 ], [
                     Signature::new(null, null, null, null, new OrderScheme([
                         OrderScheme::fields => [
                             [
                                 OrderScheme::direction => OrderScheme::DIRECTION_ASC,
-                                OrderScheme::field => $leftColumn,
+                                OrderScheme::field => self::JUNCTION_LEFT,
                             ],
                             [
                                 OrderScheme::direction => OrderScheme::DIRECTION_ASC,
-                                OrderScheme::field => $rightColumn,
+                                OrderScheme::field => self::JUNCTION_RIGHT,
                             ],
                         ],
                         OrderScheme::unique => true,
