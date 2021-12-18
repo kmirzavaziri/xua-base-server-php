@@ -69,14 +69,15 @@ final class RouteService extends Service
         $search = self::$routes;
         $lastSARoute = null;
         foreach ($route as $i => $routePart) {
+            if (isset($search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
+                self::$routeArgs[$search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
+                $lastSARoute = $search[XRMLParser::KEY_KEY_VAR][''];
+            }
             if (isset($search[$routePart])) {
                 $search = $search[$routePart];
             } elseif (isset($search[XRMLParser::KEY_KEY_VAR])) {
                 $search = $search[XRMLParser::KEY_KEY_VAR];
-                if (isset($search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
-                    self::$routeArgs[$search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
-                    $lastSARoute = $search[''];
-                } else {
+                if (!isset($search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
                     self::$routeArgs[$search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = $routePart;
                 }
             } else {
@@ -85,7 +86,7 @@ final class RouteService extends Service
         }
         if (isset($search[XRMLParser::LINE_INTERFACES][$method])) {
             $search[XRMLParser::LINE_INTERFACES][$method]::execute();
-        } elseif ($lastSARoute and isset($lastSARoute[XRMLParser::LINE_INTERFACES][$method])) {
+        } elseif (isset($lastSARoute[XRMLParser::LINE_INTERFACES][$method])) {
             $lastSARoute[XRMLParser::LINE_INTERFACES][$method]::execute();
         }
         else {
