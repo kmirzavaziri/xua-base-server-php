@@ -71,7 +71,7 @@ class MainService extends Service
                     NotFoundInterface::execute();
                 } else {
                     http_response_code(500);
-                    TemplateService::render('errors/500.twig', []);
+                    TemplateService::render('error/500.twig', []);
                 }
             } catch (Throwable) {
                 http_response_code(500);
