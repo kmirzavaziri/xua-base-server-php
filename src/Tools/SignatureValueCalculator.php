@@ -93,14 +93,14 @@ class SignatureValueCalculator
             if ($relation->relation == EntityRelation::REL_R11O) {
                 $return = new ($relation->relatedEntity)($value);
                 if (!$return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
+                    throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
                         'id' => $value,
                     ]));
                 }
                 if ($return->{$relation->invName}) {
                     /** @noinspection PhpUndefinedMethodInspection */
-                    throw new EntityFieldException(ExpressionService::get('xua.tools.signature_value_calculator.error_message.related_entity_with_id_is_already_in_rel', [
+                    throw new EntityFieldException(ExpressionService::getXua('tools.signature_value_calculator.error_message.related_entity_with_id_is_already_in_rel', [
                         'entityLeft' => ExpressionService::get('table_name.' . $root->class::table()),
                         'entityRight' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
                         'id' => $value,
@@ -108,11 +108,11 @@ class SignatureValueCalculator
                 }
                 return $return;
             } elseif ($relation->relation == EntityRelation::REL_R11R) {
-                throw (new DefinitionException())->setError($root->name, ExpressionService::get('xua.tools.signature_value_calculator.error_message.cannot_change_R11R_by_id'));
+                throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.cannot_change_R11R_by_id'));
             } else {
                 $return = new ($relation->relatedEntity)($value);
                 if (!$return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
+                    throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $root->declaration->relatedEntity::table()),
                         'id' => $value,
                     ]));
@@ -125,7 +125,7 @@ class SignatureValueCalculator
             $hasId = in_array('id', array_map(function (Signature $child) { return $child->name; }, $children));
             if ($relation->toOne) {
                 if ($hasId) {
-                    throw (new DefinitionException())->setError($root->name, ExpressionService::get('xua.tools.signature_value_calculator.error_message.toOne_fields_cannot_include_id'));
+                    throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toOne_fields_cannot_include_id'));
                 }
                 $return = $entity->{$root->name};
                 foreach ($children as $child) {
@@ -134,11 +134,11 @@ class SignatureValueCalculator
                 return $return;
             } else {
                 if (!$hasId) {
-                    throw (new DefinitionException())->setError($root->name, ExpressionService::get('xua.tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
+                    throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
                 }
                 $return = new ($relation->relatedEntity)($value['id']);
                 if ($value['id'] != $return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::get('xua.supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
+                    throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
                         'id' => $value['id'],
                     ]));
@@ -152,7 +152,7 @@ class SignatureValueCalculator
             }
         } elseif (is_null($value)) { // case: NULL
             if ($relation->required) {
-                throw new EntityFieldException(ExpressionService::get('xua.generic.error_message.required_field_not_provided'));
+                throw new EntityFieldException(ExpressionService::getXua('generic.error_message.required_field_not_provided'));
             }
             return null;
         }

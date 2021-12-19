@@ -211,18 +211,18 @@ abstract class MethodEve extends Block
 
         $unknownKeys = array_diff(array_keys($request), array_keys($signatures));
         foreach ($unknownKeys as $unknownKey) {
-            $exception->setError($unknownKey, ExpressionService::get('xua.eves.method_eve.error_message.unknown_request_item'));
+            $exception->setError($unknownKey, ExpressionService::getXua('eves.method_eve.error_message.unknown_request_item'));
         }
         $newRequest = [];
         foreach ($signatures as $key => $signature) {
             if (in_array($key, array_keys($request))) {
                 if ($signature->const) {
-                    $exception->setError($key, ExpressionService::get('xua.eves.method_eve.error_message.cannot_set_constant_request_item'));
+                    $exception->setError($key, ExpressionService::getXua('eves.method_eve.error_message.cannot_set_constant_request_item'));
                     continue;
                 }
             } else {
                 if ($signature->required) {
-                    $exception->setError($key, ExpressionService::get('xua.generic.error_message.required_field_not_provided'));
+                    $exception->setError($key, ExpressionService::getXua('generic.error_message.required_field_not_provided'));
                     continue;
                 } else {
                     $request[$key] = $signature->default;

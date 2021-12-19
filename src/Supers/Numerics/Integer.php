@@ -36,14 +36,14 @@ class Integer extends Number
         }
 
         if ($input != floor($input)) {
-            $message = ExpressionService::get('xua.supers.numerics.integer.error_message.value_is_not_an_integer', [
+            $message = ExpressionService::getXua('supers.numerics.integer.error_message.value_is_not_an_integer', [
                 'value' => $input
             ]);
             return false;
         }
 
         if ($this->unsigned and $input < 0) {
-            $message = ExpressionService::get('xua.supers.numerics.integer.error_message.value_is_less_than_zero_therefore_is_not_unsigned', [
+            $message = ExpressionService::getXua('supers.numerics.integer.error_message.value_is_less_than_zero_therefore_is_not_unsigned', [
                 'value' => $input
             ]);
             return false;

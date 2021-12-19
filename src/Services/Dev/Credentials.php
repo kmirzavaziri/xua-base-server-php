@@ -36,7 +36,7 @@ final class Credentials extends Service
     {
         $developer = self::$developer;
         if (!$developer) {
-            throw ($error ?? new MethodRequestException())->setError('', ExpressionService::get('xua.generic.error_message.access_denied'));
+            throw ($error ?? new MethodRequestException())->setError('', ExpressionService::getXua('generic.error_message.access_denied'));
         }
         return $developer;
     }

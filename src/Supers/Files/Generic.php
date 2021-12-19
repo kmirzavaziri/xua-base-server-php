@@ -57,20 +57,20 @@ class Generic extends Super
         }
 
         if (!is_a($input, FileInstance::class)) {
-            $message = ExpressionService::get('xua.supers.files.generic.error_message.invalid_file');
+            $message = ExpressionService::getXua('supers.files.generic.error_message.invalid_file');
             return false;
         }
 
         if ($this->allowedMimeTypes !== null) {
             if (!in_array($input->mime, $this->allowedMimeTypes)) {
-                $message = ExpressionService::get('xua.supers.files.generic.error_message.invalid_file_format');
+                $message = ExpressionService::getXua('supers.files.generic.error_message.invalid_file_format');
                 return false;
             }
         }
 
         if ($this->maxSize !== null) {
             if ($input->size > $this->maxSize) {
-                $message = ExpressionService::get('xua.supers.files.generic.error_message.invalid_file_size', [
+                $message = ExpressionService::getXua('supers.files.generic.error_message.invalid_file_size', [
                     'size' => FileSize::decorate($input->size),
                     'maxSize' => FileSize::decorate($this->maxSize),
                 ]);

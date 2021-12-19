@@ -23,19 +23,35 @@ final class ExpressionService extends Service
             return array_pop($array);
         } else {
             $last = array_pop($array);
-            return implode(self::get('xua.services.expression_service.comma_separator'), $array) . self::get('xua.services.expression_service.' . $implodeMode . '_separator') . $last;
+            return implode(self::getXua('services.expression_service.comma_separator'), $array) . self::getXua('services.expression_service.' . $implodeMode . '_separator') . $last;
         }
     }
 
-    public static function get(string $key, array $bind = [], ?string $lang = null): string
+    public static function getAbsolute(string $key, array $bind, string $path): string
+    {
+        if (!isset(self::$trees[$path])) {
+            self::$trees[$path] = self::parse($path);
+        }
+        return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, self::getKey(self::$trees[$path], $key));
+    }
+
+    public static function get(string $key, array $bind = [], string $path = '', ?string $lang = null): string
     {
         if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
             $lang = LocaleLanguage::getLanguage();
         }
-        if (!isset(self::$trees[$lang])) {
-            self::$trees[$lang] = self::getLangTree($lang);
+        $d = DIRECTORY_SEPARATOR;
+        $path = ConstantService::get('config', 'services.expression.path') . "$d$path$d$lang.yml";
+        return self::getAbsolute($key, $bind, $path);
+    }
+
+    public static function getXua(string $key, array $bind = [], ?string $lang = null) {
+        if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
+            $lang = LocaleLanguage::getLanguage();
         }
-        return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, self::getKey(self::$trees[$lang], $key));
+        $d = DIRECTORY_SEPARATOR;
+        $path = dirname(__FILE__) . "$d..$d..${d}private${d}dictionaries$d$lang.yml";
+        return self::getAbsolute($key, $bind, $path);
     }
 
     private static function parse(string $filename) : array
@@ -68,19 +84,5 @@ final class ExpressionService extends Service
         } else {
             return '';
         }
-    }
-
-    private static function getLangTree(string $lang): array
-    {
-        $filename = ConstantService::get('config', 'services.expression.path') . DIRECTORY_SEPARATOR . $lang . '.yml';
-        $return = self::parse($filename);
-        $xuaFilename = dirname(__FILE__) . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR .
-            'private' . DIRECTORY_SEPARATOR .
-            'dictionaries' . DIRECTORY_SEPARATOR .
-            $lang . '.yml';
-        $return['xua'] = self::parse($xuaFilename);
-        return $return;
     }
 }
