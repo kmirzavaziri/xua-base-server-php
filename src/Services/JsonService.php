@@ -46,7 +46,7 @@ abstract class JsonService extends Service
                 default => new Universal([])
             };
             if ($itemType) {
-                $input[$key] = is_a($itemType, Json::class) and is_array($value) ? static::unmarshalItems($value, $itemType) : $itemType->unmarshal($value);
+                $input[$key] = (is_a($itemType, Json::class) and is_array($value)) ? static::unmarshalItems($value, $itemType) : $itemType->unmarshal($value);
             }
         }
         return $input;
