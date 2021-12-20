@@ -66,3 +66,7 @@ tools:
       cannot_change_R11R_by_id: فیلد یک‌به‌یک با شناسه قابل تغییر نیست.
       toOne_fields_cannot_include_id: فیلدهای رابطه‌ای ؟به‌یک نمی‌توانند شامل فیلد شناسه باشند، در صورت نیاز به تغییر شناسه، به فیلد فرزند اضافه نکنید.
       toMany_fields_must_include_id: فیلدهای رابطه‌ای ؟به‌چند باید شامل فیلد شناسه باشند.
+methods:
+  buffer:
+    error_message:
+      method_not_found: متد مورد نظر یافت نشد.

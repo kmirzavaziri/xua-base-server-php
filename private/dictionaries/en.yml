@@ -66,3 +66,7 @@ tools:
       cannot_change_R11R_by_id: Cannot change a R11R relation by id.
       toOne_fields_cannot_include_id: ?-to-one fields cannot include id, if you want to change the id, don't add children to the field.
       toMany_fields_must_include_id: ?-to-many fields must include id.
+methods:
+  buffer:
+    error_message:
+      method_not_found: Method not found.
