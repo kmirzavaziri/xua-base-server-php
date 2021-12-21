@@ -9,6 +9,8 @@ use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\SecurityService;
 use Xua\Core\Supers\Highers\Map;
+use Xua\Core\Supers\Highers\StructuredMap;
+use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Tools\Signature\Signature;
 
@@ -53,6 +55,7 @@ class Buffer extends Method
 
     protected function body(): void
     {
+        $structure = [];
         $responses = [];
         foreach ($this->Q_methods as $method => $request) {
             $class = ConstantService::get('config', 'services.urpi.rootNamespace') . "\\" . str_replace('/', "\\", $method);
@@ -66,19 +69,26 @@ class Buffer extends Method
                 'errors' => [],
                 'response' => [],
             ];
+            $structure[$method] = new StructuredMap([
+                StructuredMap::structure => [
+                    'errors'   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+                    'response' => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => false])])
+                ]
+            ]);
             try {
                 $response['response'] = (new $class($request))->toArray();
-                foreach ($response['response'] as $key => $value) {
-                    // @TODO how should we handle this
-                    // $response['response'][$key] = Signature::_($class, $key)->declaration->marshal($value);
-                    $response['response'][$key] = $value;
-                }
+                $structure[$method] = new StructuredMap([
+                    StructuredMap::structure => [
+                        'errors'   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+                        'response' => new StructuredMap([StructuredMap::structure => array_map(function (Signature $signature) { return $signature->declaration; }, $class::responseSignatures())])
+                    ]
+                ]);
             } catch (MethodRequestException $e) {
                 $response['errors'] = $e->getErrors();
             }
             $responses[$method] = $response;
         }
-
+        Signature::_(static::responses)->declaration = new StructuredMap([StructuredMap::structure => $structure]);
         $this->responses = $responses;
     }
 }

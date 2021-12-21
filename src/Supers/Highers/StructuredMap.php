@@ -3,8 +3,8 @@
 namespace Xua\Core\Supers\Highers;
 
 use Xua\Core\Services\ExpressionService;
-use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Eves\Super;
+use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Tools\Signature\Signature;
 
 /**
@@ -21,7 +21,7 @@ class StructuredMap extends Json
     {
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::structure, true, null,
-                new Map([Map::keyType => new Symbol([]), Map::valueType => new Instance([Instance::of => Super::class, Instance::nullable => true])])
+                new Map([Map::keyType => new Text([]), Map::valueType => new Instance([Instance::of => Super::class, Instance::nullable => true])])
             ),
         ]);
     }
