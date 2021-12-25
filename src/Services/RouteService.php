@@ -52,7 +52,9 @@ final class RouteService extends Service
                     throw new RouteException();
                 }
                 header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
-                header('Cache-Control: public');
+                header('Cache-Control: public, max-age=15552000');
+                header_remove('Expires');
+                header_remove('Pragma');
                 header('Content-Transfer-Encoding: Binary');
                 header('Content-Length:' . filesize($route));
                 header('Content-Disposition: filename="' . basename($route) . '"');
