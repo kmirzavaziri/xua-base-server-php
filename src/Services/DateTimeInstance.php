@@ -14,7 +14,7 @@ class DateTimeInstance extends Service
     // Constructor
     public function __construct(float $timestamp = null)
     {
-        $this->timestamp = $timestamp ?? microtime(true);
+        $this->timestamp = $timestamp ?? time();
         $YmdHis = explode('-', date('Y-m-d-H-i-s', $this->timestamp));
         $this->YmdHis = [
             'Y' => $YmdHis[0],
