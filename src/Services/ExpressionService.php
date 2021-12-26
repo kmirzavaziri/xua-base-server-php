@@ -32,7 +32,8 @@ final class ExpressionService extends Service
         if (!isset(self::$trees[$path])) {
             self::$trees[$path] = self::parse($path);
         }
-        return preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, self::getKey(self::$trees[$path], $key));
+        $return = preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, self::getKey(self::$trees[$path], $key));
+        return is_scalar($return) ? $return : '';
     }
 
     public static function get(string $key, array $bind = [], string $path = '', ?string $lang = null): string
@@ -73,7 +74,7 @@ final class ExpressionService extends Service
         return $root;
     }
 
-    private static function stringify(mixed $value)
+    private static function stringify(mixed $value): string
     {
         if (is_scalar($value)) {
             return $value;
