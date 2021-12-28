@@ -36,11 +36,11 @@ final class Signature
     {
         if ($prefixOrHalfName === null) {
             [$class, $prefix, $name] = self::explodeSignatureName($classOrFullName);
-            class_exists($class, true);
+            @class_exists($class, true);
             return @self::$_x_signatures[$class][$prefix][$name];
         }
 
-        class_exists($classOrFullName, true);
+        @class_exists($classOrFullName, true);
 
         if ($name === null) {
             [$prefix, $name] = self::explodeSignatureHalfName($prefixOrHalfName);
@@ -56,7 +56,7 @@ final class Signature
      */
     public static function signatures(string $class, ?string $prefix = null): array|Signature
     {
-        class_exists($class, true);
+        @class_exists($class, true);
 
         if ($prefix === null) {
             return array_merge(...(isset(self::$_x_signatures[$class]) ? array_values(self::$_x_signatures[$class]) : []));
