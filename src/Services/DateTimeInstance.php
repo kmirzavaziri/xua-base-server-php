@@ -3,6 +3,7 @@
 namespace Xua\Core\Services;
 
 use DateTime;
+use DateTimeZone;
 use Xua\Core\Eves\Service;
 
 class DateTimeInstance extends Service
@@ -67,32 +68,38 @@ class DateTimeInstance extends Service
         return static::fromGregorianYmdHis("$Y-$m-$d $H:$i:$s");
     }
 
-    public static function fromLocalYmdHis(string $datetime): ?DateTimeInstance
+    public static function fromYmdHis(string $datetime): ?DateTimeInstance
     {
-        if (LocaleLanguage::getLocale() == LocaleLanguage::LOC_IR) {
-            return self::fromJalaliYmdHis($datetime);
-        } else {
-            return self::fromGregorianYmdHis($datetime);
+        return match (LocaleLanguage::getCalendar()) {
+            LocaleLanguage::CAL_JALALI => self::fromJalaliYmdHis($datetime),
+            LocaleLanguage::CAL_GREGORIAN => self::fromGregorianYmdHis($datetime),
+            default => self::fromGregorianYmdHis($datetime),
+        };
+    }
+
+    public static function fromYmd(string $datetime): ?DateTimeInstance
+    {
+        return self::fromYmdHis($datetime . ' 00:00:00');
+    }
+
+    public function formatGregorian(string $format, $timezone = null): string
+    {
+        if (!$timezone) {
+            $timezone = LocaleLanguage::getTimezone();
         }
+        return DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone))->format($format);
     }
 
-    public static function fromLocalYmd(string $datetime): ?DateTimeInstance
+    public function formatJalali(string $format, $timezone = null): string
     {
-        return self::fromLocalYmdHis($datetime . ' 00:00:00');
-    }
-
-    public function formatGregorian(string $format): string
-    {
-        return date($format, $this->timestamp);
-    }
-
-    public function formatJalali(string $format): string
-    {
+        if (!$timezone) {
+            $timezone = LocaleLanguage::getTimezone();
+        }
         [$Y, $m, $d] = self::gregorianToJalali($this->YmdHis['Y'], $this->YmdHis['m'], $this->YmdHis['d']);
         $H = $this->YmdHis['h'];
         $i = $this->YmdHis['i'];
         $s = $this->YmdHis['s'];
-        [$O, $P, $w, $N] = explode('-', date('O-P-w-N', $this->timestamp));
+        [$O, $P, $w, $N] = explode('-', DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone))->format('O-P-w-N'));
         /** @var integer $w */
         $w = (($w + 1) % 7);
         $z = ($m < 7) ? (($m - 1) * 31) + $d - 1 : (($m - 7) * 30) + $d + 185;
@@ -252,13 +259,13 @@ class DateTimeInstance extends Service
         return $result;
     }
 
-    public function formatLocal(string $format): string
+    public function format(string $format, $timezone = null): string
     {
-        if (LocaleLanguage::getLocale() == LocaleLanguage::LOC_IR) {
-            return $this->formatJalali($format);
-        } else {
-            return $this->formatGregorian($format);
-        }
+        return match (LocaleLanguage::getCalendar()) {
+            LocaleLanguage::CAL_JALALI => $this->formatJalali($format, $timezone),
+            LocaleLanguage::CAL_GREGORIAN => $this->formatGregorian($format, $timezone),
+            default => $this->formatGregorian($format, $timezone),
+        };
     }
 
     // Operations

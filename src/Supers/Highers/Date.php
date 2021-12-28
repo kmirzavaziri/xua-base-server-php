@@ -43,18 +43,18 @@ class Date extends Instance
     protected function _marshal($input): mixed
     {
         /** @var DateTimeInstance $input */
-        return $input ? $input->formatLocal('Y-m-d') : $input;
+        return $input ? $input->format('Y-m-d') : $input;
     }
 
     protected function _unmarshal($input): mixed
     {
-        return $input ? (DateTimeInstance::fromLocalYmd($input) ?? $input) : $input;
+        return $input ? (DateTimeInstance::fromYmd($input) ?? $input) : $input;
     }
 
     protected function _marshalDatabase($input): mixed
     {
         /** @var ?DateTimeInstance $input */
-        return $input ? $input->formatGregorian('Y-m-d', LocaleLanguage::LANG_EN) : $input;
+        return $input ? $input->formatGregorian('Y-m-d', date_default_timezone_get()) : $input;
     }
 
     protected function _unmarshalDatabase($input): mixed

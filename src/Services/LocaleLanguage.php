@@ -8,6 +8,8 @@ final class LocaleLanguage extends Service
 {
     private static string $locale;
     private static string $language;
+    private static string $calendar;
+    private static string $timezone;
 
     private function __construct() {}
 
@@ -15,6 +17,8 @@ final class LocaleLanguage extends Service
     {
         self::$locale = ConstantService::get('config', 'services.ll.locale');
         self::$language = ConstantService::get('config', 'services.ll.language');
+        self::$calendar = ConstantService::get('config', 'services.ll.calendar');
+        self::$timezone = ConstantService::get('config', 'services.ll.timezone') ?? date_default_timezone_get();
     }
 
     /**
@@ -31,6 +35,22 @@ final class LocaleLanguage extends Service
     public static function getLanguage(): string
     {
         return self::$language;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getCalendar(): string
+    {
+        return self::$calendar;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTimezone(): string
+    {
+        return self::$timezone;
     }
 
     /**
@@ -65,21 +85,39 @@ final class LocaleLanguage extends Service
         self::$language = $language;
     }
 
+    /**
+     * @param string $calendar
+     * @return void
+     */
+    public static function setCalendar(string $calendar): void
+    {
+        self::$calendar = $calendar;
+    }
+
+    /**
+     * @param string $calendar
+     * @return void
+     */
+    public static function setTimezone(string $timezone): void
+    {
+        self::$timezone = $timezone;
+    }
+
     public static function localeToLang(?string $locale): ?string
     {
         return match ($locale) {
-            self::LOC_DJ, self::LOC_ER, self::LOC_ET => self::LANG_AA,
+//            self::LOC_DJ, self::LOC_ER, self::LOC_ET => self::LANG_AA,
             self::LOC_SD, self::LOC_AE, self::LOC_BH, self::LOC_DZ, self::LOC_EG, self::LOC_IQ, self::LOC_JO, self::LOC_KW, self::LOC_LB, self::LOC_LY, self::LOC_MA, self::LOC_OM, self::LOC_QA, self::LOC_SA, self::LOC_SY, self::LOC_TN, self::LOC_YE => self::LANG_AR,
             self::LOC_AZ => self::LANG_AZ,
             self::LOC_BY => self::LANG_BE,
             self::LOC_BG => self::LANG_BG,
-            self::LOC_BD => self::LANG_BN,
+//            self::LOC_BD => self::LANG_BN,
             self::LOC_BA => self::LANG_BS,
             self::LOC_CZ => self::LANG_CS,
             self::LOC_DK => self::LANG_DA,
             self::LOC_AT, self::LOC_CH, self::LOC_DE, self::LOC_LU => self::LANG_DE,
             self::LOC_MV => self::LANG_DV,
-            self::LOC_BT => self::LANG_DZ,
+//            self::LOC_BT => self::LANG_DZ,
             self::LOC_GR => self::LANG_EL,
             self::LOC_AG, self::LOC_AI, self::LOC_AQ, self::LOC_AS, self::LOC_BB, self::LOC_BW, self::LOC_NG, self::LOC_ZM, self::LOC_AU, self::LOC_CA, self::LOC_GB, self::LOC_IE, self::LOC_KE, self::LOC_NZ, self::LOC_PH, self::LOC_SG, self::LOC_US, self::LOC_ZA, self::LOC_ZW => self::LANG_EN,
             self::LOC_AD, self::LOC_CU, self::LOC_AR, self::LOC_BO, self::LOC_CL, self::LOC_CO, self::LOC_CR, self::LOC_DO, self::LOC_EC, self::LOC_ES, self::LOC_GT, self::LOC_HN, self::LOC_MX, self::LOC_NI, self::LOC_PA, self::LOC_PE, self::LOC_PR, self::LOC_PY, self::LOC_SV, self::LOC_UY, self::LOC_VE => self::LANG_ES,
@@ -91,7 +129,7 @@ final class LocaleLanguage extends Service
             /* self::LOC_IL => self::LANG_HE, */
             self::LOC_IN => self::LANG_HI,
             self::LOC_HR => self::LANG_HR,
-            self::LOC_HT => self::LANG_HT,
+//            self::LOC_HT => self::LANG_HT,
             self::LOC_HU => self::LANG_HU,
             self::LOC_AM => self::LANG_HY,
             self::LOC_ID => self::LANG_ID,
@@ -100,41 +138,41 @@ final class LocaleLanguage extends Service
             self::LOC_JP => self::LANG_JA,
             self::LOC_GE => self::LANG_KA,
             self::LOC_KZ => self::LANG_KK,
-            self::LOC_GL => self::LANG_KL,
-            self::LOC_KH => self::LANG_KM,
+//            self::LOC_GL => self::LANG_KL,
+//            self::LOC_KH => self::LANG_KM,
             self::LOC_KR, /* self::LOC_KP, */ => self::LANG_KO,
             self::LOC_KG => self::LANG_KY,
-            self::LOC_UG => self::LANG_LG,
-            self::LOC_LA => self::LANG_LO,
+//            self::LOC_UG => self::LANG_LG,
+//            self::LOC_LA => self::LANG_LO,
             self::LOC_LT => self::LANG_LT,
             self::LOC_LV => self::LANG_LV,
-            self::LOC_MG => self::LANG_MG,
+//            self::LOC_MG => self::LANG_MG,
             self::LOC_MK => self::LANG_MK,
             self::LOC_MN => self::LANG_MN,
             self::LOC_MY => self::LANG_MS,
             self::LOC_MT => self::LANG_MT,
-            self::LOC_MM => self::LANG_MY,
-            self::LOC_NP => self::LANG_NE,
+//            self::LOC_MM => self::LANG_MY,
+//            self::LOC_NP => self::LANG_NE,
             self::LOC_AW, self::LOC_NL => self::LANG_NL,
-            self::LOC_NO => self::LANG_NO,
+//            self::LOC_NO => self::LANG_NO,
             self::LOC_PL => self::LANG_PL,
             self::LOC_AF => self::LANG_PS,
             self::LOC_AO, self::LOC_BR, self::LOC_PT => self::LANG_PT,
             self::LOC_RO => self::LANG_RO,
             self::LOC_RU, self::LOC_UA => self::LANG_RU,
-            self::LOC_RW => self::LANG_RW,
+//            self::LOC_RW => self::LANG_RW,
             self::LOC_AX => self::LANG_SE,
             self::LOC_SK => self::LANG_SK,
             self::LOC_SI => self::LANG_SL,
-            self::LOC_SO => self::LANG_SO,
+//            self::LOC_SO => self::LANG_SO,
             self::LOC_AL => self::LANG_SQ,
             self::LOC_ME, self::LOC_RS => self::LANG_SR,
             self::LOC_SE => self::LANG_SV,
             self::LOC_TZ => self::LANG_SW,
             self::LOC_LK => self::LANG_TA,
-            self::LOC_TJ => self::LANG_TG,
+//            self::LOC_TJ => self::LANG_TG,
             self::LOC_TH => self::LANG_TH,
-            self::LOC_TM => self::LANG_TK,
+//            self::LOC_TM => self::LANG_TK,
             self::LOC_CY, self::LOC_TR => self::LANG_TR,
             self::LOC_PK => self::LANG_UR,
             self::LOC_UZ => self::LANG_UZ,
@@ -152,4 +190,7 @@ final class LocaleLanguage extends Service
 
     const NAT_AFGHAN = "afghan"; const NAT_ALBANIAN = "albanian"; const NAT_ALGERIAN = "algerian"; const NAT_AMERICAN = "american"; const NAT_ANDORRAN = "andorran"; const NAT_ANGOLAN = "angolan"; const NAT_ANGUILLAN = "anguillan"; const NAT_ARGENTINE = "argentine"; const NAT_ARMENIAN = "armenian"; const NAT_AUSTRALIAN = "australian"; const NAT_AUSTRIAN = "austrian"; const NAT_AZERBAIJANI = "azerbaijani"; const NAT_BAHAMIAN = "bahamian"; const NAT_BAHRAINI = "bahraini"; const NAT_BANGLADESHI = "bangladeshi"; const NAT_BARBADIAN = "barbadian"; const NAT_BELARUSIAN = "belarusian"; const NAT_BELGIAN = "belgian"; const NAT_BELIZEAN = "belizean"; const NAT_BENINESE = "beninese"; const NAT_BERMUDIAN = "bermudian"; const NAT_BHUTANESE = "bhutanese"; const NAT_BOLIVIAN = "bolivian"; const NAT_BOTSWANAN = "botswanan"; const NAT_BRAZILIAN = "brazilian"; const NAT_BRITISH = "british"; const NAT_BRITISH_VIRGIN_ISLANDER = "british_virgin_islander"; const NAT_BRUNEIAN = "bruneian"; const NAT_BULGARIAN = "bulgarian"; const NAT_BURKINAN = "burkinan"; const NAT_BURMESE = "burmese"; const NAT_BURUNDIAN = "burundian"; const NAT_CAMBODIAN = "cambodian"; const NAT_CAMEROONIAN = "cameroonian"; const NAT_CANADIAN = "canadian"; const NAT_CAPE_VERDEAN = "cape_verdean"; const NAT_CAYMAN_ISLANDER = "cayman_islander"; const NAT_CENTRAL_AFRICAN = "central_african"; const NAT_CHADIAN = "chadian"; const NAT_CHILEAN = "chilean"; const NAT_CHINESE = "chinese"; const NAT_CITIZEN_OF_ANTIGUA_AND_BARBUDA = "citizen_of_antigua_and_barbuda"; const NAT_CITIZEN_OF_BOSNIA_AND_HERZEGOVINA = "citizen_of_bosnia_and_herzegovina"; const NAT_CITIZEN_OF_GUINEABISSAU = "citizen_of_guineabissau"; const NAT_CITIZEN_OF_KIRIBATI = "citizen_of_kiribati"; const NAT_CITIZEN_OF_SEYCHELLES = "citizen_of_seychelles"; const NAT_CITIZEN_OF_THE_DOMINICAN_REPUBLIC = "citizen_of_the_dominican_republic"; const NAT_CITIZEN_OF_VANUATU = "citizen_of_vanuatu"; const NAT_COLOMBIAN = "colombian"; const NAT_COMORAN = "comoran"; const NAT_CONGOLESE_CONGO = "congolese_congo"; const NAT_CONGOLESE_DRC = "congolese_drc"; const NAT_COOK_ISLANDER = "cook_islander"; const NAT_COSTA_RICAN = "costa_rican"; const NAT_CROATIAN = "croatian"; const NAT_CUBAN = "cuban"; const NAT_CYMRAES = "cymraes"; const NAT_CYMRO = "cymro"; const NAT_CYPRIOT = "cypriot"; const NAT_CZECH = "czech"; const NAT_DANISH = "danish"; const NAT_DJIBOUTIAN = "djiboutian"; const NAT_DOMINICAN = "dominican"; const NAT_DUTCH = "dutch"; const NAT_EAST_TIMORESE = "east_timorese"; const NAT_ECUADOREAN = "ecuadorean"; const NAT_EGYPTIAN = "egyptian"; const NAT_EMIRATI = "emirati"; const NAT_ENGLISH = "english"; const NAT_EQUATORIAL_GUINEAN = "equatorial_guinean"; const NAT_ERITREAN = "eritrean"; const NAT_ESTONIAN = "estonian"; const NAT_ETHIOPIAN = "ethiopian"; const NAT_FAROESE = "faroese"; const NAT_FIJIAN = "fijian"; const NAT_FILIPINO = "filipino"; const NAT_FINNISH = "finnish"; const NAT_FRENCH = "french"; const NAT_GABONESE = "gabonese"; const NAT_GAMBIAN = "gambian"; const NAT_GEORGIAN = "georgian"; const NAT_GERMAN = "german"; const NAT_GHANAIAN = "ghanaian"; const NAT_GIBRALTARIAN = "gibraltarian"; const NAT_GREEK = "greek"; const NAT_GREENLANDIC = "greenlandic"; const NAT_GRENADIAN = "grenadian"; const NAT_GUAMANIAN = "guamanian"; const NAT_GUATEMALAN = "guatemalan"; const NAT_GUINEAN = "guinean"; const NAT_GUYANESE = "guyanese"; const NAT_HAITIAN = "haitian"; const NAT_HONDURAN = "honduran"; const NAT_HONG_KONGER = "hong_konger"; const NAT_HUNGARIAN = "hungarian"; const NAT_ICELANDIC = "icelandic"; const NAT_INDIAN = "indian"; const NAT_INDONESIAN = "indonesian"; const NAT_IRANIAN = "iranian"; const NAT_IRAQI = "iraqi"; const NAT_IRISH = "irish"; /* const NAT_ISRAELI = "israeli"; */ const NAT_ITALIAN = "italian"; const NAT_IVORIAN = "ivorian"; const NAT_JAMAICAN = "jamaican"; const NAT_JAPANESE = "japanese"; const NAT_JORDANIAN = "jordanian"; const NAT_KAZAKH = "kazakh"; const NAT_KENYAN = "kenyan"; const NAT_KITTITIAN = "kittitian"; const NAT_KOSOVAN = "kosovan"; const NAT_KUWAITI = "kuwaiti"; const NAT_KYRGYZ = "kyrgyz"; const NAT_LAO = "lao"; const NAT_LATVIAN = "latvian"; const NAT_LEBANESE = "lebanese"; const NAT_LIBERIAN = "liberian"; const NAT_LIBYAN = "libyan"; const NAT_LIECHTENSTEIN_CITIZEN = "liechtenstein_citizen"; const NAT_LITHUANIAN = "lithuanian"; const NAT_LUXEMBOURGER = "luxembourger"; const NAT_MACANESE = "macanese"; const NAT_MACEDONIAN = "macedonian"; const NAT_MALAGASY = "malagasy"; const NAT_MALAWIAN = "malawian"; const NAT_MALAYSIAN = "malaysian"; const NAT_MALDIVIAN = "maldivian"; const NAT_MALIAN = "malian"; const NAT_MALTESE = "maltese"; const NAT_MARSHALLESE = "marshallese"; const NAT_MARTINIQUAIS = "martiniquais"; const NAT_MAURITANIAN = "mauritanian"; const NAT_MAURITIAN = "mauritian"; const NAT_MEXICAN = "mexican"; const NAT_MICRONESIAN = "micronesian"; const NAT_MOLDOVAN = "moldovan"; const NAT_MONEGASQUE = "monegasque"; const NAT_MONGOLIAN = "mongolian"; const NAT_MONTENEGRIN = "montenegrin"; const NAT_MONTSERRATIAN = "montserratian"; const NAT_MOROCCAN = "moroccan"; const NAT_MOSOTHO = "mosotho"; const NAT_MOZAMBICAN = "mozambican"; const NAT_NAMIBIAN = "namibian"; const NAT_NAURUAN = "nauruan"; const NAT_NEPALESE = "nepalese"; const NAT_NEW_ZEALANDER = "new_zealander"; const NAT_NICARAGUAN = "nicaraguan"; const NAT_NIGERIAN = "nigerian"; const NAT_NIGERIEN = "nigerien"; const NAT_NIUEAN = "niuean"; /* const NAT_NORTH_KOREAN = "north_korean"; */ const NAT_NORTHERN_IRISH = "northern_irish"; const NAT_NORWEGIAN = "norwegian"; const NAT_OMANI = "omani"; const NAT_PAKISTANI = "pakistani"; const NAT_PALAUAN = "palauan"; const NAT_PALESTINIAN = "palestinian"; const NAT_PANAMANIAN = "panamanian"; const NAT_PAPUA_NEW_GUINEAN = "papua_new_guinean"; const NAT_PARAGUAYAN = "paraguayan"; const NAT_PERUVIAN = "peruvian"; const NAT_PITCAIRN_ISLANDER = "pitcairn_islander"; const NAT_POLISH = "polish"; const NAT_PORTUGUESE = "portuguese"; const NAT_PRYDEINIG = "prydeinig"; const NAT_PUERTO_RICAN = "puerto_rican"; const NAT_QATARI = "qatari"; const NAT_ROMANIAN = "romanian"; const NAT_RUSSIAN = "russian"; const NAT_RWANDAN = "rwandan"; const NAT_SALVADOREAN = "salvadorean"; const NAT_SAMMARINESE = "sammarinese"; const NAT_SAMOAN = "samoan"; const NAT_SAO_TOMEAN = "sao_tomean"; const NAT_SAUDI_ARABIAN = "saudi_arabian"; const NAT_SCOTTISH = "scottish"; const NAT_SENEGALESE = "senegalese"; const NAT_SERBIAN = "serbian"; const NAT_SIERRA_LEONEAN = "sierra_leonean"; const NAT_SINGAPOREAN = "singaporean"; const NAT_SLOVAK = "slovak"; const NAT_SLOVENIAN = "slovenian"; const NAT_SOLOMON_ISLANDER = "solomon_islander"; const NAT_SOMALI = "somali"; const NAT_SOUTH_AFRICAN = "south_african"; const NAT_SOUTH_KOREAN = "south_korean"; const NAT_SOUTH_SUDANESE = "south_sudanese"; const NAT_SPANISH = "spanish"; const NAT_SRI_LANKAN = "sri_lankan"; const NAT_ST_HELENIAN = "st_helenian"; const NAT_ST_LUCIAN = "st_lucian"; const NAT_STATELESS = "stateless"; const NAT_SUDANESE = "sudanese"; const NAT_SURINAMESE = "surinamese"; const NAT_SWAZI = "swazi"; const NAT_SWEDISH = "swedish"; const NAT_SWISS = "swiss"; const NAT_SYRIAN = "syrian"; const NAT_TAIWANESE = "taiwanese"; const NAT_TAJIK = "tajik"; const NAT_TANZANIAN = "tanzanian"; const NAT_THAI = "thai"; const NAT_TOGOLESE = "togolese"; const NAT_TONGAN = "tongan"; const NAT_TRINIDADIAN = "trinidadian"; const NAT_TRISTANIAN = "tristanian"; const NAT_TUNISIAN = "tunisian"; const NAT_TURKISH = "turkish"; const NAT_TURKMEN = "turkmen"; const NAT_TURKS_AND_CAICOS_ISLANDER = "turks_and_caicos_islander"; const NAT_TUVALUAN = "tuvaluan"; const NAT_UGANDAN = "ugandan"; const NAT_UKRAINIAN = "ukrainian"; const NAT_URUGUAYAN = "uruguayan"; const NAT_UZBEK = "uzbek"; const NAT_VATICAN_CITIZEN = "vatican_citizen"; const NAT_VENEZUELAN = "venezuelan"; const NAT_VIETNAMESE = "vietnamese"; const NAT_VINCENTIAN = "vincentian"; const NAT_WALLISIAN = "wallisian"; const NAT_WELSH = "welsh"; const NAT_YEMENI = "yemeni"; const NAT_ZAMBIAN = "zambian"; const NAT_ZIMBABWEAN = "zimbabwean";
     const NAT_ = [self::NAT_AFGHAN, self::NAT_ALBANIAN, self::NAT_ALGERIAN, self::NAT_AMERICAN, self::NAT_ANDORRAN, self::NAT_ANGOLAN, self::NAT_ANGUILLAN, self::NAT_ARGENTINE, self::NAT_ARMENIAN, self::NAT_AUSTRALIAN, self::NAT_AUSTRIAN, self::NAT_AZERBAIJANI, self::NAT_BAHAMIAN, self::NAT_BAHRAINI, self::NAT_BANGLADESHI, self::NAT_BARBADIAN, self::NAT_BELARUSIAN, self::NAT_BELGIAN, self::NAT_BELIZEAN, self::NAT_BENINESE, self::NAT_BERMUDIAN, self::NAT_BHUTANESE, self::NAT_BOLIVIAN, self::NAT_BOTSWANAN, self::NAT_BRAZILIAN, self::NAT_BRITISH, self::NAT_BRITISH_VIRGIN_ISLANDER, self::NAT_BRUNEIAN, self::NAT_BULGARIAN, self::NAT_BURKINAN, self::NAT_BURMESE, self::NAT_BURUNDIAN, self::NAT_CAMBODIAN, self::NAT_CAMEROONIAN, self::NAT_CANADIAN, self::NAT_CAPE_VERDEAN, self::NAT_CAYMAN_ISLANDER, self::NAT_CENTRAL_AFRICAN, self::NAT_CHADIAN, self::NAT_CHILEAN, self::NAT_CHINESE, self::NAT_CITIZEN_OF_ANTIGUA_AND_BARBUDA, self::NAT_CITIZEN_OF_BOSNIA_AND_HERZEGOVINA, self::NAT_CITIZEN_OF_GUINEABISSAU, self::NAT_CITIZEN_OF_KIRIBATI, self::NAT_CITIZEN_OF_SEYCHELLES, self::NAT_CITIZEN_OF_THE_DOMINICAN_REPUBLIC, self::NAT_CITIZEN_OF_VANUATU, self::NAT_COLOMBIAN, self::NAT_COMORAN, self::NAT_CONGOLESE_CONGO, self::NAT_CONGOLESE_DRC, self::NAT_COOK_ISLANDER, self::NAT_COSTA_RICAN, self::NAT_CROATIAN, self::NAT_CUBAN, self::NAT_CYMRAES, self::NAT_CYMRO, self::NAT_CYPRIOT, self::NAT_CZECH, self::NAT_DANISH, self::NAT_DJIBOUTIAN, self::NAT_DOMINICAN, self::NAT_DUTCH, self::NAT_EAST_TIMORESE, self::NAT_ECUADOREAN, self::NAT_EGYPTIAN, self::NAT_EMIRATI, self::NAT_ENGLISH, self::NAT_EQUATORIAL_GUINEAN, self::NAT_ERITREAN, self::NAT_ESTONIAN, self::NAT_ETHIOPIAN, self::NAT_FAROESE, self::NAT_FIJIAN, self::NAT_FILIPINO, self::NAT_FINNISH, self::NAT_FRENCH, self::NAT_GABONESE, self::NAT_GAMBIAN, self::NAT_GEORGIAN, self::NAT_GERMAN, self::NAT_GHANAIAN, self::NAT_GIBRALTARIAN, self::NAT_GREEK, self::NAT_GREENLANDIC, self::NAT_GRENADIAN, self::NAT_GUAMANIAN, self::NAT_GUATEMALAN, self::NAT_GUINEAN, self::NAT_GUYANESE, self::NAT_HAITIAN, self::NAT_HONDURAN, self::NAT_HONG_KONGER, self::NAT_HUNGARIAN, self::NAT_ICELANDIC, self::NAT_INDIAN, self::NAT_INDONESIAN, self::NAT_IRANIAN, self::NAT_IRAQI, self::NAT_IRISH, /* self::NAT_ISRAELI ,*/ self::NAT_ITALIAN, self::NAT_IVORIAN, self::NAT_JAMAICAN, self::NAT_JAPANESE, self::NAT_JORDANIAN, self::NAT_KAZAKH, self::NAT_KENYAN, self::NAT_KITTITIAN, self::NAT_KOSOVAN, self::NAT_KUWAITI, self::NAT_KYRGYZ, self::NAT_LAO, self::NAT_LATVIAN, self::NAT_LEBANESE, self::NAT_LIBERIAN, self::NAT_LIBYAN, self::NAT_LIECHTENSTEIN_CITIZEN, self::NAT_LITHUANIAN, self::NAT_LUXEMBOURGER, self::NAT_MACANESE, self::NAT_MACEDONIAN, self::NAT_MALAGASY, self::NAT_MALAWIAN, self::NAT_MALAYSIAN, self::NAT_MALDIVIAN, self::NAT_MALIAN, self::NAT_MALTESE, self::NAT_MARSHALLESE, self::NAT_MARTINIQUAIS, self::NAT_MAURITANIAN, self::NAT_MAURITIAN, self::NAT_MEXICAN, self::NAT_MICRONESIAN, self::NAT_MOLDOVAN, self::NAT_MONEGASQUE, self::NAT_MONGOLIAN, self::NAT_MONTENEGRIN, self::NAT_MONTSERRATIAN, self::NAT_MOROCCAN, self::NAT_MOSOTHO, self::NAT_MOZAMBICAN, self::NAT_NAMIBIAN, self::NAT_NAURUAN, self::NAT_NEPALESE, self::NAT_NEW_ZEALANDER, self::NAT_NICARAGUAN, self::NAT_NIGERIAN, self::NAT_NIGERIEN, self::NAT_NIUEAN, /* self::NAT_NORTH_KOREAN, */ self::NAT_NORTHERN_IRISH, self::NAT_NORWEGIAN, self::NAT_OMANI, self::NAT_PAKISTANI, self::NAT_PALAUAN, self::NAT_PALESTINIAN, self::NAT_PANAMANIAN, self::NAT_PAPUA_NEW_GUINEAN, self::NAT_PARAGUAYAN, self::NAT_PERUVIAN, self::NAT_PITCAIRN_ISLANDER, self::NAT_POLISH, self::NAT_PORTUGUESE, self::NAT_PRYDEINIG, self::NAT_PUERTO_RICAN, self::NAT_QATARI, self::NAT_ROMANIAN, self::NAT_RUSSIAN, self::NAT_RWANDAN, self::NAT_SALVADOREAN, self::NAT_SAMMARINESE, self::NAT_SAMOAN, self::NAT_SAO_TOMEAN, self::NAT_SAUDI_ARABIAN, self::NAT_SCOTTISH, self::NAT_SENEGALESE, self::NAT_SERBIAN, self::NAT_SIERRA_LEONEAN, self::NAT_SINGAPOREAN, self::NAT_SLOVAK, self::NAT_SLOVENIAN, self::NAT_SOLOMON_ISLANDER, self::NAT_SOMALI, self::NAT_SOUTH_AFRICAN, self::NAT_SOUTH_KOREAN, self::NAT_SOUTH_SUDANESE, self::NAT_SPANISH, self::NAT_SRI_LANKAN, self::NAT_ST_HELENIAN, self::NAT_ST_LUCIAN, self::NAT_STATELESS, self::NAT_SUDANESE, self::NAT_SURINAMESE, self::NAT_SWAZI, self::NAT_SWEDISH, self::NAT_SWISS, self::NAT_SYRIAN, self::NAT_TAIWANESE, self::NAT_TAJIK, self::NAT_TANZANIAN, self::NAT_THAI, self::NAT_TOGOLESE, self::NAT_TONGAN, self::NAT_TRINIDADIAN, self::NAT_TRISTANIAN, self::NAT_TUNISIAN, self::NAT_TURKISH, self::NAT_TURKMEN, self::NAT_TURKS_AND_CAICOS_ISLANDER, self::NAT_TUVALUAN, self::NAT_UGANDAN, self::NAT_UKRAINIAN, self::NAT_URUGUAYAN, self::NAT_UZBEK, self::NAT_VATICAN_CITIZEN, self::NAT_VENEZUELAN, self::NAT_VIETNAMESE, self::NAT_VINCENTIAN, self::NAT_WALLISIAN, self::NAT_WELSH, self::NAT_YEMENI, self::NAT_ZAMBIAN, self::NAT_ZIMBABWEAN];
+
+    const CAL_GREGORIAN = 'gregorian'; const CAL_JALALI = 'jalali';
+    const CAL_ = [self::CAL_GREGORIAN, self::CAL_JALALI];
 }

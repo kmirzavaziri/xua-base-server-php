@@ -7,7 +7,7 @@ use Xua\Core\Eves\Service;
 abstract class PersianExpressionService extends Service
 {
     const NUMERIC_MAP = [
-        'fa' => [
+        LocaleLanguage::LANG_FA => [
             '0' => '۰',
             '1' => '۱',
             '2' => '۲',
@@ -23,7 +23,7 @@ abstract class PersianExpressionService extends Service
             '٥' => '۵',
             '٦' => '۶',
         ],
-        'en' => [
+        LocaleLanguage::LANG_EN => [
             '۰' => '0',
             '۱' => '1',
             '۲' => '2',
