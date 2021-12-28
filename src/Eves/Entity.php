@@ -902,7 +902,7 @@ abstract class Entity extends Block
     final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager): int
     {
         // @TODO remove relatives or raise error, just like delete
-        return self::execute("DELETE FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
+        return self::execute("DELETE `" . static::table() . "` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
     }
 
     /**
