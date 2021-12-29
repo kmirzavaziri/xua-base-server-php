@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Services;
 
+use Xua\Core\Exceptions\DieException;
 use Xua\Core\Exceptions\XRMLException;
 use Xua\Core\Exceptions\RouteException;
 use Xua\Core\Eves\Service;
@@ -26,7 +27,7 @@ final class RouteService extends Service
     }
 
     /**
-     * @throws RouteException
+     * @throws RouteException|DieException
      */
     public static function execute(string $route, string $method) : void
     {
@@ -34,37 +35,11 @@ final class RouteService extends Service
         $route = self::fixRoute($route);
         if ($route != self::fixRoute($route)) {
             self::redirect301(self::getSiteRoot() . ($route ? '/' . $route : ''));
-            return;
         }
         $route = explode('?', $route, 2)[0];
         self::$route = $route;
 
-        if ($method == XRMLParser::METHOD_GET) {
-            $isPublicResourcePath = false;
-            foreach (ConstantService::get('config', 'paths.public') as $publicPath) {
-                if (str_starts_with($route, $publicPath)) {
-                    $isPublicResourcePath = true;
-                    break;
-                }
-            }
-            if ($isPublicResourcePath) {
-                if (!is_file($route)) {
-                    throw new RouteException();
-                }
-                header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
-                header('Cache-Control: public, max-age=15552000');
-                header_remove('Expires');
-                header_remove('Pragma');
-                header('Content-Transfer-Encoding: Binary');
-                header('Content-Length:' . filesize($route));
-                header('Content-Disposition: filename="' . basename($route) . '"');
-                header('Content-Type:' . self::getMimeType($route));
-                readfile($route);
-                return;
-            }
-        }
-
-        $route = [...explode('/', $route)];
+        $route = explode('/', $route);
         if (end($route) != '') {
             $route[] = '';
         }
@@ -116,18 +91,12 @@ final class RouteService extends Service
             : ConstantService::get('config', 'site.url');
     }
 
-    private static function getMimeType(string $route): string
-    {
-        $map = ['txt' => 'text/plain', 'htm' => 'text/html', 'html' => 'text/html', 'php' => 'text/html', 'css' => 'text/css', 'js' => 'application/javascript', 'json' => 'application/json', 'xml' => 'application/xml', 'swf' => 'application/x-shockwave-flash', 'flv' => 'video/x-flv', 'png' => 'image/png', 'jpe' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'gif' => 'image/gif', 'bmp' => 'image/bmp', 'ico' => 'image/vnd.microsoft.icon', 'tiff' => 'image/tiff', 'tif' => 'image/tiff', 'svg' => 'image/svg+xml', 'svgz' => 'image/svg+xml', 'zip' => 'application/zip', 'rar' => 'application/x-rar-compressed', 'exe' => 'application/x-msdownload', 'msi' => 'application/x-msdownload', 'cab' => 'application/vnd.ms-cab-compressed', 'mp3' => 'audio/mpeg', 'qt' => 'video/quicktime', 'mov' => 'video/quicktime', 'pdf' => 'application/pdf', 'psd' => 'image/vnd.adobe.photoshop', 'ai' => 'application/postscript', 'eps' => 'application/postscript', 'ps' => 'application/postscript', 'doc' => 'application/msword', 'rtf' => 'application/rtf', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint', 'docx' => 'application/msword', 'xlsx' => 'application/vnd.ms-excel', 'pptx' => 'application/vnd.ms-powerpoint', 'odt' => 'application/vnd.oasis.opendocument.text', 'ods' => 'application/vnd.oasis.opendocument.spreadsheet'];
-        return $map[strtolower(pathinfo($route, PATHINFO_EXTENSION))] ?? 'application/octet-stream';
-    }
-
-
     public static function redirect301(string $location): void
     {
         header("HTTP/1.1 301 Moved Permanently");
         header("Location: $location", true, 301);
         header("Connection: close");
+        throw new DieException();
     }
 
     public static function redirect302(string $location): void
@@ -135,5 +104,6 @@ final class RouteService extends Service
         header("HTTP/1.1 302 Found");
         header("Location: $location", true, 302);
         header("Connection: close");
+        throw new DieException();
     }
 }

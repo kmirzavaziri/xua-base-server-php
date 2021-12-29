@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Services;
 
+use Xua\Core\Exceptions\DieException;
 use Xua\Core\Interfaces\NotFoundInterface;
 use Xua\Core\Services\Dev\Credentials;
 use Throwable;
@@ -16,7 +17,6 @@ class MainService extends Service
     {
         session_start();
         header_remove('X-Powered-By');
-        Entity::startTransaction();
     }
 
     public static function main()
@@ -34,6 +34,8 @@ class MainService extends Service
         try {
             static::before();
             RouteService::execute($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+            static::after();
+        } catch (DieException) {
             static::after();
         } catch (Throwable $throwable) {
             try {
