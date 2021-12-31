@@ -12,9 +12,10 @@ final class RouteService extends Service
     const FLAG_SLASHES_ALLOWED = 'SA';
 
     private static array $routes = [];
-    public static array $routeArgs = [];
+    public static array $args = [];
     public static ?string $method = null;
     public static ?string $route = null;
+    public static ?array $params;
 
     private function __construct() {}
 
@@ -47,7 +48,7 @@ final class RouteService extends Service
         $lastSARoute = null;
         foreach ($route as $i => $routePart) {
             if (isset($search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
-                self::$routeArgs[$search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
+                self::$args[$search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
                 $lastSARoute = $search[XRMLParser::KEY_KEY_VAR][''];
             }
             if (isset($search[$routePart])) {
@@ -55,16 +56,18 @@ final class RouteService extends Service
             } elseif (isset($search[XRMLParser::KEY_KEY_VAR])) {
                 $search = $search[XRMLParser::KEY_KEY_VAR];
                 if (!isset($search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
-                    self::$routeArgs[$search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = $routePart;
+                    self::$args[$search[''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = $routePart;
                 }
             } else {
                 break;
             }
         }
         if (isset($search[XRMLParser::LINE_INTERFACES][$method])) {
-            $search[XRMLParser::LINE_INTERFACES][$method]::execute();
+            self::$params = $search[XRMLParser::LINE_INTERFACES][$method][XRMLParser::KEY_INTERFACES_PARAMS];
+            $search[XRMLParser::LINE_INTERFACES][$method][XRMLParser::KEY_INTERFACES_INTERFACE]::execute();
         } elseif (isset($lastSARoute[XRMLParser::LINE_INTERFACES][$method])) {
-            $lastSARoute[XRMLParser::LINE_INTERFACES][$method]::execute();
+            self::$params = $lastSARoute[XRMLParser::LINE_INTERFACES][$method][XRMLParser::KEY_INTERFACES_PARAMS];
+            $lastSARoute[XRMLParser::LINE_INTERFACES][$method][XRMLParser::KEY_INTERFACES_INTERFACE]::execute();
         }
         else {
             throw (new RouteException())->setError($routePart, 'Not found');

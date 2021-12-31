@@ -46,6 +46,9 @@ final class XRMLParser extends Service
     const KEY_TYPE_LITERAL = 'literal';
     const KEY_KEY_VAR = ' ';
 
+    const KEY_INTERFACES_INTERFACE = 'interface';
+    const KEY_INTERFACES_PARAMS = 'params';
+
     private string $methodRegx = '';
 
     private string $xrml;
@@ -230,14 +233,20 @@ final class XRMLParser extends Service
         $result = [];
         $interfaces = preg_split('/\s+/', trim($interfacesText));
         foreach ($interfaces as $interface) {
-            $pattern = '/((' . $this->methodRegx . ')\(([^)(]*)\))|([^)(]*)/';
-            preg_match($pattern, $interface,$matches);
-            $count = count($matches);
-            if ($matches[$count - 2]) {
-                $result[$matches[$count - 2]] = $matches[$count - 1];
-            } else {
+            $interfacePattern = "(?<interface>[^(<>)]*)(<(?<params>[^(<>)]*)>)?";
+            $allMethodsPattern = "/$interfacePattern/";
+            $oneMethodPattern = "/(?<method>$this->methodRegx)\($interfacePattern\)/";
+            if (preg_match($oneMethodPattern, $interface, $matches)) {
+                $result[$matches['method']] = [
+                    self::KEY_INTERFACES_INTERFACE => $matches['interface'],
+                    self::KEY_INTERFACES_PARAMS => @json_decode($matches['params'], true) ?? [],
+                ];
+            } elseif (preg_match($allMethodsPattern, $interface, $matches)) {
                 foreach (self::METHOD_ as $method) {
-                    $result[$method] =  $matches[$count - 1];
+                    $result[$method] = [
+                        self::KEY_INTERFACES_INTERFACE => $matches['interface'],
+                        self::KEY_INTERFACES_PARAMS => @json_decode($matches['params'], true) ?? [],
+                    ];
                 }
             }
         }
