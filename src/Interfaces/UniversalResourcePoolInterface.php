@@ -9,11 +9,13 @@ class UniversalResourcePoolInterface extends InterfaceEve
 {
     final public static function execute(): void
     {
-        static::service()::setOriginHeaders();
-        static::service()::main();
+        /** @var URPIService $service */
+        $service = static::service();
+        $service::setOriginHeaders();
+        $service::main();
     }
 
-    protected static function service(): URPIService
+    protected static function service(): string
     {
         return URPIService::class;
     }
