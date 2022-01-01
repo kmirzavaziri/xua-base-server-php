@@ -59,28 +59,34 @@ class MainService extends Service
 
     public static function catch(Throwable $throwable)
     {
-        if (Credentials::developer()) {
-            echo
-                "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
-                (is_a($throwable, XuaException::class) ? $throwable->displayErrors() : $throwable->getMessage()) . "\n\n" .
-                "Trace:\n" .
-                $throwable->getTraceAsString() .
-                "</pre>";
-            exit();
-        } else {
-            try {
-                if ($throwable instanceof RouteException) {
-                    NotFoundInterface::execute();
-                } else {
-                    http_response_code(500);
-                    TemplateService::render('error/500.twig', []);
-                }
-            } catch (Throwable) {
-                http_response_code(500);
-                echo '<h2>500 Internal Server Error</h2><br />';
-            } finally {
-                exit();
+        try {
+            if ($throwable instanceof RouteException) {
+                self::notFound();
+            } elseif (Credentials::developer()) {
+                echo
+                    "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
+                    (is_a($throwable, XuaException::class) ? $throwable->displayErrors() : $throwable->getMessage()) . "\n\n" .
+                    "Trace:\n" .
+                    $throwable->getTraceAsString() .
+                    "</pre>";
+            } else {
+                self::serverError();
             }
+        } catch (Throwable) {
+            http_response_code(500);
+            echo '<h2>500 Internal Server Error</h2><br />';
+        } finally {
+            exit();
         }
+    }
+
+    protected static function serverError(): void
+    {
+        NotFoundInterface::execute();
+    }
+
+    protected static function notFound(): void
+    {
+        NotFoundInterface::execute();
     }
 }
