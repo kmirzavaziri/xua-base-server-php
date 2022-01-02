@@ -1,5 +1,11 @@
 {
     "name": "xua/core",
+    "authors": [
+        {
+            "name": "kamyar",
+            "email": "kmirzavaziri@gmail.com"
+        }
+    ],
     "autoload": {
         "files": ["magic/var_dump.php"],
         "psr-4": {
