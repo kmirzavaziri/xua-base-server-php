@@ -61,7 +61,7 @@ class MainService extends Service
     {
         try {
             if ($throwable instanceof RouteException) {
-                self::notFound();
+                static::notFound();
             } elseif (Credentials::developer()) {
                 echo
                     "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
