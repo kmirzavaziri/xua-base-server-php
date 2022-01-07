@@ -31,7 +31,7 @@ class Nullable extends Super
 
     protected function _marshal(mixed $input): mixed
     {
-        return $input === null ? null : $this->type->_marshal($input);
+        return $input === null ? 'null' : $this->type->_marshal($input);
     }
 
     protected function _unmarshal(mixed $input): mixed
@@ -41,7 +41,7 @@ class Nullable extends Super
 
     protected function _marshalDatabase(mixed $input): mixed
     {
-        return $input === null ? null : $this->type->_marshalDatabase($input);
+        return $input === null ? 'null' : $this->type->_marshalDatabase($input);
     }
 
     protected function _unmarshalDatabase(mixed $input): mixed
