@@ -147,6 +147,7 @@ abstract class Entity extends Block
             try {
                 self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
                 self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                self::startTransaction();
             } catch (PDOException $e) {
                 self::$connection_exception = $e;
                 throw $e;
@@ -755,7 +756,7 @@ abstract class Entity extends Block
             if (!is_a($signature->declaration, EntityRelation::class) or !$this->_x_must_store[$key]) {
                 continue;
             } elseif ($signature->declaration->is11 and $signature->declaration->definedThere) {
-                $value->_x_values[$signature->declaration->invName] = $this;
+                $value->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                 try {
                     $queries = array_merge($queries, $value->storeQueries());
                 } catch (EntityFieldException $e) {
@@ -763,7 +764,7 @@ abstract class Entity extends Block
                 }
             } elseif ($signature->declaration->is1N) {
                 foreach ($this->_x_values[self::FIELD_PREFIX][$key] as $relatedEntityKey => $relatedEntity) {
-                    $relatedEntity->_x_values[$signature->declaration->invName] = $this;
+                    $relatedEntity->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                     try {
                         $queries = array_merge($queries, $relatedEntity->storeQueries());
                     } catch (EntityFieldException $e) {
@@ -961,7 +962,7 @@ abstract class Entity extends Block
                     $result = new $signature->declaration->relatedEntity($value);
                     if ($result->id) {
                         if ($signature->declaration->fromOne) {
-                            $result->_x_values[$signature->declaration->invName] = $this;
+                            $result->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                             $result->_x_must_fetch[$signature->declaration->invName] = false;
                             $result->_x_must_store[$signature->declaration->invName] = false;
                         }
@@ -973,7 +974,7 @@ abstract class Entity extends Block
                             $tmp = new $signature->declaration->relatedEntity($id);
                             if ($tmp->id) {
                                 if ($signature->declaration->fromOne) {
-                                    $tmp->_x_values[$signature->declaration->invName] = $this;
+                                    $tmp->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                                     $tmp->_x_must_fetch[$signature->declaration->invName] = false;
                                     $tmp->_x_must_store[$signature->declaration->invName] = false;
                                 }
@@ -1238,7 +1239,7 @@ abstract class Entity extends Block
         else {
             $found = false;
             foreach ($entity->_x_values[self::FIELD_PREFIX][$key] as $index => $item) {
-                if ($item->_x_values['id'] == $this->_x_values[self::FIELD_PREFIX]['id']) {
+                if ($item->_x_values[self::FIELD_PREFIX]['id'] == $this->_x_values[self::FIELD_PREFIX]['id']) {
                     $entity->_x_values[self::FIELD_PREFIX][$key][$index] = $this;
                     $found = true;
                     break;
