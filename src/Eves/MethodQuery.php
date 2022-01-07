@@ -2,10 +2,6 @@
 
 namespace Xua\Core\Eves;
 
-use Xua\Core\Supers\Highers\Map;
-use Xua\Core\Supers\Highers\Sequence;
-use Xua\Core\Supers\Highers\StructuredMap;
-use Xua\Core\Supers\Special\EntityFieldScheme;
 use Xua\Core\Tools\Entity\Condition;
 use Xua\Core\Tools\Entity\EntityArray;
 use Xua\Core\Tools\Entity\Order;
@@ -31,20 +27,11 @@ abstract class MethodQuery extends FieldedMethod
 
     protected static function _responseSignatures(): array
     {
-        $structure = [];
-        foreach (static::fieldSignatures() as $field) {
-            /** @var EntityFieldScheme $scheme */
-            $scheme = $field->declaration;
-            $structure[$scheme->name] = $scheme->type;
-        }
-        $association = static::association();
-        $itemSignature = new StructuredMap([StructuredMap::structure => $structure]);
-        $wrapperType = $association
-            ? new Map([Map::keyType => $association->declaration, Map::valueType => $itemSignature])
-            : new Sequence([Sequence::type => $itemSignature]);
-
         return array_merge(parent::_responseSignatures(), [
-            Signature::new(false, static::result, true, null, $wrapperType)
+            Signature::new(false, static::result, true, null, EntityArray::manyToArrayType(
+                array_map(function (Signature $signature) { return $signature->declaration; }, static::fieldSignatures()),
+                static::association()?->declaration
+            ))
         ]);
     }
 
