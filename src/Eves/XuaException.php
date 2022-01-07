@@ -21,14 +21,15 @@ abstract class XuaException extends Exception
         return self::displayErrorsRecursive($this->errors);
     }
 
-    public static function displayErrorsRecursive(array $errors): string
+    public static function displayErrorsRecursive(array $errors, int $indent = 0): string
     {
         $result = '';
         foreach ($errors as $key => $message) {
+            $result .= str_repeat('    ', $indent);
             if (is_array($message)) {
-                $result .= "$key: " . self::displayErrorsRecursive($message);
+                $result .= "$key:" . PHP_EOL . self::displayErrorsRecursive($message, $indent + 1);
             } else {
-                $result .= "$key: " . $message;
+                $result .= "$key: " . $message . PHP_EOL;
             }
         }
         return $result;
