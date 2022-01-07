@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Eves;
 
-use Xua\Core\Exceptions\MagicCallException;
 use Xua\Core\Supers\Highers\Nullable;
 use Xua\Core\Supers\Special\EntityFieldScheme;
 use Xua\Core\Tools\Signature\Signature;
@@ -30,13 +29,12 @@ abstract class MethodView extends FieldedMethod
         foreach (static::fieldSignatures() as $field) {
             /** @var EntityFieldScheme $scheme */
             $scheme = $field->declaration;
-            // @TODO fix Nullable $scheme->type
             $signature = Signature::new(
                 $field->const,
                 static::class . '::' . self::RESPONSE_PREFIX . $scheme->name,
                 $field->required,
                 $field->default,
-                $scheme->type
+                new Nullable([Nullable::type => $scheme->type])
             );
             $signatures[] = $signature;
         }
