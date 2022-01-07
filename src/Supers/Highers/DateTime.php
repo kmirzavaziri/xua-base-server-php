@@ -50,7 +50,7 @@ class DateTime extends Instance
     protected function _marshalDatabase($input): mixed
     {
         /** @var ?DateTimeInstance $input */
-        return $input ? $input->formatGregorian('Y-m-d H:i:s', date_default_timezone_get()) : $input;
+        return $input ? $input->formatGregorian('Y-m-d H:i:s', date_default_timezone_get(), 'en') : $input;
     }
 
     protected function _unmarshalDatabase($input): mixed

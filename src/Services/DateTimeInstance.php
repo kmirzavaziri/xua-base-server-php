@@ -82,15 +82,98 @@ class DateTimeInstance extends Service
         return self::fromYmdHis($datetime . ' 00:00:00');
     }
 
-    public function formatGregorian(string $format, $timezone = null): string
+    public function formatGregorian(string $format, ?string $timezone = null, ?string $lang = null): string
     {
         if (!$timezone) {
             $timezone = LocaleLanguage::getTimezone();
         }
-        return DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone))->format($format);
+
+        $dt = DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone));
+        $b = match (true) {
+            $dt >= new DateTime('March 20') && $dt < new DateTime('June 20') => 0,
+            $dt >= new DateTime('June 20') && $dt < new DateTime('September 22') => 1,
+            $dt >= new DateTime('September 22') && $dt < new DateTime('December 21') => 2,
+            default => 3,
+        };
+        $K = floor($dt->format('z') * 100 / (365.24 + $dt->format('L')));
+
+        $result = '';
+        for ($index = 0; $index < strlen($format); $index++) {
+            $parameter = substr($format, $index, 1);
+            if ($parameter == '\\') {
+                $result .= substr($format, ++$index, 1);
+                continue;
+            }
+            switch ($parameter) {
+                case 'c': case 'd': case 'e': case 'g': case 'h': case 'i': case 'j': case 'm': case 'n': case 'o':
+                case 's': case 't': case 'u': case 'w': case 'y': case 'z': case 'B': case 'G': case 'H': case 'I':
+                case 'L': case 'N': case 'O': case 'P': case 'T': case 'U': case 'W': case 'Y': case 'Z':
+                    $result .= $dt->format($parameter);
+                    break;
+                case 'a': case 'A': case 'D': case 'l': case 'S':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . $dt->format($parameter));
+                    break;
+                case 'F': case 'M':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.gregorian.' . $dt->format($parameter));
+                    break;
+                case 'r':
+                    $D = ExpressionService::getXua('services.date_time_instance.format.D.' . $dt->format('D'));
+                    $d = $dt->format('d');
+                    $M = ExpressionService::getXua('services.date_time_instance.format.M.' . $dt->format('M'));
+                    $Y = $dt->format('Y');
+                    $H = $dt->format('H');
+                    $i = $dt->format('i');
+                    $s = $dt->format('s');
+                    $O = $dt->format('O');
+                    $result .= "{$D}, $d $M $Y $H:$i:$s $O";
+                    break;
+                case 'b':
+                    $result .= $b + 1;
+                    break;
+                case 'C':
+                    $result .= floor(($dt->format('Y') + 99) / 100);
+                    break;
+                case 'f':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . $b);
+                    break;
+                case 'J':
+                    // @TODO
+//                    $result .= ExpressionService::numberToText($d);
+                    $result .= 'J';
+                    break;
+                case 'k';
+                    $result .= 100 - $K;
+                    break;
+                case 'K':
+                    $result .= $K;
+                    break;
+                case 'p':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.gregorian.' . $dt->format('m'));
+                    break;
+                case 'q':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . ($dt->format('Y') + 3) % 12);
+                    break;
+                case 'Q':
+                    $result .= $dt->format('L') + 364 - $dt->format('z');
+                    break;
+                case 'v':
+                    // @TODO
+//                    $result .= ExpressionService::numberToText($y);
+                    $result .= 'v';
+                    break;
+                case 'V':
+                    // @TODO
+//                    $result .= ExpressionService::numberToText($Y);
+                    $result .= 'V';
+                    break;
+                default:
+                    $result .= $parameter;
+            }
+        }
+        return ExpressionService::fixNumbers($result, $lang);
     }
 
-    public function formatJalali(string $format, $timezone = null): string
+    public function formatJalali(string $format, ?string $timezone = null, ?string $lang = null): string
     {
         if (!$timezone) {
             $timezone = LocaleLanguage::getTimezone();
@@ -99,7 +182,8 @@ class DateTimeInstance extends Service
         $H = $this->YmdHis['h'];
         $i = $this->YmdHis['i'];
         $s = $this->YmdHis['s'];
-        [$O, $P, $w, $N] = explode('-', DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone))->format('O-P-w-N'));
+        $dt = DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone));
+        [$O, $P, $w, $N] = explode('-', $dt->format('O-P-w-N'));
         /** @var integer $w */
         $w = (($w + 1) % 7);
         $z = ($m < 7) ? (($m - 1) * 31) + $d - 1 : (($m - 7) * 30) + $d + 185;
@@ -107,8 +191,6 @@ class DateTimeInstance extends Service
         $b = floor(($m - 1) / 3);
         $K = floor($z * 100 / (365.24 + $L));
         $Q = $L + 364 - $z;
-        $D = PersianExpressionService::JalaliExpressions($w, PersianExpressionService::JALALI_WEEK_SHORT);
-        $M = PersianExpressionService::JalaliExpressions($m - 1, PersianExpressionService::JALALI_MONTH_SHORT);
         $y = $Y % 100;
 
         $result = '';
@@ -120,31 +202,13 @@ class DateTimeInstance extends Service
             }
             switch ($parameter) {
                 // Parameters exactly same as Gregorian
-                case 'e':
-                case 'g':
-                case 'h':
-                case 'i':
-                case 's':
-                case 'u':
-                case 'B':
-                case 'G':
-                case 'H':
-                case 'I':
-                case 'N':
-                case 'O':
-                case 'P':
-                case 'T':
-                case 'U':
-                case 'Z':
+                case 'e': case 'g': case 'h': case 'i': case 's': case 'u': case 'B': case 'G': case 'H': case 'I':
+                case 'N': case 'O': case 'P': case 'T': case 'U': case 'Z':
                     $result .= date($parameter, $this->timestamp);
                     break;
-
                 // Parameters similar to php `date` function
-                case 'a':
-                    $result .= ($H < 12) ? 'ق.ظ' : 'ب.ظ';
-                    break;
-                case 'A':
-                    $result .= ($H < 12) ? 'قبل از ظهر' : 'بعد از ظهر';
+                case 'a': case 'A': case 'l':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . $dt->format($parameter));
                     break;
                 case 'c':
                     $result .= "$Y-$m-{$d}T$H:$i:$s$P";
@@ -153,16 +217,13 @@ class DateTimeInstance extends Service
                     $result .= $d;
                     break;
                 case 'D':
-                    $result .= $D;
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . $w);
                     break;
-                case 'F':
-                    $result .= PersianExpressionService::JalaliExpressions($m - 1, PersianExpressionService::JALALI_MONTH);
+                case 'F': case 'M': case 'p':
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.jalali.' . $m);
                     break;
                 case 'j':
                     $result .= +$d;
-                    break;
-                case 'l':
-                    $result .= PersianExpressionService::JalaliExpressions($w, PersianExpressionService::JALALI_WEEK);
                     break;
                 case 'L':
                     $result .= $L;
@@ -173,18 +234,22 @@ class DateTimeInstance extends Service
                 case 'n':
                     $result .= +$m;
                     break;
-                case 'M':
-                    $result .= $M;
-                    break;
                 case 'o':
                     // TODO check (use $N)
                     $result .= ($w > ($z + 3) and $z < 3) ? $Y - 1 : (((3 - $Q) > $w and $Q < 3) ? $Y + 1 : $Y);
                     break;
                 case 'r':
+                    $D = ExpressionService::getXua('services.date_time_instance.format.D.' . $w);
+                    $M = ExpressionService::getXua('services.date_time_instance.format.M.' . $m);
                     $result .= "{$D}، $d $M $Y $H:$i:$s $O";
                     break;
                 case 'S':
-                    $result .= '-ام';
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . match (substr($d, -1)) {
+                        1 => 'st',
+                        2 => 'nd',
+                        3 => 'rd',
+                        default => 'th',
+                    });
                     break;
                 case 't':
                     $result .= ($m != 12) ? (31 - floor($m / 7)) : ($L + 29);
@@ -215,7 +280,6 @@ class DateTimeInstance extends Service
                 case 'z':
                     $result .= $z;
                     break;
-
                 // Additional Parameters
                 case 'b':
                     $result .= $b + 1;
@@ -224,10 +288,12 @@ class DateTimeInstance extends Service
                     $result .= floor(($Y + 99) / 100);
                     break;
                 case 'f':
-                    $result .= PersianExpressionService::JalaliExpressions($b, PersianExpressionService::JALALI_SEASON);
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . $b);
                     break;
                 case 'J':
-                    $result .= PersianExpressionService::numberToText($d);
+                    // @TODO
+//                    $result .= ExpressionService::numberToText($d);
+                    $result .= 'J';
                     break;
                 case 'k';
                     $result .= 100 - $K;
@@ -235,20 +301,21 @@ class DateTimeInstance extends Service
                 case 'K':
                     $result .= $K;
                     break;
-                case 'p':
-                    $result .= PersianExpressionService::JalaliExpressions($Y % 12, PersianExpressionService::JALALI_MONTH_ANCIENT);
-                    break;
                 case 'q':
-                    $result .= PersianExpressionService::JalaliExpressions($Y % 12, PersianExpressionService::JALALI_YEAR_ZODIAC);
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.' . $Y % 12);
                     break;
                 case 'Q':
                     $result .= $Q;
                     break;
                 case 'v':
-                    $result .= PersianExpressionService::numberToText($y);
+                    // @TODO
+//                    $result .= ExpressionService::numberToText($y);
+                    $result .= 'v';
                     break;
                 case 'V':
-                    $result .= PersianExpressionService::numberToText($Y);
+                    // @TODO
+//                    $result .= ExpressionService::numberToText($Y);
+                    $result .= 'V';
                     break;
 
                 // Default
@@ -256,15 +323,15 @@ class DateTimeInstance extends Service
                     $result .= $parameter;
             }
         }
-        return $result;
+        return ExpressionService::fixNumbers($result, $lang);
     }
 
-    public function format(string $format, $timezone = null): string
+    public function format(string $format, ?string $timezone = null, ?string $lang = null): string
     {
         return match (LocaleLanguage::getCalendar()) {
-            LocaleLanguage::CAL_JALALI => $this->formatJalali($format, $timezone),
-            LocaleLanguage::CAL_GREGORIAN => $this->formatGregorian($format, $timezone),
-            default => $this->formatGregorian($format, $timezone),
+            LocaleLanguage::CAL_JALALI => $this->formatJalali($format, $timezone, $lang),
+            LocaleLanguage::CAL_GREGORIAN => $this->formatGregorian($format, $timezone, $lang),
+            default => $this->formatGregorian($format, $timezone, $lang),
         };
     }
 
@@ -286,21 +353,12 @@ class DateTimeInstance extends Service
         return new static(abs($this->timestamp - $dateTimeInstance->timestamp));
     }
 
-    // DateTime Parts: Getters & Modifiers
-//    public function getYearGregorian(): int
-//    {
-//
-//    }
-//
-//    public function setYearGregorian(): DateTime
-//    {
-//
-//    }
-//
-//    public function addYearsGregorian(): DateTime
-//    {
-//
-//    }
+    // DateTime Modify
+    public function modifyGregorian(string $modifier): static
+    {
+        $this->timestamp = DateTime::createFromFormat('U', $this->timestamp)->modify($modifier)->getTimestamp();
+        return $this;
+    }
 
     // helpers
     protected static function gregorianToJalali(int $gY, int $gm, int $gd): array

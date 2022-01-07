@@ -19,6 +19,134 @@ services:
     comma_separator: ", "
     conjunction_separator: ", and "
     disjunction_separator: ", or "
+  date_time_instance:
+    format:
+      a:
+        am: am
+        pm: pm
+      A:
+        AM: AM
+        PM: PM
+      D:
+        Sat: Sat
+        Sun: Sun
+        Mon: Mon
+        Tue: Tue
+        Wed: Wed
+        Thu: Thu
+        Fri: Fri
+      F:
+        gregorian:
+          January: January
+          February: February
+          March: March
+          April: April
+          May: May
+          June: June
+          July: July
+          August: August
+          September: September
+          October: October
+          November: November
+          December: December
+        jalali:
+          1: Farvardin
+          2: Ordibehesht
+          3: Khordad
+          4: Tir
+          5: Mordad
+          6: Shahrivar
+          7: Mehr
+          8: Aban
+          9: Azar
+          10: Dey
+          11: Bahman
+          12: Esfand
+      l:
+        Saturday: Saturday
+        Sunday: Sunday
+        Monday: Monday
+        Tuesday: Tuesday
+        Wednesday: Wednesday
+        Thursday: Thursday
+        Friday: Friday
+      M:
+        gregorian:
+          Jan: Jan
+          Feb: Feb
+          Mar: Mar
+          Apr: Apr
+          May: May
+          Jun: Jun
+          Jul: Jul
+          Aug: Aug
+          Sep: Sep
+          Oct: Oct
+          Nov: Nov
+          Dec: Dec
+        jalali:
+          1: Far
+          2: Ord
+          3: Kho
+          4: Tir
+          5: Mor
+          6: Sha
+          7: Meh
+          8: Aba
+          9: Aza
+          10: Dey
+          11: Bah
+          12: Esf
+      S:
+        st: st
+        nd: nd
+        rd: rd
+        th: th
+      f:
+        0: Spring
+        1: Summer
+        2: Fall
+        3: Winter
+      p:
+        gregorian:
+          1: Ianuarius
+          2: Februarius
+          3: Martius
+          4: Aprilis
+          5: Maius
+          6: Iunius
+          7: Quintilis
+          8: Sextilis
+          9: September
+          10: October
+          11: November
+          12: December
+        jalali:
+          1: Aries
+          2: Taurus
+          3: Gemini
+          4: Cancer
+          5: Leo
+          6: Virgo
+          7: Libra
+          8: Scorpio
+          9: Sagittarius
+          10: Capricornus
+          11: Aquarius
+          12: Pisces
+      q:
+        0: Snake
+        1: Horse
+        2: Goat
+        3: Monkey
+        4: Rooster
+        5: Dog
+        6: Pig
+        7: Rat
+        8: Ox
+        9: Tiger
+        10: Rabbit
+        11: Dragon
 supers:
   files:
     generic:

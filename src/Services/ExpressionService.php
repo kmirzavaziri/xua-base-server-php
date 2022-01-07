@@ -86,4 +86,51 @@ final class ExpressionService extends Service
             return '';
         }
     }
+
+    public static function fixNumbers(string $text, ?string $lang = null): string
+    {
+        $lang = $lang ?? LocaleLanguage::getLanguage();
+        $result = '';
+        for ($i = 0; $i < mb_strlen($text); $i++) {
+            $t = mb_substr($text, $i, 1);
+            $result .= self::NUMERIC_MAP[$lang][$t] ?? $t;
+        }
+        return $result;
+    }
+
+    const NUMERIC_MAP = [
+        LocaleLanguage::LANG_FA => [
+            '0' => '۰',
+            '1' => '۱',
+            '2' => '۲',
+            '3' => '۳',
+            '4' => '۴',
+            '5' => '۵',
+            '6' => '۶',
+            '7' => '۷',
+            '8' => '۸',
+            '9' => '۹',
+
+            '٤' => '۴',
+            '٥' => '۵',
+            '٦' => '۶',
+        ],
+        LocaleLanguage::LANG_EN => [
+            '۰' => '0',
+            '۱' => '1',
+            '۲' => '2',
+            '۳' => '3',
+            '۴' => '4',
+            '۵' => '5',
+            '۶' => '6',
+            '۷' => '7',
+            '۸' => '8',
+            '۹' => '9',
+
+            '٤' => '4',
+            '٥' => '5',
+            '٦' => '6',
+        ],
+    ];
+
 }
