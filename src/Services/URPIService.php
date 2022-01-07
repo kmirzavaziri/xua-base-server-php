@@ -26,13 +26,13 @@ class URPIService extends Service
 
     protected static function _init(): void
     {
-        self::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
-            self::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
-            self::RESPONSE => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => false])])
+        static::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
+            static::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+            static::RESPONSE => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => false])])
         ]]);
-        self::$jsonResponse = [
-            self::ERRORS => [],
-            self::RESPONSE => (object)[]
+        static::$jsonResponse = [
+            static::ERRORS => [],
+            static::RESPONSE => (object)[]
         ];
     }
 
@@ -46,17 +46,17 @@ class URPIService extends Service
 
         if (RouteService::$method == XRMLParser::METHOD_POST) {
             try {
-                self::publicClass($resourcePath);
+                static::publicClass($resourcePath);
             } catch (URPIException $e) {
-                self::$jsonResponse[self::ERRORS] = $e->getErrors();
-                self::respondJson();
+                static::$jsonResponse[static::ERRORS] = $e->getErrors();
+                static::respondJson();
             }
             return;
         }
 
         if (RouteService::$method == XRMLParser::METHOD_GET) {
             try {
-                self::publicResource($resourcePath);
+                static::publicResource($resourcePath);
             } catch (URPIException $e) {
                 static::notFound();
             }
@@ -72,10 +72,10 @@ class URPIService extends Service
 
         if (class_exists($class)) {
             if (is_a($class, MethodEve::class, true)) {
-                self::method($class);
+                static::method($class);
                 return;
             } elseif (is_a($class, Entity::class, true)) {
-                self::entity($class);
+                static::entity($class);
                 return;
             }
         }
@@ -100,23 +100,23 @@ class URPIService extends Service
         }
 
         try {
-            self::$jsonResponse[self::RESPONSE] = (new $class($request))->toArray();
+            static::$jsonResponse[static::RESPONSE] = (new $class($request))->toArray();
             /** @noinspection PhpUndefinedMethodInspection */
-            self::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
-                self::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
-                self::RESPONSE => new StructuredMap([StructuredMap::structure => array_map(function (Signature $signature) { return $signature->declaration; }, $class::responseSignatures())])
+            static::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
+                static::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+                static::RESPONSE => new StructuredMap([StructuredMap::structure => array_map(function (Signature $signature) { return $signature->declaration; }, $class::responseSignatures())])
             ]]);
         } catch (MethodRequestException $e) {
-            self::$jsonResponse[self::ERRORS] = $e->getErrors();
+            static::$jsonResponse[static::ERRORS] = $e->getErrors();
         } catch (Throwable $e) {
             if (Credentials::developer()) {
                 throw $e;
             } else {
-                self::$jsonResponse[self::ERRORS] = ['' => ExpressionService::get('services.urpi.error_message.internal_server')];
+                static::$jsonResponse[static::ERRORS] = ['' => ExpressionService::get('services.urpi.error_message.internal_server')];
             }
         }
 
-        self::respondJson();
+        static::respondJson();
     }
 
     /**
@@ -143,7 +143,7 @@ class URPIService extends Service
         }
 
         header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
-        $mimeType = self::getMimeType($resourcePath);
+        $mimeType = static::getMimeType($resourcePath);
         if (!(Credentials::developer() and in_array($mimeType, ['text/css', 'application/javascript']))) {
             header('Cache-Control: public, max-age=15552000');
             header_remove('Expires');
@@ -182,7 +182,7 @@ class URPIService extends Service
     protected static function respondJson(): void
     {
         header('Content-Type: application/json');
-        echo self::$jsonResponseType->marshal(self::$jsonResponse);
+        echo static::$jsonResponseType->marshal(static::$jsonResponse);
     }
 
     protected static function getMimeType(string $route): string
