@@ -4,6 +4,7 @@ namespace Xua\Core\Services;
 
 use Xua\Core\Supers\Highers\Json;
 use Xua\Core\Supers\Highers\Map;
+use Xua\Core\Supers\Highers\Nullable;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Supers\Universal;
@@ -20,6 +21,9 @@ abstract class JsonService extends Service
                 Map::class => $type->valueType,
                 Sequence::class => $type->type,
             };
+            if (is_a($itemType, Nullable::class) and is_a($itemType->type, Json::class)) {
+                $itemType = $itemType->type;
+            }
             if ($itemType) {
                 $input[$key] = $value === null
                 ? null
@@ -45,6 +49,9 @@ abstract class JsonService extends Service
                 Sequence::class => $type->type,
                 default => new Universal([])
             };
+            if (is_a($itemType, Nullable::class) and is_a($itemType->type, Json::class)) {
+                $itemType = $itemType->type;
+            }
             if ($itemType) {
                 $input[$key] = (is_a($itemType, Json::class) and is_array($value)) ? static::unmarshalItems($value, $itemType) : $itemType->unmarshal($value);
             }
