@@ -170,6 +170,9 @@ supers:
         unknown_key: فیلد $key شناخته‌شده نیست.
         unknown_keys: فیلدهای $keys شناخته‌شده نیستند.
         key_is_missing: فیلد $key یافت نشد.
+    timezone:
+      error_message:
+        invalid_timezone: منطقه زمانی واردشده صحیح نمی‌باشد.
   numerics:
     decimal_range:
       error_message:

@@ -170,6 +170,9 @@ supers:
         unknown_key: Unknown key $key.
         unknown_keys: Unknown keys $keys.
         key_is_missing: The key $key is missing.
+    timezone:
+      error_message:
+        invalid_timezone: Invalid timezone.
   numerics:
     decimal_range:
       error_message:
