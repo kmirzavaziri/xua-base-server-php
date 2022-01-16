@@ -40,6 +40,7 @@ class Symbol extends Regex
             ),
             Signature::new(false, static::unifier, false, null,
                 new Enum([
+                    Enum::nullable => true,
                     Enum::values => self::UNIFIER_,
                 ])
             ),
