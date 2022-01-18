@@ -34,6 +34,7 @@ final class Condition
     const NOT_LIKE    = "$ NOT LIKE ?";
     const REGEXP      = "$ REGEXP ?";
     const NOT_REGEXP  = "$ NOT REGEXP ?";
+    const HAS         = "FIND_IN_SET(?, $) > 0";
     const RELATION_ = [
         self::GRATER,
         self::NGRATER,
@@ -59,6 +60,7 @@ final class Condition
         self::NOT_LIKE,
         self::REGEXP,
         self::NOT_REGEXP,
+        self::HAS,
     ];
 
     /**
