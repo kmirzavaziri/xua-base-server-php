@@ -22,16 +22,16 @@ class Text extends Super
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-                Signature::new(false, static::minLength, false, null,
-                    new Integer([Integer::unsigned => true, Integer::nullable => true])
-                ),
-                Signature::new(false, static::maxLength, false, 65_535,
-                    new Integer([Integer::unsigned => true, Integer::nullable => true])
-                ),
-                Signature::new(false, static::nullable, false, false,
-                    new Boolean([])
-                ),
-            ]);
+            Signature::new(false, static::minLength, false, null,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::maxLength, false, 65_535,
+                new Integer([Integer::unsigned => true, Integer::nullable => true])
+            ),
+            Signature::new(false, static::nullable, false, false,
+                new Boolean([])
+            ),
+        ]);
     }
 
     protected function _validation(SuperValidationException $exception): void
