@@ -89,7 +89,6 @@ class Sequence extends Json
 
     protected function _phpType(): string
     {
-        return ($this->nullable ? '?' : '') . 'array';
-//        return ($this->nullable ? '?' : '') . ($this->type->_phpType() != 'mixed' ? $this->type->_phpType() . '[]' : 'array');
+        return ($this->nullable ? '?' : '') . ($this->type->_phpType() != 'mixed' ? $this->type->_phpType() . '[]' : 'array');
     }
 }

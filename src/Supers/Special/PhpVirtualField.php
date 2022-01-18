@@ -4,19 +4,25 @@ namespace Xua\Core\Supers\Special;
 
 use Closure;
 use ReflectionFunction;
+use ReflectionIntersectionType;
+use ReflectionNamedType;
+use ReflectionUnionType;
 use Xua\Core\Supers\Highers\Callback;
 use Xua\Core\Eves\Entity;
 use Xua\Core\Eves\Super;
+use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Tools\Signature\Signature;
 
 /**
  * @property callable getter
  * @property ?callable setter
+ * @property ?string phpType
  */
 class PhpVirtualField extends Super
 {
     const getter = self::class . '::getter';
     const setter = self::class . '::setter';
+    const phpType = self::class . '::phpType';
 
     protected static function _argumentSignatures(): array
     {
@@ -63,6 +69,11 @@ class PhpVirtualField extends Super
                     ]
                 ])
             ),
+            Signature::new(false, static::phpType, false, null,
+                new Text([
+                    Text::nullable => true
+                ])
+            ),
         ]);
     }
 
@@ -78,8 +89,23 @@ class PhpVirtualField extends Super
 
     protected function _phpType(): string
     {
-        // @TODO fix this for cases like ?ClassName
+        if ($this->phpType) {
+            return $this->phpType;
+        }
+        $typeToString = function (ReflectionNamedType $type) {
+            return (($type->allowsNull() and $type->getName() != 'null') ? '?' : '') . ($type->isBuiltin() ? '' : '\\') . $type->getName();
+        };
         $returnType = (new ReflectionFunction(Closure::fromCallable($this->getter)))->getReturnType();
-        return $returnType ? (class_exists($returnType) ? '\\' . $returnType : $returnType) : 'mixed';
+        if ($returnType === null) {
+            return 'mixed';
+        } elseif (is_a($returnType, ReflectionNamedType::class)) {
+            return $typeToString($returnType);
+        } elseif (is_a($returnType, ReflectionUnionType::class)) {
+            return implode('|', array_map($typeToString, $returnType->getTypes()));
+        } elseif (is_a($returnType, ReflectionIntersectionType::class)) {
+            return implode('&', array_map($typeToString, $returnType->getTypes()));
+        } else {
+            return 'mixed';
+        }
     }
 }
