@@ -55,17 +55,23 @@ abstract class Entity extends Block
      */
     private static ?PDO $connection = null;
 
-    /**
-     * @var PDOException
-     */
-    private static PDOException $connection_exception;
-
     // @TODO remove usages
     /**
      * @return PDO|null
      */
     final public static function connection(): ?PDO
     {
+        if (!self::$connection) {
+            $dbInfo = ConstantService::get('config', 'db');
+            if (!$dbInfo) {
+                throw new EntityException('Database connection config not found.');
+            }
+//            Dialect::$engine = $dbInfo['engine'];
+            $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['database'];
+            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
+            self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::startTransaction();
+        }
         return self::$connection;
     }
 
@@ -79,9 +85,6 @@ abstract class Entity extends Block
     final public static function execute(string $query, array $bind = []): false|PDOStatement
     {
         [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
-        if (!self::connection()) {
-            throw self::$connection_exception;
-        }
         try {
             $statement = self::connection()->prepare($query);
             $statement->execute($bind);
@@ -131,28 +134,7 @@ abstract class Entity extends Block
     final public static function _init(): void
     {
         parent::_init();
-        $tableNameTemp = explode("\\", static::class);
-        self::$_x_table[static::class] = implode('_', $tableNameTemp);
-
-        $dbInfo = ConstantService::get('config', 'db');
-        if (!$dbInfo) {
-            throw new EntityException('Database connection config not found.');
-        }
-
-//        Dialect::$engine = $dbInfo['engine'];
-
-        $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['database'];
-
-        if (!self::$connection) {
-            try {
-                self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
-                self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                self::startTransaction();
-            } catch (PDOException $e) {
-                self::$connection_exception = $e;
-                throw $e;
-            }
-        }
+        self::$_x_table[static::class] = implode('_', explode("\\", static::class));
     }
 
     /**
