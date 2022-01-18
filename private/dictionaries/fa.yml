@@ -173,6 +173,10 @@ supers:
     timezone:
       error_message:
         invalid_timezone: منطقه زمانی واردشده صحیح نمی‌باشد.
+    set:
+      error_message:
+        invalid: مقدار صحیح نمی‌باشد.
+        invalid_values: مقادیر $values در مجموعه $set قرار ندارند.
   numerics:
     decimal_range:
       error_message:

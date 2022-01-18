@@ -173,6 +173,10 @@ supers:
     timezone:
       error_message:
         invalid_timezone: Invalid timezone.
+    set:
+      error_message:
+        invalid: Invalid value.
+        invalid_values: Values $values are not in set $set.
   numerics:
     decimal_range:
       error_message:
