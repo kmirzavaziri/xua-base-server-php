@@ -33,22 +33,23 @@ final class RouteService extends Service
     public static function execute(string $route, string $method) : void
     {
         self::$method = $method;
-        $route = self::fixRoute($route);
-        if ($route != self::fixRoute($route)) {
-            self::redirect301(self::getSiteRoot() . ($route ? '/' . $route : ''));
-        }
         $route = explode('?', $route, 2)[0];
-        self::$route = $route;
+        self::$route = self::fixRoute($route);
+        $fixedRouteForRedirect = '/' . self::$route;
+        if ($route != $fixedRouteForRedirect) {
+            $query = http_build_query($_GET);
+            self::redirect301(self::getSiteRoot() . $fixedRouteForRedirect . ($query ? ('?' . $query) : ''));
+        }
 
-        $route = explode('/', $route);
-        if (end($route) != '') {
-            $route[] = '';
+        $routeParts = explode('/', self::$route);
+        if (end($routeParts) != '') {
+            $routeParts[] = '';
         }
         $search = self::$routes;
         $lastSARoute = null;
-        foreach ($route as $i => $routePart) {
+        foreach ($routeParts as $i => $routePart) {
             if (isset($search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_FLAGS][self::FLAG_SLASHES_ALLOWED])) {
-                self::$args[$search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($route, $i, count($route) - $i - 1));
+                self::$args[$search[XRMLParser::KEY_KEY_VAR][''][XRMLParser::LINE_KEY][XRMLParser::KEY_NAME]] = implode('/', array_slice($routeParts, $i, count($routeParts) - $i - 1));
                 $lastSARoute = $search[XRMLParser::KEY_KEY_VAR][''];
             }
             if (isset($search[$routePart])) {
