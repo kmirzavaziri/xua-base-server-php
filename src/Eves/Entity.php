@@ -68,7 +68,9 @@ abstract class Entity extends Block
             }
 //            Dialect::$engine = $dbInfo['engine'];
             $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['database'];
-            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password']);
+            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password'], [
+                PDO::ATTR_TIMEOUT => $dbInfo['timeout'] ?? 10,
+            ]);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::startTransaction();
         }
