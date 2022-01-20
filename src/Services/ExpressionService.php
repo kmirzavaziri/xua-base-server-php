@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Services;
 
-use Symfony\Component\Yaml\Yaml;
 use Xua\Core\Eves\Service;
 
 final class ExpressionService extends Service
@@ -58,7 +57,7 @@ final class ExpressionService extends Service
 
     private static function parse(string $filename) : array
     {
-        return Yaml::parseFile($filename) ?: [];
+        return @yaml_parse_file($filename) ?: [];
     }
 
     private static function getKey(array $root, string $key)
