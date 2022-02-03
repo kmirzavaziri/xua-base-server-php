@@ -14,7 +14,7 @@
     },
     "require": {
         "php": ">=8.0",
-        "twig/twig": "^3.3",
+        "twig/twig": "^3.3.7",
         "ext-pdo": "*",
         "ext-yaml": "*"
     }
