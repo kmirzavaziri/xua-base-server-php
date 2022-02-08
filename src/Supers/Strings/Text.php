@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Supers\Strings;
 
+use Xua\Core\Services\ExpressionService;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Exceptions\SuperValidationException;
@@ -48,19 +49,29 @@ class Text extends Super
         }
 
         if (!is_string($input)) {
-            $message = gettype($input) . " is not string.";
+            $message = ExpressionService::getXua('supers.strings.text.error_message.type_is_not_string', [
+                'type' => gettype($input),
+            ]);
             return false;
         }
 
         $length = strlen($input);
 
         if ($this->minLength !== null and $length < $this->minLength) {
-            $message = "Length of '$input' ($length) must be at least $this->minLength.";
+            $message = ExpressionService::getXua('supers.strings.text.error_message.length_must_be_at_least_min', [
+                'input' => $input,
+                'length' => $length,
+                'min' => $this->minLength,
+            ]);
             return false;
         }
 
         if ($this->maxLength !== null and $length > $this->maxLength) {
-            $message = "Length of '$input' ($length) must be at most $this->maxLength.";
+            $message = ExpressionService::getXua('supers.strings.text.error_message.length_must_be_at_most_max', [
+                'input' => $input,
+                'length' => $length,
+                'max' => $this->maxLength,
+            ]);
             return false;
         }
 

@@ -8,7 +8,7 @@ eves:
       unknown_signature_name: امضای $signatureName شناخته‌شده نیست
   entity:
     error_message:
-      an_entity_with_expression_already_exists: یک $entity با $expression وجود دارد.
+      an_entity_with_expression_already_exists: $entity دیگری با $expression وجود دارد.
     column_equal_to_value: $column «$value»
   method_eve:
     error_message:
@@ -191,6 +191,11 @@ supers:
       error_message:
         entity_with_id_does_not_exist: $entity با شناسه $id یافت نشد.
   strings:
+    text:
+      error_message:
+        type_is_not_string: $type رشته نیست.
+        length_must_be_at_least_min: طول $input برابر $length است اما باید لااقل برابر $min باشد.
+        length_must_be_at_most_max: طول $input برابر $length است اما باید حداکثر برابر $max باشد.
     enum:
       error_message:
         please_enter_a_valid_value_from_values: لطفا یکی از مقادیر مجاز $values را انتخاب کنید.

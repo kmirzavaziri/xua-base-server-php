@@ -8,7 +8,7 @@ eves:
       unknown_signature_name: Unknown signature name.
   entity:
     error_message:
-      an_entity_with_expression_already_exists: $entity with $expression already exists.
+      an_entity_with_expression_already_exists: Another $entity with $expression already exists.
     column_equal_to_value: $column "$value"
   method_eve:
     error_message:
@@ -191,6 +191,11 @@ supers:
       error_message:
         entity_with_id_does_not_exist: $entity with id $id does not exist.
   strings:
+    text:
+      error_message:
+        type_is_not_string: $type is not string.
+        length_must_be_at_least_min: Length of '$input' ($length) must be at least $min.
+        length_must_be_at_most_max: Length of '$input' ($length) must be at most $max.
     enum:
       error_message:
         please_enter_a_valid_value_from_values: Please enter a valid value from values $values.
