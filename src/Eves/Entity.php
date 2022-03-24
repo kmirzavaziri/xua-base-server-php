@@ -2,6 +2,8 @@
 
 namespace Xua\Core\Eves;
 
+use Avistopia\Shared\Services\JsonLogService;
+use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use PDO;
 use PDOException;
@@ -12,6 +14,8 @@ use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Exceptions\NotImplementedException;
 use Xua\Core\Exceptions\SuperMarshalException;
 use Xua\Core\Services\ConstantService;
+use Xua\Core\Services\DateTimeInstance;
+use Xua\Core\Services\EnvironmentService;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\LocaleLanguage;
 use Xua\Core\Supers\Special\DatabaseVirtualField;
@@ -87,6 +91,13 @@ abstract class Entity extends Block
     final public static function execute(string $query, array $bind = []): false|PDOStatement
     {
         [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
+        if (in_array(EnvironmentService::env(), ConstantService::get('config', 'services.entity.logEnvs'))) {
+            JsonLogService::append('entity', [
+                'time' => (new DateTimeInstance())->format('Y/m/d-H:i:s'),
+                'query' => QueryBinder::bind($query, $bind),
+                'trace' => (new Exception())->getTrace()[0]['file'] . ':' . (new Exception())->getTrace()[0]['line']
+            ]);
+        }
         try {
             $statement = self::connection()->prepare($query);
             $statement->execute($bind);
