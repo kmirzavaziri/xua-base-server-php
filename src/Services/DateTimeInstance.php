@@ -218,7 +218,7 @@ class DateTimeInstance extends Service
                     $result .= $d;
                     break;
                 case 'F': case 'M': case 'p':
-                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.jalali.' . $m);
+                    $result .= ExpressionService::getXua('services.date_time_instance.format.' . $parameter . '.jalali.' . ($m + 0));
                     break;
                 case 'j':
                     $result .= +$d;
@@ -328,9 +328,9 @@ class DateTimeInstance extends Service
         return ExpressionService::fixNumbers($result, $lang);
     }
 
-    public function format(string $format, ?string $timezone = null, ?string $lang = null): string
+    public function format(string $format, ?string $timezone = null, ?string $lang = null, ?string $calendar = null): string
     {
-        return match (LocaleLanguage::getCalendar()) {
+        return match ($calendar ?? LocaleLanguage::getCalendar()) {
             LocaleLanguage::CAL_JALALI => $this->formatJalali($format, $timezone, $lang),
             LocaleLanguage::CAL_GREGORIAN => $this->formatGregorian($format, $timezone, $lang),
             default => $this->formatGregorian($format, $timezone, $lang),
