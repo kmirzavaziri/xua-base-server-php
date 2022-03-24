@@ -21,18 +21,23 @@ class URPIService extends Service
     const ERRORS = 'errors';
     const RESPONSE = 'response';
 
-    protected static Super $jsonResponseType;
-    protected static array $jsonResponse;
+    private static Super $jsonResponseType;
+    private static array $jsonResponse;
+    /** @var URPIService $service
+     * @noinspection PhpDocFieldTypeMismatchInspection
+     */
+    public static string $service;
 
     protected static function _init(): void
     {
-        static::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
-            static::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
-            static::RESPONSE => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => false])])
+        self::$service = ConstantService::get('config', 'services.urpi.class') ?? self::class;
+        self::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
+            self::$service::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+            self::RESPONSE => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => false])])
         ]]);
-        static::$jsonResponse = [
-            static::ERRORS => [],
-            static::RESPONSE => (object)[]
+        self::$jsonResponse = [
+            self::ERRORS => [],
+            self::RESPONSE => (object)[]
         ];
     }
 
@@ -40,54 +45,53 @@ class URPIService extends Service
     {
         $resourcePath = RouteService::$args['resourcePath'];
         if (!$resourcePath) {
-            static::notFound();
+            self::$service::notFound();
             return;
         }
 
         if (RouteService::$method == XRMLParser::METHOD_POST) {
             try {
-                static::publicClass($resourcePath);
+                self::publicClass($resourcePath);
             } catch (URPIException $e) {
-                static::$jsonResponse[static::ERRORS] = $e->getErrors();
-                static::respondJson();
+                self::$jsonResponse[self::ERRORS] = $e->getErrors();
+                self::respondJson();
             }
             return;
         }
 
         if (RouteService::$method == XRMLParser::METHOD_GET) {
             try {
-                static::publicResource($resourcePath);
+                self::publicResource($resourcePath);
             } catch (URPIException $e) {
-                static::notFound();
+                self::$service::notFound();
             }
             return;
         }
 
-        static::notFound();
+        self::$service::notFound();
     }
 
-    protected static function publicClass(string $resourcePath): void
+    private static function publicClass(string $resourcePath): void
     {
         $class = ConstantService::get('config', 'services.urpi.rootNamespace') . "\\" . str_replace('/', "\\", $resourcePath);
 
         if (class_exists($class)) {
             if (is_a($class, MethodEve::class, true)) {
-                static::method($class);
-                return;
+                self::method($class);
             } elseif (is_a($class, Entity::class, true)) {
-                static::entity($class);
-                return;
+                self::entity($class);
             }
+        }  else {
+            URPIService::$service::publicErrorInit();
+            throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
         }
-
-        throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
     }
 
     /**
      * @throws Throwable
      * @throws URPIException
      */
-    protected static function method(string $class): void
+    private static function method(string $class): void
     {
         /** @noinspection PhpUndefinedMethodInspection */
         if (!$class::isPublic() and !SecurityService::verifyPrivateMethodAccess()) {
@@ -100,60 +104,73 @@ class URPIService extends Service
         }
 
         try {
-            static::$jsonResponse[static::RESPONSE] = (new $class($request))->toArray();
+            self::$jsonResponse[self::RESPONSE] = (new $class($request))->toArray();
             /** @noinspection PhpUndefinedMethodInspection */
-            static::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
-                static::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
-                static::RESPONSE => new StructuredMap([StructuredMap::structure => array_map(function (Signature $signature) { return $signature->declaration; }, $class::responseSignatures())])
+            self::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
+                self::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+                self::RESPONSE => new StructuredMap([StructuredMap::structure => array_map(function (Signature $signature) { return $signature->declaration; }, $class::responseSignatures())])
             ]]);
         } catch (MethodRequestException $e) {
-            static::$jsonResponse[static::ERRORS] = $e->getErrors();
+            self::$jsonResponse[self::ERRORS] = $e->getErrors();
         } catch (Throwable $e) {
             if (Credentials::developer()) {
                 throw $e;
             } else {
-                static::$jsonResponse[static::ERRORS] = ['' => ExpressionService::get('services.urpi.error_message.internal_server')];
+                self::$jsonResponse[self::ERRORS] = ['' => ExpressionService::get('services.urpi.error_message.internal_server')];
             }
         }
 
-        static::respondJson();
+        self::respondJson();
     }
 
     /**
      * @throws URPIException
      */
-    protected static function entity(Entity $class): void
+    private static function entity(Entity $class): void
     {
         throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
     }
 
-    protected static function publicResource(string $resourcePath): void
+    private static function publicResource(string $externalResourcePath): void
     {
+        self::$service::publicResourceInit();
+
         $isPublicResourcePath = false;
-        $resourcePath = realpath($resourcePath);
+        $internalResourcePath = '';
         foreach (ConstantService::get('config', 'paths.public') as $publicPath) {
-            if (str_starts_with($resourcePath, realpath($publicPath))) {
-                $isPublicResourcePath = true;
-                break;
+            $explodedPublicPath = explode(':', $publicPath, 2);
+            if (count($explodedPublicPath) == 2) {
+                [$internalPublicPath, $externalPublicPath] = $explodedPublicPath;
+            } else {
+                [$internalPublicPath, $externalPublicPath] = [$publicPath, $publicPath];
+            }
+            if (str_starts_with($externalResourcePath, $externalPublicPath)) {
+                $internalResourcePath = $internalPublicPath . DIRECTORY_SEPARATOR . substr($externalResourcePath, strlen($externalPublicPath));
+                $internalResourcePath = realpath($internalResourcePath);
+                $internalPublicPath = realpath($internalPublicPath);
+                if (str_starts_with($internalResourcePath, $internalPublicPath)) {
+                    $isPublicResourcePath = true;
+                    break;
+                }
             }
         }
 
-        if (!$isPublicResourcePath or !is_file($resourcePath)) {
+        if (!$isPublicResourcePath or !is_file($internalResourcePath)) {
             throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
         }
 
         header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
-        $mimeType = static::getMimeType($resourcePath);
+        $mimeType = self::getMimeType($internalResourcePath);
         if (!(Credentials::developer() and in_array($mimeType, ['text/css', 'application/javascript']))) {
             header('Cache-Control: public, max-age=15552000');
             header_remove('Expires');
             header_remove('Pragma');
         }
         header('Content-Transfer-Encoding: Binary');
-        header('Content-Length:' . filesize($resourcePath));
-        header('Content-Disposition: filename="' . basename($resourcePath) . '"');
+        header('Content-Length:' . filesize($internalResourcePath));
+        header('Content-Disposition: filename="' . basename($externalResourcePath) . '"');
         header('Content-Type:' . $mimeType);
-        readfile($resourcePath);
+        readfile($internalResourcePath);
     }
 
     // Helpers
@@ -179,13 +196,13 @@ class URPIService extends Service
         }
     }
 
-    protected static function respondJson(): void
+    private static function respondJson(): void
     {
         header('Content-Type: application/json');
-        echo static::$jsonResponseType->marshal(static::$jsonResponse);
+        echo self::$jsonResponseType->marshal(self::$jsonResponse);
     }
 
-    protected static function getMimeType(string $route): string
+    private static function getMimeType(string $route): string
     {
         $map = ['txt' => 'text/plain', 'htm' => 'text/html', 'html' => 'text/html', 'php' => 'text/html', 'css' => 'text/css', 'js' => 'application/javascript', 'json' => 'application/json', 'xml' => 'application/xml', 'swf' => 'application/x-shockwave-flash', 'flv' => 'video/x-flv', 'png' => 'image/png', 'jpe' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'gif' => 'image/gif', 'bmp' => 'image/bmp', 'ico' => 'image/vnd.microsoft.icon', 'tiff' => 'image/tiff', 'tif' => 'image/tiff', 'svg' => 'image/svg+xml', 'svgz' => 'image/svg+xml', 'zip' => 'application/zip', 'rar' => 'application/x-rar-compressed', 'exe' => 'application/x-msdownload', 'msi' => 'application/x-msdownload', 'cab' => 'application/vnd.ms-cab-compressed', 'mp3' => 'audio/mpeg', 'qt' => 'video/quicktime', 'mov' => 'video/quicktime', 'pdf' => 'application/pdf', 'psd' => 'image/vnd.adobe.photoshop', 'ai' => 'application/postscript', 'eps' => 'application/postscript', 'ps' => 'application/postscript', 'doc' => 'application/msword', 'rtf' => 'application/rtf', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint', 'docx' => 'application/msword', 'xlsx' => 'application/vnd.ms-excel', 'pptx' => 'application/vnd.ms-powerpoint', 'odt' => 'application/vnd.oasis.opendocument.text', 'ods' => 'application/vnd.oasis.opendocument.spreadsheet'];
         return $map[strtolower(pathinfo($route, PATHINFO_EXTENSION))] ?? 'application/octet-stream';
@@ -195,4 +212,10 @@ class URPIService extends Service
     {
         NotFoundInterface::execute();
     }
+
+    public static function publicMethodInit(): void {}
+
+    public static function publicErrorInit(): void {}
+
+    public static function publicResourceInit(): void {}
 }

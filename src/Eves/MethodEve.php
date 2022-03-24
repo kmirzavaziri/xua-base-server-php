@@ -6,6 +6,7 @@ use Xua\Core\Exceptions\MagicCallException;
 use Xua\Core\Exceptions\MethodRequestException;
 use Xua\Core\Exceptions\MethodResponseException;
 use Xua\Core\Services\ExpressionService;
+use Xua\Core\Services\URPIService;
 use Xua\Core\Tools\Signature\Signature;
 
 /**
@@ -30,6 +31,8 @@ abstract class MethodEve extends Block
      */
     final public function __construct(array $request)
     {
+        URPIService::$service::publicMethodInit();
+
         $this->_x_error = new MethodRequestException();
 
         $this->_x_values[self::REQUEST_PREFIX] = $request;
