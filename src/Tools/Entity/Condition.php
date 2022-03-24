@@ -107,24 +107,31 @@ final class Condition
 
         $fieldType = $field->signature->declaration;
 
-        if ($relation == self::BETWEEN or $relation == self::NBETWEEN) {
+        if (in_array($relation, [self::BETWEEN, self::NBETWEEN])) {
             if ((new Sequence([Sequence::minLength => 2, Sequence::maxLength => 2]))->explicitlyAccepts($value, $message)) {
                 throw new EntityConditionException('When using BETWEEN or NBETWEEN, the provided value must be an array of length 2.' . PHP_EOL . $message);
             }
             $condition->parameters = [$fieldType->marshalDatabase($value[0]), $fieldType->marshalDatabase($value[1])];
-        } elseif ($relation == self::IN or $relation == self::NIN) {
+        } elseif (in_array($relation, [self::IN, self::NIN])) {
             $fieldTypeArray = new Sequence([Sequence::type => $fieldType]);
             if (!$fieldTypeArray->explicitlyAccepts($value, $message)) {
                 throw new EntityConditionException('When using IN or NIN, the provided value must be an array.' . PHP_EOL . $message);
             }
             $condition->parameters = [$fieldTypeArray->marshalDatabase($value)];
-        } elseif ($relation == self::ISNULL or $relation == self::NISNULL) {
+        } elseif (in_array($relation, [self::ISNULL, self::NISNULL])) {
             if ($value !== null) {
                 throw new EntityConditionException('When using ISNULL or NISNULL, the provided value must be null.');
             }
             $condition->parameters = [];
-        } else {
+        } elseif (in_array($relation, [
+            self::GRATER, self::NGRATER, self::GRATEREQ, self::NGRATEREQ,
+            self::LESS, self::NLESS, self::LESSEQ, self::NLESSEQ,
+            self::EQ, self::NEQ,
+            self::NULLSAFEEQ, self::NNULLSAFEEQ,
+        ])) {
             $condition->parameters = [$fieldType->marshalDatabase($value)];
+        } else {
+            $condition->parameters = [$value];
         }
 
         return $condition;

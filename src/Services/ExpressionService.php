@@ -27,16 +27,19 @@ final class ExpressionService extends Service
         }
     }
 
-    public static function getAbsolute(string $key, array $bind, string $path): string
+    public static function getAbsolute(string $key, ?array $bind, string $path): string
     {
         if (!isset(self::$trees[$path])) {
             self::$trees[$path] = self::parse($path);
         }
-        $return = preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, self::getKey(self::$trees[$path], $key));
+        $return = self::getKey(self::$trees[$path], $key);
+        if ($bind !== null) {
+            $return = preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, $return);
+        }
         return is_scalar($return) ? $return : '';
     }
 
-    public static function get(string $key, array $bind = [], string $path = '', ?string $lang = null): string
+    public static function get(string $key, ?array $bind = null, string $path = '', ?string $lang = null): string
     {
         if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
             $lang = LocaleLanguage::getLanguage();
@@ -46,7 +49,7 @@ final class ExpressionService extends Service
         return self::getAbsolute($key, $bind, $path);
     }
 
-    public static function getXua(string $key, array $bind = [], ?string $lang = null) {
+    public static function getXua(string $key, ?array $bind = null, ?string $lang = null) {
         if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
             $lang = LocaleLanguage::getLanguage();
         }
@@ -132,5 +135,4 @@ final class ExpressionService extends Service
             '٦' => '6',
         ],
     ];
-
 }
