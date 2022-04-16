@@ -58,11 +58,11 @@ class Symbol extends Regex
     protected function _unmarshal($input): mixed
     {
         $input = parent::_unmarshal($input);
-        return match ($this->unifier) {
+        return is_string($input) ? match ($this->unifier) {
             self::UNIFIER_UPPER => strtoupper($input),
             self::UNIFIER_LOWER => strtolower($input),
             default => $input
-        };
+        } : $input;
     }
 
     protected function _unmarshalDatabase($input): mixed
