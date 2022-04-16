@@ -51,7 +51,7 @@ class Sequence extends Json
         }
 
         if (!is_array($input)) {
-            $message = gettype($input) . " is not array.";
+            $message = gettype($input) . " is not array."; // @TODO message from dict
             return false;
         }
 

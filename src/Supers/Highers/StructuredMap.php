@@ -34,7 +34,7 @@ class StructuredMap extends Json
         }
 
         if (!is_array($input) and !is_object($input)) {
-            $message = gettype($input) . " is neither array nor object.";
+            $message = gettype($input) . " is neither array nor object."; // @TODO message from dict
             return false;
         }
 

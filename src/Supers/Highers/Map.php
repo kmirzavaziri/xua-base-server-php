@@ -48,7 +48,7 @@ class Map extends Json
         }
 
         if (!is_array($input) and !is_object($input)) {
-            $message = gettype($input) . " is neither array nor object.";
+            $message = gettype($input) . " is neither array nor object."; // @TODO message from dict
             return false;
         }
 
@@ -59,12 +59,12 @@ class Map extends Json
         $size = count($input);
 
         if ($this->minSize !== null and $size < $this->minSize) {
-            $message = "Size of input ($size) must be at least $this->minSize.";
+            $message = "Size of input ($size) must be at least $this->minSize."; // @TODO message from dict
             return false;
         }
 
         if ($this->maxSize !== null and $size > $this->maxSize) {
-            $message = "Size of input ($size) must be at most $this->maxSize.";
+            $message = "Size of input ($size) must be at most $this->maxSize."; // @TODO message from dict
             return false;
         }
 
