@@ -190,6 +190,7 @@ supers:
     entity_relation:
       error_message:
         entity_with_id_does_not_exist: $entity with id $id does not exist.
+        entity_does_not_exist: $entity does not exist.
   strings:
     text:
       error_message:

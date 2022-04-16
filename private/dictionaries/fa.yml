@@ -190,6 +190,7 @@ supers:
     entity_relation:
       error_message:
         entity_with_id_does_not_exist: $entity با شناسه $id یافت نشد.
+        entity_does_not_exist: $entity یافت نشد.
   strings:
     text:
       error_message:
