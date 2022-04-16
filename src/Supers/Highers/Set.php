@@ -38,18 +38,18 @@ class Set extends Super
             return true;
         }
 
-        if (get_class($input) != SetInstance::class) {
+        if (!is_object($input) or get_class($input) != SetInstance::class) {
             $message = ExpressionService::getXua('supers.highers.set.error_message.invalid');
             return false;
         }
 
-        $set = SetInstance::fromList($this->values);
-        $invalidValues = $set->minus($input);
+        $validValues = SetInstance::fromList($this->values);
+        $invalidValues = $input->minus($validValues);
 
         if (!$invalidValues->empty()) {
             $message = ExpressionService::getXua('supers.highers.set.error_message.invalid_values', [
                 'values' => $invalidValues->toList(),
-                'set' => $set->toList(),
+                'set' => $validValues->toList(),
             ]);
             return false;
         }
@@ -64,7 +64,7 @@ class Set extends Super
 
     protected function _unmarshalDatabase(mixed $input): mixed
     {
-        return SetInstance::fromString($input);
+        return is_string($input) ? SetInstance::fromString($input) : $input;
     }
 
     protected function _marshal(mixed $input): mixed

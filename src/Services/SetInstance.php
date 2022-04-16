@@ -10,7 +10,7 @@ class SetInstance extends Service
 
     public static function fromString(string $string): self
     {
-        return self::fromList(explode(',', $string));
+        return self::fromList($string ? explode(',', $string) : []);
     }
 
     public static function fromList(array $list): self
