@@ -133,6 +133,24 @@ abstract class Super extends Block
      * @param mixed $input
      * @return mixed
      */
+    protected function _nestedMarshal(mixed $input): mixed
+    {
+        return $this->_marshal($input);
+    }
+
+    /**
+     * @param mixed $input
+     * @return mixed
+     */
+    protected function _nestedUnmarshal(mixed $input): mixed
+    {
+        return $this->_unmarshal($input);
+    }
+
+    /**
+     * @param mixed $input
+     * @return mixed
+     */
     protected function _marshal(mixed $input): mixed
     {
         return $input;
@@ -204,6 +222,29 @@ abstract class Super extends Block
     private function predicate($input, string|array &$message = null) : bool {
         return $this->_predicate($input, $message);
     }
+
+    /**
+     * @param $input
+     * @return mixed
+     * @throws SuperMarshalException
+     */
+    final public function nestedMarshal($input): mixed
+    {
+        if (!$this->explicitlyAccepts($input, $messages)) {
+            throw (new SuperMarshalException())->fromErrors($messages);
+        }
+        return $this->_nestedMarshal($input);
+    }
+
+    /**
+     * @param $input
+     * @return mixed
+     */
+    final public function nestedUnmarshal($input): mixed
+    {
+        return $this->_nestedUnmarshal($input);
+    }
+
 
     /**
      * @param $input

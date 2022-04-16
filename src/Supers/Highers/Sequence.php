@@ -88,6 +88,31 @@ class Sequence extends Json
         return true;
     }
 
+    protected function _nestedMarshal($input): mixed
+    {
+        if ($this->type) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $value === null
+                    ? null
+                    : $this->type->nestedMarshal($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedUnmarshal($input): mixed
+    {
+        if (!is_array($input)) {
+            return $input;
+        }
+        if ($this->type) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $this->type->nestedUnmarshal($value);
+            }
+        }
+        return $input;
+    }
+
     protected function _phpType(): string
     {
         return ($this->nullable ? '?' : '') . ($this->type->_phpType() != 'mixed' ? $this->type->_phpType() . '[]' : 'array');

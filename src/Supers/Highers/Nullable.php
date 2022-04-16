@@ -29,6 +29,16 @@ class Nullable extends Super
         return $this->type->_predicate($input, $message);
     }
 
+    protected function _nestedMarshal(mixed $input): mixed
+    {
+        return $input === null ? 'null' : $this->type->_nestedMarshal($input);
+    }
+
+    protected function _nestedUnmarshal(mixed $input): mixed
+    {
+        return $this->type->_nestedUnmarshal($input);
+    }
+
     protected function _marshal(mixed $input): mixed
     {
         return $input === null ? 'null' : $this->type->_marshal($input);

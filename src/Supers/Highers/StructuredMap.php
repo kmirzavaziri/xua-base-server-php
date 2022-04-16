@@ -72,4 +72,30 @@ class StructuredMap extends Json
 
         return true;
     }
+
+    protected function _nestedMarshal($input): mixed
+    {
+        foreach ($input as $key => $value) {
+            $itemType = $this->structure[$key] ?? null;
+            if ($itemType) {
+                $input[$key] = $value === null
+                    ? null
+                    : $itemType->nestedMarshal($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedUnmarshal($input): mixed
+    {
+        if (!is_array($input)) {
+            return $input;
+        }
+        foreach ($input as $key => $value) {
+            if ($this->structure[$key]) {
+                $input[$key] = $this->structure[$key]->nestedUnmarshal($value);
+            }
+        }
+        return $input;
+    }
 }

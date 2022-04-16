@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Supers\Highers;
 
-use Xua\Core\Services\JsonService;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Numerics\Integer;
 use Xua\Core\Supers\Strings\Text;
@@ -46,12 +45,7 @@ class Json extends Super
 
     protected function _marshal($input): mixed
     {
-        return json_encode($input ? JsonService::marshalItems($input, $this) : $input, $this->marshalFlags);
-    }
-
-    protected function _marshalDatabase($input): mixed
-    {
-        return $this->_marshal($input);
+        return json_encode($this->_nestedMarshal($input), $this->marshalFlags);
     }
 
     protected function _unmarshal($input): mixed
@@ -67,7 +61,12 @@ class Json extends Super
             $input = (array)$input;
         }
 
-        return is_array($input) ? JsonService::unmarshalItems($input, $this) : $input;
+        return $this->_nestedUnmarshal($input);
+    }
+
+    protected function _marshalDatabase($input): mixed
+    {
+        return $this->_marshal($input);
     }
 
     protected function _unmarshalDatabase($input): mixed

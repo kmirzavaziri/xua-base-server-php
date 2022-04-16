@@ -87,4 +87,29 @@ class Map extends Json
 
         return true;
     }
+
+    protected function _nestedMarshal($input): mixed
+    {
+        if ($this->valueType) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $value === null
+                    ? null
+                    : $this->valueType->nestedMarshal($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedUnmarshal($input): mixed
+    {
+        if (!is_array($input)) {
+            return $input;
+        }
+        if ($this->valueType) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $this->valueType->nestedUnmarshal($value);
+            }
+        }
+        return $input;
+    }
 }
