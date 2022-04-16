@@ -96,7 +96,7 @@ class EntityRelation extends Super
     {
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::relatedEntity, true, null,
-                new Universal([])
+                new Universal([]) // @TODO change to be child of class Entity and not be abstract (better to move the condition used to create a table from entity class into a shared method in some service and use that here too)
             ),
             Signature::new(false, static::relation, true, null,
                 new Enum([Enum::values => self::REL_])
