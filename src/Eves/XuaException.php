@@ -52,10 +52,14 @@ abstract class XuaException extends Exception
         return self::fromErrors($exception->getErrors());
     }
 
-    public function fromErrors(array $errors): static
+    public function fromErrors(null|string|array $errors): static
     {
-        foreach ($errors as $key => $message) {
-            $this->setError($key, $message);
+        if (is_string($errors)) {
+            $this->setError('', $errors);
+        } elseif (is_array($errors)) {
+            foreach ($errors as $key => $message) {
+                $this->setError($key, $message);
+            }
         }
         return $this;
     }
