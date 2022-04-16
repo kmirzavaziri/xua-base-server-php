@@ -24,7 +24,7 @@ class Json extends Super
             Signature::new(false, static::nullable, false, false,
                 new Boolean([])
             ),
-            Signature::new(false, static::marshalFlags, false, 0,
+            Signature::new(false, static::marshalFlags, false, JSON_UNESCAPED_UNICODE,
                 new Integer([])
             ),
         ]);

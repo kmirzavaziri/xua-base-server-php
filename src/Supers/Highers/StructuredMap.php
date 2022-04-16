@@ -15,6 +15,7 @@ use Xua\Core\Tools\Signature\Signature;
 class StructuredMap extends Json
 {
     const nullable = self::class . '::nullable';
+    const marshalFlags = self::class . '::marshalFlags';
     const structure = self::class . '::structure';
 
     protected static function _argumentSignatures(): array

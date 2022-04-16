@@ -17,6 +17,7 @@ use Xua\Core\Tools\Signature\Signature;
 class Map extends Json
 {
     const nullable = self::class . '::nullable';
+    const marshalFlags = self::class . '::marshalFlags';
     const keyType = self::class . '::keyType';
     const valueType = self::class . '::valueType';
     const minSize = self::class . '::minSize';

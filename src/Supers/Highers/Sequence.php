@@ -17,6 +17,7 @@ use Xua\Core\Tools\Signature\Signature;
 class Sequence extends Json
 {
     const nullable = self::class . '::nullable';
+    const marshalFlags = self::class . '::marshalFlags';
     const type = self::class . '::type';
     const minLength = self::class . '::minLength';
     const maxLength = self::class . '::maxLength';
