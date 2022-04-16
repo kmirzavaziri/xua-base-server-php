@@ -31,7 +31,7 @@ class Integer extends Number
         }
 
         if (!is_numeric($input)) {
-            $message = 'Value of type ' . gettype($input) . ' is not a number.';
+            $message = 'Value of type ' . gettype($input) . ' is not a number.'; // @TODO message from dict
             return false;
         }
 

@@ -44,7 +44,7 @@ class Decimal extends Number
         parent::_validation($exception);
 
         if (!(2 <= $this->base and $this->base <= 16)) {
-            $exception->setError('base', "base must be in range [2, 16] but is $this->base");
+            $exception->setError('base', "base must be in range [2, 16] but is $this->base"); // @TODO message from dict
         }
 
         if ($this->integerLength === null) {
@@ -64,12 +64,12 @@ class Decimal extends Number
         }
 
         if (!is_numeric($input)) {
-            $message = 'Value of type ' . gettype($input) . ' is not a number or value castable to a number.';
+            $message = 'Value of type ' . gettype($input) . ' is not a number or value castable to a number.'; // @TODO message from dict
             return false;
         }
 
         if ($this->unsigned and $input < 0) {
-            $message = "$input is less than zero therefore is not unsigned.";
+            $message = "$input is less than zero therefore is not unsigned.";  // @TODO message from dict
             return false;
         }
 
@@ -80,12 +80,12 @@ class Decimal extends Number
         }
 
         if ($integerPart != 0 and strlen($integerPart) > $this->integerLength) {
-            $message = "Length of integer part $integerPart (" . strlen($integerPart) . ") is greater than maximum allowed length $this->integerLength.";
+            $message = "Length of integer part $integerPart (" . strlen($integerPart) . ") is greater than maximum allowed length $this->integerLength."; // @TODO message from dict
             return false;
         }
 
         if ($fractionalPart != 0 and strlen($fractionalPart) > $this->fractionalLength) {
-            $message = "Length of fractional part $fractionalPart (" . strlen($fractionalPart) . ") is greater than maximum allowed length $this->fractionalLength.";
+            $message = "Length of fractional part $fractionalPart (" . strlen($fractionalPart) . ") is greater than maximum allowed length $this->fractionalLength."; // @TODO message from dict
             return false;
         }
 
