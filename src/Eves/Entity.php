@@ -287,7 +287,13 @@ abstract class Entity extends Block
             throw (new EntityFieldException())->setError($name, $messages['identity']);
         }
 
-        if ($this->_x_values[self::FIELD_PREFIX][$name] != $value or $this->_x_must_fetch[$name] or is_object($this->_x_values[self::FIELD_PREFIX][$name])) {
+        $oldValue = $this->_x_values[self::FIELD_PREFIX][$name];
+        if (
+            is_object($oldValue) or
+            (is_array($oldValue) and $oldValue and is_object($oldValue[array_key_first($oldValue)])) or
+            $oldValue != $value or
+            $this->_x_must_fetch[$name]
+        ) {
             $this->_x_must_fetch[$name] = false;
             $this->_x_must_store[$name] = true;
         }
@@ -777,7 +783,7 @@ abstract class Entity extends Block
                     } else {
                         $queries[] = Query::delete(
                             $signature->declaration->relatedEntity::table(),
-                            Condition::leaf($signature->declaration->relatedEntity::table()::C_id(), Condition::IN, $removingIds)
+                            Condition::leaf(CF::_($signature->declaration->relatedEntity::id), Condition::IN, $removingIds)
                         );
                     }
                 }
@@ -1263,8 +1269,8 @@ abstract class Entity extends Block
             return $entity->_x_values[self::FIELD_PREFIX]['id'];
         }, (new static($this->_x_values[self::FIELD_PREFIX]['id']))->$key);
 
-        $addingIds = array_diff($currentIds, $dbIds);
-        $removingIds = array_diff($dbIds, $currentIds);
+        $addingIds = array_values(array_diff($currentIds, $dbIds));
+        $removingIds = array_values(array_diff($dbIds, $currentIds));
         return [$addingIds, $removingIds];
     }
 }

@@ -32,7 +32,7 @@ class URPIService extends Service
     {
         self::$service = ConstantService::get('config', 'services.urpi.class') ?? self::class;
         self::$jsonResponseType = new StructuredMap([StructuredMap::structure => [
-            self::$service::ERRORS   => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
+            self::$service::ERRORS => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => true ])]),
             self::RESPONSE => new Map([Map::keyType => new Symbol([Symbol::allowEmpty => false])])
         ]]);
         self::$jsonResponse = [

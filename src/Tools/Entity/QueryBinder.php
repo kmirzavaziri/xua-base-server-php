@@ -13,7 +13,7 @@ abstract class QueryBinder
             $pos = strpos($query, '?', $pos);
             if (is_array($value)) {
                 $arrayBindPositions[$pos] = count($value);
-                $newBind   = array_merge($newBind, $value);
+                $newBind = array_merge($newBind, $value);
             } else {
                 $newBind[] = $value;
             }

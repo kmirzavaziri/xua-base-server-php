@@ -117,7 +117,7 @@ final class Condition
             if (!$fieldTypeArray->explicitlyAccepts($value, $message)) {
                 throw new EntityConditionException('When using IN or NIN, the provided value must be an array.' . PHP_EOL . $message);
             }
-            $condition->parameters = [$fieldTypeArray->marshalDatabase($value)];
+            $condition->parameters = [$value];
         } elseif (in_array($relation, [self::ISNULL, self::NISNULL])) {
             if ($value !== null) {
                 throw new EntityConditionException('When using ISNULL or NISNULL, the provided value must be null.');

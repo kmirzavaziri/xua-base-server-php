@@ -14,6 +14,8 @@ use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Supers\Special\EntityFieldScheme;
 use Xua\Core\Supers\Special\EntityRelation;
+use Xua\Core\Tools\Entity\CF;
+use Xua\Core\Tools\Entity\Condition;
 use Xua\Core\Tools\Signature\Signature;
 
 class SignatureValueCalculator
@@ -121,10 +123,12 @@ class SignatureValueCalculator
             }
         } elseif (is_array($value)) { // case: DATA
             $childrenJungle = $tree[$root->fullName];
+            $identifierField = isset($childrenJungle['']) ? Signature::_($childrenJungle['']) : Signature::_($relation->relatedEntity::id);
+            unset($childrenJungle['']);
             $children = self::getJungleRoots($childrenJungle);
-            $hasId = in_array('id', array_map(function (Signature $child) { return $child->name; }, $children));
+            $hasIdentifier = in_array($identifierField->name, array_map(function (Signature $child) { return $child->name; }, $children));
             if ($relation->toOne) {
-                if ($hasId) {
+                if ($hasIdentifier) {
                     throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toOne_fields_cannot_include_id'));
                 }
                 $return = $entity->{$root->name};
@@ -133,15 +137,12 @@ class SignatureValueCalculator
                 }
                 return $return;
             } else {
-                if (!$hasId) {
+                if (!$hasIdentifier) {
                     throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
                 }
-                $return = new ($relation->relatedEntity)($value['id']);
-                if ($value['id'] != $return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
-                        'entity' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
-                        'id' => $value['id'],
-                    ]));
+                $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($identifierField->fullName), Condition::EQ, $value[$identifierField->name]));
+                if ($value[$identifierField->name] != $return->{$identifierField->name}) {
+                    $return = new $return(0);
                 }
                 foreach ($children as $child) {
                     if ($child->name != 'id') {
@@ -209,6 +210,7 @@ class SignatureValueCalculator
 
         $root = Signature::_(array_key_first($tree));
         $childrenJungle = $tree[$root->fullName];
+        unset($childrenJungle['']);
 
         if ($childrenJungle) {
             $return = [];
@@ -252,6 +254,13 @@ class SignatureValueCalculator
             if ($children) {
                 $structure = [];
                 foreach ($children as $childName => $grandChildren) {
+                    if (!$childName) {
+                        if (! is_string($grandChildren) or Signature::_($grandChildren) === null) {
+                            // @TODO check if $grandChildren (which is just a signature full name as string) is indexed as a unique field
+                            throw new DefinitionException('Unknown signature ' . $grandChildren);
+                        }
+                        continue;
+                    }
                     [$child, $childType] = self::signatureTreeRootAndType($childName, $grandChildren);
                     if ($root->declaration->relatedEntity != $child->class) {
                         throw new DefinitionException("Cannot append a child from entity {$child->declaration->class} to a relational field on entity {$root->declaration->relatedEntity}.");

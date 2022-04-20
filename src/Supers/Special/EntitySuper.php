@@ -70,8 +70,11 @@ class EntitySuper extends Super
             return true;
         }
 
-        if (is_a($input, $this->relatedEntity, true)) {
-            $message = "Class $input is not a subclass of class $this->relatedEntity."; // @TODO message from dict
+        if (!is_a($input, $this->relatedEntity, true)) {
+            $message = "$input is not a $this->relatedEntity."; // @TODO message from dict
+            // and also translate $this->relatedEntity as we do in supers.special.entity_relation.error_message.entity_does_not_exist,
+            // and also use the representative field here. For example: دوره با نام اینپوت یافت نشد.
+
             return false;
         }
 
@@ -85,7 +88,14 @@ class EntitySuper extends Super
 
     protected function _unmarshal(mixed $input) : mixed
     {
-        return $this->relatedEntity::getOne(Condition::leaf(CF::_($this->representativeField), Condition::EQ, $input));
+        if (!Signature::_($this->representativeField)->declaration->explicitlyAccepts($input)) {
+            return $input;
+        }
+        $entity = $this->relatedEntity::getOne(Condition::leaf(CF::_($this->representativeField), Condition::EQ, $input));
+        if ($entity->id) {
+            return $entity;
+        }
+        return $input;
     }
 
     protected function _marshalDatabase(mixed $input) : mixed

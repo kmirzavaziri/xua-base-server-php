@@ -44,7 +44,7 @@ class DateTime extends Instance
 
     protected function _unmarshal($input): mixed
     {
-        return $input ? (DateTimeInstance::fromYmdHis($input) ?? $input) : $input;
+        return ($input and is_string($input)) ? (DateTimeInstance::fromYmdHis($input) ?? $input) : $input;
     }
 
     protected function _marshalDatabase($input): mixed
@@ -55,7 +55,7 @@ class DateTime extends Instance
 
     protected function _unmarshalDatabase($input): mixed
     {
-        return $input ? (DateTimeInstance::fromGregorianYmdHis($input) ?? $input) : $input;
+        return ($input and is_string($input)) ? (DateTimeInstance::fromGregorianYmdHis($input) ?? $input) : $input;
     }
 
     protected function _databaseType(): ?string
