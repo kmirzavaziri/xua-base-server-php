@@ -49,13 +49,17 @@ final class ExpressionService extends Service
         return self::getAbsolute($key, $bind, $path);
     }
 
-    public static function getXua(string $key, ?array $bind = null, ?string $lang = null) {
+    public static function getVendor(string $key, ?array $bind = null, string $path = '', ?string $lang = null) {
         if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
             $lang = LocaleLanguage::getLanguage();
         }
         $d = DIRECTORY_SEPARATOR;
-        $path = dirname(__FILE__) . "$d..$d..${d}private${d}dictionaries$d$lang.yml";
+        $path = "vendor$d$path$d$lang.yml";
         return self::getAbsolute($key, $bind, $path);
+    }
+
+    public static function getXua(string $key, ?array $bind = null, ?string $lang = null) {
+        return self::getVendor($key, $bind, 'xua/core/private/dictionaries', $lang);
     }
 
     private static function parse(string $filename) : array
