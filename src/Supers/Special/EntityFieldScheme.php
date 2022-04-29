@@ -76,7 +76,7 @@ class EntityFieldScheme extends Super
                                     'required' => true,
                                     'checkDefault' => false,
                                     'default' => null,
-                                    'passByReference' => true,
+                                    'passByReference' => false,
                                 ],
                                 [
                                     'name' => null,
