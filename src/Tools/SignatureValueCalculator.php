@@ -3,6 +3,7 @@
 namespace Xua\Core\Tools;
 
 use Xua\Core\Eves\Entity;
+use Xua\Core\Eves\MethodEve;
 use Xua\Core\Exceptions\DefinitionException;
 use Xua\Core\Exceptions\EntityFieldException;
 use Xua\Core\Services\ConstantService;
@@ -27,14 +28,14 @@ class SignatureValueCalculator
      * @throws DefinitionException
      * @throws EntityFieldException
      */
-    public static function setEntityField(Entity $entity, EntityFieldScheme $scheme, mixed $value): void
+    public static function setEntityField(Entity $entity, EntityFieldScheme $scheme, mixed $value, ?MethodEve $method = null): void
     {
         switch ($scheme->mode) {
             case EntityFieldScheme::MODE_TREE:
                 self::setEntityFieldRecursive($entity, $scheme->tree, $value);
                 return;
             case EntityFieldScheme::MODE_INSTANT:
-                $scheme->instant['setter']($entity, $value);
+                $scheme->instant['setter']($entity, $value, $method);
                 return;
         }
     }
@@ -165,11 +166,11 @@ class SignatureValueCalculator
      * @param EntityFieldScheme $scheme
      * @return mixed
      */
-    public static function getEntityField(Entity $entity, EntityFieldScheme $scheme): mixed
+    public static function getEntityField(Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): mixed
     {
         return match ($scheme->mode) {
             EntityFieldScheme::MODE_TREE => self::getEntityFieldRecursive($entity, $scheme->tree),
-            EntityFieldScheme::MODE_INSTANT => $scheme->instant['getter']($entity),
+            EntityFieldScheme::MODE_INSTANT => $scheme->instant['getter']($entity, $method),
             default => null,
         };
     }

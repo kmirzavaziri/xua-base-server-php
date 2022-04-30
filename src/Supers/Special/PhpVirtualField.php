@@ -55,7 +55,16 @@ class PhpVirtualField extends Super
                             'required' => true,
                             'checkDefault' => false,
                             'default' => null,
-                            'passByReference' => true,
+                            'passByReference' => false,
+                        ],
+                        [
+                            'name' => null,
+                            'type' => 'array',
+                            'allowSubtype' => false,
+                            'required' => true,
+                            'checkDefault' => false,
+                            'default' => null,
+                            'passByReference' => false,
                         ],
                         [
                             'name' => null,

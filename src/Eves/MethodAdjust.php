@@ -50,7 +50,7 @@ abstract class MethodAdjust extends FieldedMethod
                 if ($scheme->name == 'id') {
                     throw new DefinitionException('Cannot modify id');
                 }
-                SignatureValueCalculator::setEntityField($feed, $scheme, $this->{MethodEve::REQUEST_PREFIX . $scheme->name});
+                SignatureValueCalculator::setEntityField($feed, $scheme, $this->{MethodEve::REQUEST_PREFIX . $scheme->name}, $this);
             } catch (EntityFieldException $e) {
                 $this->_x_error->fromException($e);
                 $this->throwError();

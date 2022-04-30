@@ -51,7 +51,7 @@ abstract class MethodView extends FieldedMethod
         foreach ($fields as $field) {
             /** @var EntityFieldScheme $scheme */
             $scheme = $field->declaration;
-            $this->{MethodEve::RESPONSE_PREFIX . $scheme->name} = SignatureValueCalculator::getEntityField($feed, $scheme);
+            $this->{MethodEve::RESPONSE_PREFIX . $scheme->name} = SignatureValueCalculator::getEntityField($feed, $scheme, $this);
         }
     }
 

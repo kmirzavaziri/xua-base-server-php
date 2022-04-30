@@ -174,7 +174,7 @@ abstract class MethodEve extends Block
      * @param string $key
      * @param string|array|null $message
      */
-    protected function addError(string $key, null|string|array $message): void
+    public function addError(string $key, null|string|array $message): void
     {
         if ($signature = Signature::_($key)) {
             $key = $signature->name;
@@ -185,7 +185,7 @@ abstract class MethodEve extends Block
     /**
      * @throws MethodRequestException
      */
-    protected function throwError(): void
+    public function throwError(): void
     {
         throw $this->_x_error;
     }
@@ -195,7 +195,7 @@ abstract class MethodEve extends Block
      * @param string|array|null $message
      * @throws MethodRequestException
      */
-    protected function addAndThrowError(string $key, null|string|array $message): void
+    public function addAndThrowError(string $key, null|string|array $message): void
     {
         $this->addError($key, $message);
         $this->throwError();

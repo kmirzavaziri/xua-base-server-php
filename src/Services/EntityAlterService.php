@@ -16,30 +16,31 @@ final class EntityAlterService extends Service
 {
     public static function alters(): string
     {
-        return self::alterTransaction() . self::altersInDir(ConstantService::get('config', 'paths.entities'));
+        return
+            self::alterTransaction() . self::altersInDirs(ConstantService::get('config', 'paths.entities'));
     }
 
-    private static function altersInDir(string $dir): string
+    private static function altersInDirs(array $dirs): string
     {
-        $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
-        $phpFiles = new RegexIterator($allFiles, '/\.php$/');
-
+        $entities = [];
+        foreach ($dirs as $dir) {
+            $phpFiles = new RegexIterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir)), '/\.php$/');
+            foreach ($phpFiles as $phpFile) {
+                $entities[] = self::getClassName(file_get_contents($phpFile->getRealPath()));
+            }
+        }
         $alters = [];
         $newTables = [];
-
-        foreach ($phpFiles as $phpFile) {
-            $className = self::getClassName(file_get_contents($phpFile->getRealPath()));
-            if ($className and is_a($className, Entity::class, true) and !(new ReflectionClass($className))->isAbstract()) {
-                $tableNamesAndAlter = $className::alter();
+        foreach ($entities as $entity) {
+            if ($entity and is_a($entity, Entity::class, true) and !(new ReflectionClass($entity))->isAbstract()) {
+                $tableNamesAndAlter = $entity::alter();
                 $newTables = array_merge($newTables, $tableNamesAndAlter['tableNames']);
                 if ($tableNamesAndAlter['alters']) {
                     $alters[] = $tableNamesAndAlter['alters'];
                 }
             }
         }
-
         $alters[] = TableScheme::getDropTables($newTables);
-
         return trim(implode(PHP_EOL . PHP_EOL, $alters));
     }
 

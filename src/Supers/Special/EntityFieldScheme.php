@@ -3,6 +3,7 @@
 namespace Xua\Core\Supers\Special;
 
 use Xua\Core\Eves\Entity;
+use Xua\Core\Eves\MethodEve;
 use Xua\Core\Exceptions\DefinitionException;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Eves\Super;
@@ -63,6 +64,15 @@ class EntityFieldScheme extends Super
                                     'default' => null,
                                     'passByReference' => false,
                                 ],
+                                [
+                                    'name' => null,
+                                    'type' => MethodEve::class,
+                                    'allowSubtype' => true,
+                                    'required' => true,
+                                    'checkDefault' => false,
+                                    'default' => null,
+                                    'passByReference' => false,
+                                ],
                             ]
                         ]),
                         'setter' => new Callback([
@@ -81,6 +91,15 @@ class EntityFieldScheme extends Super
                                 [
                                     'name' => null,
                                     'type' => null,
+                                    'allowSubtype' => true,
+                                    'required' => true,
+                                    'checkDefault' => false,
+                                    'default' => null,
+                                    'passByReference' => false,
+                                ],
+                                [
+                                    'name' => null,
+                                    'type' => MethodEve::class,
                                     'allowSubtype' => true,
                                     'required' => true,
                                     'checkDefault' => false,
