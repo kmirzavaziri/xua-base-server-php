@@ -60,7 +60,7 @@ abstract class MethodView extends FieldedMethod
         return Entity::class;
     }
 
-    final protected function feed(): Entity {
+    final public function feed(): Entity {
         if ($this->_cache_feed === null) {
             $this->_cache_feed = $this->_feed();
         }

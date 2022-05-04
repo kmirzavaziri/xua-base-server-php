@@ -52,7 +52,7 @@ abstract class MethodQuery extends FieldedMethod
     /**
      * @return Entity[]
      */
-    final protected function feed(): array {
+    final public function feed(): array {
         if ($this->_cache_feed === null) {
             $this->_cache_feed = $this->_feed();
         }
