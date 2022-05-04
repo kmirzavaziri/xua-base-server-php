@@ -259,7 +259,7 @@ abstract class Entity extends Block
 
         if (is_a($signature->declaration, PhpVirtualField::class)) {
             if ($signature->declaration->setter !== null) {
-                ($signature->declaration->setter)($this, $signature->p(), $value);
+                ($signature->declaration->setter)($this, $value, $signature->p());
             } else {
                 throw (new MagicCallException())->setError($name, 'Cannot set PhpVirtualField with no setter.');
             }
