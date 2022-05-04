@@ -37,7 +37,15 @@ abstract class XuaException extends Exception
 
     public function setError(string $key, null|string|array $message) : static
     {
-        $this->errors[$key] = $message;
+        $path = explode('.', $key);
+        $errors = &$this->errors;
+        foreach ($path as $part) {
+            if (!isset($errors[$part]) or !is_array($errors[$part])) {
+                $errors[$part] = [];
+            }
+            $errors = &$errors[$part];
+        }
+        $errors = $message;
         return $this;
     }
 

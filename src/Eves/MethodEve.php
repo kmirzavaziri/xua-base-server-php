@@ -176,10 +176,11 @@ abstract class MethodEve extends Block
      */
     public function addError(string $key, null|string|array $message): void
     {
-        if ($signature = Signature::_($key)) {
-            $key = $signature->name;
+        $path = explode('.', $key);
+        if ($signature = Signature::_($path[0])) {
+            $path[0] = $signature->name;
         }
-        $this->_x_error->setError($key, $message);
+        $this->_x_error->setError(implode('.', $path), $message);
     }
 
     /**
