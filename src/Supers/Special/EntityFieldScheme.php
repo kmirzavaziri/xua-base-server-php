@@ -9,17 +9,19 @@ use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Eves\Super;
 use Xua\Core\Supers\Highers\Callback;
 use Xua\Core\Supers\Highers\Instance;
-use Xua\Core\Supers\Highers\Map;
+use Xua\Core\Supers\Highers\Nullable;
+use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Supers\Strings\Enum;
 use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Supers\Universal;
 use Xua\Core\Tools\Signature\Signature;
-use Xua\Core\Tools\SignatureValueCalculator;
 
 /**
- * @property ?array tree
+ * @property null|\Xua\Core\Tools\Signature\Signature signature
+ * @property null|\Xua\Core\Tools\Signature\Signature identifierField
+ * @property ?\Xua\Core\Supers\Special\EntityFieldScheme[] children
  * @property ?array instant
  * @property ?string name
  * @property null|\Xua\Core\Eves\Super type
@@ -27,24 +29,37 @@ use Xua\Core\Tools\SignatureValueCalculator;
  */
 class EntityFieldScheme extends Super
 {
-    const tree = self::class . '::tree';
+    // given args
+    const signature = self::class . '::signature';
+    const identifierField = self::class . '::identifierField';
+    const children = self::class . '::children';
     const instant = self::class . '::instant';
+    // constant args
     const name = self::class . '::name';
     const type = self::class . '::type';
     const mode = self::class . '::mode';
 
-    const MODE_TREE = 'tree';
+    const MODE_SIGNATURE = 'signature';
     const MODE_INSTANT = 'instant';
     const MODE_ = [
-        self::MODE_TREE,
+        self::MODE_SIGNATURE,
         self::MODE_INSTANT,
     ];
 
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            Signature::new(false, static::tree, false, null,
-                new Map([Map::nullable => true])
+            Signature::new(false, static::signature, false, null,
+                new Instance([Instance::nullable => true, Instance::of => Signature::class])
+            ),
+            Signature::new(false, static::identifierField, false, null,
+                new Instance([Instance::nullable => true, Instance::of => Signature::class])
+            ),
+            Signature::new(false, static::children, false, null,
+                new Sequence([
+                    Sequence::nullable => true,
+                    Sequence::type => new Instance([Instance::nullable => false, Instance::of => EntityFieldScheme::class])
+                ])
             ),
             Signature::new(false, static::instant, false, null,
                 new StructuredMap([
@@ -125,28 +140,51 @@ class EntityFieldScheme extends Super
 
     protected function _validation(SuperValidationException $exception): void
     {
-        if ($this->tree !== null and $this->instant !== null) {
-            $exception->setError('instant', 'Specify exactly one of tree and instant.');
-        } elseif ($this->tree !== null and $this->instant === null) {
-            $roots = array_keys($this->tree);
-            if (count($roots) != 1) {
-                $exception->setError('tree', 'There must be exactly one root');
-                return;
-            }
-            $rootName = $roots[0];
+        if ($this->signature !== null and $this->instant !== null) {
+            $exception->setError('instant', 'Specify exactly one of signature and instant.');
+        } elseif ($this->signature !== null) {
+            $this->children = $this->children ?? [];
             try {
-                [$root, $this->type] = SignatureValueCalculator::signatureTreeRootAndType($rootName, $this->tree[$rootName]);
-                $this->name = $root->name;
+                if (is_a($this->signature->declaration, EntityRelation::class)) {
+                    $this->identifierField = $this->identifierField ?? Signature::_($this->signature->declaration->relatedEntity::id);
+                    // @TODO check if $grandChildren (which is just a signature full name as string) is indexed as a unique field
+                    if ($this->children) {
+                        $structure = [];
+                        foreach ($this->children as $child) {
+                            if ($this->mode == self::MODE_SIGNATURE and $this->signature->declaration->relatedEntity != $child->signature->class) {
+                                throw new DefinitionException("Cannot append a child from entity {$child->signature->declaration->class} to a relational field on entity {$this->signature->declaration->relatedEntity}.");
+                            }
+                            $structure[$child->name] = $child->type;
+                        }
+                        $type = new StructuredMap([StructuredMap::structure => $structure, StructuredMap::nullable => $this->signature->declaration->nullable]);
+                    } else {
+                        $type = new Nullable([Nullable::type => Signature::_($this->signature->declaration->relatedEntity::id)->declaration]);
+                    }
+                    $type = $this->signature->declaration->toMany ? new Sequence([Sequence::type => $type, Sequence::nullable => $this->signature->declaration->nullable]) : $type;
+                    $this->type = $type;
+                } else {
+                    if ($this->children) {
+                        throw new DefinitionException("Cannot append children to a non-relational field {$this->signature->name}.");
+                    }
+                    $this->type = $this->signature->declaration;
+                }
+                $this->name = $this->signature->name;
             } catch (DefinitionException $e) {
                 $exception->setError('tree', $e->getMessage());
             }
-            $this->mode = self::MODE_TREE;
-        } elseif ($this->tree === null and $this->instant !== null) {
+            $this->mode = self::MODE_SIGNATURE;
+        } elseif ($this->instant !== null) {
+            if ($this->identifierField !== null) {
+                $exception->setError('identifierField', 'Cannot specify identifierField for instant schemes.');
+            }
+            if ($this->children !== null) {
+                $exception->setError('children', 'Cannot specify children for instant schemes.');
+            }
             $this->name = $this->instant['name'];
             $this->type = $this->instant['type'] ?? new Universal([]);
             $this->mode = self::MODE_INSTANT;
         } else {
-            $exception->setError('instant', 'Specify exactly one of tree and instant.');
+            $exception->setError('instant', 'Specify exactly one of signature and instant arguments.');
         }
     }
 

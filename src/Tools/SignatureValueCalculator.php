@@ -10,87 +10,110 @@ use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\FileInstanceSame;
 use Xua\Core\Supers\Files\Generic;
-use Xua\Core\Supers\Highers\Nullable;
-use Xua\Core\Supers\Highers\Sequence;
-use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Supers\Special\EntityFieldScheme;
 use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Tools\Entity\CF;
 use Xua\Core\Tools\Entity\Condition;
-use Xua\Core\Tools\Signature\Signature;
 
 class SignatureValueCalculator
 {
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // set /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * @param Entity $entity
-     * @param EntityFieldScheme $scheme
      * @param mixed $value
-     * @throws DefinitionException
-     * @throws EntityFieldException
+     * @param EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
+     * @throws \Xua\Core\Exceptions\DefinitionException
+     * @throws \Xua\Core\Exceptions\EntityConditionException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
-    public static function setEntityField(Entity $entity, EntityFieldScheme $scheme, mixed $value, ?MethodEve $method = null): void
+    public static function setEntityField(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): void
     {
         switch ($scheme->mode) {
-            case EntityFieldScheme::MODE_TREE:
-                self::setEntityFieldRecursive($entity, $scheme->tree, $value);
-                return;
             case EntityFieldScheme::MODE_INSTANT:
-                $scheme->instant['setter']($entity, $value, $method);
+                self::setEntityFieldInstant($entity, $value, $scheme, $method);
+                return;
+            case EntityFieldScheme::MODE_SIGNATURE:
+                self::setEntityFieldSignature($entity, $value, $scheme, $method);
                 return;
         }
     }
 
     /**
      * @param Entity $entity
-     * @param array $tree
      * @param mixed $value
-     * @throws DefinitionException
-     * @throws EntityFieldException
+     * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
      */
-    private static function setEntityFieldRecursive(Entity $entity, array $tree, mixed $value): void
+    private static function setEntityFieldInstant(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): void
     {
-        $root = Signature::_(array_key_first($tree));
-        if (is_a($root->declaration, EntityRelation::class)) {
-            if ($root->declaration->toMany) {
+        $scheme->instant['setter']($entity, $value, $method);
+    }
+
+    /**
+     * @param Entity $entity
+     * @param mixed $value
+     * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
+     * @throws \Xua\Core\Exceptions\DefinitionException
+     * @throws \Xua\Core\Exceptions\EntityConditionException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
+     */
+    private static function setEntityFieldSignature(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): void
+    {
+        if (is_a($scheme->signature->declaration, EntityRelation::class)) {
+            if ($scheme->signature->declaration->toMany) {
                 $result = [];
                 foreach ($value as $index => $item) {
                     try {
-                        $result[] = self::setRelative($entity, $tree, $item);
+                        $result[] = self::setRelative($entity, $item, $scheme, $method);
                     } catch (EntityFieldException $e) {
-                        throw (new EntityFieldException)->setError($root->name, [$index => $e->getErrors()]);
+                        throw (new EntityFieldException)->setError("$scheme->name.$index", $e->getErrors());
                     }
                 }
-                $entity->{$root->name} = $result;
+                $entity->{$scheme->name} = $result;
             } else {
                 try {
-                    $entity->{$root->name} = self::setRelative($entity, $tree, $value);
+                    $entity->{$scheme->name} = self::setRelative($entity, $value, $scheme, $method);
                 } catch (EntityFieldException $e) {
-                    throw (new EntityFieldException)->setError($root->name, $e->getErrors());
+                    throw (new EntityFieldException)->setError($scheme->name, $e->getErrors());
                 }
             }
-        } elseif (is_a($root->declaration, Generic::class)) {
+        } elseif (is_a($scheme->signature->declaration, Generic::class)) {
             if (!is_a($value, FileInstanceSame::class)) {
-                if ($entity->{$root->name} and file_exists($entity->{$root->name}->path)) {
-                    unlink($entity->{$root->name}->path);
+                if ($entity->{$scheme->name} and file_exists($entity->{$scheme->name}->path)) {
+                    unlink($entity->{$scheme->name}->path);
                 }
-                /** @noinspection PhpUndefinedMethodInspection */
                 $value?->store(ConstantService::get('config', 'paths.storage') . DIRECTORY_SEPARATOR . $entity::table() . DIRECTORY_SEPARATOR . $entity->id);
-                $entity->{$root->name} = $value;
+                $entity->{$scheme->name} = $value;
             }
         } else {
-            $entity->{$root->name} = $value;
+            $entity->{$scheme->name} = $value;
         }
     }
 
     /**
-     * @throws DefinitionException
-     * @throws EntityFieldException
+     * @param \Xua\Core\Eves\Entity $entity
+     * @param array|int|null $value
+     * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
+     * @return \Xua\Core\Eves\Entity|null
+     * @throws \Xua\Core\Exceptions\DefinitionException
+     * @throws \Xua\Core\Exceptions\EntityConditionException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
-    private static function setRelative(Entity $entity, array $tree, null|array|int $value): ?Entity
+    private static function setRelative(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): ?Entity
     {
-        $root = Signature::_(array_key_first($tree));
         /** @var EntityRelation $relation */
-        $relation = $root->declaration;
+        $relation = $scheme->signature->declaration;
 
         if (is_int($value)) { // case: ID
             if ($relation->relation == EntityRelation::REL_R11O) {
@@ -104,50 +127,46 @@ class SignatureValueCalculator
                 if ($return->{$relation->invName}) {
                     /** @noinspection PhpUndefinedMethodInspection */
                     throw new EntityFieldException(ExpressionService::getXua('tools.signature_value_calculator.error_message.related_entity_with_id_is_already_in_rel', [
-                        'entityLeft' => ExpressionService::get('table_name.' . $root->class::table()),
+                        'entityLeft' => ExpressionService::get('table_name.' . $scheme->signature->class::table()),
                         'entityRight' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
                         'id' => $value,
                     ]));
                 }
                 return $return;
             } elseif ($relation->relation == EntityRelation::REL_R11R) {
-                throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.cannot_change_R11R_by_id'));
+                throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.cannot_change_R11R_by_id'));
             } else {
                 $return = new ($relation->relatedEntity)($value);
                 if (!$return->id) {
                     throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
-                        'entity' => ExpressionService::get('table_name.' . $root->declaration->relatedEntity::table()),
+                        'entity' => ExpressionService::get('table_name.' . $scheme->signature->declaration->relatedEntity::table()),
                         'id' => $value,
                     ]));
                 }
                 return $return;
             }
         } elseif (is_array($value)) { // case: DATA
-            $childrenJungle = $tree[$root->fullName];
-            $identifierField = isset($childrenJungle['']) ? Signature::_($childrenJungle['']) : Signature::_($relation->relatedEntity::id);
-            unset($childrenJungle['']);
-            $children = self::getJungleRoots($childrenJungle);
-            $hasIdentifier = in_array($identifierField->name, array_map(function (Signature $child) { return $child->name; }, $children));
+            $hasIdentifier = in_array($scheme->identifierField->name, array_map(function (EntityFieldScheme $child) { return $child->name; }, $scheme->children));
             if ($relation->toOne) {
                 if ($hasIdentifier) {
-                    throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toOne_fields_cannot_include_id'));
+                    throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toOne_fields_cannot_include_id'));
                 }
-                $return = $entity->{$root->name};
-                foreach ($children as $child) {
-                    self::setEntityFieldRecursive($return, [$child->fullName => $childrenJungle[$child->fullName]], $value[$child->name]);
+                $return = $entity->{$scheme->name};
+                foreach ($scheme->children as $child) {
+                    self::setEntityField($return, $value[$child->name], $child, $method);
                 }
                 return $return;
             } else {
                 if (!$hasIdentifier) {
-                    throw (new DefinitionException())->setError($root->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
+                    throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
                 }
-                $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($identifierField->fullName), Condition::EQ, $value[$identifierField->name]));
-                if ($value[$identifierField->name] != $return->{$identifierField->name}) {
+                $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value[$scheme->identifierField->name]));
+                if ($value[$scheme->identifierField->name] != $return->{$scheme->identifierField->name}) {
                     $return = new $return(0);
                 }
-                foreach ($children as $child) {
+                foreach ($scheme->children as $child) {
                     if ($child->name != 'id') {
-                        self::setEntityFieldRecursive($return, [$child->fullName => $childrenJungle[$child->fullName]], $value[$child->name]);
+                        self::setEntityField($return, $value[$child->name], $child, $method);
                     }
                 }
                 return $return;
@@ -161,63 +180,73 @@ class SignatureValueCalculator
         throw (new DefinitionException('There is an error in Xua Core. This Exception should not be throw in any case.'));
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // get /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * @param Entity $entity
      * @param EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
      * @return mixed
      */
     public static function getEntityField(Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): mixed
     {
         return match ($scheme->mode) {
-            EntityFieldScheme::MODE_TREE => self::getEntityFieldRecursive($entity, $scheme->tree),
-            EntityFieldScheme::MODE_INSTANT => $scheme->instant['getter']($entity, $method),
+            EntityFieldScheme::MODE_INSTANT => self::getEntityFieldInstant($entity, $scheme, $method),
+            EntityFieldScheme::MODE_SIGNATURE => self::getEntityFieldSignature($entity, $scheme, $method),
             default => null,
         };
     }
 
     /**
-     * @param Entity $entity
-     * @param array $tree
+     * @param \Xua\Core\Eves\Entity $entity
+     * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
      * @return mixed
      */
-    private static function getEntityFieldRecursive(Entity $entity, array $tree): mixed
+    private static function getEntityFieldInstant(Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): mixed {
+        return $scheme->instant['getter']($entity, $method);
+    }
+
+    /**
+     * @param Entity $entity
+     * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
+     * @return mixed
+     */
+    private static function getEntityFieldSignature(Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): mixed
     {
-        $root = Signature::_(array_key_first($tree));
-        if (is_a($root->declaration, EntityRelation::class)) {
-            if ($root->declaration->toMany) {
+        if (is_a($scheme->signature->declaration, EntityRelation::class)) {
+            if ($scheme->signature->declaration->toMany) {
                 $return = [];
-                foreach ($entity->{$root->name} as $item) {
-                    $return[] = self::getRelative($item, $tree);
+                foreach ($entity->{$scheme->name} as $item) {
+                    $return[] = self::getRelative($item, $scheme, $method);
                 }
                 return $return;
             } else {
-                return self::getRelative($entity->{$root->name}, $tree);
+                return self::getRelative($entity->{$scheme->name}, $scheme, $method);
             }
         } else {
-            return $entity->{$root->name};
+            return $entity->{$scheme->name};
         }
     }
 
     /**
      * @param Entity $entity
-     * @param array $tree
+     * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
+     * @param \Xua\Core\Eves\MethodEve|null $method
      * @return array|int|null
      */
-    private static function getRelative(Entity $entity, array $tree): null|array|int
+    private static function getRelative(Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): null|array|int
     {
         if (!$entity->id) {
             return null;
         }
 
-        $root = Signature::_(array_key_first($tree));
-        $childrenJungle = $tree[$root->fullName];
-        unset($childrenJungle['']);
-
-        if ($childrenJungle) {
+        if ($scheme->children) {
             $return = [];
-            $children = self::getJungleRoots($childrenJungle);
-            foreach ($children as $child) {
-                $return[$child->name] = self::getEntityFieldRecursive($entity, [$child->fullName => $childrenJungle[$child->fullName]]);
+            foreach ($scheme->children as $child) {
+                $return[$child->name] = self::getEntityField($entity, $child, $method);
             }
             return $return;
         } else {
@@ -225,61 +254,4 @@ class SignatureValueCalculator
         }
     }
 
-    /**
-     * @param array $jungle
-     * @return Signature[]
-     */
-    private static function getJungleRoots(array $jungle): array
-    {
-        $roots = [];
-        foreach ($jungle as $rootName => $children) {
-            $roots[] = Signature::_($rootName);
-        }
-        return $roots;
-    }
-
-    /**
-     * @param string $rootName
-     * @param array $children
-     * @return array
-     * @throws DefinitionException
-     * @throws \Xua\Core\Exceptions\SuperValidationException
-     */
-    public static function signatureTreeRootAndType(string $rootName, array $children): array
-    {
-        $root = Signature::_($rootName);
-        if ($root === null) {
-            throw new DefinitionException('Unknown signature ' . $rootName);
-        }
-        if (is_a($root->declaration, EntityRelation::class)) {
-            if ($children) {
-                $structure = [];
-                foreach ($children as $childName => $grandChildren) {
-                    if (!$childName) {
-                        if (! is_string($grandChildren) or Signature::_($grandChildren) === null) {
-                            // @TODO check if $grandChildren (which is just a signature full name as string) is indexed as a unique field
-                            throw new DefinitionException('Unknown signature ' . $grandChildren);
-                        }
-                        continue;
-                    }
-                    [$child, $childType] = self::signatureTreeRootAndType($childName, $grandChildren);
-                    if ($root->declaration->relatedEntity != $child->class) {
-                        throw new DefinitionException("Cannot append a child from entity {$child->declaration->class} to a relational field on entity {$root->declaration->relatedEntity}.");
-                    }
-                    $structure[$child->name] = $childType;
-                }
-                $type = new StructuredMap([StructuredMap::structure => $structure, StructuredMap::nullable => $root->declaration->nullable]);
-            } else {
-                $type = new Nullable([Nullable::type => Signature::_($root->declaration->relatedEntity::id)->declaration]);
-            }
-            $type = $root->declaration->toMany ? new Sequence([Sequence::type => $type, Sequence::nullable => $root->declaration->nullable]) : $type;
-
-            return [$root, $type];
-        } else {
-            if ($children) {
-                throw new DefinitionException("Cannot append children to a non-relational field $root->name.");
-            }
-            return [$root, $root->declaration];
-        }
-    }
 }

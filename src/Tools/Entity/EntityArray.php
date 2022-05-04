@@ -3,6 +3,7 @@
 namespace Xua\Core\Tools\Entity;
 
 use Xua\Core\Eves\Entity;
+use Xua\Core\Eves\MethodEve;
 use Xua\Core\Eves\Super;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Supers\Highers\Map;
@@ -19,11 +20,11 @@ class EntityArray
      * @param EntityFieldScheme[] $schemes
      * @return array
      */
-    public static function oneToArray(Entity $entity, array $schemes): array
+    public static function oneToArray(Entity $entity, array $schemes, ?MethodEve $method = null): array
     {
         $data = [];
         foreach ($schemes as $scheme) {
-            $data[$scheme->name] = SignatureValueCalculator::getEntityField($entity, $scheme);
+            $data[$scheme->name] = SignatureValueCalculator::getEntityField($entity, $scheme, $method);
         }
         return $data;
     }
