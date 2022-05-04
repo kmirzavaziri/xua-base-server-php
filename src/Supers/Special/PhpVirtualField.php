@@ -40,6 +40,15 @@ class PhpVirtualField extends Super
                             'default' => null,
                             'passByReference' => false,
                         ],
+                        [
+                            'name' => null,
+                            'type' => 'array',
+                            'allowSubtype' => false,
+                            'required' => true,
+                            'checkDefault' => false,
+                            'default' => null,
+                            'passByReference' => false,
+                        ],
                     ]
                 ])
             ),
@@ -59,8 +68,8 @@ class PhpVirtualField extends Super
                         ],
                         [
                             'name' => null,
-                            'type' => 'array',
-                            'allowSubtype' => false,
+                            'type' => null,
+                            'allowSubtype' => true,
                             'required' => true,
                             'checkDefault' => false,
                             'default' => null,
@@ -68,8 +77,8 @@ class PhpVirtualField extends Super
                         ],
                         [
                             'name' => null,
-                            'type' => null,
-                            'allowSubtype' => true,
+                            'type' => 'array',
+                            'allowSubtype' => false,
                             'required' => true,
                             'checkDefault' => false,
                             'default' => null,
