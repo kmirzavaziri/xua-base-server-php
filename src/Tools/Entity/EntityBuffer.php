@@ -13,6 +13,14 @@ final class EntityBuffer {
      * @var Entity[]
      */
     private array $entities = [];
+    private static ?EntityBuffer $efficientBuffer = null;
+
+    public static function getEfficientBuffer(): self {
+        if (!self::$efficientBuffer) {
+            self::$efficientBuffer = new self();
+        }
+        return self::$efficientBuffer;
+    }
 
     public function add(Entity $entity): self
     {

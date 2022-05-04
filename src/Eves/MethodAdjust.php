@@ -5,6 +5,7 @@ namespace Xua\Core\Eves;
 use Xua\Core\Exceptions\DefinitionException;
 use Xua\Core\Exceptions\EntityFieldException;
 use Xua\Core\Supers\Special\EntityFieldScheme;
+use Xua\Core\Tools\Entity\EntityBuffer;
 use Xua\Core\Tools\Signature\Signature;
 use Xua\Core\Tools\SignatureValueCalculator;
 
@@ -43,6 +44,7 @@ abstract class MethodAdjust extends FieldedMethod
     {
         $feed = $this->feed();
         $fields = static::fieldSignatures();
+        EntityBuffer::getEfficientBuffer()->add($feed);
         foreach ($fields as $field) {
             /** @var EntityFieldScheme $scheme */
             $scheme = $field->declaration;
@@ -57,7 +59,8 @@ abstract class MethodAdjust extends FieldedMethod
             }
         }
         try {
-            $feed->store();
+            // @TODO only store if it will not be stored later with some flag or something
+            EntityBuffer::getEfficientBuffer()->store();
         } catch (EntityFieldException $e) {
             throw $this->_x_error->fromException($e);
         }
