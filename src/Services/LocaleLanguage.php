@@ -56,9 +56,9 @@ final class LocaleLanguage extends Service
     /**
      * @return bool
      */
-    public static function isRtl(): bool
+    public static function isRtl(?string $language = null): bool
     {
-        return in_array(self::$language, [
+        return in_array($language ?? self::$language, [
             self::LANG_AR,
 //            self::LANG_ARC,
 //            self::LANG_CKB,
