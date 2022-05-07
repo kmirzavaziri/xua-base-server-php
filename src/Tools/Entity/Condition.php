@@ -90,14 +90,14 @@ final class Condition
      * @throws SuperValidationException
      * @throws SuperMarshalException
      */
-    public static function leaf (CF $field, string $relation, mixed $value = null) : Condition
+    public static function leaf(CF $field, string $relation, mixed $value = null): Condition
     {
         if (!in_array($relation, self::RELATION_)) {
             throw new EntityConditionException('Invalid relation provided. Relation must be a constant of class Condition.');
         }
 
         if (is_a($field->signature->declaration, EntityRelation::class)) {
-            throw (new EntityConditionException)->setError($field->signature->name, 'Cannot filter on relational field itself. Use rel function on the it.');
+            $field->rel($field->signature->declaration->relatedEntity::id);
         }
 
         $condition = new Condition();

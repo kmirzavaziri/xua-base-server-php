@@ -115,9 +115,9 @@ class SignatureValueCalculator
         /** @var EntityRelation $relation */
         $relation = $scheme->signature->declaration;
 
-        if (is_int($value)) { // case: ID
+        if (is_scalar($value)) { // case: Identifier
             if ($relation->relation == EntityRelation::REL_R11O) {
-                $return = new ($relation->relatedEntity)($value);
+                $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value));
                 if (!$return->id) {
                     throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $relation->relatedEntity::table()),
@@ -136,9 +136,9 @@ class SignatureValueCalculator
             } elseif ($relation->relation == EntityRelation::REL_R11R) {
                 throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.cannot_change_R11R_by_id'));
             } else {
-                $return = new ($relation->relatedEntity)($value);
+                $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value));
                 if (!$return->id) {
-                    throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
+                    throw (new EntityFieldException())->setError($scheme->identifierField->name, ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $scheme->signature->declaration->relatedEntity::table()),
                         'id' => $value,
                     ]));
@@ -161,8 +161,15 @@ class SignatureValueCalculator
                     throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
                 }
                 $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value[$scheme->identifierField->name]));
-                if ($value[$scheme->identifierField->name] != $return->{$scheme->identifierField->name}) {
-                    $return = new $return(0);
+                if (!$return->id) {
+                    if (!$value[$scheme->identifierField->name]) {
+                        $return = new $return(0);
+                    } else {
+                        throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
+                            'entity' => ExpressionService::get('table_name.' . $scheme->signature->declaration->relatedEntity::table()),
+                            'id' => $value[$scheme->identifierField->name],
+                        ]));
+                    }
                 }
                 foreach ($scheme->children as $child) {
                     if ($child->name != 'id') {

@@ -158,7 +158,7 @@ class EntityFieldScheme extends Super
                         }
                         $type = new StructuredMap([StructuredMap::structure => $structure, StructuredMap::nullable => $this->signature->declaration->nullable]);
                     } else {
-                        $type = new Nullable([Nullable::type => Signature::_($this->signature->declaration->relatedEntity::id)->declaration]);
+                        $type = new Nullable([Nullable::type => $this->identifierField->declaration]);
                     }
                     $type = $this->signature->declaration->toMany ? new Sequence([Sequence::type => $type, Sequence::nullable => $this->signature->declaration->nullable]) : $type;
                     $this->type = $type;
