@@ -2,14 +2,12 @@
 
 namespace Xua\Core\Eves;
 
-use Avistopia\Shared\Services\JsonLogService;
 use Exception;
 use JetBrains\PhpStorm\ArrayShape;
 use PDO;
 use PDOException;
 use PDOStatement;
 use ReflectionClass;
-use ReflectionException;
 use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Exceptions\NotImplementedException;
 use Xua\Core\Exceptions\SuperMarshalException;
@@ -17,6 +15,7 @@ use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\DateTimeInstance;
 use Xua\Core\Services\EnvironmentService;
 use Xua\Core\Services\ExpressionService;
+use Xua\Core\Services\JsonLogService;
 use Xua\Core\Services\LocaleLanguage;
 use Xua\Core\Supers\Special\DatabaseVirtualField;
 use Xua\Core\Supers\Special\EntityRelation;
@@ -62,6 +61,9 @@ abstract class Entity extends Block
     // @TODO remove usages
     /**
      * @return PDO|null
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function connection(): ?PDO
     {
@@ -87,6 +89,7 @@ abstract class Entity extends Block
      * @return false|PDOStatement
      * @throws EntityException
      * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function execute(string $query, array $bind = []): false|PDOStatement
     {
@@ -142,7 +145,6 @@ abstract class Entity extends Block
     private static int $_x_lastSavepointNo = 0;
 
     /**
-     * @throws EntityException
      */
     final public static function _init(): void
     {
@@ -152,7 +154,9 @@ abstract class Entity extends Block
 
     /**
      * @param int|null $id
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public function __construct(?int $id = null)
     {
@@ -213,7 +217,8 @@ abstract class Entity extends Block
     const INDEX_PREFIX = 'I_';
 
     /**
-     *
+     * @return void
+     * @throws SuperValidationException
      */
     protected static function registerSignatures(): void
     {
@@ -227,7 +232,9 @@ abstract class Entity extends Block
      * @param string $name
      * @param Signature $signature
      * @param mixed $value
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final protected function getterProcedure(string $prefix, string $name, Signature $signature, mixed $value): void
     {
@@ -320,6 +327,7 @@ abstract class Entity extends Block
 
     /**
      * @return Signature[]
+     * @throws SuperValidationException
      */
     final public static function indexSignatures(): array
     {
@@ -342,6 +350,7 @@ abstract class Entity extends Block
 
     /**
      * @return Signature[]
+     * @throws SuperValidationException
      */
     protected static function _indexSignatures(): array
     {
@@ -385,8 +394,10 @@ abstract class Entity extends Block
      * @param string $lock
      * @param string $caller
      * @return static
-     * @throws EntityFieldException
-     * @throws ReflectionException
+     * @throws \ReflectionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _getOne(Condition $condition, Order $order, string $lock, string $caller): static
@@ -409,12 +420,12 @@ abstract class Entity extends Block
     /**
      * @param string $caller
      * @return array
-     * @throws EntityConditionException
-     * @throws EntityException
-     * @throws EntityFieldException
-     * @throws ReflectionException
-     * @throws SuperMarshalException
-     * @throws SuperValidationException
+     * @throws \Xua\Core\Exceptions\EntityConditionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      * @noinspection PhpUnusedParameterInspection
      */
     protected function _storeQueries(string $caller): array
@@ -423,16 +434,38 @@ abstract class Entity extends Block
     }
 
     /**
+     * @param bool $force
      * @param string $caller
+     * @throws EntityConditionException
      * @throws EntityDeleteException
      * @throws EntityException
      * @throws EntityFieldException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
      * @throws Throwable
      * @noinspection PhpUnusedParameterInspection
      */
-    protected function _delete(string $caller): void
+    protected function _delete(bool $force, string $caller): void
     {
-        $this->_x_delete();
+        $this->_x_delete($force);
+    }
+
+    /**
+     * @param bool $force
+     * @param string $caller
+     * @return array
+     * @throws EntityConditionException
+     * @throws EntityDeleteException
+     * @throws EntityException
+     * @throws EntityFieldException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
+     * @throws Throwable
+     * @noinspection PhpUnusedParameterInspection
+     */
+    protected function _deleteQueries(bool $force, string $caller): array
+    {
+        return $this->_x_deleteQueries($force);
     }
 
     /**
@@ -442,8 +475,10 @@ abstract class Entity extends Block
      * @param string $lock
      * @param string $caller
      * @return static[]
-     * @throws EntityFieldException
-     * @throws ReflectionException
+     * @throws \ReflectionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _getMany(Condition $condition, Order $order, Pager $pager, string $lock, string $caller): array
@@ -457,7 +492,9 @@ abstract class Entity extends Block
      * @param Pager $pager
      * @param string $caller
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _count(Condition $condition, Order $order, Pager $pager, string $caller): int
@@ -471,7 +508,9 @@ abstract class Entity extends Block
      * @param Pager $pager
      * @param string $caller
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _deleteMany(Condition $condition, Order $order, Pager $pager, string $caller): int
@@ -542,8 +581,10 @@ abstract class Entity extends Block
      * @param string $lock
      * @param string $caller
      * @return static
-     * @throws EntityFieldException
-     * @throws ReflectionException
+     * @throws \ReflectionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function getOne(?Condition $condition = null, ?Order $order = null, string $lock = EntityLock::DEFAULT, string $caller = Visibility::CALLER_PHP): static
     {
@@ -572,12 +613,12 @@ abstract class Entity extends Block
     /**
      * @param string $caller
      * @return array
-     * @throws EntityConditionException
-     * @throws EntityException
-     * @throws EntityFieldException
-     * @throws ReflectionException
-     * @throws SuperMarshalException
-     * @throws SuperValidationException
+     * @throws \Xua\Core\Exceptions\EntityConditionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     final protected function storeQueries(string $caller = Visibility::CALLER_PHP): array
     {
@@ -585,17 +626,33 @@ abstract class Entity extends Block
     }
 
     /**
+     * @param bool $force
      * @param string $caller
      * @throws EntityDeleteException
      * @throws EntityException
      * @throws EntityFieldException
      * @throws Throwable
      */
-    final public function delete(string $caller = Visibility::CALLER_PHP): void
+    final public function delete(bool $force = false, string $caller = Visibility::CALLER_PHP): void
     {
-        if ($this->id) {
-            $this->_delete($caller);
-        }
+        $this->_delete($force, $caller);
+    }
+
+    /**
+     * @param bool $force
+     * @param string $caller
+     * @return array
+     * @throws EntityConditionException
+     * @throws EntityDeleteException
+     * @throws EntityException
+     * @throws EntityFieldException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
+     * @throws Throwable
+     */
+    final public function deleteQueries(bool $force = false, string $caller = Visibility::CALLER_PHP): array
+    {
+        return $this->id ? $this->_deleteQueries($force, $caller) : [];
     }
 
     /**
@@ -605,8 +662,10 @@ abstract class Entity extends Block
      * @param string $lock
      * @param string $caller
      * @return static[]
-     * @throws EntityFieldException
-     * @throws ReflectionException
+     * @throws \ReflectionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $lock = EntityLock::DEFAULT, string $caller = Visibility::CALLER_PHP): array
     {
@@ -628,7 +687,9 @@ abstract class Entity extends Block
      * @param Pager|null $pager
      * @param string $caller
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function count(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
     {
@@ -650,7 +711,9 @@ abstract class Entity extends Block
      * @param Pager|null $pager
      * @param string $caller
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function deleteMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
     {
@@ -699,8 +762,10 @@ abstract class Entity extends Block
      * @param Order $order
      * @param string $lock
      * @return static
-     * @throws EntityFieldException
-     * @throws ReflectionException
+     * @throws \ReflectionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final protected static function _x_getOne(Condition $condition, Order $order, string $lock): static
     {
@@ -719,11 +784,12 @@ abstract class Entity extends Block
 
     /**
      * @return array
-     * @throws EntityConditionException
-     * @throws EntityException
-     * @throws EntityFieldException
-     * @throws SuperMarshalException
-     * @throws SuperValidationException
+     * @throws \Xua\Core\Exceptions\EntityConditionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     final protected function _x_storeQueries(): array
     {
@@ -817,18 +883,51 @@ abstract class Entity extends Block
     }
 
     /**
+     * @param bool $force
+     * @return void
+     * @throws EntityConditionException
      * @throws EntityDeleteException
      * @throws EntityException
      * @throws EntityFieldException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
      * @throws Throwable
      */
-    final protected function _x_delete(): void
+    final protected function _x_delete(bool $force): void
     {
-        // @TODO use buffer
+        $queryString = '';
+        $bind = [];
+        foreach ($this->deleteQueries($force) as $query) {
+            $queryString .= $query->query . ';';
+            $bind = array_merge($bind, $query->bind);
+        }
+        self::execute($queryString, $bind);
+    }
+
+    /**
+     * @param bool $force
+     * @return array
+     * @throws EntityConditionException
+     * @throws EntityDeleteException
+     * @throws EntityException
+     * @throws EntityFieldException
+     * @throws SuperMarshalException
+     * @throws SuperValidationException
+     * @throws Throwable
+     */
+    final protected function _x_deleteQueries(bool $force): array
+    {
+        $queries = [];
+
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var Signature $signature */
             if (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->fromOne and $signature->declaration->invRequired and $this->$key) {
-                throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
+                if ($force) {
+                    $queries = array_merge($queries, $this->$key->deleteQueries());
+                }
+                else {
+                    throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
+                }
             }
         }
 
@@ -846,7 +945,9 @@ abstract class Entity extends Block
             }
         }
 
-        self::execute("DELETE FROM `" . static::table() . "` WHERE `id` = ? LIMIT 1", [$this->id]);
+        $queries[] = Query::delete(static::table(), Condition::leaf(CF::_(static::id), Condition::EQ, $this->id));
+
+        return $queries;
     }
 
     /**
@@ -855,8 +956,10 @@ abstract class Entity extends Block
      * @param Pager $pager
      * @param string $lock
      * @return static[]
-     * @throws EntityFieldException
-     * @throws ReflectionException
+     * @throws \ReflectionException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager, string $lock): array
     {
@@ -886,7 +989,9 @@ abstract class Entity extends Block
      * @param Order $order
      * @param Pager $pager
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final protected static function _x_count(Condition $condition, Order $order, Pager $pager): int
     {
@@ -899,7 +1004,9 @@ abstract class Entity extends Block
      * @param Order $order
      * @param Pager $pager
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager): int
     {
@@ -1016,7 +1123,9 @@ abstract class Entity extends Block
 
     /**
      * @param string|null $fieldName
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     private function _x_fetch(?string $fieldName = 'id') : void
     {
@@ -1081,6 +1190,7 @@ abstract class Entity extends Block
 
     /**
      * @return array
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     #[ArrayShape(['tableNames' => "array", 'alters' => "string"])]
     final public static function alter(): array
@@ -1137,7 +1247,9 @@ abstract class Entity extends Block
     }
 
     /**
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function startTransaction(): void
     {
@@ -1146,7 +1258,9 @@ abstract class Entity extends Block
 
     /**
      * @return int
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function savePoint(): int
     {
@@ -1156,7 +1270,9 @@ abstract class Entity extends Block
 
     /**
      * @param int $savepointNo
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function rollbackToSavepoint(int $savepointNo): void
     {
@@ -1164,7 +1280,9 @@ abstract class Entity extends Block
     }
 
     /**
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function commit(): void
     {
@@ -1172,7 +1290,9 @@ abstract class Entity extends Block
     }
 
     /**
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     final public static function rollback(): void
     {
@@ -1257,7 +1377,9 @@ abstract class Entity extends Block
     /**
      * @param string $key
      * @return array
-     * @throws EntityFieldException
+     * @throws \Xua\Core\Exceptions\EntityException
+     * @throws \Xua\Core\Exceptions\EntityFieldException
+     * @throws \Xua\Core\Exceptions\JsonLogException
      */
     private function getAddingRemovingIds(string $key): array
     {
