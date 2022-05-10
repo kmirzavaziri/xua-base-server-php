@@ -20,7 +20,7 @@ abstract class MethodRemove extends MethodEve
 
     protected function body(): void
     {
-        $this->feed()->delete();
+        $this->feed()->delete(static::force());
     }
 
     final protected function feed(): Entity {
@@ -36,4 +36,9 @@ abstract class MethodRemove extends MethodEve
     }
 
     abstract protected function _feed(): Entity;
+
+    protected static function force(): bool
+    {
+        return false;
+    }
 }
