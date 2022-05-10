@@ -3,6 +3,7 @@
 namespace Xua\Core\Eves;
 
 use Exception;
+use Xua\Core\Services\Recursion;
 
 abstract class XuaException extends Exception
 {
@@ -37,15 +38,7 @@ abstract class XuaException extends Exception
 
     public function setError(string $key, null|string|array $message) : static
     {
-        $path = explode('.', $key);
-        $errors = &$this->errors;
-        foreach ($path as $part) {
-            if (!isset($errors[$part]) or !is_array($errors[$part])) {
-                $errors[$part] = [];
-            }
-            $errors = &$errors[$part];
-        }
-        $errors = $message;
+        Recursion::set($this->errors, explode('.', $key), $message);
         return $this;
     }
 
