@@ -338,7 +338,7 @@ abstract class Entity extends Block
                     OrderScheme::fields => [
                         [
                             OrderScheme::direction => OrderScheme::DIRECTION_ASC,
-                            OrderScheme::field => $key,
+                            OrderScheme::field => $signature,
                         ]
                     ],
                     OrderScheme::unique => $signature->declaration->fromOne,
@@ -359,7 +359,7 @@ abstract class Entity extends Block
                 OrderScheme::fields => [
                     [
                         OrderScheme::direction => OrderScheme::DIRECTION_ASC,
-                        OrderScheme::field => Signature::_(static::id)->name,
+                        OrderScheme::field => Signature::_(static::id),
                     ],
                 ],
                 OrderScheme::unique => true,
@@ -1207,19 +1207,21 @@ abstract class Entity extends Block
                 $signature->declaration->hasJunction and
                 $signature->declaration->definedHere
             ) {
+                $leftSignature = Signature::new(null, static::junctionTableName($key) . '::' . self::JUNCTION_LEFT, null, null, static::signature('id')->declaration);
+                $rightSignature = Signature::new(null, static::junctionTableName($key) . '::' . self::JUNCTION_RIGHT, null, null, $signature->declaration->relatedEntity::signature('id')->declaration);
                 $tables[] = new TableScheme(static::junctionTableName($key), [
-                    self::JUNCTION_LEFT => Column::fromQuery(self::JUNCTION_LEFT . ' ' . str_replace('AUTO_INCREMENT', '', $signature->declaration->relatedEntity::signature('id')->declaration->databaseType()) . " NOT NULL"),
-                    self::JUNCTION_RIGHT => Column::fromQuery(self::JUNCTION_RIGHT . ' ' . str_replace('AUTO_INCREMENT', '', $signature->declaration->relatedEntity::signature('id')->declaration->databaseType()) . " NOT NULL"),
+                    self::JUNCTION_LEFT => Column::fromQuery(self::JUNCTION_LEFT . ' ' . str_replace('AUTO_INCREMENT', '', $leftSignature->declaration->databaseType()) . " NOT NULL"),
+                    self::JUNCTION_RIGHT => Column::fromQuery(self::JUNCTION_RIGHT . ' ' . str_replace('AUTO_INCREMENT', '', $rightSignature->declaration->databaseType()) . " NOT NULL"),
                 ], [
                     Signature::new(null, null, null, null, new OrderScheme([
                         OrderScheme::fields => [
                             [
                                 OrderScheme::direction => OrderScheme::DIRECTION_ASC,
-                                OrderScheme::field => self::JUNCTION_LEFT,
+                                OrderScheme::field => $leftSignature,
                             ],
                             [
                                 OrderScheme::direction => OrderScheme::DIRECTION_ASC,
-                                OrderScheme::field => self::JUNCTION_RIGHT,
+                                OrderScheme::field => $rightSignature,
                             ],
                         ],
                         OrderScheme::unique => true,

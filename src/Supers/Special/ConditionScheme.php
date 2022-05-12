@@ -60,7 +60,12 @@ class ConditionScheme extends Super
                 $message = 'When using ISNULL or NISNULL, the provided value must be null.';
                 return false;
             }
-        } else {
+        } elseif (in_array($this->relation, [
+            Condition::GRATER, Condition::NGRATER, Condition::GRATEREQ, Condition::NGRATEREQ,
+            Condition::LESS, Condition::NLESS, Condition::LESSEQ, Condition::NLESSEQ,
+            Condition::EQ, Condition::NEQ,
+            Condition::NULLSAFEEQ, Condition::NNULLSAFEEQ,
+        ])) {
             if (!$fieldType->explicitlyAccepts($input, $checkMessage)) {
                 $message = $checkMessage;
                 return false;

@@ -72,7 +72,10 @@ final class TableScheme
         $indexes = implode(",\n\t", array_map(function (Signature $signature) {
             /** @var OrderScheme $scheme */
             $scheme = $signature->declaration;
-            return self::indexToQuery($scheme);
+            return self::indexToQuery($scheme, [
+                OrderScheme::fields => $scheme->fields,
+                OrderScheme::unique => $scheme->unique,
+            ]);
         }, $this->indexSignatures));
 
         Entity::execute("CREATE TABLE `$this->tableName` ($columns,\n\t$indexes)");
@@ -140,32 +143,31 @@ final class TableScheme
 
     private function indexesAlter(false|PDOStatement $rawOldIndexes): string
     {
-        $oldIndexesData = [];
+        $oldIndexes = [];
         foreach ($rawOldIndexes as $rawOldIndex) {
-            if (!isset($oldIndexesData[$rawOldIndex['Key_name']])) {
-                $oldIndexesData[$rawOldIndex['Key_name']] = [
+            if (!isset($oldIndexes[$rawOldIndex['Key_name']])) {
+                $oldIndexes[$rawOldIndex['Key_name']] = [
                     'fields' => [],
                     'unique' => !$rawOldIndex['Non_unique'],
                 ];
             }
-            $oldIndexesData[$rawOldIndex['Key_name']]['fields'][$rawOldIndex['Seq_in_index'] - 1] = [
+            $oldIndexes[$rawOldIndex['Key_name']]['fields'][$rawOldIndex['Seq_in_index'] - 1] = [
                 OrderScheme::direction => $rawOldIndex['Collation'] == 'A' ? OrderScheme::DIRECTION_ASC : OrderScheme::DIRECTION_DESC,
                 OrderScheme::field => $rawOldIndex['Column_name'],
             ];
         }
-        $oldIndexes = [];
-        foreach ($oldIndexesData as $key => $oldIndexData) {
-            $oldIndexes[$key] = Signature::new(null, null, null, null, new OrderScheme([
-                OrderScheme::fields => $oldIndexData['fields'],
-                OrderScheme::unique => $oldIndexData['unique'],
-                OrderScheme::name => $key
-            ]));
-        }
 
-        $newIndexesSeq = $this->indexSignatures;
         $newIndexes = [];
-        foreach ($newIndexesSeq as $index) {
-            $newIndexes[$index->declaration->name] = $index;
+        foreach ($this->indexSignatures as $signature) {
+            /** @var OrderScheme $scheme */
+            $scheme = $signature->declaration;
+            $newIndexes[$scheme->name] = [
+                'fields' => array_map(function ($field) { return [
+                    OrderScheme::field => $field[OrderScheme::field]->name,
+                    OrderScheme::direction => $field[OrderScheme::direction],
+                ]; }, $scheme->fields),
+                'unique' => $scheme->unique,
+            ];
         }
 
         $removedIndexes = [];
@@ -183,10 +185,8 @@ final class TableScheme
         }
 
         $adds = [];
-        foreach ($freshIndexes as $index) {
-            /** @var OrderScheme $scheme */
-            $scheme = $index->declaration;
-            $adds[] = "ADD " . self::indexToQuery($scheme) . ",";
+        foreach ($freshIndexes as $name => $index) {
+            $adds[] = "ADD " . self::indexToQuery($name, $index) . ",";
         }
         $adds = $adds ? "\n\t" . implode("\n\t", $adds) : "";
 
@@ -241,15 +241,15 @@ final class TableScheme
         return $result;
     }
 
-    private static function indexToQuery(OrderScheme $scheme) : string
+    private static function indexToQuery(string $name, array $index) : string
     {
         $fieldExpression = [];
-        foreach ($scheme->fields as $field) {
-            $fieldExpression[] = '`' . $field[OrderScheme::field] . '` ' . $field[OrderScheme::direction];
+        foreach ($index['fields'] as $field) {
+            $fieldExpression[] = '`' . $field['field'] . '` ' . $field['direction'];
         }
-        if ($scheme->name == 'PRIMARY') {
+        if ($name == 'PRIMARY') {
             return 'PRIMARY KEY (' . implode(', ', $fieldExpression) . ')';
         }
-        return ($scheme->unique ? 'UNIQUE ' : '') . 'INDEX ' . $scheme->name . ' (' . implode(', ', $fieldExpression) . ')';
+        return ($index['unique'] ? 'UNIQUE ' : '') . 'INDEX ' . $name . ' (' . implode(', ', $fieldExpression) . ')';
     }
 }
