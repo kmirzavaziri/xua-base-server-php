@@ -5,10 +5,10 @@ namespace Xua\Core\Supers\Special;
 use Xua\Core\Eves\Super;
 use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Supers\Boolean;
+use Xua\Core\Supers\Highers\Instance;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Supers\Strings\Enum;
-use Xua\Core\Supers\Strings\Symbol;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Tools\Signature\Signature;
 
@@ -43,7 +43,11 @@ class OrderScheme extends Super
                         StructuredMap::nullable => false,
                         StructuredMap::structure => [
                             self::direction => new Enum([Enum::values => self::DIRECTION_]),
-                            self::field => new Symbol([Symbol::nullable => false]),
+                            self::field => new Instance([
+                                Instance::of => Signature::class,
+                                Instance::strict => true,
+                                Instance::acceptObject => true,
+                            ]),
                         ]
                     ])
                 ])
@@ -58,7 +62,7 @@ class OrderScheme extends Super
         if (!$this->name) {
             $fieldExpression = '';
             foreach ($this->fields as $field) {
-                $fieldExpression .= '_' . $field[self::field] . '_' . strtolower($field[self::direction]);
+                $fieldExpression .= '_' . $field[self::field]->name . '_' . strtolower($field[self::direction]);
             }
             $this->name = $fieldExpression . ($this->unique ? '_unique' : '') . '_index';
         }

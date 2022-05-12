@@ -30,7 +30,7 @@ class Enum extends Text
                 new Integer([Integer::unsigned => true, Integer::nullable => true])
             ),
             Signature::new(false, static::values, true, null,
-                new Sequence([Sequence::type => new Text([]), Sequence::minLength => 1])
+                new Sequence([Sequence::type => new Text([])])
             )
         ]);
     }

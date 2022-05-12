@@ -4,6 +4,7 @@ namespace Xua\Core\Supers\Highers;
 
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Eves\Super;
+use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Tools\Signature\Signature;
 
@@ -11,18 +12,23 @@ use Xua\Core\Tools\Signature\Signature;
  * @property bool nullable
  * @property int marshalFlags
  * @property array structure
+ * @property bool optionalKeys
  */
 class StructuredMap extends Json
 {
     const nullable = self::class . '::nullable';
     const marshalFlags = self::class . '::marshalFlags';
     const structure = self::class . '::structure';
+    const optionalKeys = self::class . '::optionalKeys';
 
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::structure, true, null,
                 new Map([Map::keyType => new Text([]), Map::valueType => new Instance([Instance::of => Super::class, Instance::nullable => true])])
+            ),
+            Signature::new(false, static::optionalKeys, false, null,
+                new Boolean([])
             ),
         ]);
     }
@@ -64,7 +70,7 @@ class StructuredMap extends Json
                     $message[$key] = $messages;
                     return false;
                 }
-            } else {
+            } elseif (!$this->optionalKeys) {
                 $message = ExpressionService::getXua('supers.highers.structured_map.error_message.key_is_missing', ['key' => $key]);
                 return false;
             }

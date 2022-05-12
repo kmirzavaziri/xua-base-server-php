@@ -3,8 +3,8 @@
 namespace Xua\Core\Tools\Entity;
 
 use Xua\Core\Exceptions\SuperMarshalException;
+use Xua\Core\Supers\Special\ConditionScheme;
 use Xua\Core\Supers\Special\EntityRelation;
-use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Exceptions\SuperValidationException;
 
@@ -105,34 +105,16 @@ final class Condition
         $condition->template = str_replace('$', $field->name(), $relation);
         $condition->joins = $field->joins();
 
-        $fieldType = $field->signature->declaration;
+        $conditionScheme = new ConditionScheme([
+            ConditionScheme::field => $field,
+            ConditionScheme::relation => $relation,
+        ]);
 
-        if (in_array($relation, [self::BETWEEN, self::NBETWEEN])) {
-            if ((new Sequence([Sequence::minLength => 2, Sequence::maxLength => 2]))->explicitlyAccepts($value, $message)) {
-                throw new EntityConditionException('When using BETWEEN or NBETWEEN, the provided value must be an array of length 2.' . PHP_EOL . $message);
-            }
-            $condition->parameters = [$fieldType->marshalDatabase($value[0]), $fieldType->marshalDatabase($value[1])];
-        } elseif (in_array($relation, [self::IN, self::NIN])) {
-            $fieldTypeArray = new Sequence([Sequence::type => $fieldType]);
-            if (!$fieldTypeArray->explicitlyAccepts($value, $message)) {
-                throw new EntityConditionException('When using IN or NIN, the provided value must be an array.' . PHP_EOL . $message);
-            }
-            $condition->parameters = [$value];
-        } elseif (in_array($relation, [self::ISNULL, self::NISNULL])) {
-            if ($value !== null) {
-                throw new EntityConditionException('When using ISNULL or NISNULL, the provided value must be null.');
-            }
-            $condition->parameters = [];
-        } elseif (in_array($relation, [
-            self::GRATER, self::NGRATER, self::GRATEREQ, self::NGRATEREQ,
-            self::LESS, self::NLESS, self::LESSEQ, self::NLESSEQ,
-            self::EQ, self::NEQ,
-            self::NULLSAFEEQ, self::NNULLSAFEEQ,
-        ])) {
-            $condition->parameters = [$fieldType->marshalDatabase($value)];
-        } else {
-            $condition->parameters = [$value];
+        if (!$conditionScheme->accepts($value, $message)) {
+            throw (new EntityConditionException())->fromErrors($message);
         }
+
+        $condition->parameters = $conditionScheme->marshalDatabase($value);
 
         return $condition;
     }
