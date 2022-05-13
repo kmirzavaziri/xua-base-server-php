@@ -65,10 +65,16 @@ function xua_var_dump(mixed $value, int $level = 0, $visited = []) : string
     return $result;
 }
 
-function var_dump (mixed $value, mixed ...$values) : void
+function var_dump(mixed $value, mixed ...$values): void
 {
     array_unshift($values, $value);
     foreach ($values as $value) {
         print '<pre>' . xua_var_dump($value) . '</pre>';
     }
+}
+
+function dd(mixed $value, mixed ...$values): void
+{
+    var_dump($value, $values);
+    die();
 }
