@@ -98,7 +98,7 @@ class Generic extends Super
     protected function _marshal(mixed $input): mixed
     {
         /** @var FileInstance $input */
-        return $input ? (RouteService::getSiteRoot() . '/' . $input->path) : null;
+        return $input ? (RouteService::getSiteRoot() . '/' . ConstantService::get('config', 'services.urpi.path') . '/' . $input->path) : null;
     }
 
     protected function _marshalDatabase(mixed $input): mixed

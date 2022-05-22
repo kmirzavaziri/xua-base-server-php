@@ -88,6 +88,7 @@ class Image extends Generic
             Mime::MIME_IMAGE_JPEG => imagecreatefromjpeg($input->path),
             Mime::MIME_IMAGE_GIF => imagecreatefromgif($input->path),
             Mime::MIME_IMAGE_BMP => imagecreatefrombmp($input->path),
+            default => false,
         };
         if (!$image) {
             return false;
@@ -96,22 +97,22 @@ class Image extends Generic
         $height = imagesy($image);
 
         if ($this->minWidth !== null and $width < $this->minWidth) {
-            $message = ExpressionService::getXua('supers.files.image.error_message.image.min.width.violated', ['minWidth' => $this->minWidth, 'width' => $width]);
+            $message = ExpressionService::getXua('supers.files.image.error_message.min_width_violated', ['minWidth' => $this->minWidth, 'width' => $width]);
             return false;
         }
 
         if ($this->maxWidth !== null and $width > $this->maxWidth) {
-            $message = ExpressionService::getXua('supers.files.image.error_message.image.max.width.violated', ['maxWidth' => $this->maxWidth, 'width' => $width]);
+            $message = ExpressionService::getXua('supers.files.image.error_message.max_width_violated', ['maxWidth' => $this->maxWidth, 'width' => $width]);
             return false;
         }
 
         if ($this->minHeight !== null and $height < $this->minHeight) {
-            $message = ExpressionService::getXua('supers.files.image.error_message.image.min.height.violated', ['minHeight' => $this->minHeight, 'height' => $height]);
+            $message = ExpressionService::getXua('supers.files.image.error_message.min_height_violated', ['minHeight' => $this->minHeight, 'height' => $height]);
             return false;
         }
 
         if ($this->maxHeight !== null and $height > $this->maxHeight) {
-            $message = ExpressionService::getXua('supers.files.image.error_message.image.max.height.violated', ['maxHeight' => $this->maxHeight, 'height' => $height]);
+            $message = ExpressionService::getXua('supers.files.image.error_message.max_height_violated', ['maxHeight' => $this->maxHeight, 'height' => $height]);
             return false;
         }
 
@@ -132,7 +133,7 @@ class Image extends Generic
             $gcd = $lesser;
             $numerator = $width / $gcd;
             $denominator = $height / $gcd;
-            $message = ExpressionService::getXua('supers.files.image.error_message.image.ratio.violated', [
+            $message = ExpressionService::getXua('supers.files.image.error_message.ratio_violated', [
                 'formalRatio' => "$this->ratioWidth:$this->ratioHeight",
                 'actualRatio' => "$numerator:$denominator"
             ]);
@@ -154,6 +155,7 @@ class Image extends Generic
                 Mime::MIME_IMAGE_JPEG => imagecreatefromjpeg($input->path),
                 Mime::MIME_IMAGE_GIF => imagecreatefromgif($input->path),
                 Mime::MIME_IMAGE_BMP => imagecreatefrombmp($input->path),
+                default => false,
             };
             if (!$image) {
                 return $input;
