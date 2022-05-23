@@ -69,7 +69,7 @@ function var_dump(mixed $value, mixed ...$values): void
 {
     array_unshift($values, $value);
     foreach ($values as $value) {
-        print '<pre>' . xua_var_dump($value) . '</pre>';
+        print '<pre class="xua-var-dump">' . xua_var_dump($value) . '</pre>';
     }
 }
 
