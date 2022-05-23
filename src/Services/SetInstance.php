@@ -27,6 +27,11 @@ class SetInstance extends Service
         return array_keys($this->_);
     }
 
+    public function toMap(): array
+    {
+        return $this->_;
+    }
+
     public function toString(): string
     {
         return implode(',', array_keys($this->_));
