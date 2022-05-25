@@ -1,4 +1,7 @@
 <?php
+
+use Xua\Core\Exceptions\DieException;
+
 const XUA_VAR_DUMP_MAX_DEPTH = 5;
 const XUA_VAR_DUMP_TAB = '  ';
 
@@ -75,6 +78,6 @@ function var_dump(mixed $value, mixed ...$values): void
 
 function dd(mixed $value, mixed ...$values): void
 {
-    var_dump($value, $values);
-    die();
+    var_dump($value, ...$values);
+    throw new DieException();
 }
