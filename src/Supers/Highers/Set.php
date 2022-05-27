@@ -86,4 +86,9 @@ class Set extends Super
         $nullExpression = $this->nullable ? ' NULL' : ' NOT NULL';
         return "SET('" . implode("','", $this->values) . "')$nullExpression";
     }
+
+    protected function _phpType(): string
+    {
+        return ($this->nullable ? '?' : '') . '\\' . SetInstance::class;
+    }
 }
