@@ -245,7 +245,7 @@ final class TableScheme
     {
         $fieldExpression = [];
         foreach ($index[OrderScheme::fields] as $field) {
-            $fieldExpression[] = '`' . $field['field'] . '` ' . $field['direction'];
+            $fieldExpression[] = '`' . $field['field']->name . '` ' . $field['direction'];
         }
         if ($name == 'PRIMARY') {
             return 'PRIMARY KEY (' . implode(', ', $fieldExpression) . ')';
