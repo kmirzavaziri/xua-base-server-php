@@ -901,7 +901,9 @@ abstract class Entity extends Block
             $queryString .= $query->query . ';';
             $bind = array_merge($bind, $query->bind);
         }
-        self::execute($queryString, $bind);
+        if ($queryString) {
+            self::execute($queryString, $bind);
+        }
     }
 
     /**
