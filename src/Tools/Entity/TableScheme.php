@@ -244,12 +244,12 @@ final class TableScheme
     private static function indexToQuery(string $name, array $index) : string
     {
         $fieldExpression = [];
-        foreach ($index['fields'] as $field) {
+        foreach ($index[OrderScheme::fields] as $field) {
             $fieldExpression[] = '`' . $field['field'] . '` ' . $field['direction'];
         }
         if ($name == 'PRIMARY') {
             return 'PRIMARY KEY (' . implode(', ', $fieldExpression) . ')';
         }
-        return ($index['unique'] ? 'UNIQUE ' : '') . 'INDEX ' . $name . ' (' . implode(', ', $fieldExpression) . ')';
+        return ($index[OrderScheme::unique] ? 'UNIQUE ' : '') . 'INDEX ' . $name . ' (' . implode(', ', $fieldExpression) . ')';
     }
 }
