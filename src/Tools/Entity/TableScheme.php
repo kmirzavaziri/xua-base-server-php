@@ -72,7 +72,7 @@ final class TableScheme
         $indexes = implode(",\n\t", array_map(function (Signature $signature) {
             /** @var OrderScheme $scheme */
             $scheme = $signature->declaration;
-            return self::indexToQuery($scheme, [
+            return self::indexToQuery($scheme->name, [
                 OrderScheme::fields => $scheme->fields,
                 OrderScheme::unique => $scheme->unique,
             ]);

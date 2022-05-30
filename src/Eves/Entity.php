@@ -1036,7 +1036,7 @@ abstract class Entity extends Block
             $duplicateIndex = array_pop($duplicateIndexes);
             $duplicateExpressions = [];
             $iterator = 0;
-            $fieldNames = array_map(function (array $field) { return $field['field']; }, $duplicateIndex->declaration->fields);
+            $fieldNames = array_map(function (array $field) { return $field['field']->name; }, $duplicateIndex->declaration->fields);
             foreach ($fieldNames as $fieldName) {
                 $duplicateExpressions[] = ExpressionService::getXua('eves.entity.column_equal_to_value', [
                     'column' => ExpressionService::get("column_name.$table.$fieldName"),
