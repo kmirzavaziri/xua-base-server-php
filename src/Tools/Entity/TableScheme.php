@@ -73,8 +73,8 @@ final class TableScheme
             /** @var OrderScheme $scheme */
             $scheme = $signature->declaration;
             return self::indexToQuery($scheme->name, [
-                OrderScheme::fields => $scheme->fields,
-                OrderScheme::unique => $scheme->unique,
+                'fields' => $scheme->fields,
+                'unique' => $scheme->unique,
             ]);
         }, $this->indexSignatures));
 
@@ -244,12 +244,12 @@ final class TableScheme
     private static function indexToQuery(string $name, array $index) : string
     {
         $fieldExpression = [];
-        foreach ($index[OrderScheme::fields] as $field) {
+        foreach ($index['fields'] as $field) {
             $fieldExpression[] = '`' . $field['field']->name . '` ' . $field['direction'];
         }
         if ($name == 'PRIMARY') {
             return 'PRIMARY KEY (' . implode(', ', $fieldExpression) . ')';
         }
-        return ($index[OrderScheme::unique] ? 'UNIQUE ' : '') . 'INDEX ' . $name . ' (' . implode(', ', $fieldExpression) . ')';
+        return ($index['unique'] ? 'UNIQUE ' : '') . 'INDEX ' . $name . ' (' . implode(', ', $fieldExpression) . ')';
     }
 }
