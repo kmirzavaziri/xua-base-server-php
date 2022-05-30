@@ -152,8 +152,8 @@ final class TableScheme
                 ];
             }
             $oldIndexes[$rawOldIndex['Key_name']]['fields'][$rawOldIndex['Seq_in_index'] - 1] = [
-                OrderScheme::direction => $rawOldIndex['Collation'] == 'A' ? OrderScheme::DIRECTION_ASC : OrderScheme::DIRECTION_DESC,
-                OrderScheme::field => $rawOldIndex['Column_name'],
+                'field' => $rawOldIndex['Column_name'],
+                'direction' => $rawOldIndex['Collation'] == 'A' ? OrderScheme::DIRECTION_ASC : OrderScheme::DIRECTION_DESC,
             ];
         }
 
@@ -163,8 +163,8 @@ final class TableScheme
             $scheme = $signature->declaration;
             $newIndexes[$scheme->name] = [
                 'fields' => array_map(function ($field) { return [
-                    OrderScheme::field => $field[OrderScheme::field]->name,
-                    OrderScheme::direction => $field[OrderScheme::direction],
+                    'field' => $field[OrderScheme::field],
+                    'direction' => $field[OrderScheme::direction],
                 ]; }, $scheme->fields),
                 'unique' => $scheme->unique,
             ];
