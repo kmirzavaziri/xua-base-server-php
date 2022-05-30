@@ -163,8 +163,8 @@ final class TableScheme
             $scheme = $signature->declaration;
             $newIndexes[$scheme->name] = [
                 'fields' => array_map(function ($field) { return [
-                    'field' => $field[OrderScheme::field],
-                    'direction' => $field[OrderScheme::direction],
+                    'field' => $field['field']->name,
+                    'direction' => $field['direction'],
                 ]; }, $scheme->fields),
                 'unique' => $scheme->unique,
             ];
@@ -245,7 +245,7 @@ final class TableScheme
     {
         $fieldExpression = [];
         foreach ($index['fields'] as $field) {
-            $fieldExpression[] = '`' . $field['field']->name . '` ' . $field['direction'];
+            $fieldExpression[] = '`' . $field['field'] . '` ' . $field['direction'];
         }
         if ($name == 'PRIMARY') {
             return 'PRIMARY KEY (' . implode(', ', $fieldExpression) . ')';
