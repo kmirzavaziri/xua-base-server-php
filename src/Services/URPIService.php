@@ -116,7 +116,7 @@ class URPIService extends Service
             if (Credentials::developer()) {
                 throw $e;
             } else {
-                self::$jsonResponse[self::ERRORS] = ['' => ExpressionService::get('services.urpi.error_message.internal_server')];
+                self::$jsonResponse[self::ERRORS] = ['' => ExpressionService::getXua('services.urpi.error_message.internal_server')];
             }
         }
 
