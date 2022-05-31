@@ -147,6 +147,11 @@ services:
         9: Tiger
         10: Rabbit
         11: Dragon
+  urpi:
+    error_message:
+      invalid_path: The path is invalid.
+      invalid_request: The request parameter is invalid.
+      internal_server: Internal server error.
 supers:
   files:
     generic:

@@ -147,6 +147,11 @@ services:
         9: پلنگ
         10: خرگوش
         11: اژدها
+  urpi:
+    error_message:
+      invalid_path: مسیر معتبر نیست.
+      invalid_request: پارامتر request معتبر نیست.
+      internal_server: خطای داخلی سرور
 supers:
   files:
     generic:

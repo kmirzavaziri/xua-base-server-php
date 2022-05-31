@@ -83,7 +83,7 @@ class URPIService extends Service
             }
         }  else {
             URPIService::$service::publicErrorInit();
-            throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
+            throw new URPIException(ExpressionService::getXua('services.urpi.error_message.invalid_path'));
         }
     }
 
@@ -95,12 +95,12 @@ class URPIService extends Service
     {
         /** @noinspection PhpUndefinedMethodInspection */
         if (!$class::isPublic() and !SecurityService::verifyPrivateMethodAccess()) {
-            throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
+            throw new URPIException(ExpressionService::getXua('services.urpi.error_message.invalid_path'));
         }
 
         $request = @json_decode($_POST['request'], true);
         if ($request === null) {
-            throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_request'));
+            throw new URPIException(ExpressionService::getXua('services.urpi.error_message.invalid_request'));
         }
 
         try {
@@ -128,7 +128,7 @@ class URPIService extends Service
      */
     private static function entity(Entity $class): void
     {
-        throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
+        throw new URPIException(ExpressionService::getXua('services.urpi.error_message.invalid_path'));
     }
 
     private static function publicResource(string $externalResourcePath): void
@@ -156,7 +156,7 @@ class URPIService extends Service
         }
 
         if (!$isPublicResourcePath or !is_file($internalResourcePath)) {
-            throw new URPIException(ExpressionService::get('services.urpi.error_message.invalid_path'));
+            throw new URPIException(ExpressionService::getXua('services.urpi.error_message.invalid_path'));
         }
 
         header($_SERVER["SERVER_PROTOCOL"] . ' 200 OK');
