@@ -7,6 +7,7 @@ use Xua\Core\Exceptions\MethodRequestException;
 use Xua\Core\Exceptions\MethodResponseException;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\URPIService;
+use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Tools\Signature\Signature;
 
 /**
@@ -160,11 +161,23 @@ abstract class MethodEve extends Block
     # Predefined Methods (Array Casts) #################################################################################
     ####################################################################################################################
     /**
+     * @param bool $marshal
      * @return array
+     * @throws \Xua\Core\Exceptions\SuperMarshalException
+     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
-    public function toArray(): array
+    public function toArray(bool $marshal = false): array
     {
-        return $this->_x_values[self::RESPONSE_PREFIX];
+        $return = $this->_x_values[self::RESPONSE_PREFIX];
+        if ($marshal) {
+            $return = (new StructuredMap([
+                StructuredMap::structure => array_map(
+                    function (Signature $signature) { return $signature->declaration; },
+                    static::responseSignatures()
+                )
+            ]))->nestedMarshal($return);
+        }
+        return $return;
     }
 
     ####################################################################################################################

@@ -83,7 +83,7 @@ class EntityFieldScheme extends Super
                                     'name' => null,
                                     'type' => MethodEve::class,
                                     'allowSubtype' => true,
-                                    'required' => true,
+                                    'required' => null,
                                     'checkDefault' => false,
                                     'default' => null,
                                     'passByReference' => false,

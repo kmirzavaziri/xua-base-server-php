@@ -73,7 +73,10 @@ final class TableScheme
             /** @var OrderScheme $scheme */
             $scheme = $signature->declaration;
             return self::indexToQuery($scheme->name, [
-                'fields' => $scheme->fields,
+                'fields' => array_map(function ($field) { return [
+                    'field' => $field['field']->name,
+                    'direction' => $field['direction'],
+                ]; }, $scheme->fields),
                 'unique' => $scheme->unique,
             ]);
         }, $this->indexSignatures));

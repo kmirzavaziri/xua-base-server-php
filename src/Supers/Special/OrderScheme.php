@@ -13,7 +13,7 @@ use Xua\Core\Supers\Strings\Text;
 use Xua\Core\Tools\Signature\Signature;
 
 /**
- * @property array fields
+ * @property array[] fields
  * @property bool unique
  * @property ?string name
  */
