@@ -68,10 +68,10 @@ class Symbol extends Regex
     protected function _unmarshalDatabase($input): mixed
     {
         $input = parent::_unmarshalDatabase($input);
-        return match ($this->unifier) {
+        return is_string($input) ? match ($this->unifier) {
             self::UNIFIER_UPPER => strtoupper($input),
             self::UNIFIER_LOWER => strtolower($input),
             default => $input
-        };
+        } : $input;
     }
 }

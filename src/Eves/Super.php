@@ -169,6 +169,24 @@ abstract class Super extends Block
      * @param mixed $input
      * @return mixed
      */
+    protected function _nestedMarshalDatabase(mixed $input): mixed
+    {
+        return $this->_marshalDatabase($input);
+    }
+
+    /**
+     * @param mixed $input
+     * @return mixed
+     */
+    protected function _nestedUnmarshalDatabase(mixed $input): mixed
+    {
+        return $this->_unmarshalDatabase($input);
+    }
+
+    /**
+     * @param mixed $input
+     * @return mixed
+     */
     protected function _marshalDatabase(mixed $input): mixed
     {
         return $input;
@@ -245,7 +263,6 @@ abstract class Super extends Block
         return $this->_nestedUnmarshal($input);
     }
 
-
     /**
      * @param $input
      * @return mixed
@@ -266,6 +283,28 @@ abstract class Super extends Block
     final public function unmarshal($input): mixed
     {
         return $this->_unmarshal($input);
+    }
+
+    /**
+     * @param $input
+     * @return mixed
+     * @throws SuperMarshalException
+     */
+    final public function nestedMarshalDatabase($input): mixed
+    {
+        if (!$this->explicitlyAccepts($input, $messages)) {
+            throw (new SuperMarshalException())->fromErrors($messages);
+        }
+        return $this->_nestedMarshalDatabase($input);
+    }
+
+    /**
+     * @param $input
+     * @return mixed
+     */
+    final public function nestedUnmarshalDatabase($input): mixed
+    {
+        return $this->_nestedUnmarshalDatabase($input);
     }
 
     /**

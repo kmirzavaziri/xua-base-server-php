@@ -113,6 +113,31 @@ class Sequence extends Json
         return $input;
     }
 
+    protected function _nestedMarshalDatabase($input): mixed
+    {
+        if ($this->type) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $value === null
+                    ? null
+                    : $this->type->nestedMarshalDatabase($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedUnmarshalDatabase($input): mixed
+    {
+        if (!is_array($input)) {
+            return $input;
+        }
+        if ($this->type) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $this->type->nestedUnmarshalDatabase($value);
+            }
+        }
+        return $input;
+    }
+
     protected function _phpType(): string
     {
         return ($this->nullable ? '?' : '') . ($this->type->_phpType() != 'mixed' ? $this->type->_phpType() . '[]' : 'array');

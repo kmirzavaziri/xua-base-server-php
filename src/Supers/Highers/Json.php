@@ -12,7 +12,7 @@ use Xua\Core\Tools\Signature\Signature;
  * @property bool nullable
  * @property int marshalFlags
  */
-class Json extends Super
+abstract class Json extends Super
 {
     const nullable = self::class . '::nullable';
     const marshalFlags = self::class . '::marshalFlags';
@@ -66,12 +66,23 @@ class Json extends Super
 
     protected function _marshalDatabase($input): mixed
     {
-        return $this->_marshal($input);
+        return json_encode($this->_nestedMarshalDatabase($input), $this->marshalFlags);
     }
 
     protected function _unmarshalDatabase($input): mixed
     {
-        return $this->_unmarshal($input);
+        if (is_string($input)) {
+            $data = @json_decode($input, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $input = $data;
+            }
+        }
+
+        if (is_object($input)) {
+            $input = (array)$input;
+        }
+
+        return $this->_nestedUnmarshalDatabase($input);
     }
 
     protected function _databaseType(): ?string

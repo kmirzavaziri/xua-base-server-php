@@ -355,6 +355,26 @@ class DateTimeInstance extends Service
         return new static(abs($this->timestamp - $dateTimeInstance->timestamp));
     }
 
+    public function isBefore(DateTimeInstance $dateTimeInstance) : bool
+    {
+        return $this->timestamp < $dateTimeInstance->timestamp;
+    }
+
+    public function isBeforeEqual(DateTimeInstance $dateTimeInstance) : bool
+    {
+        return $this->timestamp <= $dateTimeInstance->timestamp;
+    }
+
+    public function isAfter(DateTimeInstance $dateTimeInstance) : bool
+    {
+        return $this->timestamp > $dateTimeInstance->timestamp;
+    }
+
+    public function isAfterEqual(DateTimeInstance $dateTimeInstance) : bool
+    {
+        return $this->timestamp >= $dateTimeInstance->timestamp;
+    }
+
     // DateTime Modify
     public function modifyGregorian(string $modifier): static
     {

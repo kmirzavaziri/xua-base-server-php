@@ -112,4 +112,34 @@ class Map extends Json
         }
         return $input;
     }
+
+    protected function _nestedMarshalDatabase($input): mixed
+    {
+        if ($this->valueType) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $value === null
+                    ? null
+                    : $this->valueType->nestedMarshalDatabase($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedUnmarshalDatabase($input): mixed
+    {
+        if (!is_array($input)) {
+            return $input;
+        }
+        if ($this->valueType) {
+            foreach ($input as $key => $value) {
+                $input[$key] = $this->valueType->nestedUnmarshalDatabase($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _phpType(): string
+    {
+        return ($this->nullable ? '?' : '') . (($this->valueType and $this->valueType->_phpType() != 'mixed') ? $this->valueType->_phpType() . '[]' : 'array');
+    }
 }

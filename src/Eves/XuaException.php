@@ -64,4 +64,10 @@ abstract class XuaException extends Exception
         }
         return $this;
     }
+
+    public function flatten(): array {
+        $return = [];
+        array_walk_recursive($this->errors, function($a) use (&$return) { $return[] = $a; });
+        return $return;
+    }
 }

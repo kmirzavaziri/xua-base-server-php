@@ -237,7 +237,7 @@ final class TableScheme
         $result = [];
         foreach ($order as $key => $ord) {
             if (!isset($LIS[$key])) {
-                $result[$key] = $ord == 0 ? 'FIRST' : 'AFTER ' . $newKeys[$ord - 1];
+                $result[$key] = $ord == 0 ? 'FIRST' : 'AFTER `' . $newKeys[$ord - 1] . '`';
             }
         }
 

@@ -158,7 +158,7 @@ abstract class Entity extends Block
      * @throws \Xua\Core\Exceptions\EntityFieldException
      * @throws \Xua\Core\Exceptions\JsonLogException
      */
-    final public function __construct(?int $id = null)
+    final public function __construct(?int $id = 0)
     {
         $this->initialize();
 
@@ -550,7 +550,7 @@ abstract class Entity extends Block
     /**
      * @throws EntityFieldException
      */
-    private function validation(): void
+    public function validation(): void
     {
         $exception = new EntityFieldException();
         $this->_validation($exception);

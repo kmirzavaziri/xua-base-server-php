@@ -11,7 +11,7 @@ use Xua\Core\Tools\Signature\Signature;
 /**
  * @property bool nullable
  * @property int marshalFlags
- * @property array structure
+ * @property null|\Xua\Core\Eves\Super[] structure
  * @property bool optionalKeys
  */
 class StructuredMap extends Json
@@ -100,6 +100,32 @@ class StructuredMap extends Json
         foreach ($input as $key => $value) {
             if ($this->structure[$key]) {
                 $input[$key] = $this->structure[$key]->nestedUnmarshal($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedMarshalDatabase($input): mixed
+    {
+        foreach ($input as $key => $value) {
+            $itemType = $this->structure[$key] ?? null;
+            if ($itemType) {
+                $input[$key] = $value === null
+                    ? null
+                    : $itemType->nestedMarshalDatabase($value);
+            }
+        }
+        return $input;
+    }
+
+    protected function _nestedUnmarshalDatabase($input): mixed
+    {
+        if (!is_array($input)) {
+            return $input;
+        }
+        foreach ($input as $key => $value) {
+            if ($this->structure[$key]) {
+                $input[$key] = $this->structure[$key]->nestedUnmarshalDatabase($value);
             }
         }
         return $input;

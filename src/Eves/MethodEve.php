@@ -24,7 +24,7 @@ abstract class MethodEve extends Block
     /**
      * @var MethodRequestException
      */
-    protected MethodRequestException $_x_error;
+    public MethodRequestException $_x_error;
 
     /**
      * @throws MethodRequestException
