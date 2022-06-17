@@ -58,11 +58,12 @@ abstract class MethodAdjust extends FieldedMethod
                 $this->throwError();
             }
         }
-        try {
-            // @TODO only store if it will not be stored later with some flag or something
-            EntityBuffer::getEfficientBuffer()->store();
-        } catch (EntityFieldException $e) {
-            throw $this->_x_error->fromException($e);
+        if (!$this->dontStore()) {
+            try {
+                EntityBuffer::getEfficientBuffer()->store();
+            } catch (EntityFieldException $e) {
+                throw $this->_x_error->fromException($e);
+            }
         }
     }
 
@@ -79,4 +80,9 @@ abstract class MethodAdjust extends FieldedMethod
     }
 
     abstract protected function _feed(): Entity;
+
+    public function dontStore() : bool
+    {
+        return false;
+    }
 }

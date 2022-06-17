@@ -421,7 +421,10 @@ final class LocaleLanguage extends Service
         return preg_match("/^[^$ltrChars]*[$rtlChars]/", $text) ? 'rtl' : 'ltr';
     }
 
-    public static function wordify(int $i, string $lang, int $level = 0) {
+    public static function wordify(int $i, string $lang = null, int $level = 0): string {
+        if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
+            $lang = LocaleLanguage::getLanguage();
+        }
         $result = '';
         if ($lang == self::LANG_EN) {
             // @TODO
@@ -467,7 +470,10 @@ final class LocaleLanguage extends Service
         return $result;
     }
 
-    public static function ith(int $i, string $lang, $ucFirst = false) {
+    public static function ith(int $i, string $lang = null, $ucFirst = false): string {
+        if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
+            $lang = LocaleLanguage::getLanguage();
+        }
         $result = '';
         if ($lang == self::LANG_EN) {
             $ordinals = [
