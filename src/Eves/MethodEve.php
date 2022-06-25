@@ -26,10 +26,6 @@ abstract class MethodEve extends Block
      */
     public MethodRequestException $_x_error;
 
-    /**
-     * @throws MethodRequestException
-     * @throws MethodResponseException
-     */
     final public function __construct(array $request)
     {
         URPIService::$service::publicMethodInit();
@@ -86,7 +82,6 @@ abstract class MethodEve extends Block
      * @param string $name
      * @param Signature $signature
      * @param mixed $value
-     * @throws MagicCallException
      */
     final protected function setterProcedure(string $prefix, string $name, Signature $signature, mixed $value): void
     {
@@ -163,8 +158,6 @@ abstract class MethodEve extends Block
     /**
      * @param bool $marshal
      * @return array
-     * @throws \Xua\Core\Exceptions\SuperMarshalException
-     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     public function toArray(bool $marshal = false): array
     {
@@ -196,9 +189,6 @@ abstract class MethodEve extends Block
         $this->_x_error->setError(implode('.', $path), $message);
     }
 
-    /**
-     * @throws MethodRequestException
-     */
     public function throwError(): void
     {
         throw $this->_x_error;
@@ -207,7 +197,6 @@ abstract class MethodEve extends Block
     /**
      * @param string $key
      * @param string|array|null $message
-     * @throws MethodRequestException
      */
     public function addAndThrowError(string $key, null|string|array $message): void
     {
@@ -221,7 +210,6 @@ abstract class MethodEve extends Block
     /**
      * @param Signature[] $signatures
      * @param array $request
-     * @throws MethodRequestException
      */
     private static function processRequest(array $signatures, array &$request) {
         $exception = new MethodRequestException();
@@ -276,7 +264,6 @@ abstract class MethodEve extends Block
     /**
      * @param Signature[] $signatures
      * @param array $response
-     * @throws MethodResponseException
      */
     private static function processResponse(array $signatures, array &$response)
     {

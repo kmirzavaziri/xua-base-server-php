@@ -21,7 +21,6 @@ abstract class JsonLogService extends Service
      * @param string $key
      * @param mixed $data
      * @return void
-     * @throws JsonLogException
      */
     public static function append(string $key, mixed $data): void
     {
@@ -45,7 +44,6 @@ abstract class JsonLogService extends Service
     /**
      * @param string $key
      * @return void
-     * @throws JsonLogException
      */
     public static function removeAll(string $key): void
     {

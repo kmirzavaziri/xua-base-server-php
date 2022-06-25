@@ -5,8 +5,6 @@ namespace Xua\Core\Tools\Entity;
 use ReflectionObject;
 use Throwable;
 use Xua\Core\Eves\Entity;
-use Xua\Core\Exceptions\EntityException;
-use Xua\Core\Exceptions\EntityFieldException;
 
 final class EntityBuffer {
     /**
@@ -28,11 +26,7 @@ final class EntityBuffer {
         return $this;
     }
 
-    /**
-     * @throws Throwable
-     * @throws EntityException
-     * @throws EntityFieldException
-     */
+
     public function store(): void
     {
         $savePoint = Entity::savePoint();
@@ -51,7 +45,9 @@ final class EntityBuffer {
         foreach ($this->entities as $entity) {
             $entityReflector = new ReflectionObject($entity);
             $methodReflector = $entityReflector->getMethod('storeQueries');
-            $methodReflector->setAccessible(true);
+            $methodReflector->setAccessible(true);  // @TODO take a look at this.
+                                                    //      https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+                                                    //      wen may remove this line and also remove the local variable $methodReflector.
             /** @var Query[] $queries */
             $queries = $methodReflector->invoke($entity);
             foreach ($queries as $query) {

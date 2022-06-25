@@ -53,7 +53,6 @@ class EntityArray
     /**
      * @param EntityFieldScheme[] $schemes
      * @return Super
-     * @throws SuperValidationException
      */
     public static function oneToArrayType(array $schemes): Super
     {
@@ -68,7 +67,6 @@ class EntityArray
      * @param EntityFieldScheme[] $schemes
      * @param Super|null $association
      * @return Super
-     * @throws SuperValidationException
      */
     public static function manyToArrayType(array $schemes, ?Super $association = null): Super
     {

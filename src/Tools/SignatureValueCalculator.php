@@ -25,11 +25,6 @@ class SignatureValueCalculator
      * @param mixed $value
      * @param EntityFieldScheme $scheme
      * @param \Xua\Core\Eves\MethodEve|null $method
-     * @throws \Xua\Core\Exceptions\DefinitionException
-     * @throws \Xua\Core\Exceptions\EntityConditionException
-     * @throws \Xua\Core\Exceptions\EntityFieldException
-     * @throws \Xua\Core\Exceptions\SuperMarshalException
-     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     public static function setEntityField(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): void
     {
@@ -59,11 +54,6 @@ class SignatureValueCalculator
      * @param mixed $value
      * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
      * @param \Xua\Core\Eves\MethodEve|null $method
-     * @throws \Xua\Core\Exceptions\DefinitionException
-     * @throws \Xua\Core\Exceptions\EntityConditionException
-     * @throws \Xua\Core\Exceptions\EntityFieldException
-     * @throws \Xua\Core\Exceptions\SuperMarshalException
-     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     private static function setEntityFieldSignature(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): void
     {
@@ -104,11 +94,6 @@ class SignatureValueCalculator
      * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
      * @param \Xua\Core\Eves\MethodEve|null $method
      * @return \Xua\Core\Eves\Entity|null
-     * @throws \Xua\Core\Exceptions\DefinitionException
-     * @throws \Xua\Core\Exceptions\EntityConditionException
-     * @throws \Xua\Core\Exceptions\EntityFieldException
-     * @throws \Xua\Core\Exceptions\SuperMarshalException
-     * @throws \Xua\Core\Exceptions\SuperValidationException
      */
     private static function setRelative(Entity $entity, mixed $value, EntityFieldScheme $scheme, ?MethodEve $method = null): ?Entity
     {
@@ -239,7 +224,7 @@ class SignatureValueCalculator
     }
 
     /**
-     * @param Entity $entity
+     * @param Entity|null $entity
      * @param \Xua\Core\Supers\Special\EntityFieldScheme $scheme
      * @param \Xua\Core\Eves\MethodEve|null $method
      * @return array|int|null

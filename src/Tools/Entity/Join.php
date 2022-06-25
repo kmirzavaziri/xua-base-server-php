@@ -14,9 +14,6 @@ class Join
     const LEFT = 'LEFT';
     const RIGHT = 'RIGHT';
 
-    /**
-     * @throws EntityJoinException
-     */
     public function __construct(
         private string $type,
         private string $leftTableNameAlias,

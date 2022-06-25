@@ -49,7 +49,7 @@ final class ExpressionService extends Service
         return self::getAbsolute($key, $bind, $path);
     }
 
-    public static function getVendor(string $key, ?array $bind = null, string $path = '', ?string $lang = null) {
+    public static function getVendor(string $key, ?array $bind = null, string $path = '', ?string $lang = null): string {
         if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
             $lang = LocaleLanguage::getLanguage();
         }
@@ -58,7 +58,7 @@ final class ExpressionService extends Service
         return self::getAbsolute($key, $bind, $path);
     }
 
-    public static function getXua(string $key, ?array $bind = null, ?string $lang = null) {
+    public static function getXua(string $key, ?array $bind = null, ?string $lang = null): string {
         return self::getVendor($key, $bind, 'xua/core/private/dictionaries', $lang);
     }
 

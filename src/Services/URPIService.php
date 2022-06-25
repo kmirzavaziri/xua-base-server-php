@@ -87,10 +87,6 @@ class URPIService extends Service
         }
     }
 
-    /**
-     * @throws Throwable
-     * @throws URPIException
-     */
     private static function method(string $class): void
     {
         /** @noinspection PhpUndefinedMethodInspection */
@@ -123,9 +119,6 @@ class URPIService extends Service
         self::respondJson();
     }
 
-    /**
-     * @throws URPIException
-     */
     private static function entity(Entity $class): void
     {
         throw new URPIException(ExpressionService::getXua('services.urpi.error_message.invalid_path'));

@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Services;
 
-use JetBrains\PhpStorm\ArrayShape;
 use Xua\Core\Eves\Service;
 use Xua\Core\Exceptions\XRMLException;
 
@@ -123,10 +122,6 @@ final class XRMLParser extends Service
         }
     }
 
-    /**
-     * @throws XRMLException
-     */
-    #[ArrayShape([self::LINE_LEVEL => 'nt', self::LINE_SPACE_COUNT => 'int', self::LINE_KEY => 'string', self::LINE_INTERFACES => 'string', self::LINE_RAW_LINE_NO => 'int'])]
     private function parseLine(int $lineNo, string $line, int $rawLineNo): array
     {
         preg_match('/^([ \t]*)/', $line, $indent);
@@ -159,9 +154,6 @@ final class XRMLParser extends Service
         ];
     }
 
-    /**
-     * @throws XRMLException
-     */
     private function calculateLevel(int $lineNo, int $spaceCount): int
     {
         if ($lineNo == 0) {

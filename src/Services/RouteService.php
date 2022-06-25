@@ -19,17 +19,11 @@ final class RouteService extends Service
 
     private function __construct() {}
 
-    /**
-     * @throws XRMLException
-     */
     protected static function _init(): void
     {
         self::$routes = (new XRMLParser(file_get_contents(ConstantService::get('config', 'services.route.path'))))->parse();
     }
 
-    /**
-     * @throws RouteException|DieException
-     */
     public static function execute(string $route, string $method) : void
     {
         self::$method = $method;

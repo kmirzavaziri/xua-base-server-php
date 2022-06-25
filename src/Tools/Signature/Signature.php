@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Tools\Signature;
 
-use JetBrains\PhpStorm\Pure;
 use Xua\Core\Eves\Super;
 use Xua\Core\Exceptions\MagicCallException;
 
@@ -185,7 +184,7 @@ final class Signature
      * @param string $fullName
      * @return array
      */
-    #[Pure] public static function explodeSignatureName(string $fullName): array
+    public static function explodeSignatureName(string $fullName): array
     {
         if (str_contains($fullName, '::')) {
             [$class, $halfName] = explode('::', $fullName, 2);

@@ -2,7 +2,6 @@
 
 namespace Xua\Core\Services;
 
-use JetBrains\PhpStorm\Pure;
 use Xua\Core\Eves\Service;
 
 abstract class EnvironmentService extends Service
@@ -16,22 +15,22 @@ abstract class EnvironmentService extends Service
         return getenv('ENV_NAME');
     }
 
-    #[Pure] public static function local(): bool
+    public static function local(): bool
     {
         return self::env() == self::ENV_LOCAL;
     }
 
-    #[Pure] public static function demo(): bool
+    public static function demo(): bool
     {
         return self::env() == self::ENV_DEMO;
     }
 
-    #[Pure] public static function prod(): bool
+    public static function prod(): bool
     {
         return self::env() == self::ENV_PROD;
     }
 
-    #[Pure] public static function debugMode(): bool
+    public static function debugMode(): bool
     {
         return self::env() != self::ENV_PROD;
     }

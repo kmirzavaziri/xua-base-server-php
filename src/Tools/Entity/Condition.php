@@ -86,9 +86,6 @@ final class Condition
      * @param string $relation
      * @param mixed|null $value
      * @return Condition
-     * @throws EntityConditionException
-     * @throws SuperValidationException
-     * @throws SuperMarshalException
      */
     public static function leaf(CF $field, string $relation, mixed $value = null): Condition
     {
@@ -155,9 +152,6 @@ final class Condition
      * @param string $relation
      * @param mixed|null $value
      * @return $this
-     * @throws EntityConditionException
-     * @throws SuperMarshalException
-     * @throws SuperValidationException
      */
     public function and(CF $field, string $relation, mixed $value = null) : Condition
     {
@@ -169,9 +163,6 @@ final class Condition
      * @param string $relation
      * @param mixed|null $value
      * @return $this
-     * @throws EntityConditionException
-     * @throws SuperValidationException
-     * @throws SuperMarshalException
      */
     public function or(CF $field, string $relation, mixed $value = null) : Condition
     {
@@ -183,9 +174,6 @@ final class Condition
      * @param string $relation
      * @param mixed|null $value
      * @return $this
-     * @throws EntityConditionException
-     * @throws SuperMarshalException
-     * @throws SuperValidationException
      */
     public function xor(CF $field, string $relation, mixed $value = null) : Condition
     {
