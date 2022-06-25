@@ -62,6 +62,110 @@ final class ExpressionService extends Service
         return self::getVendor($key, $bind, 'xua/core/private/dictionaries', $lang);
     }
 
+    public static function fixNumbers(string $text, ?string $lang = null): string
+    {
+        $lang = $lang ?? LocaleLanguage::getLanguage();
+        $result = '';
+        for ($i = 0; $i < mb_strlen($text); $i++) {
+            $t = mb_substr($text, $i, 1);
+            $result .= self::NUMERIC_MAP[$lang][$t] ?? $t;
+        }
+        return $result;
+    }
+
+    public static function wordify(int $i, string $lang = null, int $level = 0): string {
+        if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
+            $lang = LocaleLanguage::getLanguage();
+        }
+        $result = '';
+        if ($lang == LocaleLanguage::LANG_EN) {
+            // @TODO
+            $result = '';
+        } elseif ($lang == LocaleLanguage::LANG_FA) {
+            if ($i < 0) {
+                $result = 'منفی ' . self::wordify(-$i, $lang, $level);
+            } elseif ($i == 0) {
+                if ($level === 0) {
+                    $result = 'صفر';
+                } else {
+                    $result = '';
+                }
+            } else {
+                $yekan = ['یک', 'دو', 'سه', 'چهار', 'پنج', 'شش ', 'هفت', 'هشت', 'نه'];
+                $dahgan = [' بیست ', ' سی ', ' چهل ', ' پنجاه ', ' شصت ', ' هفتاد ', ' هشتاد ', ' نود '];
+                $sadgan = [' یکصد ', ' دویست ', ' سیصد ', ' چهارصد ', ' پانصد ', ' ششصد ', ' هفتصد ', ' هشتصد ', ' نهصد '];
+                $dah = [' ده ', ' یازده ', ' دوازده ', ' سیزده ', ' چهارده ', ' پانزده ', ' شانزده ', ' هفده ', ' هیجده ', ' نوزده '];
+                if ($level > 0) {
+                    $result .= ' و ';
+                    $level -= 1;
+                }
+                if ($i < 10) {
+                    $result .= $yekan[$i - 1];
+                } elseif ($i < 20) {
+                    $result .= $dah[$i - 10];
+                } elseif ($i < 100) {
+                    $result .= $dahgan[floor($i / 10) - 2] . self::wordify($i % 10, $lang, $level + 1);
+                } elseif ($i < 1000) {
+                    $result .= $sadgan[floor($i / 100) - 1] . self::wordify($i % 100, $lang, $level + 1);
+                } elseif ($i < 1000000) {
+                    $result .= self::wordify(floor($i / 1_000), $lang, $level) . ' هزار ' . self::wordify($i % 1_000, $lang, $level + 1);
+                } elseif ($i < 1000000000) {
+                    $result .= self::wordify(floor($i / 1_000_000), $lang, $level) . ' میلیون ' . self::wordify($i % 1_000_000, $lang, $level + 1);
+                } elseif ($i < 1000000000000) {
+                    $result .= self::wordify(floor($i / 1_000_000_000), $lang, $level) . ' میلیارد ' . self::wordify($i % 1_000_000_000, $lang, $level + 1);
+                } elseif ($i < 1000000000000000) {
+                    $result .= self::wordify(floor($i / 1_000_000_000_000), $lang, $level) . ' تریلیارد ' . self::wordify($i % 1_000_000_000_000, $lang, $level + 1);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    public static function ith(int $i, string $lang = null, $ucFirst = false): string {
+        if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
+            $lang = LocaleLanguage::getLanguage();
+        }
+        $result = '';
+        if ($lang == LocaleLanguage::LANG_EN) {
+            $ordinals = [
+                'zeroth', 'first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth',
+                'eleventh', 'twelfth', 'thirteenth', 'fourteenth', 'fifteenth', 'sixteenth', 'seventeenth', 'eighteenth', 'nineteenth'
+            ];
+            $tens = ['twent', 'thirt', 'fourt', 'fift', 'sixt', 'sevent', 'eight', 'ninet'];
+            $hundreds = array_map(
+                function ($item) { return $item . '-hundred'; },
+                ['one', 'two', 'three', 'four', 'five',  'six', 'seven', 'eight', 'nine', 'ten'],
+            );
+            $stringI = '' . $i;
+            if ($i < 20) {
+                $result = $ordinals[$i];
+            } elseif ($i < 100) {
+                if ($i % 10) {
+                    $result = $tens[$stringI[0] - 2] . 'y-' . $ordinals[$i % 10];
+                } else {
+                    $result = $tens[$stringI[0] - 2] . 'ieth';
+                }
+            } elseif ($i < 1000) {
+                $left = $stringI[0];
+                $result = $hundreds[$left - 1] . ' ' . self::ith($i - ($left * pow(10, strlen($stringI[0]) - 1)), $lang, false);
+            }
+            if ($ucFirst) {
+                $result = ucfirst($result[0]);
+            }
+        } elseif ($lang == LocaleLanguage::LANG_FA) {
+            if ($i == 1) {
+                $result = 'اول';
+            } else if ($i == 3) {
+                // @TODO for others like 23rd
+                $result = 'سوم';
+            } else {
+                $result = self::wordify($i, $lang) . 'م';
+            }
+        }
+        return $result;
+    }
+
     private static function parse(string $filename) : array
     {
         return @yaml_parse_file($filename) ?: [];
@@ -92,17 +196,6 @@ final class ExpressionService extends Service
         } else {
             return '';
         }
-    }
-
-    public static function fixNumbers(string $text, ?string $lang = null): string
-    {
-        $lang = $lang ?? LocaleLanguage::getLanguage();
-        $result = '';
-        for ($i = 0; $i < mb_strlen($text); $i++) {
-            $t = mb_substr($text, $i, 1);
-            $result .= self::NUMERIC_MAP[$lang][$t] ?? $t;
-        }
-        return $result;
     }
 
     const NUMERIC_MAP = [
