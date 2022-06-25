@@ -26,6 +26,18 @@ final class EntityBuffer {
         return $this;
     }
 
+    /**
+     * @param Entity[] $entities
+     * @return void
+     */
+    public function addMany(array $entities): self
+    {
+        foreach ($entities as $entity) {
+            $this->add($entity);
+        }
+        return $this;
+    }
+
 
     public function store(): void
     {
