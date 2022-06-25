@@ -134,6 +134,16 @@ abstract class Entity extends Block
     private static int $_x_lastSavepointNo = 0;
 
     /**
+     * @var bool
+     */
+    private bool $_x_is_visited_for_store = false;
+
+    /**
+     * @var Entity[]
+     */
+    private array $_x_must_falsify_visited_for_store = [];
+
+    /**
      */
     final public static function _init(): void
     {
@@ -544,7 +554,12 @@ abstract class Entity extends Block
      */
     final protected function storeQueries(string $caller = Visibility::CALLER_PHP): array
     {
-        return $this->_storeQueries($caller);
+        $this->_x_must_falsify_visited_for_store = [];
+        $result = $this->_storeQueries($caller);
+        foreach ($this->_x_must_falsify_visited_for_store as $entity) {
+            $entity->_x_is_visited_for_store = false;
+        }
+        return $result;
     }
 
     /**
@@ -680,11 +695,36 @@ abstract class Entity extends Block
      */
     final protected function _x_storeQueries(): array
     {
+        $this->_x_is_visited_for_store = true;
+        $this->_x_must_falsify_visited_for_store[] = $this;
+
         $this->validation();
 
         $array = $this->toDbArray();
 
         $queries = [];
+
+        // inserts for related entities
+        foreach (static::fieldSignatures() as $key => $signature) {
+            $value = $this->_x_values[self::FIELD_PREFIX][$key];
+            if (
+                $value and
+                is_a($signature->declaration, EntityRelation::class) and
+                (
+                    ($signature->declaration->is11 and $signature->declaration->definedHere) or
+                    $signature->declaration->isN1
+                    // @TODO is there other cases?
+                ) and
+                !$value->_x_is_visited_for_store
+            ) {
+                $shouldInsert = !$value->id;
+                $queries = array_merge($queries, $value->storeQueries());
+                $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
+                if ($shouldInsert) {
+                    $array[$key] = $value->id;
+                }
+            }
+        }
 
         // this entity
         if ($this->_x_values[self::FIELD_PREFIX]['id'] === null) {
@@ -707,20 +747,25 @@ abstract class Entity extends Block
         // related entities
         foreach (static::fieldSignatures() as $key => $signature) {
             $value = $this->_x_values[self::FIELD_PREFIX][$key];
-            if (!is_a($signature->declaration, EntityRelation::class) or !$this->_x_must_store[$key]) {
+            if (!is_a($signature->declaration, EntityRelation::class) or ($this->_x_must_fetch[$key] and !$this->_x_must_store[$key])) {
                 continue;
             } elseif ($signature->declaration->is11 and $signature->declaration->definedThere) {
                 $value->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                 try {
                     $queries = array_merge($queries, $value->storeQueries());
+                    $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                 } catch (EntityFieldException $e) {
                     throw (new EntityFieldException())->setError($key, $e->getErrors());
+                }
+                if ($signature->declaration->definedHere) {
+                    $this->_x_values[self::FIELD_PREFIX][$key] = $value;
                 }
             } elseif ($signature->declaration->is1N) {
                 foreach ($this->_x_values[self::FIELD_PREFIX][$key] as $relatedEntityKey => $relatedEntity) {
                     $relatedEntity->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                     try {
                         $queries = array_merge($queries, $relatedEntity->storeQueries());
+                        $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
                     }
@@ -744,6 +789,7 @@ abstract class Entity extends Block
                 foreach ($this->_x_values[self::FIELD_PREFIX][$key] as $relatedEntityKey => $relatedEntity) {
                     try {
                         $queries = array_merge($queries, $relatedEntity->storeQueries());
+                        $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
                     }
