@@ -19,6 +19,21 @@ abstract class JsonLogService extends Service
 
     /**
      * @param string $key
+     * @param int $pageSize
+     * @param int $pageIndex
+     * @return array|null
+     */
+    public static function getMany(string $key, int $pageSize, int $pageIndex): ?array {
+        if ($pageIndex < 1) {
+            $pageIndex = 1;
+        }
+        $offset = $pageSize * ($pageIndex - 1);
+        $all = self::getAll($key);
+        return $all ? array_slice($all, $offset, $pageSize) : null;
+    }
+
+    /**
+     * @param string $key
      * @param mixed $data
      * @return void
      */
