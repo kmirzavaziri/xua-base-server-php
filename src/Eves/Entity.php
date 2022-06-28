@@ -53,7 +53,9 @@ abstract class Entity extends Block
      */
     private static ?PDO $connection = null;
 
-    // @TODO remove usages
+    private static bool $_x_transaction_started = false;
+
+    // @TODO remove usages of connection to force all queries pass the channel  Entity::execute(...)
     /**
      * @return PDO|null
      */
@@ -71,25 +73,15 @@ abstract class Entity extends Block
             ]);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             self::startTransaction();
+            self::$_x_transaction_started = true;
         }
         return self::$connection;
     }
 
-    /**
-     * @param string $query
-     * @param array $bind
-     * @return false|PDOStatement
-     */
     final public static function execute(string $query, array $bind = []): false|PDOStatement
     {
         [$query, $bind] = QueryBinder::getQueryAndBind($query, $bind);
-        if (in_array(EnvironmentService::env(), ConstantService::get('config', 'services.entity.logEnvs'))) {
-            JsonLogService::append('entity', [
-                'time' => (new DateTimeInstance())->format('Y/m/d-H:i:s'),
-                'query' => QueryBinder::bind($query, $bind),
-                'trace' => (new Exception())->getTrace()[0]['file'] . ':' . (new Exception())->getTrace()[0]['line']
-            ]);
-        }
+        self::executeLog($query, $bind);
         try {
             $statement = self::connection()->prepare($query);
             $statement->execute($bind);
@@ -97,6 +89,22 @@ abstract class Entity extends Block
         } catch (PDOException $e) {
             static::handlePDOException($e, QueryBinder::bind($query, $bind));
             return false;
+        }
+    }
+
+    final public static function executeLog(string $query, array $bind): void
+    {
+        if (in_array(EnvironmentService::env(), ConstantService::get('config', 'services.entity.logEnvs'))) {
+            JsonLogService::append('entity', [
+                'time' => (new DateTimeInstance())->format('Y/m/d-H:i:s', null, LocaleLanguage::LANG_EN, LocaleLanguage::CAL_GREGORIAN),
+                'query' => QueryBinder::bind($query, $bind),
+                'trace' => implode(PHP_EOL, array_map(
+                    function (array $traceItem): string {
+                        return ($traceItem['file'] ?? '') . ':' . ($traceItem['line'] ?? '');
+                    },
+                    debug_backtrace()
+                ))
+            ]);
         }
     }
 
@@ -134,17 +142,15 @@ abstract class Entity extends Block
     private static int $_x_lastSavepointNo = 0;
 
     /**
-     * @var bool
-     */
-    private bool $_x_is_visited_for_store = false;
-
-    /**
      * @var Entity[]
      */
-    private array $_x_must_falsify_visited_for_store = [];
+    private static array $_x_cached_by_id = [];
 
     /**
+     * @var bool[]
      */
+    private static array $_x_entities_visited_for_store = [];
+
     final public static function _init(): void
     {
         parent::_init();
@@ -154,26 +160,42 @@ abstract class Entity extends Block
     /**
      * @param int|null $id
      */
-    final public function __construct(?int $id = 0)
+    final private function __construct(?int $id = 0)
     {
         $this->initialize();
-
         $this->_x_given_id = $id;
+    }
 
-        $exists = false;
-        if ($id) {
-            $statement = self::execute("SELECT EXISTS (SELECT * FROM `" . static::table() . "` WHERE `id` = ?) e", [$id]);
-            $exists = $statement->fetch()['e'];
+    final public static function new(?int $id = 0): static
+    {
+        if(!isset(self::$_x_cached_by_id[static::class])) {
+            self::$_x_cached_by_id[static::class] = [];
         }
-        if ($exists) {
-            $this->_x_values[self::FIELD_PREFIX]['id'] = $id;
-        } else {
-            foreach (static::fieldSignatures() as $key => $signature) {
-                $this->_x_must_store[$key] = true;
+
+        if ($id) {
+            if (!isset(self::$_x_cached_by_id[static::class][$id])) {
+                $statement = self::execute("SELECT EXISTS (SELECT * FROM `" . static::table() . "` WHERE `id` = ?) e", [$id]);
+                if ($statement->fetch()['e']) {
+                    $newEntity = new static($id);
+                    $newEntity->_x_values[self::FIELD_PREFIX]['id'] = $id;
+                    $newEntity->_x_must_fetch['id'] = false;
+                    $newEntity->_x_must_store['id'] = false;
+                    self::$_x_cached_by_id[static::class][$id] = $newEntity;
+                }
+            }
+            if (isset(self::$_x_cached_by_id[static::class][$id])) {
+                return self::$_x_cached_by_id[static::class][$id];
             }
         }
-        $this->_x_must_fetch['id'] = false;
-        $this->_x_must_store['id'] = false;
+
+        $newEntity = new static($id);
+        foreach (static::fieldSignatures() as $key => $signature) {
+            $newEntity->_x_must_store[$key] = true;
+        }
+        $newEntity->_x_must_fetch['id'] = false;
+        $newEntity->_x_must_store['id'] = false;
+
+        return $newEntity;
     }
 
     /**
@@ -554,12 +576,7 @@ abstract class Entity extends Block
      */
     final protected function storeQueries(string $caller = Visibility::CALLER_PHP): array
     {
-        $this->_x_must_falsify_visited_for_store = [];
-        $result = $this->_storeQueries($caller);
-        foreach ($this->_x_must_falsify_visited_for_store as $entity) {
-            $entity->_x_is_visited_for_store = false;
-        }
-        return $result;
+        return $this->_storeQueries($caller);
     }
 
     /**
@@ -680,11 +697,9 @@ abstract class Entity extends Block
      */
     final protected static function _x_getOne(Condition $condition, Order $order, string $lock): static
     {
-        return static::_x_getMany($condition, $order, new Pager(1, 0), $lock)[0] ?? new static();
+        return static::_x_getMany($condition, $order, new Pager(1, 0), $lock)[0] ?? static::new();
     }
 
-    /**
-     */
     final protected function _x_store(): void
     {
         (new EntityBuffer())->add($this)->store();
@@ -695,8 +710,11 @@ abstract class Entity extends Block
      */
     final protected function _x_storeQueries(): array
     {
-        $this->_x_is_visited_for_store = true;
-        $this->_x_must_falsify_visited_for_store[] = $this;
+        if (self::$_x_entities_visited_for_store[spl_object_hash($this)] ?? false) {
+            return [];
+        }
+
+        self::$_x_entities_visited_for_store[spl_object_hash($this)] = true;
 
         $this->validation();
 
@@ -714,12 +732,10 @@ abstract class Entity extends Block
                     ($signature->declaration->is11 and $signature->declaration->definedHere) or
                     $signature->declaration->isN1
                     // @TODO is there other cases?
-                ) and
-                !$value->_x_is_visited_for_store
+                )
             ) {
                 $shouldInsert = !$value->id;
                 $queries = array_merge($queries, $value->storeQueries());
-                $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                 if ($shouldInsert) {
                     $array[$key] = $value->id;
                 }
@@ -738,6 +754,7 @@ abstract class Entity extends Block
             $this->_x_values[self::FIELD_PREFIX]['id'] = Entity::connection()->lastInsertId();
             $this->_x_must_fetch['id'] = false;
             $this->_x_must_store['id'] = false;
+            self::$_x_cached_by_id[static::class][$this->_x_values[self::FIELD_PREFIX]['id']] = $this;
         } else {
             if ($array) {
                 $queries[] = Query::update(static::table(), $array, Condition::leaf(CF::_(static::id), Condition::EQ, $this->_x_values[self::FIELD_PREFIX]['id']));
@@ -753,7 +770,6 @@ abstract class Entity extends Block
                 $value->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                 try {
                     $queries = array_merge($queries, $value->storeQueries());
-                    $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                 } catch (EntityFieldException $e) {
                     throw (new EntityFieldException())->setError($key, $e->getErrors());
                 }
@@ -765,7 +781,6 @@ abstract class Entity extends Block
                     $relatedEntity->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
                     try {
                         $queries = array_merge($queries, $relatedEntity->storeQueries());
-                        $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
                     }
@@ -789,7 +804,6 @@ abstract class Entity extends Block
                 foreach ($this->_x_values[self::FIELD_PREFIX][$key] as $relatedEntityKey => $relatedEntity) {
                     try {
                         $queries = array_merge($queries, $relatedEntity->storeQueries());
-                        $this->_x_must_falsify_visited_for_store = array_merge($this->_x_must_falsify_visited_for_store, $value->_x_must_falsify_visited_for_store);
                     } catch (EntityFieldException $e) {
                         throw (new EntityFieldException())->setError($key, [$relatedEntityKey => $e->getErrors()]);
                     }
@@ -893,9 +907,7 @@ abstract class Entity extends Block
         $entityClass = new ReflectionClass(static::class);
         $entities = [];
         foreach ($arrays as $array) {
-            /** @var static $entity */
-            $entity = $entityClass->newInstanceWithoutConstructor();
-            $entities[] = $entity->initialize()->fromDbArray($array);
+            $entities[] = self::$_x_cached_by_id[static::class][$array['id']] ?? $entityClass->newInstanceWithoutConstructor()->initialize()->fromDbArray($array);
         }
 
         return $entities;
@@ -976,8 +988,9 @@ abstract class Entity extends Block
         foreach ($array as $key => $value) {
             $signature = static::signature($key);
             if (is_a($signature->declaration, EntityRelation::class)) {
+                // @TODO better read relations later than fetching the minimal object
                 if ($signature->declaration->toOne) {
-                    $result = new $signature->declaration->relatedEntity($value);
+                    $result = $signature->declaration->relatedEntity::new($value);
                     if ($result->id) {
                         if ($signature->declaration->fromOne) {
                             $result->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
@@ -989,7 +1002,7 @@ abstract class Entity extends Block
                     $result = [];
                     if ($value) {
                         foreach ($value as $id) {
-                            $tmp = new $signature->declaration->relatedEntity($id);
+                            $tmp = $signature->declaration->relatedEntity::new($id);
                             if ($tmp->id) {
                                 if ($signature->declaration->fromOne) {
                                     $tmp->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
@@ -1028,65 +1041,79 @@ abstract class Entity extends Block
         return $array;
     }
 
-    # Predefined Methods (low-level direct db communicator)
-
+    # Predefined Methods (low-level direct db communication)
     /**
      * @param string|null $fieldName
      */
-    private function _x_fetch(?string $fieldName = 'id') : void
+    private function _x_fetch(?string $fieldName = 'id'): void
     {
         if (!($this->_x_values[self::FIELD_PREFIX]['id'] ?? false)) {
             return;
         }
-
         $signature = static::signature($fieldName);
-        $array = [];
-
-        if (
-            is_a($signature->declaration, EntityRelation::class) and
-            $signature->declaration->toMany
-        ) {
-            if ($signature->declaration->is1N) {
-                $statement = self::execute("SELECT id FROM `" . $signature->declaration->relatedEntity::table() . "` WHERE `" . $signature->declaration->invName . "` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
-                $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
-                if ($rawArray) {
-                    $array[$fieldName] = [];
-                    foreach ($rawArray as $item) {
-                        $array[$fieldName][] = $item[0];
-                    }
-                }
-            } elseif ($signature->declaration->isNN) {
-                if ($signature->declaration->definedHere) {
-                    $here = self::JUNCTION_LEFT;
-                    $there = self::JUNCTION_RIGHT;
-                } else {
-                    $here = self::JUNCTION_RIGHT;
-                    $there = self::JUNCTION_LEFT;
-                }
-                $statement = self::execute("SELECT `$there` FROM `" . static::junctionTableName($fieldName) . "` WHERE `$here` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
-                $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
-                if ($rawArray) {
-                    $array[$fieldName] = [];
-                    foreach ($rawArray as $item) {
-                        $array[$fieldName][] = $item[0];
-                    }
-                }
-            }
+        if (is_a($signature->declaration, EntityRelation::class)) {
+            $this->_x_fetch_related_entity($signature);
         } elseif (is_a($signature->declaration, PhpVirtualField::class)) {
-            $array[$fieldName] = ($signature->declaration->getter)($this, $signature->p());
+            $this->_x_fetch_virtual_field($signature);
         } else {
-            [$columnsExpression, $keys] = self::columnsExpression($this);
-            if ($columnsExpression) {
-                $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` WHERE `" . static::table() . "`.`id` = ? LIMIT 1", [$this->_x_values[self::FIELD_PREFIX]['id']]);
-                $rawArray = $statement->fetch(PDO::FETCH_NUM);
-                if ($rawArray) {
-                    foreach ($keys as $i => $key) {
-                        $array[$key] = $rawArray[$i];
-                    }
-                }
-            }
+            $this->_x_fetch_efficient();
         }
 
+    }
+
+    private function _x_fetch_related_entity(Signature $signature): void
+    {
+        $result = [];
+        if (
+            !is_a($signature->declaration, EntityRelation::class) or
+            !$signature->declaration->toMany
+        ) {
+            return;
+        }
+        if ($signature->declaration->is1N) {
+            $statement = self::execute("SELECT id FROM `" . $signature->declaration->relatedEntity::table() . "` WHERE `" . $signature->declaration->invName . "` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
+        } else { // $signature->declaration->isNN
+            if ($signature->declaration->definedHere) {
+                $here = self::JUNCTION_LEFT;
+                $there = self::JUNCTION_RIGHT;
+            } else {
+                $here = self::JUNCTION_RIGHT;
+                $there = self::JUNCTION_LEFT;
+            }
+            $statement = self::execute("SELECT `$there` FROM `" . static::junctionTableName($signature->name) . "` WHERE `$here` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
+        }
+        $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
+        if (!$rawArray) {
+            return;
+        }
+        foreach ($rawArray as $item) {
+            $result[] = $item[0];
+        }
+        $this->fromDbArray([$signature->name => $result]);
+    }
+
+    private function _x_fetch_virtual_field(Signature $signature): void
+    {
+        $this->fromDbArray([
+            $signature->name => ($signature->declaration->getter)($this, $signature->p()),
+        ]);
+    }
+
+    private function _x_fetch_efficient(): void
+    {
+        [$columnsExpression, $keys] = self::columnsExpression($this);
+        if (!$columnsExpression) {
+            return;
+        }
+        $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` WHERE `" . static::table() . "`.`id` = ? LIMIT 1", [$this->_x_values[self::FIELD_PREFIX]['id']]);
+        $rawArray = $statement->fetch(PDO::FETCH_NUM);
+        if (!$rawArray) {
+            return;
+        }
+        $array = [];
+        foreach ($keys as $i => $key) {
+            $array[$key] = $rawArray[$i];
+        }
         $this->fromDbArray($array);
     }
 
@@ -1152,8 +1179,6 @@ abstract class Entity extends Block
         ];
     }
 
-    /**
-     */
     final public static function startTransaction(): void
     {
         static::execute("START TRANSACTION");
@@ -1176,18 +1201,18 @@ abstract class Entity extends Block
         static::execute("ROLLBACK TO savepoint$savepointNo");
     }
 
-    /**
-     */
     final public static function commit(): void
     {
-        static::execute("COMMIT");
+        if (self::$_x_transaction_started) {
+            static::execute("COMMIT");
+        }
     }
 
-    /**
-     */
     final public static function rollback(): void
     {
-        static::execute("ROLLBACK");
+        if (self::$_x_transaction_started) {
+            static::execute("ROLLBACK");
+        }
     }
 
     /**
@@ -1277,7 +1302,7 @@ abstract class Entity extends Block
 
         $dbIds = array_map(function (Entity $entity) {
             return $entity->_x_values[self::FIELD_PREFIX]['id'];
-        }, (new static($this->_x_values[self::FIELD_PREFIX]['id']))->$key);
+        }, (static::new($this->_x_values[self::FIELD_PREFIX]['id']))->$key);
 
         $addingIds = array_values(array_diff($currentIds, $dbIds));
         $removingIds = array_values(array_diff($dbIds, $currentIds));

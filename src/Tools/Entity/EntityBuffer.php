@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Tools\Entity;
 
+use ReflectionClass;
 use ReflectionObject;
 use Throwable;
 use Xua\Core\Eves\Entity;
@@ -54,19 +55,19 @@ final class EntityBuffer {
     {
         $queryString = '';
         $bind = [];
+        $entityClassReflector = new ReflectionClass(Entity::class);
+        $entityClassReflector->setStaticPropertyValue('_x_entities_visited_for_store', []);
         foreach ($this->entities as $entity) {
             $entityReflector = new ReflectionObject($entity);
-            $methodReflector = $entityReflector->getMethod('storeQueries');
-            $methodReflector->setAccessible(true);  // @TODO take a look at this.
-                                                    //      https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-                                                    //      wen may remove this line and also remove the local variable $methodReflector.
+            $storeQueriesReflector = $entityReflector->getMethod('storeQueries');
             /** @var Query[] $queries */
-            $queries = $methodReflector->invoke($entity);
+            $queries = $storeQueriesReflector->invoke($entity);
             foreach ($queries as $query) {
                 $queryString .= $query->query . ';';
                 $bind = array_merge($bind, $query->bind);
             }
         }
+        $entityClassReflector->setStaticPropertyValue('_x_entities_visited_for_store', []);
         if ($queryString) {
             Entity::execute($queryString, $bind);
         }
