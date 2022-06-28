@@ -37,7 +37,16 @@ abstract class QueryBinder
     {
         return preg_replace_callback('/\?/', function($match) use(&$bind) {
             $value = array_shift($bind);
-            return is_string($value) ? "'$value'" : $value;
+            if (is_string($value)) {
+                return "'$value'";
+            }
+            if (is_null($value)) {
+                return 'null';
+            }
+            if (is_bool($value)) {
+                return $value ? 'true' : 'false';
+            }
+            return $value;
         }, $query);
     }
 }
