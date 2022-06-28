@@ -13,6 +13,23 @@ use Xua\Core\Eves\XuaException;
 
 class MainService extends Service
 {
+    const MAX_EXECUTION_TIME_TO_WARN = 20;
+
+    private static int $startTime;
+    private static bool $loggedTimeout = false;
+
+    protected static function _init(): void
+    {
+        self::$startTime = time();
+        register_shutdown_function(function () {
+            if (!self::$loggedTimeout and time() - self::$startTime > static::MAX_EXECUTION_TIME_TO_WARN) {
+                self::$loggedTimeout = true;
+                // @TODO this doesn't work idk why. investigate later.
+                static::logError(new \Exception('Execution Timeout!'));
+            }
+        });
+    }
+
     public static function before()
     {
         session_start();
@@ -62,15 +79,18 @@ class MainService extends Service
         try {
             if ($throwable instanceof RouteException) {
                 static::notFound();
-            } elseif (Credentials::developer()) {
-                echo
-                    "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
-                    (is_a($throwable, XuaException::class) ? $throwable->displayErrors() : $throwable->getMessage()) . "\n\n" .
-                    "Trace:\n" .
-                    $throwable->getTraceAsString() .
-                    "</pre>";
             } else {
-                self::serverError();
+                static::logError($throwable);
+                if (Credentials::developer()) {
+                    echo
+                        "<pre>" . get_class($throwable) . " occurred on " . $throwable->getFile() . ":" . $throwable->getLine() . ":\n\n" .
+                        (is_a($throwable, XuaException::class) ? $throwable->displayErrors() : $throwable->getMessage()) . "\n\n" .
+                        "Trace:\n" .
+                        $throwable->getTraceAsString() .
+                        "</pre>";
+                } else {
+                    self::serverError();
+                }
             }
         } catch (Throwable) {
             http_response_code(500);
@@ -88,5 +108,13 @@ class MainService extends Service
     protected static function notFound(): void
     {
         NotFoundInterface::execute();
+    }
+
+    protected static function logError(Throwable $throwable)
+    {
+        JsonLogService::append('error', [
+            'message' => $throwable->getMessage(),
+            'trace' => $throwable->getTraceAsString(),
+        ]);
     }
 }
