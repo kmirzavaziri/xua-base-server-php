@@ -835,6 +835,7 @@ abstract class Entity extends Block
      */
     final protected function _x_delete(bool $force): void
     {
+        // @TODO remove from _x_cached_by_id
         $queryString = '';
         $bind = [];
         foreach ($this->deleteQueries($force) as $query) {
@@ -904,10 +905,12 @@ abstract class Entity extends Block
                 $arrays[$item][$key] = $rawArray[$i];
             }
         }
-        $entityClass = new ReflectionClass(static::class);
         $entities = [];
         foreach ($arrays as $array) {
-            $entities[] = self::$_x_cached_by_id[static::class][$array['id']] ?? $entityClass->newInstanceWithoutConstructor()->initialize()->fromDbArray($array);
+            if (!isset(self::$_x_cached_by_id[static::class][$array['id']])) {
+                self::$_x_cached_by_id[static::class][$array['id']] = (new static($array['id']))->fromDbArray($array);
+            }
+            $entities[] = self::$_x_cached_by_id[static::class][$array['id']];
         }
 
         return $entities;
@@ -933,6 +936,7 @@ abstract class Entity extends Block
      */
     final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager): int
     {
+        // @TODO remove from _x_cached_by_id
         // @TODO remove relatives or raise error, just like delete
         return self::execute("DELETE `" . static::table() . "` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
     }
