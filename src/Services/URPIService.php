@@ -139,9 +139,7 @@ class URPIService extends Service
             }
             if (str_starts_with($externalResourcePath, $externalPublicPath)) {
                 $internalResourcePath = $internalPublicPath . DIRECTORY_SEPARATOR . substr($externalResourcePath, strlen($externalPublicPath));
-                $internalResourcePath = realpath($internalResourcePath);
-                $internalPublicPath = realpath($internalPublicPath);
-                if (str_starts_with($internalResourcePath, $internalPublicPath)) {
+                if (self::isSecurelyUnderDirectory($internalResourcePath, $internalPublicPath)) {
                     $isPublicResourcePath = true;
                     break;
                 }
@@ -167,6 +165,11 @@ class URPIService extends Service
     }
 
     // Helpers
+    public static function isSecurelyUnderDirectory(string $child, string $parent): bool
+    {
+        return str_starts_with(realpath($child), realpath($parent));
+    }
+
     public static function setOriginHeaders(): void
     {
         if (isset($_SERVER['HTTP_ORIGIN'])) {
