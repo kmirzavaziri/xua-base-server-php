@@ -148,7 +148,7 @@ class SignatureValueCalculator
                 $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value[$scheme->identifierField->name]));
                 if (!$return->id) {
                     if ($scheme->identifierField->name != 'id' or !$value[$scheme->identifierField->name]) {
-                        $return = new $return(0);
+                        $return = $return::new(0);
                     } else {
                         throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                             'entity' => ExpressionService::get('table_name.' . $scheme->signature->declaration->relatedEntity::table()),
