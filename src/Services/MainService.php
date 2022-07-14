@@ -24,7 +24,7 @@ class MainService extends Service
         register_shutdown_function(function () {
             if (!self::$loggedTimeout and time() - self::$startTime > static::MAX_EXECUTION_TIME_TO_WARN) {
                 self::$loggedTimeout = true;
-                // @TODO this doesn't work idk why. investigate later.
+                // @TODO this doesn't work idk why. investigate later. (I think this is stored under some wrong directory html/private/logs/error.json)
                 static::logError(new \Exception('Execution Timeout!'));
             }
         });
@@ -113,6 +113,7 @@ class MainService extends Service
     protected static function logError(Throwable $throwable)
     {
         JsonLogService::append('error', [
+            'time' => (new DateTimeInstance())->format('Y/m/d-H:i:s', null, LocaleLanguage::LANG_EN, LocaleLanguage::CAL_GREGORIAN),
             'message' => $throwable->getMessage(),
             'trace' => $throwable->getTraceAsString(),
         ]);
