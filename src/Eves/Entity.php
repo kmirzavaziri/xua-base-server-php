@@ -2,11 +2,9 @@
 
 namespace Xua\Core\Eves;
 
-use Exception;
 use PDO;
 use PDOException;
 use PDOStatement;
-use ReflectionClass;
 use Xua\Core\Exceptions\NotImplementedException;
 use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\DateTimeInstance;
@@ -35,6 +33,8 @@ use Xua\Core\Tools\Entity\Pager;
 use Xua\Core\Tools\Entity\TableScheme;
 use Xua\Core\Tools\Signature\Signature;
 use Xua\Core\Tools\Visibility;
+
+// @TODO this file needs some serious refactoring and cleanings.
 
 /**
  * @property mixed id
@@ -723,8 +723,10 @@ abstract class Entity extends Block
         $queries = [];
 
         // inserts for related entities
-        foreach (static::fieldSignatures() as $key => $signature) {
+        $signatures = static::fieldSignatures();
+        foreach ($array as $key => $_) {
             $value = $this->_x_values[self::FIELD_PREFIX][$key];
+            $signature = $signatures[$key];
             if (
                 $value and
                 is_a($signature->declaration, EntityRelation::class) and
@@ -762,7 +764,7 @@ abstract class Entity extends Block
         }
 
         // related entities
-        foreach (static::fieldSignatures() as $key => $signature) {
+        foreach ($signatures as $key => $signature) {
             $value = $this->_x_values[self::FIELD_PREFIX][$key];
             if (!is_a($signature->declaration, EntityRelation::class) or ($this->_x_must_fetch[$key] and !$this->_x_must_store[$key])) {
                 continue;
@@ -787,7 +789,7 @@ abstract class Entity extends Block
                 }
                 $removingIds = $this->getAddingRemovingIds($key)[1];
                 if ($removingIds) {
-                    if ($signature->declaration->invOptional) {
+                    if ($signature->declaration->invNullable) {
                         $queries[] = Query::update(
                             $signature->declaration->relatedEntity::table(),
                             [$signature->declaration->invName => null],
@@ -857,7 +859,7 @@ abstract class Entity extends Block
 
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var Signature $signature */
-            if (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->fromOne and $signature->declaration->invRequired and $this->$key) {
+            if (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->invRequired and $this->$key) {
                 if ($force) {
                     $queries = array_merge($queries, $this->$key->deleteQueries());
                 }
@@ -994,12 +996,16 @@ abstract class Entity extends Block
             if (is_a($signature->declaration, EntityRelation::class)) {
                 // @TODO better read relations later than fetching the minimal object
                 if ($signature->declaration->toOne) {
-                    $result = $signature->declaration->relatedEntity::new($value);
-                    if ($result->id) {
-                        if ($signature->declaration->fromOne) {
-                            $result->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
-                            $result->_x_must_fetch[$signature->declaration->invName] = false;
-                            $result->_x_must_store[$signature->declaration->invName] = false;
+                    if ($value === null) {
+                        $result = null;
+                    } else {
+                        $result = $signature->declaration->relatedEntity::new($value);
+                        if ($result->id) {
+                            if ($signature->declaration->fromOne) {
+                                $result->_x_values[self::FIELD_PREFIX][$signature->declaration->invName] = $this;
+                                $result->_x_must_fetch[$signature->declaration->invName] = false;
+                                $result->_x_must_store[$signature->declaration->invName] = false;
+                            }
                         }
                     }
                 } else {
@@ -1055,14 +1061,14 @@ abstract class Entity extends Block
             return;
         }
         $signature = static::signature($fieldName);
-        if (is_a($signature->declaration, EntityRelation::class)) {
+        // @TODO think more about it (how to handle relations which are of two types (id is present when fetching efficient, and not present, we should execute another query))
+        if (is_a($signature->declaration, EntityRelation::class) and (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->toMany)) {
             $this->_x_fetch_related_entity($signature);
         } elseif (is_a($signature->declaration, PhpVirtualField::class)) {
             $this->_x_fetch_virtual_field($signature);
         } else {
             $this->_x_fetch_efficient();
         }
-
     }
 
     private function _x_fetch_related_entity(Signature $signature): void
@@ -1119,6 +1125,7 @@ abstract class Entity extends Block
             $array[$key] = $rawArray[$i];
         }
         $this->fromDbArray($array);
+
     }
 
     ####################################################################################################################
@@ -1304,9 +1311,24 @@ abstract class Entity extends Block
             return $entity->_x_values[self::FIELD_PREFIX]['id'];
         }, $this->_x_values[self::FIELD_PREFIX][$key]);
 
-        $dbIds = array_map(function (Entity $entity) {
-            return $entity->_x_values[self::FIELD_PREFIX]['id'];
-        }, (static::new($this->_x_values[self::FIELD_PREFIX]['id']))->$key);
+        // @TODO better to store db data and local data separately and clean this mess
+        $signature = static::signature($key);
+        if ($signature->declaration->is1N) {
+            $statement = self::execute("SELECT id FROM `" . $signature->declaration->relatedEntity::table() . "` WHERE `" . $signature->declaration->invName . "` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
+        } else { // $signature->declaration->isNN
+            if ($signature->declaration->definedHere) {
+                $here = self::JUNCTION_LEFT;
+                $there = self::JUNCTION_RIGHT;
+            } else {
+                $here = self::JUNCTION_RIGHT;
+                $there = self::JUNCTION_LEFT;
+            }
+            $statement = self::execute("SELECT `$there` FROM `" . static::junctionTableName($signature->name) . "` WHERE `$here` = ?", [$this->_x_values[self::FIELD_PREFIX]['id']]);
+        }
+        $rawArray = $statement->fetchAll(PDO::FETCH_NUM);
+        $dbIds = $rawArray ? array_map(function (array $rawItem) {
+            return $rawItem[0];
+        }, $rawArray) : [];
 
         $addingIds = array_values(array_diff($currentIds, $dbIds));
         $removingIds = array_values(array_diff($dbIds, $currentIds));
