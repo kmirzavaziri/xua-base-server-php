@@ -32,6 +32,7 @@ use Xua\Core\Tools\Signature\Signature;
  * @property bool nullable
  * @property bool required
  * @property bool invOptional
+ * @property bool invNullable
  * @property bool invRequired
  * @property bool hasJunction
  * @property bool definedHere
@@ -57,6 +58,7 @@ class EntityRelation extends Super
     const nullable = self::class . '::nullable';
     const required = self::class . '::required';
     const invOptional = self::class . '::invOptional';
+    const invNullable = self::class . '::invNullable';
     const invRequired = self::class . '::invRequired';
     const definedHere = self::class . '::definedHere';
     const definedThere = self::class . '::definedThere';
@@ -119,6 +121,7 @@ class EntityRelation extends Super
             Signature::new(true, static::nullable, false, false,new Boolean([])),
             Signature::new(true, static::required, false, false,new Boolean([])),
             Signature::new(true, static::invOptional, false, false,new Boolean([])),
+            Signature::new(true, static::invNullable, false, false,new Boolean([])),
             Signature::new(true, static::invRequired, false, false,new Boolean([])),
             Signature::new(true, static::hasJunction, false, false,new Boolean([])),
             Signature::new(true, static::definedHere, false, false,new Boolean([])),
@@ -138,11 +141,12 @@ class EntityRelation extends Super
         $this->isN1 = ($this->fromMany and $this->toOne);
         $this->is1N = ($this->fromOne and $this->toMany);
         $this->isNN = ($this->fromMany and $this->toMany);
-        $this->optional = in_array($this->relation, [self::REL_O11O, self::REL_O11R, self::REL_ON1]);
-        $this->nullable = $this->optional;
-        $this->required = !$this->optional;
-        $this->invOptional = in_array($this->relation, [self::REL_O11O, self::REL_R11O, self::REL_1NO]);
-        $this->invRequired = !$this->invOptional;
+        $this->required = in_array($this->relation, [self::REL_R11O, self::REL_R11R, self::REL_RN1]);
+        $this->optional = !$this->required;
+        $this->nullable = in_array($this->relation, [self::REL_O11O, self::REL_O11R, self::REL_ON1]);
+        $this->invRequired = in_array($this->relation, [self::REL_O11R, self::REL_R11R, self::REL_1NR]);
+        $this->invOptional = !$this->invRequired;
+        $this->invNullable = in_array($this->relation, [self::REL_O11O, self::REL_R11O, self::REL_1NO]);
         $this->hasJunction = $this->isNN;
         $this->definedHere = ($this->definedOn == self::DEFINED_ON_HERE);
         $this->definedThere = ($this->definedOn == self::DEFINED_ON_THERE);
@@ -153,21 +157,21 @@ class EntityRelation extends Super
     protected function _predicate($input, null|string|array &$message = null) : bool
     {
         if ($this->toOne) {
-            if (!(new Instance([Instance::of => $this->relatedEntity, Instance::nullable => $this->optional]))->explicitlyAccepts($input, $message)) {
+            if (!(new Instance([Instance::of => $this->relatedEntity, Instance::nullable => $this->nullable]))->explicitlyAccepts($input, $message)) {
                 return false;
             }
             if ($input !== null and $input->id === null) {
-                if ($this->is11 and $this->invRequired) {
-                    if (!FlagService::get('force-store-II') and $this->definedHere) {
-                        FlagService::set('force-store-II', true);
-                        $input->store();
-                        FlagService::unset('force-store-II');
-                        return true;
-                    } elseif (FlagService::get('force-store-II')) {
-                        return true;
+                if ($this->required and $this->definedHere) {
+                    if ($this->invRequired) {
+                        if (!FlagService::get('force-store-II')) {
+                            FlagService::set('force-store-II', true);
+                            $input->store();
+                            FlagService::unset('force-store-II');
+                            return true;
+                        } elseif (FlagService::get('force-store-II')) {
+                            return true;
+                        }
                     }
-                }
-                if ($this->required) {
                     $message = ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
                         'entity' => ExpressionService::get('table_name.' . $this->relatedEntity::table()),
                         'id' => $input->givenId() === null,
