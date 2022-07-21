@@ -83,6 +83,6 @@ abstract class MethodAdjust extends FieldedMethod
 
     public function dontStore() : bool
     {
-        return false;
+        return false; // @TODO we better have a third option to store only this method's feed and not all of the entity buffer (or we can find a way to guess it since only the main (entry point) of methods must store all of the entity buffer at the end)
     }
 }
