@@ -38,10 +38,16 @@ final class Query {
         return new Query("UPDATE `$table` $joins SET $expressions WHERE $condition->template", $bind);
     }
 
-    public static function delete(string $table, Condition $condition): self
+    public static function delete(string $table, Condition $condition, ?Order $order = null, ?Pager $pager = null): self
     {
+        if ($order === null) {
+            $order = Order::noOrder();
+        }
+        if ($pager === null) {
+            $pager = Pager::unlimited();
+        }
         $joins = $condition->joins();
-        return new Query("DELETE `$table` FROM `$table` $joins WHERE $condition->template", $condition->parameters);
+        return new Query("DELETE `$table` FROM `$table` $joins WHERE $condition->template" . $order->render() . $pager->render(), $condition->parameters);
     }
 
     public static function insertMany(string $table, array $columns, array $rows): self
@@ -53,6 +59,7 @@ final class Query {
             $bind = array_merge($bind, $row);
         }
 
+        // @TODO investigate if array to string conversion is correct
         return new Query("INSERT INTO `$table` ($columns) VALUES \n$placeHolders", $bind);
     }
 
