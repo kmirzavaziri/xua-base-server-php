@@ -8,7 +8,7 @@ class Trilean extends Super
 {
     protected function _predicate($input, null|string|array &$message = null): bool
     {
-        $message = 'Value of type ' . gettype($input) . ' is not bool and is not null.';
+        $message = 'Value of type ' . gettype($input) . ' is not bool and is not null.'; // @TODO message from dict
         return (is_bool($input) or $input === null);
     }
 

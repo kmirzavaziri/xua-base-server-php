@@ -8,7 +8,7 @@ class Boolean extends Super
 {
     protected function _predicate($input, null|string|array &$message = null): bool
     {
-        $message = 'Value of type ' . gettype($input) . ' is not bool.';
+        $message = 'Value of type ' . gettype($input) . ' is not bool.'; // @TODO message from dict
         return is_bool($input);
     }
 

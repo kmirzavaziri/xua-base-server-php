@@ -29,7 +29,7 @@ class Number extends Super
         }
 
         if (!is_numeric($input)) {
-            $message = 'Value of type ' . gettype($input) . ' is not a number or value castable to a number.';
+            $message = 'Value of type ' . gettype($input) . ' is not a number or value castable to a number.'; // @TODO message from dict
             return false;
         }
 
