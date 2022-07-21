@@ -812,7 +812,7 @@ abstract class Entity extends Block
         foreach (static::fieldSignatures() as $key => $signature) {
             if (is_a($signature->declaration, EntityRelation::class)) {
                 if ($signature->declaration->columnThere) {
-                    if ($this->$key) {
+                    if ($this->$key and $signature->declaration->invName !== null) {
                         $this->$key->{$signature->declaration->invName} = null;
                         $this->$key->store();
                     }
