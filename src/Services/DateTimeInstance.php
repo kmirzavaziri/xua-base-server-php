@@ -70,6 +70,7 @@ class DateTimeInstance extends Service
 
     public static function fromYmdHis(string $datetime): ?DateTimeInstance
     {
+        $datetime = ExpressionService::fixNumbers($datetime, LocaleLanguage::LANG_EN);
         return match (LocaleLanguage::getCalendar()) {
             LocaleLanguage::CAL_JALALI => self::fromJalaliYmdHis($datetime),
             LocaleLanguage::CAL_GREGORIAN => self::fromGregorianYmdHis($datetime),
