@@ -381,28 +381,17 @@ abstract class Entity extends Block
     ####################################################################################################################
     # Overridable Methods ##############################################################################################
     ####################################################################################################################
-    /**
-     * @param EntityFieldException $exception
-     */
     protected function _validation(EntityFieldException $exception): void
     {
         // Empty by default
     }
 
-    /**
-     *
-     */
     protected function _initialize(): void
     {
         $this->_x_initialize();
     }
 
     /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param string $lock
-     * @param string $caller
-     * @return static
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _getOne(Condition $condition, Order $order, string $lock, string $caller): static
@@ -411,7 +400,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param string $caller
      * @noinspection PhpUnusedParameterInspection
      */
     protected function _store(string $caller): void
@@ -420,8 +408,7 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param string $caller
-     * @return array
+     * @return Query[]
      * @noinspection PhpUnusedParameterInspection
      */
     protected function _storeQueries(string $caller): array
@@ -430,8 +417,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param bool $force
-     * @param string $caller
      * @noinspection PhpUnusedParameterInspection
      */
     protected function _delete(bool $force, string $caller): void
@@ -440,9 +425,7 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param bool $force
-     * @param string $caller
-     * @return array
+     * @return Query[]
      * @noinspection PhpUnusedParameterInspection
      */
     protected function _deleteQueries(bool $force, string $caller): array
@@ -451,11 +434,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @param string $lock
-     * @param string $caller
      * @return static[]
      * @noinspection PhpUnusedParameterInspection
      */
@@ -465,11 +443,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @param string $caller
-     * @return int
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _count(Condition $condition, Order $order, Pager $pager, string $caller): int
@@ -478,11 +451,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @param string $caller
-     * @return int
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _deleteMany(Condition $condition, Order $order, Pager $pager, string $caller): int
@@ -491,21 +459,20 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param PDOException $e
-     * @param string $query
+     * @return Query[]
+     * @noinspection PhpUnusedParameterInspection
      */
+    protected static function _deleteManyQueries(Condition $condition, Order $order, Pager $pager, string $caller): array
+    {
+        return static::_x_deleteManyQueries($condition, $order, $pager);
+    }
+
     protected static function _handlePDOException(PDOException $e, string $query): void
     {
         static::_x_handlePDOException($e, $query);
     }
 
     /**
-     * @param array $change
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @param string $caller
-     * @return int
      * @noinspection PhpUnusedParameterInspection
      */
     protected static function _setMany(array $change, Condition $condition, Order $order, Pager $pager, string $caller): int
@@ -542,13 +509,6 @@ abstract class Entity extends Block
         return $this;
     }
 
-    /**
-     * @param Condition|null $condition
-     * @param Order|null $order
-     * @param string $lock
-     * @param string $caller
-     * @return static
-     */
     final public static function getOne(?Condition $condition = null, ?Order $order = null, string $lock = EntityLock::DEFAULT, string $caller = Visibility::CALLER_PHP): static
     {
         if ($condition === null) {
@@ -561,7 +521,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param string $caller
      * @return $this
      */
     final public function store(string $caller = Visibility::CALLER_PHP): static
@@ -571,27 +530,20 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param string $caller
-     * @return array
+     * @return Query[]
      */
     final protected function storeQueries(string $caller = Visibility::CALLER_PHP): array
     {
         return $this->_storeQueries($caller);
     }
 
-    /**
-     * @param bool $force
-     * @param string $caller
-     */
     final public function delete(bool $force = false, string $caller = Visibility::CALLER_PHP): void
     {
         $this->_delete($force, $caller);
     }
 
     /**
-     * @param bool $force
-     * @param string $caller
-     * @return array
+     * @return Query[]
      */
     final public function deleteQueries(bool $force = false, string $caller = Visibility::CALLER_PHP): array
     {
@@ -599,11 +551,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param Condition|null $condition
-     * @param Order|null $order
-     * @param Pager|null $pager
-     * @param string $lock
-     * @param string $caller
      * @return static[]
      */
     final public static function getMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $lock = EntityLock::DEFAULT, string $caller = Visibility::CALLER_PHP): array
@@ -620,13 +567,6 @@ abstract class Entity extends Block
         return static::_getMany($condition, $order, $pager, $lock, $caller);
     }
 
-    /**
-     * @param Condition|null $condition
-     * @param Order|null $order
-     * @param Pager|null $pager
-     * @param string $caller
-     * @return int
-     */
     final public static function count(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
     {
         if ($condition === null) {
@@ -641,13 +581,6 @@ abstract class Entity extends Block
         return static::_count($condition, $order, $pager, $caller);
     }
 
-    /**
-     * @param Condition|null $condition
-     * @param Order|null $order
-     * @param Pager|null $pager
-     * @param string $caller
-     * @return int
-     */
     final public static function deleteMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
     {
         if ($condition === null) {
@@ -663,6 +596,23 @@ abstract class Entity extends Block
     }
 
     /**
+     * @return Query[]
+     */
+    final public static function deleteManyQueries(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): array
+    {
+        if ($condition === null) {
+            $condition = Condition::falseLeaf();
+        }
+        if ($order === null) {
+            $order = Order::noOrder();
+        }
+        if ($pager === null) {
+            $pager = Pager::unlimited();
+        }
+        return static::_deleteManyQueries($condition, $order, $pager, $caller);
+    }
+
+    /**
      * @param PDOException $e
      * @param string $query
      */
@@ -674,9 +624,6 @@ abstract class Entity extends Block
     ####################################################################################################################
     # Predefined Methods (to wrap in overridable methods) ##############################################################
     ####################################################################################################################
-    /**
-     *
-     */
     final protected function _x_initialize(): void
     {
         foreach (static::fieldSignatures() as $key => $signature) {
@@ -689,12 +636,6 @@ abstract class Entity extends Block
         }
     }
 
-    /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param string $lock
-     * @return static
-     */
     final protected static function _x_getOne(Condition $condition, Order $order, string $lock): static
     {
         return static::_x_getMany($condition, $order, new Pager(1, 0), $lock)[0] ?? static::new();
@@ -706,7 +647,7 @@ abstract class Entity extends Block
     }
 
     /**
-     * @return array
+     * @return Query[]
      */
     final protected function _x_storeQueries(): array
     {
@@ -724,9 +665,11 @@ abstract class Entity extends Block
 
         // inserts for related entities
         $signatures = static::fieldSignatures();
-        foreach ($array as $key => $_) {
+        foreach ($signatures as $key => $signature) {
+            if (!$this->_x_must_store[$key]) {
+                continue;
+            }
             $value = $this->_x_values[self::FIELD_PREFIX][$key];
-            $signature = $signatures[$key];
             if (
                 $value and
                 is_a($signature->declaration, EntityRelation::class) and
@@ -765,6 +708,9 @@ abstract class Entity extends Block
 
         // related entities
         foreach ($signatures as $key => $signature) {
+            if (!$this->_x_must_store[$key]) {
+                continue;
+            }
             $value = $this->_x_values[self::FIELD_PREFIX][$key];
             if (!is_a($signature->declaration, EntityRelation::class) or ($this->_x_must_fetch[$key] and !$this->_x_must_store[$key])) {
                 continue;
@@ -796,10 +742,9 @@ abstract class Entity extends Block
                             Condition::leaf(CF::_($signature->declaration->relatedEntity::id), Condition::IN, $removingIds)
                         );
                     } else {
-                        $queries[] = Query::delete(
-                            $signature->declaration->relatedEntity::table(),
+                        $queries = array_merge($queries, $signature->declaration->relatedEntity::deleteManyQueries(
                             Condition::leaf(CF::_($signature->declaration->relatedEntity::id), Condition::IN, $removingIds)
-                        );
+                        ));
                     }
                 }
             } elseif ($signature->declaration->isNN) {
@@ -831,10 +776,6 @@ abstract class Entity extends Block
         return $queries;
     }
 
-    /**
-     * @param bool $force
-     * @return void
-     */
     final protected function _x_delete(bool $force): void
     {
         // @TODO remove from _x_cached_by_id
@@ -850,8 +791,7 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param bool $force
-     * @return array
+     * @return Query[]
      */
     final protected function _x_deleteQueries(bool $force): array
     {
@@ -889,10 +829,6 @@ abstract class Entity extends Block
     }
 
     /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @param string $lock
      * @return static[]
      */
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager, string $lock): array
@@ -918,29 +854,69 @@ abstract class Entity extends Block
         return $entities;
     }
 
-    /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @return int
-     */
     final protected static function _x_count(Condition $condition, Order $order, Pager $pager): int
     {
         $statement = self::execute("SELECT COUNT(`" . self::table() . "`.`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
         return $statement->fetch(PDO::FETCH_ASSOC)['c'];
     }
 
-    /**
-     * @param Condition $condition
-     * @param Order $order
-     * @param Pager $pager
-     * @return int
-     */
     final protected static function _x_deleteMany(Condition $condition, Order $order, Pager $pager): int
     {
         // @TODO remove from _x_cached_by_id
-        // @TODO remove relatives or raise error, just like delete
-        return self::execute("DELETE `" . static::table() . "` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters)->rowCount();
+        $queryString = '';
+        $bind = [];
+        foreach (static::deleteManyQueries($condition, $order, $pager) as $query) {
+            $queryString .= $query->query . ';';
+            $bind = array_merge($bind, $query->bind);
+        }
+        if ($queryString) {
+            return self::execute($queryString, $bind)->rowCount();
+        }
+        return 0;
+    }
+
+    /**
+     * @return Query[]
+     */
+    final protected static function _x_deleteManyQueries(Condition $condition, Order $order, Pager $pager): array
+    {
+        $queries = [];
+
+//        @TODO remove relatives or raise error, just like delete
+//        foreach (static::fieldSignatures() as $key => $signature) {
+//            /** @var Signature $signature */
+//            if (is_a($signature->declaration, EntityRelation::class) and $signature->declaration->invRequired and $this->$key) {
+//                if ($force) {
+//                    $queries = array_merge($queries, $this->$key->deleteQueries());
+//                }
+//                else {
+//                    throw new EntityDeleteException("Cannot delete " . static::table() . " because there exists a $key but the inverse nullable is false.");
+//                }
+//            }
+//        }
+//
+//        foreach (static::fieldSignatures() as $key => $signature) {
+//            if (is_a($signature->declaration, EntityRelation::class)) {
+//                if ($signature->declaration->columnThere) {
+//                    if ($this->$key) {
+//                        $this->$key->{$signature->declaration->invName} = null;
+//                        $this->$key->store();
+//                    }
+//                } elseif ($signature->declaration->hasJunction) {
+//                    $this->$key = [];
+//                    $this->store();
+//                }
+//            }
+//        }
+
+        $queries[] = Query::delete(
+            static::table(),
+            $condition,
+            $order,
+            $pager,
+        );
+
+        return $queries;
     }
 
     /**
