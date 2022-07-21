@@ -8,9 +8,7 @@ use Throwable;
 use Xua\Core\Eves\Entity;
 
 final class EntityBuffer {
-    /**
-     * @var Entity[]
-     */
+    /**  @var Entity[] */
     private array $entities = [];
     private static ?EntityBuffer $efficientBuffer = null;
 
@@ -29,7 +27,7 @@ final class EntityBuffer {
 
     /**
      * @param Entity[] $entities
-     * @return void
+     * @return $this
      */
     public function addMany(array $entities): self
     {
@@ -38,7 +36,6 @@ final class EntityBuffer {
         }
         return $this;
     }
-
 
     public function store(): void
     {
