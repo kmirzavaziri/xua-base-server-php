@@ -145,7 +145,13 @@ class SignatureValueCalculator
                 if (!$hasIdentifier) {
                     throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
                 }
-                $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value[$scheme->identifierField->name]));
+                $return = ($scheme->signature->declaration->relatedEntity)::new(0);
+                foreach ($entity->{$scheme->name} as $item) {
+                    if ($item->{$scheme->identifierField->name} == $value[$scheme->identifierField->name]) {
+                        $return = $item;
+                        break;
+                    }
+                }
                 if (!$return->id) {
                     if ($scheme->identifierField->name == 'id' and $value[$scheme->identifierField->name]) {
                         throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
