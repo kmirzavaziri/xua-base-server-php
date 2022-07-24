@@ -43,13 +43,13 @@ class URPIService extends Service
 
     public static function main(): void
     {
-        $resourcePath = RouteService::$args['resourcePath'];
+        $resourcePath = RouteService::getArg('resourcePath');
         if (!$resourcePath) {
             self::$service::notFound();
             return;
         }
 
-        if (RouteService::$method == XRMLParser::METHOD_POST) {
+        if (RouteService::getMethod() == XRMLParser::METHOD_POST) {
             try {
                 self::publicClass($resourcePath);
             } catch (URPIException $e) {
@@ -59,7 +59,7 @@ class URPIService extends Service
             return;
         }
 
-        if (RouteService::$method == XRMLParser::METHOD_GET) {
+        if (RouteService::getMethod() == XRMLParser::METHOD_GET) {
             try {
                 self::publicResource($resourcePath);
             } catch (URPIException $e) {
