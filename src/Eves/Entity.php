@@ -834,7 +834,7 @@ abstract class Entity extends Block
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager, string $lock): array
     {
         [$columnsExpression, $keys] = self::columnsExpression();
-        $statement = self::execute("SELECT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render() . " " . $lock, $condition->parameters);
+        $statement = self::execute("SELECT DISTINCT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render() . " " . $lock, $condition->parameters);
         $rawArrays = $statement->fetchAll(PDO::FETCH_NUM);
         $arrays = [];
         foreach ($rawArrays as $item => $rawArray) {
