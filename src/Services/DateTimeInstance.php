@@ -8,7 +8,10 @@ use Xua\Core\Eves\Service;
 
 class DateTimeInstance extends Service
 {
-    const MINUTE = 60;
+    const SECOND = 1;
+    const MINUTE = 60 * self::SECOND;
+    const HOUR = 60 * self::MINUTE;
+    const DAY = 24 * self::HOUR;
     protected array $YmdHis;
     protected int $timestamp;
 
