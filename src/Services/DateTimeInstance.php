@@ -379,6 +379,13 @@ class DateTimeInstance extends Service
         return $this->timestamp >= $dateTimeInstance->timestamp;
     }
 
+    public function removeHis(): static
+    {
+        $date = static::fromGregorianYmd($this->format('Y-m-d', null, LocaleLanguage::LANG_EN));
+        $this->setTimestamp($date->getTimeStamp());
+        return $this;
+    }
+
     // DateTime Modify
     public function modifyGregorian(string $modifier): static
     {
