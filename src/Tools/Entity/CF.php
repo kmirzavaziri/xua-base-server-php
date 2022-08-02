@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Tools\Entity;
 
+use Xua\Core\Supers\Special\DatabaseVirtualField;
 use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Tools\Signature\Signature;
@@ -45,7 +46,11 @@ final class CF
 
     public function name() : string
     {
-        return '`' . $this->alias . '`.`' . $this->signature->name . '`';
+        if (is_a($this->signature->declaration, DatabaseVirtualField::class)) {
+            return "`{$this->alias}__{$this->signature->name}`";
+        } else {
+            return "`$this->alias`.`{$this->signature->name}`";
+        }
     }
 
     public function joins(): array

@@ -47,7 +47,7 @@ final class Query {
             $pager = Pager::unlimited();
         }
         $joins = $condition->joins();
-        return new Query("DELETE `$table` FROM `$table` $joins WHERE $condition->template" . $order->render() . $pager->render(), $condition->parameters);
+        return new Query("DELETE `$table` FROM `$table` $joins WHERE $condition->template " . $order->render() . " " . $pager->render(), $condition->parameters);
     }
 
     public static function insertMany(string $table, array $columns, array $rows): self

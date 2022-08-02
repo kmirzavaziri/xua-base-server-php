@@ -834,7 +834,7 @@ abstract class Entity extends Block
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager, string $lock): array
     {
         [$columnsExpression, $keys] = self::columnsExpression();
-        $statement = self::execute("SELECT DISTINCT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render() . " " . $lock, $condition->parameters);
+        $statement = self::execute("SELECT DISTINCT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . " " . $pager->render() . " " . $lock, $condition->parameters);
         $rawArrays = $statement->fetchAll(PDO::FETCH_NUM);
         $arrays = [];
         foreach ($rawArrays as $item => $rawArray) {
@@ -856,7 +856,7 @@ abstract class Entity extends Block
 
     final protected static function _x_count(Condition $condition, Order $order, Pager $pager): int
     {
-        $statement = self::execute("SELECT COUNT(`" . self::table() . "`.`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . $pager->render(), $condition->parameters);
+        $statement = self::execute("SELECT COUNT(`" . self::table() . "`.`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . " " . $pager->render(), $condition->parameters);
         return $statement->fetch(PDO::FETCH_ASSOC)['c'];
     }
 
@@ -1210,15 +1210,18 @@ abstract class Entity extends Block
     {
         $columnExpressions = [];
         $keys = [];
+        $table = static::table();
         foreach (static::fieldSignatures() as $key => $signature) {
             /** @var Signature $signature */
             if ($entity and !$entity->_x_must_fetch[$key]) {
                 continue;
             }
             if (is_a($signature->declaration, DatabaseVirtualField::class)) {
-                $expression =  ($signature->declaration->getter)($signature->p()) . ' `' . $signature->name . '`';
+                $databaseFieldExpression = ($signature->declaration->getter)($signature->p());
+                $databaseFieldExpression = str_replace('#XuaTableName#', "`$table`", $databaseFieldExpression);
+                $expression = "($databaseFieldExpression) `{$table}__$signature->name`";
             } elseif ($signature->declaration->databaseType() != 'DONT STORE') {
-                $expression = '`' . static::table() . '`.`' . $signature->name . '`';
+                $expression = "`$table`.`$signature->name`";
             } else {
                 continue;
             }
