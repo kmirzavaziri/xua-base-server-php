@@ -19,6 +19,10 @@ class DateTimeInstance extends Service
     public function __construct(float $timestamp = null)
     {
         $this->timestamp = $timestamp ?? time();
+        $this->update();
+    }
+
+    private function update() {
         $YmdHis = explode('-', date('Y-m-d-H-i-s', $this->timestamp));
         $this->YmdHis = [
             'Y' => $YmdHis[0],
@@ -28,7 +32,6 @@ class DateTimeInstance extends Service
             'i' => $YmdHis[4],
             's' => $YmdHis[5],
         ];
-
     }
 
     // Getters & Setters
@@ -40,6 +43,7 @@ class DateTimeInstance extends Service
     public function setTimestamp(float $timestamp): static
     {
         $this->timestamp = $timestamp;
+        $this->update();
         return $this;
     }
 
@@ -344,13 +348,13 @@ class DateTimeInstance extends Service
     // Operations
     public function add(DateTimeInstance $dateTimeInstance): static
     {
-        $this->timestamp += $dateTimeInstance->timestamp;
+        $this->setTimestamp($this->timestamp + $dateTimeInstance->timestamp);
         return $this;
     }
 
     public function sub(DateTimeInstance $dateTimeInstance) : static
     {
-        $this->timestamp -= $dateTimeInstance->timestamp;
+        $this->setTimestamp($this->timestamp - $dateTimeInstance->timestamp);
         return $this;
     }
 
@@ -381,15 +385,15 @@ class DateTimeInstance extends Service
 
     public function removeHis(): static
     {
-        $date = static::fromGregorianYmd($this->format('Y-m-d', null, LocaleLanguage::LANG_EN));
-        $this->setTimestamp($date->getTimeStamp());
+        $date = static::fromGregorianYmd($this->format('Y-m-d', null, LocaleLanguage::LANG_EN, LocaleLanguage::CAL_GREGORIAN));
+        $this->setTimestamp($date->timestamp);
         return $this;
     }
 
     // DateTime Modify
     public function modifyGregorian(string $modifier): static
     {
-        $this->timestamp = DateTime::createFromFormat('U', $this->timestamp)->modify($modifier)->getTimestamp();
+        $this->setTimestamp(DateTime::createFromFormat('U', $this->timestamp)->modify($modifier)->getTimestamp());
         return $this;
     }
 
