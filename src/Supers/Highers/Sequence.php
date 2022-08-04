@@ -140,6 +140,7 @@ class Sequence extends Json
 
     protected function _phpType(): string
     {
-        return ($this->nullable ? '?' : '') . ($this->type->_phpType() != 'mixed' ? $this->type->_phpType() . '[]' : 'array');
+        $valuePhpType = $this->type?->_phpType() ?? 'mixed';
+        return ($this->nullable ? '?' : '') . ($valuePhpType != 'mixed' ? $valuePhpType . '[]' : 'array');
     }
 }
