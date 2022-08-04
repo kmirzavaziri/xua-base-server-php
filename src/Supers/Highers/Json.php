@@ -87,7 +87,8 @@ abstract class Json extends Super
 
     protected function _databaseType(): ?string
     {
-        return (new Text([Text::nullable => $this->nullable]))->databaseType();
+        $nullExpression = $this->nullable ? 'NULL' : ' NOT NULL';
+        return "JSON$nullExpression";
     }
 
     protected function _phpType(): string
