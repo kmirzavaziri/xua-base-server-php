@@ -1282,7 +1282,7 @@ abstract class Entity extends Block
         // many-to-? relation
         else {
             $found = false;
-            foreach ($entity->_x_values[self::FIELD_PREFIX][$key] as $index => $item) {
+            foreach ($entity->$key as $index => $item) {
                 if ($item->_x_values[self::FIELD_PREFIX]['id'] == $this->_x_values[self::FIELD_PREFIX]['id']) {
                     $entity->_x_values[self::FIELD_PREFIX][$key][$index] = $this;
                     $found = true;
