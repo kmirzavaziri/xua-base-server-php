@@ -17,7 +17,9 @@ final class EntityAlterService extends Service
     public static function alters(): string
     {
         return
-            self::alterTransaction() . self::altersInDirs(ConstantService::get('config', 'paths.entities'));
+            self::alterTransaction() .
+            self::alterTimezone() .
+            self::altersInDirs(ConstantService::get('config', 'paths.entities'));
     }
 
     private static function altersInDirs(array $dirs): string
@@ -69,10 +71,20 @@ final class EntityAlterService extends Service
     private static function alterTransaction(): string
     {
         $expectedTransactionIsolationLevel = ConstantService::get('config', 'db.isolationLevel');
-        $realTransactionIsolationLevel = Entity::execute('SELECT @@GLOBAL.TRANSACTION_ISOLATION')->fetch(PDO::FETCH_NUM)[0];
+        $realTransactionIsolationLevel = Entity::execute('select @@global.transaction_isolation')->fetch(PDO::FETCH_NUM)[0];
         if ($realTransactionIsolationLevel != $expectedTransactionIsolationLevel) {
             $expectedTransactionIsolationLevelSyntax = Database::transactionIsolationLevel($expectedTransactionIsolationLevel);
-            return "SET GLOBAL TRANSACTION ISOLATION LEVEL $expectedTransactionIsolationLevelSyntax;" . PHP_EOL;
+            return "set global transaction isolation level $expectedTransactionIsolationLevelSyntax;" . PHP_EOL;
+        }
+        return '';
+    }
+
+    private static function alterTimezone(): string
+    {
+        $expectedTimezone = ConstantService::get('config', 'services.ll.timezone');
+        $realTimezone = Entity::execute('select @@global.time_zone')->fetch(PDO::FETCH_NUM)[0];
+        if ($realTimezone != $expectedTimezone) {
+            return "set global time_zone='$expectedTimezone';" . PHP_EOL;
         }
         return '';
     }

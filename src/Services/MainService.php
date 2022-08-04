@@ -34,6 +34,7 @@ class MainService extends Service
     {
         session_start();
         header_remove('X-Powered-By');
+        date_default_timezone_set(ConstantService::get('config', 'services.ll.timezone'));
     }
 
     public static function main()
