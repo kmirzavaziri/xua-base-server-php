@@ -201,6 +201,9 @@ class SignatureValueCalculator
      * @return mixed
      */
     private static function getEntityFieldInstant(Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): mixed {
+        if (!$entity->id) {
+            return null;
+        }
         return $scheme->instant['getter']($entity, $method);
     }
 
