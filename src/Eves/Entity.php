@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use Xua\Core\Exceptions\NotImplementedException;
+use Xua\Core\Exceptions\SuperMarshalException;
 use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\DateTimeInstance;
 use Xua\Core\Services\EnvironmentService;
@@ -41,7 +42,7 @@ use Xua\Core\Tools\Visibility;
  */
 abstract class Entity extends Block
 {
-    const id = 'Xua\\Core\\Eves\\Entity::id';
+    const id = self::class . '::id';
 
     const JUNCTION_LEFT = 'left';
     const JUNCTION_RIGHT = 'right';
@@ -1118,7 +1119,21 @@ abstract class Entity extends Block
         $columns = [];
         foreach (static::fieldSignatures() as $key => $signature) {
             if ($signature->declaration->databaseType() != 'DONT STORE') {
-                $columns[$key] = Column::fromQuery("$key {$signature->declaration->databaseType()}");
+                if ($signature->default === null) {
+                    $default = null;
+                } else {
+                    try {
+                        $default = $signature->declaration->marshalDatabase($signature->default);
+                    } catch (SuperMarshalException $exception) {
+                        throw (new EntityException)->setError(static::class . '.' . $key, $exception->getMessage());
+                    }
+                }
+
+                $columns[$key] = Column::fromQuery(
+                    $key,
+                    $signature->declaration->databaseType(),
+                    $default,
+                );
             }
             if (
                 is_a($signature->declaration, EntityRelation::class) and
@@ -1128,8 +1143,8 @@ abstract class Entity extends Block
                 $leftSignature = Signature::new(null, static::junctionTableName($key) . '::' . self::JUNCTION_LEFT, null, null, static::signature('id')->declaration);
                 $rightSignature = Signature::new(null, static::junctionTableName($key) . '::' . self::JUNCTION_RIGHT, null, null, $signature->declaration->relatedEntity::signature('id')->declaration);
                 $tables[] = new TableScheme(static::junctionTableName($key), [
-                    self::JUNCTION_LEFT => Column::fromQuery(self::JUNCTION_LEFT . ' ' . str_replace('AUTO_INCREMENT', '', $leftSignature->declaration->databaseType()) . " NOT NULL"),
-                    self::JUNCTION_RIGHT => Column::fromQuery(self::JUNCTION_RIGHT . ' ' . str_replace('AUTO_INCREMENT', '', $rightSignature->declaration->databaseType()) . " NOT NULL"),
+                    self::JUNCTION_LEFT => Column::fromQuery(self::JUNCTION_LEFT, str_replace('AUTO_INCREMENT', '', $leftSignature->declaration->databaseType()) . " NOT NULL"),
+                    self::JUNCTION_RIGHT => Column::fromQuery(self::JUNCTION_RIGHT, str_replace('AUTO_INCREMENT', '', $rightSignature->declaration->databaseType()) . " NOT NULL"),
                 ], [
                     Signature::new(null, null, null, null, new OrderScheme([
                         OrderScheme::fields => [

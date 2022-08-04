@@ -4,6 +4,8 @@ namespace Xua\Core\Tools\Entity;
 
 abstract class QueryBinder
 {
+    const SINGLE_QUOTE = "'";
+
     public static function getQueryAndBind(string $query, array $bind): array
     {
         $arrayBindPositions = [];
@@ -37,8 +39,11 @@ abstract class QueryBinder
     {
         return preg_replace_callback('/\?/', function($match) use(&$bind) {
             $value = array_shift($bind);
+            if (is_a($value, RawSQL::class)) {
+                return $value->value;
+            }
             if (is_string($value)) {
-                return "'$value'";
+                return self::SINGLE_QUOTE . addcslashes($value, self::SINGLE_QUOTE) . self::SINGLE_QUOTE;
             }
             if (is_null($value)) {
                 return 'null';

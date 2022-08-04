@@ -4,65 +4,104 @@ namespace Xua\Core\Tools\Entity;
 
 class Column
 {
-    public string $Field;
-    private string $Type;
-    private string $Null = "NO";
-    private string $Key = "";
-    private string $Extra = "";
+    private string $fieldName = '';
+    private string $type = 'bool';
+    private bool $nullable = false;
+    private mixed $default = null;
+    private string $extra = '';
 
-    private static function contains($haystack, $needle) : bool
+    public function __set(string $name, $value): void
     {
-        return stripos($haystack, $needle) !== false;
+        switch ($name) {
+            case 'Field':
+                $this->fieldName = $value;
+                break;
+            case 'Type':
+                $this->type = $value;
+                break;
+            case 'Null':
+                $this->nullable = $value == 'YES';
+                break;
+            case 'Default':
+                // @TODO there must be a better solution
+                $this->default = match (true) {
+                    $this->type == 'datetime' and $value == 'CURRENT_TIMESTAMP' => new RawSQL($value),
+                    $value === null => null,
+                    ctype_digit($value) => (int)$value,
+                    is_numeric($value) => (float)$value,
+                    default => $value,
+                };
+                break;
+            case 'Extra':
+                if (self::containsCaseInsensitive($value, 'AUTO_INCREMENT')) {
+                    $this->extra .= 'auto_increment';
+                }
+                break;
+        }
     }
 
-    public static function fromQuery(string $definition) : Column
+    public static function fromQuery(string $fieldName, string $definition, mixed $default = null): Column
     {
         $column = new Column();
-
-        $column->Field = explode(" ", $definition)[0];
-
-        $definition = strstr($definition, " ");
-        if (self::contains($definition, 'NOT NULL')) {
-            $column->Null = 'NO';
-        }
+        $column->fieldName = $fieldName;
         $definition = str_ireplace('NOT NULL', '', $definition);
-
-        if (self::contains($definition, 'NULL')) {
-            $column->Null = 'YES';
+        if (self::containsCaseInsensitive($definition, 'NULL')) {
+            $column->nullable = true;
         }
         $definition = str_ireplace('NULL', '', $definition);
-
-        if (self::contains($definition, 'AUTO_INCREMENT')) {
-            $column->Extra .= 'auto_increment';
+        if (self::containsCaseInsensitive($definition, 'AUTO_INCREMENT')) {
+            $column->extra .= 'auto_increment';
         }
         $definition = str_ireplace('AUTO_INCREMENT', '', $definition);
-
-        $column->Type = strtolower(trim($definition));
-
+        $column->type = strtolower(trim($definition));
+        if (!in_array($column->type, ['blob', 'text', 'geometry', 'json'])) {
+            // MySQL doesn't let these types to have a default value
+            $column->default = $default;
+        }
         return $column;
     }
 
-    public function toQuery() : string
+    public function toQuery(): string
     {
-        $nullExpression = $this->Null == 'YES' ? 'NULL' : 'NOT NULL';
-        return trim("`$this->Field` $this->Type $nullExpression $this->Extra");
+        $nullExpression = $this->nullable ? 'NULL' : 'NOT NULL';
+        $defaultExpression = '';
+        $bind = [];
+        if (!in_array($this->type, ['blob', 'text', 'geometry', 'json'])) {
+            // MySQL doesn't let these types to have a default value
+            $defaultExpression = 'DEFAULT ?';
+            $bind[] = $this->default;
+        }
+        return QueryBinder::bind(trim("`$this->fieldName` $this->type $nullExpression $defaultExpression $this->extra"), $bind);
     }
 
-    public function eq(Column $column) : bool
+    public function eq(Column $column): bool
     {
-        if ($this->Field != $column->Field) {
+        if ($this->fieldName != $column->fieldName) {
             return false;
         }
-        if ($this->Type != $column->Type) {
+        if ($this->type != $column->type) {
             return false;
         }
-        if ($this->Null != $column->Null) {
+        if ($this->nullable != $column->nullable) {
             return false;
         }
-        if ($this->Extra != $column->Extra) {
+        if (gettype($this->default) != gettype($column->default) or $this->default != $column->default) {
+            return false;
+        }
+        if ($this->extra != $column->extra) {
             return false;
         }
 
         return true;
+    }
+
+    public function getFieldName(): string
+    {
+        return $this->fieldName;
+    }
+
+    private static function containsCaseInsensitive($haystack, $needle): bool
+    {
+        return stripos($haystack, $needle) !== false;
     }
 }

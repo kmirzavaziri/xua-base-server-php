@@ -88,7 +88,8 @@ final class TableScheme
     {
         $oldColumns = [];
         foreach ($rawOldColumns as $rawOldColumn) {
-            $oldColumns[$rawOldColumn->Field] = $rawOldColumn;
+            /** @var Column $rawOldColumn */
+            $oldColumns[$rawOldColumn->getFieldName()] = $rawOldColumn;
         }
 
         $newColumns = $this->columns;

@@ -2,10 +2,11 @@
 
 namespace Xua\Core\Supers\Highers;
 
+use Xua\Core\Services\CurrentDateTime;
 use Xua\Core\Services\DateTimeInstance;
-use Xua\Core\Services\LocaleLanguage;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Strings\Text;
+use Xua\Core\Tools\Entity\RawSQL;
 use Xua\Core\Tools\Signature\Signature;
 
 /**
@@ -49,6 +50,9 @@ class DateTime extends Instance
 
     protected function _marshalDatabase($input): mixed
     {
+        if (is_a($input, CurrentDateTime::class)) {
+            return new RawSQL('CURRENT_TIMESTAMP');
+        }
         /** @var ?DateTimeInstance $input */
         return $input ? $input->formatGregorian('Y-m-d H:i:s', date_default_timezone_get(), 'en') : $input;
     }
