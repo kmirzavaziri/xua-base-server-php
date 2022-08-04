@@ -8,6 +8,8 @@ class Order
     const DESC = 'DESC';
 
     private array $orders = [];
+
+    /** @var CF[] $columns */
     private array $columns = [];
 
     private function __construct() {}
@@ -42,8 +44,23 @@ class Order
         return 'ORDER BY ' . implode(', ', $this->orders);
     }
 
-    public function columnsExpression(): string
+    public function columnsExpression(string $existingColumnsExpression): string
     {
-        return implode(', ', array_map(function (CF $field) { return $field->name(); }, $this->columns));
+        $existingColumnExpressions = explode(',', $existingColumnsExpression);
+        $existingColumnExpressionsDict = [];
+        foreach ($existingColumnExpressions as $columnExpression) {
+            $existingColumnExpressionsDict[trim($columnExpression)] = true;
+        }
+        $result = [];
+        foreach ($this->columns as $field) {
+            if ($field->signature->declaration->databaseType() != 'DONT STORE') {
+                $name = $field->name();
+                if (!isset($existingColumnExpressionsDict[$name])) {
+                    $result[] = $name;
+                }
+            }
+
+        }
+        return implode(', ', $result);
     }
 }
