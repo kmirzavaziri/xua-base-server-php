@@ -333,7 +333,7 @@ abstract class Entity extends Block
     protected static function _fieldSignatures(): array
     {
         return [
-            Signature::new(null, static::id, null, null, new Identifier([])),
+            Signature::new(null, static::id, true, null, new Identifier([])),
         ];
     }
 
@@ -1134,6 +1134,7 @@ abstract class Entity extends Block
                 $columns[$key] = Column::fromQuery(
                     $key,
                     $signature->declaration->databaseType(),
+                    $signature->required,
                     $default,
                 );
             }

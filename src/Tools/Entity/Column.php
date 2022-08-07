@@ -7,6 +7,7 @@ class Column
     private string $fieldName = '';
     private string $type = 'bool';
     private bool $nullable = false;
+    private bool $required = true;
     private mixed $default = null;
     private string $extra = '';
 
@@ -31,6 +32,10 @@ class Column
                     is_numeric($value) => (float)$value,
                     default => $value,
                 };
+
+                if ($this->default === null) {
+                    $this->required = false;
+                }
                 break;
             case 'Extra':
                 if (self::containsCaseInsensitive($value, 'AUTO_INCREMENT')) {
@@ -40,7 +45,7 @@ class Column
         }
     }
 
-    public static function fromQuery(string $fieldName, string $definition, mixed $default = null): Column
+    public static function fromQuery(string $fieldName, string $definition, bool $required = true, mixed $default = null): Column
     {
         $column = new Column();
         $column->fieldName = $fieldName;
@@ -54,6 +59,7 @@ class Column
         }
         $definition = str_ireplace('AUTO_INCREMENT', '', $definition);
         $column->type = strtolower(trim($definition));
+        $column->required = $required;
         if (!in_array($column->type, ['blob', 'text', 'geometry', 'json'])) {
             // MySQL doesn't let these types to have a default value
             $column->default = $default;
@@ -66,7 +72,7 @@ class Column
         $nullExpression = $this->nullable ? 'NULL' : 'NOT NULL';
         $defaultExpression = '';
         $bind = [];
-        if (!in_array($this->type, ['blob', 'text', 'geometry', 'json'])) {
+        if (!in_array($this->type, ['blob', 'text', 'geometry', 'json']) and !$this->required) {
             // MySQL doesn't let these types to have a default value
             $defaultExpression = 'DEFAULT ?';
             $bind[] = $this->default;
