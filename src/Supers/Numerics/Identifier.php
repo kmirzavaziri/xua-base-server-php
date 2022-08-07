@@ -4,6 +4,7 @@ namespace Xua\Core\Supers\Numerics;
 
 use Xua\Core\Eves\Super;
 use Xua\Core\Exceptions\SuperValidationException;
+use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Highers\Instance;
 use Xua\Core\Supers\Strings\Enum;
 use Xua\Core\Tools\Signature\Signature;
@@ -11,11 +12,13 @@ use Xua\Core\Tools\Signature\Signature;
 /**
  * @property string bytes
  * @property null|\Xua\Core\Eves\Super type
+ * @property bool autoIncrement
  */
 class Identifier extends Super
 {
     const bytes = self::class . '::bytes';
     const type = self::class . '::type';
+    const autoIncrement = self::class . '::autoIncrement';
 
     protected static function _argumentSignatures(): array
     {
@@ -25,6 +28,9 @@ class Identifier extends Super
             ),
             Signature::new(true, static::type, false, null,
                 new Instance([Instance::nullable => true, Instance::of => Super::class])
+            ),
+            Signature::new(false, static::autoIncrement, false, true,
+                new Boolean([])
             ),
         ]);
     }
@@ -67,7 +73,7 @@ class Identifier extends Super
             "3" => 'MEDIUMINT',
             "4" => 'INT',
             "8" => 'BIGINT',
-        } . ' UNSIGNED NOT NULL AUTO_INCREMENT';
+        } . ' UNSIGNED NOT NULL' . ($this->autoIncrement ? ' AUTO_INCREMENT' : '');
     }
 
     protected function _phpType(): string
