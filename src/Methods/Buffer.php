@@ -35,7 +35,6 @@ class Buffer extends Method
             Signature::new(false, static::Q_methods, true, null, new Map([
                 Map::keyType => new Text([]),
                 Map::valueType => new Map([]),
-                Map::nullable => false,
                 Map::minSize => 1,
             ])),
         ]);
@@ -47,7 +46,6 @@ class Buffer extends Method
             Signature::new(false, static::responses, true, null, new Map([
                 Map::keyType => new Text([]),
                 Map::valueType => new Map([]),
-                Map::nullable => false,
                 Map::minSize => 1,
             ])),
         ]);

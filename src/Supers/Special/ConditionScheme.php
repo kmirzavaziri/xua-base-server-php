@@ -30,7 +30,6 @@ class ConditionScheme extends Super
                 ])
             ),
             Signature::new(false, static::relation, false, false, new Enum([
-                Enum::nullable => false,
                 Enum::values => Condition::RELATION_,
             ])),
         ]);

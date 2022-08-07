@@ -29,7 +29,6 @@ class PhpVirtualField extends Super
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::getter, true, null,
                 new Callback([
-                    Callback::nullable => false,
                     Callback::parameters => [
                         [
                             'name' => null,

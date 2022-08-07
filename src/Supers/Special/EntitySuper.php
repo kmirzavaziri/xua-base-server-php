@@ -42,7 +42,6 @@ class EntitySuper extends Super
             Signature::new(false, static::relatedEntity, true, null,
                 new Instance([
                     Instance::of => Entity::class,
-                    Instance::nullable => false,
                     Instance::acceptClass => true,
                     Instance::acceptObject => false,
                     Instance::strict => false,

@@ -58,14 +58,14 @@ class EntityFieldScheme extends Super
             Signature::new(false, static::children, false, null,
                 new Sequence([
                     Sequence::nullable => true,
-                    Sequence::type => new Instance([Instance::nullable => false, Instance::of => EntityFieldScheme::class])
+                    Sequence::type => new Instance([Instance::of => EntityFieldScheme::class])
                 ])
             ),
             Signature::new(false, static::instant, false, null,
                 new StructuredMap([
                     StructuredMap::nullable => true,
                     StructuredMap::structure => [
-                        'name' => new Symbol([Symbol::nullable => false]),
+                        'name' => new Symbol([]),
                         'type' => new Instance([Instance::nullable => true, Instance::of => Super::class]),
                         'getter' => new Callback([
                             Callback::nullable => true,

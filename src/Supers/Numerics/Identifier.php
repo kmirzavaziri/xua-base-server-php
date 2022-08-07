@@ -21,7 +21,7 @@ class Identifier extends Super
     {
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::bytes, false, 4,
-                new Enum([Enum::values => ["1", "2", "3", "4", "8"], Enum::nullable => false])
+                new Enum([Enum::values => ["1", "2", "3", "4", "8"]])
             ),
             Signature::new(true, static::type, false, null,
                 new Instance([Instance::nullable => true, Instance::of => Super::class])
@@ -31,7 +31,7 @@ class Identifier extends Super
 
     protected function _validation(SuperValidationException $exception): void
     {
-        $this->type = (new Decimal([Decimal::nullable => false, Decimal::unsigned => true, Decimal::integerLength => 8 * $this->bytes, Decimal::base => 2]));
+        $this->type = (new Decimal([Decimal::unsigned => true, Decimal::integerLength => 8 * $this->bytes, Decimal::base => 2]));
     }
 
     protected function _predicate($input, null|string|array &$message = null): bool

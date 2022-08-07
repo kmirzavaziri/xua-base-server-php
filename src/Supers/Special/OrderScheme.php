@@ -38,9 +38,7 @@ class OrderScheme extends Super
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::fields, true, null,
                 new Sequence([
-                    Sequence::nullable => false,
                     Sequence::type => new StructuredMap([
-                        StructuredMap::nullable => false,
                         StructuredMap::structure => [
                             self::direction => new Enum([Enum::values => self::DIRECTION_]),
                             self::field => new Instance([

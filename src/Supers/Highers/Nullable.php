@@ -16,7 +16,7 @@ class Nullable extends Super
     {
         return array_merge(parent::_argumentSignatures(), [
             Signature::new(false, static::type, true, null,
-                new Instance([Instance::of => Super::class, Instance::nullable => false])
+                new Instance([Instance::of => Super::class])
             ),
         ]);
     }
