@@ -23,6 +23,10 @@ abstract class MethodAdjust extends FieldedMethod
     /* --- */
     /* ************************************************************************************************************** */
 
+    const STORE_BUFFER = 'store_buffer';
+    const STORE_SELF = 'store_self';
+    const DONT_STORE = 'dont_store';
+
     private ?Entity $_cache_feed = null;
 
     protected static function _requestSignatures(): array
@@ -44,7 +48,9 @@ abstract class MethodAdjust extends FieldedMethod
     {
         $feed = $this->feed();
         $fields = static::fieldSignatures();
-        EntityBuffer::getEfficientBuffer()->add($feed);
+        if ($this->storeMode() == self::STORE_BUFFER) {
+            EntityBuffer::getEfficientBuffer()->add($feed);
+        }
         foreach ($fields as $field) {
             /** @var EntityFieldScheme $scheme */
             $scheme = $field->declaration;
@@ -58,12 +64,14 @@ abstract class MethodAdjust extends FieldedMethod
                 $this->throwError();
             }
         }
-        if (!$this->dontStore()) {
-            try {
+        try {
+            if ($this->storeMode() == self::STORE_BUFFER) {
                 EntityBuffer::getEfficientBuffer()->store();
-            } catch (EntityFieldException $e) {
-                throw $this->_x_error->fromException($e);
+            } elseif ($this->storeMode() == self::STORE_SELF) {
+                $feed->store();
             }
+        } catch (EntityFieldException $e) {
+            throw $this->_x_error->fromException($e);
         }
     }
 
@@ -81,8 +89,8 @@ abstract class MethodAdjust extends FieldedMethod
 
     abstract protected function _feed(): Entity;
 
-    public function dontStore() : bool
+    public function storeMode() : bool
     {
-        return false; // @TODO we better have a third option to store only this method's feed and not all of the entity buffer (or we can find a way to guess it since only the main (entry point) of methods must store all of the entity buffer at the end)
+        return self::STORE_BUFFER;
     }
 }
