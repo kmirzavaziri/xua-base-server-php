@@ -16,6 +16,9 @@ abstract class QueryBinder
             if (is_array($value)) {
                 $arrayBindPositions[$pos] = count($value);
                 $newBind = array_merge($newBind, $value);
+            } elseif (is_a($value, RawSQL::class)) {
+                $query = substr($query, 0, $pos) . $value->value . substr($query, $pos + 1);
+                $pos = $pos + strlen($value->value) - 1;
             } else {
                 $newBind[] = $value;
             }
