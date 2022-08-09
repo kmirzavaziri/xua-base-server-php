@@ -89,7 +89,7 @@ abstract class MethodAdjust extends FieldedMethod
 
     abstract protected function _feed(): Entity;
 
-    public function storeMode() : bool
+    public function storeMode(): bool
     {
         return self::STORE_BUFFER;
     }
