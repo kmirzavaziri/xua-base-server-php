@@ -667,7 +667,7 @@ abstract class Entity extends Block
         // inserts for related entities
         $signatures = static::fieldSignatures();
         foreach ($signatures as $key => $signature) {
-            if (!$this->_x_must_store[$key]) {
+            if (!$this->_x_must_store[$key] and !is_a($signature->declaration, EntityRelation::class)) {
                 continue;
             }
             $value = $this->_x_values[self::FIELD_PREFIX][$key];
