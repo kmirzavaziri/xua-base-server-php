@@ -26,6 +26,7 @@ abstract class MethodAdjust extends FieldedMethod
     const STORE_BUFFER = 'store_buffer';
     const STORE_SELF = 'store_self';
     const DONT_STORE = 'dont_store';
+    const STORE_IN_BUFFER = 'store_in_buffer';
 
     private ?Entity $_cache_feed = null;
 
@@ -48,7 +49,8 @@ abstract class MethodAdjust extends FieldedMethod
     {
         $feed = $this->feed();
         $fields = static::fieldSignatures();
-        if ($this->storeMode() == self::STORE_BUFFER) {
+        $storeMode = $this->storeMode();
+        if (in_array($storeMode, [self::STORE_BUFFER, self::STORE_IN_BUFFER])) {
             EntityBuffer::getEfficientBuffer()->add($feed);
         }
         foreach ($fields as $field) {
@@ -65,9 +67,9 @@ abstract class MethodAdjust extends FieldedMethod
             }
         }
         try {
-            if ($this->storeMode() == self::STORE_BUFFER) {
+            if ($storeMode == self::STORE_BUFFER) {
                 EntityBuffer::getEfficientBuffer()->store();
-            } elseif ($this->storeMode() == self::STORE_SELF) {
+            } elseif ($storeMode == self::STORE_SELF) {
                 $feed->store();
             }
         } catch (EntityFieldException $e) {
@@ -89,7 +91,7 @@ abstract class MethodAdjust extends FieldedMethod
 
     abstract protected function _feed(): Entity;
 
-    public function storeMode(): bool
+    public function storeMode(): string
     {
         return self::STORE_BUFFER;
     }
