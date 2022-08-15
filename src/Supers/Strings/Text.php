@@ -55,7 +55,7 @@ class Text extends Super
             return false;
         }
 
-        $length = strlen($input);
+        $length = mb_strlen($input);
 
         if ($this->minLength !== null and $length < $this->minLength) {
             $message = ExpressionService::getXua('supers.strings.text.error_message.length_must_be_at_least_min', [
