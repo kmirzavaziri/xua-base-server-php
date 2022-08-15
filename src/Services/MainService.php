@@ -111,7 +111,7 @@ class MainService extends Service
         NotFoundInterface::execute();
     }
 
-    protected static function logError(Throwable $throwable)
+    public static function logError(Throwable $throwable)
     {
         JsonLogService::append('error', [
             'time' => (new DateTimeInstance())->format('Y/m/d-H:i:s', null, LocaleLanguage::LANG_EN, LocaleLanguage::CAL_GREGORIAN),
