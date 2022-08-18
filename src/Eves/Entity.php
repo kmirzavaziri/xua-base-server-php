@@ -950,7 +950,7 @@ abstract class Entity extends Block
                 $iterator++;
             }
             $message = ExpressionService::getXua('eves.entity.error_message.an_entity_with_expression_already_exists', [
-                'entity' => ExpressionService::get('table_name.' . $table),
+                'entity' => ExpressionService::get('table_name.singular.' . $table),
                 'expression' => $duplicateExpressions,
             ]);
             if (LocaleLanguage::getLanguage() == LocaleLanguage::LANG_EN) {
