@@ -9,6 +9,7 @@ class FileInstance extends Service
 {
     public string $mime;
     public int $size;
+    public string $url;
 
     public function __construct(
         public string $path,
@@ -23,29 +24,45 @@ class FileInstance extends Service
         }
     }
 
-    public function newName(string $dir, string $seed = ''): string
-    {
-        do {
-            $filename = md5($seed . '|' . SecurityService::getRandomSalt(32) . '|' . (new DateTimeInstance())->getTimestamp()) . '.' . $this->extension;
-        } while (file_exists($dir . DIRECTORY_SEPARATOR . $filename));
-
-        return $dir . DIRECTORY_SEPARATOR . $filename;
+    public static function fromUrl(string $url): ?static {
+        $path = ConstantService::get('config', 'services.storage.path') . DIRECTORY_SEPARATOR .
+            substr($url, strlen(ConstantService::get('config', 'services.storage.url')));
+        if (file_exists($path)) {
+            $return = new static($path);
+            $return->url = $url;
+            return $return;
+        } else {
+            return null;
+        }
     }
 
-    public function store(string $dir, string $seed = '')
+    public function newName(string $dir): string
+    {
+        do {
+            $filename = md5(SecurityService::getRandomSalt(32) . '|' . (new DateTimeInstance())->getTimestamp()) . '.' . $this->extension;
+        } while (file_exists($dir . DIRECTORY_SEPARATOR . $filename));
+
+        return $filename;
+    }
+
+    public function store($innerDir)
     {
         if (!$this->stored) {
             $this->stored = true;
-            $newName = $this->newName($dir, $seed);
 
+            $dir = ConstantService::get('config', 'services.storage.path') . DIRECTORY_SEPARATOR . $innerDir;
+            $newName = $this->newName($dir);
+            $newPath = $dir . DIRECTORY_SEPARATOR . $newName;
             if (!file_exists($dir)) {
                 mkdir($dir, 0777, true);
             }
             if (!file_exists($dir)) {
                 throw new Exception('Somehow failed');
             }
-            move_uploaded_file($this->path, $newName);
-            $this->path = $newName;
+            move_uploaded_file($this->path, $newPath);
+
+            $this->path = $newPath;
+            $this->url = ConstantService::get('config', 'services.storage.url') . '/' . $innerDir . $newName;
         }
     }
 }

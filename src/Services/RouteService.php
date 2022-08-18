@@ -3,12 +3,12 @@
 namespace Xua\Core\Services;
 
 use Xua\Core\Exceptions\DieException;
-use Xua\Core\Exceptions\XRMLException;
 use Xua\Core\Exceptions\RouteException;
 use Xua\Core\Eves\Service;
 
 final class RouteService extends Service
 {
+    // @TODO check cant have a route that conflicts with config.services.storage.url
     const FLAG_SLASHES_ALLOWED = 'SA';
 
     private static self $mainRouteService;

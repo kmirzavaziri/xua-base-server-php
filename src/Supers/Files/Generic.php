@@ -3,11 +3,10 @@
 namespace Xua\Core\Supers\Files;
 
 use Xua\Core\Services\FileSize;
-use Xua\Core\Services\ConstantService;
 use Xua\Core\Services\ExpressionService;
 use Xua\Core\Services\FileInstance;
 use Xua\Core\Services\FileInstanceSame;
-use Xua\Core\Services\RouteService;
+use Xua\Core\Services\Mime;
 use Xua\Core\Supers\Boolean;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Numerics\Integer;
@@ -37,8 +36,8 @@ class Generic extends Super
             Signature::new(false, static::maxSize, false, null,
                 new Integer([Integer::nullable => true])
             ),
-            Signature::new(false, static::storageDir, false, null,
-                new Text([Text::nullable => true])
+            Signature::new(false, static::storageDir, false, '',
+                new Text([])
             ),
             Signature::new(false, static::nullable, false, false,
                 new Boolean([])
@@ -90,7 +89,8 @@ class Generic extends Super
             return new FileInstanceSame();
         }
         if (isset($_FILES[$input]) and !$_FILES[$input]['error']) {
-            return new FileInstance($_FILES[$input]['tmp_name'],  pathinfo($_FILES[$input]['name'], PATHINFO_EXTENSION), false);
+            $extension = Mime::TO_EXTENSION[$_FILES[$input]['type']] ?? pathinfo($_FILES[$input]['name'], PATHINFO_EXTENSION);
+            return new FileInstance($_FILES[$input]['tmp_name'], $extension, false);
         }
         return $input;
     }
@@ -98,14 +98,14 @@ class Generic extends Super
     protected function _marshal(mixed $input): mixed
     {
         /** @var FileInstance $input */
-        return $input ? (RouteService::getSiteRoot() . '/' . ConstantService::get('config', 'services.urpi.path') . '/' . $input->path) : null;
+        return $input?->url;
     }
 
     protected function _marshalDatabase(mixed $input): mixed
     {
         /** @var FileInstance $input */
-        $input?->store($this->storageDir ?? ConstantService::get('config', 'paths.storage'));
-        return $input?->path;
+        $input?->store($this->storageDir);
+        return $input?->url;
     }
 
     protected function _unmarshalDatabase(mixed $input): mixed
@@ -113,7 +113,7 @@ class Generic extends Super
         if (!is_string($input)) {
             return $input;
         }
-        return file_exists($input) ? new FileInstance($input) : null;
+        return FileInstance::fromUrl($input);
     }
 
     protected function _databaseType(): ?string
