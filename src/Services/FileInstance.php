@@ -45,12 +45,12 @@ class FileInstance extends Service
         return $filename;
     }
 
-    public function store($innerDir)
+    public function store($innerDir = '')
     {
         if (!$this->stored) {
             $this->stored = true;
 
-            $dir = ConstantService::get('config', 'services.storage.path') . DIRECTORY_SEPARATOR . $innerDir;
+            $dir = ConstantService::get('config', 'services.storage.path') . $innerDir ? (DIRECTORY_SEPARATOR . $innerDir) : '';
             $newName = $this->newName($dir);
             $newPath = $dir . DIRECTORY_SEPARATOR . $newName;
             if (!file_exists($dir)) {
@@ -62,7 +62,7 @@ class FileInstance extends Service
             move_uploaded_file($this->path, $newPath);
 
             $this->path = $newPath;
-            $this->url = ConstantService::get('config', 'services.storage.url') . '/' . $innerDir . $newName;
+            $this->url = ConstantService::get('config', 'services.storage.url') . ($innerDir ? ('/' . $innerDir) : '') . '/' . $newName;
         }
     }
 }

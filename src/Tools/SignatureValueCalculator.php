@@ -77,10 +77,11 @@ class SignatureValueCalculator
             }
         } elseif (is_a($scheme->signature->declaration, Generic::class)) {
             if (!is_a($value, FileInstanceSame::class)) {
+                // @TODO check here when migrating to CDN or something
                 if ($entity->{$scheme->name} and file_exists($entity->{$scheme->name}->path)) {
                     unlink($entity->{$scheme->name}->path);
                 }
-                $value?->store(ConstantService::get('config', 'paths.storage') . DIRECTORY_SEPARATOR . $entity::table() . DIRECTORY_SEPARATOR . $entity->id);
+                $value?->store($entity::table() . DIRECTORY_SEPARATOR . $entity->id);
                 $entity->{$scheme->name} = $value;
             }
         } else {
