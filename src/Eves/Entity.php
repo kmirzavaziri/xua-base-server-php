@@ -68,8 +68,8 @@ abstract class Entity extends Block
                 throw new EntityException('Database connection config not found.');
             }
 //            Dialect::$engine = $dbInfo['engine'];
-            $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['hostname'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['database'];
-            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['username'], $dbInfo['password'], [
+            $dbInfo['dsn'] = $dbInfo['engine'] . ":host=" . $dbInfo['host'] . ";port=" . $dbInfo['port']  . ";dbname=" . $dbInfo['name'];
+            self::$connection = new PDO($dbInfo['dsn'], $dbInfo['user'], $dbInfo['pass'], [
                 PDO::ATTR_TIMEOUT => $dbInfo['timeout'] ?? 10,
             ]);
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
