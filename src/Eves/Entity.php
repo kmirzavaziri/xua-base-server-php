@@ -1203,7 +1203,13 @@ abstract class Entity extends Block
      */
     final public static function rollbackToSavepoint(int $savepointNo): void
     {
-        static::execute("ROLLBACK TO savepoint$savepointNo");
+        // @TODO investigate why this happens that we need to wrap this in try catch
+        //      although we clearly started a savepoint in the entity buffer
+        try {
+            static::execute("ROLLBACK TO savepoint$savepointNo");
+        } catch (PDOException) {
+            // pass
+        }
     }
 
     final public static function commit(): void
