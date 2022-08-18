@@ -7,8 +7,6 @@ use Xua\Core\Exceptions\JsonLogException;
 
 abstract class JsonLogService extends Service
 {
-    const LOGS_PATH = 'private/logs';
-
     /**
      * @param string $key
      * @return array|null
@@ -78,6 +76,6 @@ abstract class JsonLogService extends Service
      * @return string
      */
     public static function filename(string $key): string {
-        return self::LOGS_PATH . DIRECTORY_SEPARATOR . $key . '.json';
+        return ConstantService::get('config', 'paths.logs') . DIRECTORY_SEPARATOR . $key . '.json';
     }
 }
