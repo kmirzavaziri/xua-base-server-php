@@ -224,7 +224,7 @@ class SignatureValueCalculator
                 }
                 return $return;
             } else {
-                return self::getRelative($entity->{$scheme->name}, $scheme, $method);
+                return self::getRelative($entity->{$scheme->signature->name}, $scheme, $method);
             }
         } else {
             return $entity->{$scheme->name};
@@ -245,8 +245,20 @@ class SignatureValueCalculator
 
         if ($scheme->children) {
             $return = [];
+            $childHasUnderscore = false;
             foreach ($scheme->children as $child) {
-                $return[$child->name] = self::getEntityField($entity, $child, $method);
+                if ($child->name == '_') {
+                    $return = self::getEntityField($entity, $child, $method);
+                    $childHasUnderscore = true;
+                    break;
+                }
+            }
+
+            if (!$childHasUnderscore) {
+                foreach ($scheme->children as $child) {
+                    $value = self::getEntityField($entity, $child, $method);
+                    $return[$child->name] = $value;
+                }
             }
             return $return;
         } else {

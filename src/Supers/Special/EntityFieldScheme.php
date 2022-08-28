@@ -34,8 +34,8 @@ class EntityFieldScheme extends Super
     const identifierField = self::class . '::identifierField';
     const children = self::class . '::children';
     const instant = self::class . '::instant';
-    // constant args
     const name = self::class . '::name';
+    // constant args
     const type = self::class . '::type';
     const mode = self::class . '::mode';
 
@@ -60,6 +60,9 @@ class EntityFieldScheme extends Super
                     Sequence::nullable => true,
                     Sequence::type => new Instance([Instance::of => EntityFieldScheme::class])
                 ])
+            ),
+            Signature::new(false, static::name, false, null,
+                new Text([Text::nullable => true])
             ),
             Signature::new(false, static::instant, false, null,
                 new StructuredMap([
@@ -126,9 +129,6 @@ class EntityFieldScheme extends Super
                     ]
                 ])
             ),
-            Signature::new(true, static::name, false, null,
-                new Text([Text::nullable => true])
-            ),
             Signature::new(true, static::type, false, null,
                 new Instance([Instance::nullable => true, Instance::of => Super::class])
             ),
@@ -149,14 +149,23 @@ class EntityFieldScheme extends Super
                     $this->identifierField = $this->identifierField ?? Signature::_($this->signature->declaration->relatedEntity::id);
                     // @TODO check if $grandChildren (which is just a signature full name as string) is indexed as a unique field
                     if ($this->children) {
-                        $structure = [];
+                        $childHasUnderscore = false;
                         foreach ($this->children as $child) {
-                            if ($this->mode == self::MODE_SIGNATURE and $this->signature->declaration->relatedEntity != $child->signature->class) {
-                                throw new DefinitionException("Cannot append a child from entity {$child->signature->declaration->class} to a relational field on entity {$this->signature->declaration->relatedEntity}.");
+                            if ($child->name == '_') {
+                                $type = $child->type;
+                                $childHasUnderscore = true;
                             }
-                            $structure[$child->name] = $child->type;
                         }
-                        $type = new StructuredMap([StructuredMap::structure => $structure, StructuredMap::nullable => $this->signature->declaration->nullable]);
+                        if (!$childHasUnderscore) {
+                            $structure = [];
+                            foreach ($this->children as $child) {
+                                if ($this->mode == self::MODE_SIGNATURE and $this->signature->declaration->relatedEntity != $child->signature->class) {
+                                    throw new DefinitionException("Cannot append a child from entity {$child->signature->declaration->class} to a relational field on entity {$this->signature->declaration->relatedEntity}.");
+                                }
+                                $structure[$child->name] = $child->type;
+                            }
+                            $type = new StructuredMap([StructuredMap::structure => $structure, StructuredMap::nullable => $this->signature->declaration->nullable]);
+                        }
                     } else {
                         $type = new Nullable([Nullable::type => $this->identifierField->declaration]);
                     }
@@ -168,7 +177,9 @@ class EntityFieldScheme extends Super
                     }
                     $this->type = $this->signature->declaration;
                 }
-                $this->name = $this->signature->name;
+                if (!$this->name) {
+                    $this->name = $this->signature->name;
+                }
             } catch (DefinitionException $e) {
                 $exception->setError('tree', $e->getMessage());
             }

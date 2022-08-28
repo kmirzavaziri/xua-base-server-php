@@ -23,7 +23,11 @@ class EntityArray
     {
         $data = [];
         foreach ($schemes as $scheme) {
-            $data[$scheme->name] = SignatureValueCalculator::getEntityField($entity, $scheme, $method);
+            $value = SignatureValueCalculator::getEntityField($entity, $scheme, $method);
+            if (is_array($value) and isset($value['_'])) {
+                $value = $value['_'];
+            }
+            $data[$scheme->name] = $value;
         }
         return $data;
     }
@@ -57,7 +61,11 @@ class EntityArray
     {
         $structure = [];
         foreach ($schemes as $scheme) {
-            $structure[$scheme->name] = $scheme->type;
+            if ($scheme->name == '_') {
+                $structure = $scheme->type;
+            } else {
+                $structure[$scheme->name] = $scheme->type;
+            }
         }
         return new StructuredMap([StructuredMap::structure => $structure]);
     }
