@@ -67,10 +67,10 @@ class SignatureValueCalculator
                         throw (new EntityFieldException)->setError("$scheme->name.$index", $e->getErrors());
                     }
                 }
-                $entity->{$scheme->name} = $result;
+                $entity->{$scheme->signature->name} = $result;
             } else {
                 try {
-                    $entity->{$scheme->name} = self::setRelative($entity, $value, $scheme, $method);
+                    $entity->{$scheme->signature->name} = self::setRelative($entity, $value, $scheme, $method);
                 } catch (EntityFieldException $e) {
                     throw (new EntityFieldException)->setError($scheme->name, $e->getErrors());
                 }
@@ -78,14 +78,14 @@ class SignatureValueCalculator
         } elseif (is_a($scheme->signature->declaration, Generic::class)) {
             if (!is_a($value, FileInstanceSame::class)) {
                 // @TODO check here when migrating to CDN or something
-                if ($entity->{$scheme->name} and file_exists($entity->{$scheme->name}->path)) {
-                    unlink($entity->{$scheme->name}->path);
+                if ($entity->{$scheme->signature->name} and file_exists($entity->{$scheme->signature->name}->path)) {
+                    unlink($entity->{$scheme->signature->name}->path);
                 }
                 $value?->store($entity::table() . DIRECTORY_SEPARATOR . $entity->id);
-                $entity->{$scheme->name} = $value;
+                $entity->{$scheme->signature->name} = $value;
             }
         } else {
-            $entity->{$scheme->name} = $value;
+            $entity->{$scheme->signature->name} = $value;
         }
     }
 
@@ -137,7 +137,7 @@ class SignatureValueCalculator
                 if ($hasIdentifier) {
                     throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toOne_fields_cannot_include_id'));
                 }
-                $return = $entity->{$scheme->name};
+                $return = $entity->{$scheme->signature->name};
                 foreach ($scheme->children as $child) {
                     self::setEntityField($return, $value[$child->name], $child, $method);
                 }
@@ -147,7 +147,7 @@ class SignatureValueCalculator
                     throw (new DefinitionException())->setError($scheme->name, ExpressionService::getXua('tools.signature_value_calculator.error_message.toMany_fields_must_include_id'));
                 }
                 $return = ($scheme->signature->declaration->relatedEntity)::new(0);
-                foreach ($entity->{$scheme->name} as $item) {
+                foreach ($entity->{$scheme->signature->name} as $item) {
                     if ($item->{$scheme->identifierField->name} == $value[$scheme->identifierField->name]) {
                         $return = $item;
                         break;
@@ -219,7 +219,7 @@ class SignatureValueCalculator
         if (is_a($scheme->signature->declaration, EntityRelation::class)) {
             if ($scheme->signature->declaration->toMany) {
                 $return = [];
-                foreach ($entity->{$scheme->name} as $item) {
+                foreach ($entity->{$scheme->signature->name} as $item) {
                     $return[] = self::getRelative($item, $scheme, $method);
                 }
                 return $return;
@@ -227,7 +227,7 @@ class SignatureValueCalculator
                 return self::getRelative($entity->{$scheme->signature->name}, $scheme, $method);
             }
         } else {
-            return $entity->{$scheme->name};
+            return $entity->{$scheme->signature->name};
         }
     }
 
