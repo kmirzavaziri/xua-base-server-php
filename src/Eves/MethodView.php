@@ -55,7 +55,7 @@ abstract class MethodView extends FieldedMethod
         }
     }
 
-    protected static function entity(): string
+    protected function entity(): string
     {
         return Entity::class;
     }

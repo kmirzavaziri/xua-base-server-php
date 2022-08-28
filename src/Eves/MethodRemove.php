@@ -30,7 +30,7 @@ abstract class MethodRemove extends MethodEve
         return $this->_cache_feed;
     }
 
-    protected static function entity(): string
+    protected function entity(): string
     {
         return Entity::class;
     }

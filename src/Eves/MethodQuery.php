@@ -91,7 +91,7 @@ abstract class MethodQuery extends FieldedMethod
         );
     }
 
-    protected static function entity(): string
+    protected function entity(): string
     {
         return Entity::class;
     }
@@ -111,7 +111,7 @@ abstract class MethodQuery extends FieldedMethod
      */
     protected function _feed(): array {
         /** @noinspection PhpUndefinedMethodInspection */
-        return static::entity()::getMany(static::condition(), static::order(), static::pager());
+        return $this->entity()::getMany(static::condition(), static::order(), static::pager());
     }
 
     protected function condition(): Condition {
