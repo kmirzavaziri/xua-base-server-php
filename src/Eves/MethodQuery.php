@@ -87,7 +87,8 @@ abstract class MethodQuery extends FieldedMethod
         $this->result = EntityArray::manyToArray(
             $this->feed(),
             array_map(function (Signature $signature) { return $signature->declaration; }, static::fieldSignatures()),
-            static::association()
+            static::association(),
+            $this,
         );
     }
 

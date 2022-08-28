@@ -5,7 +5,6 @@ namespace Xua\Core\Tools\Entity;
 use Xua\Core\Eves\Entity;
 use Xua\Core\Eves\MethodEve;
 use Xua\Core\Eves\Super;
-use Xua\Core\Exceptions\SuperValidationException;
 use Xua\Core\Supers\Highers\Map;
 use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Highers\StructuredMap;
@@ -35,11 +34,11 @@ class EntityArray
      * @param Signature|null $association
      * @return array[]
      */
-    public static function manyToArray(array $feed, array $schemes, ?Signature $association = null): array
+    public static function manyToArray(array $feed, array $schemes, ?Signature $association = null, ?MethodEve $method = null): array
     {
         $result = [];
         foreach ($feed as $entity) {
-            $data = self::oneToArray($entity, $schemes);
+            $data = self::oneToArray($entity, $schemes, $method);
             if ($association) {
                 $result[$entity->{$association->name}] = $data;
             } else {
