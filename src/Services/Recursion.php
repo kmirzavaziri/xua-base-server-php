@@ -27,4 +27,30 @@ class Recursion extends Service
         }
         $tmp = $value;
     }
+
+    public static function flatten(array $array, string $sep = '.', bool $includeNonLeaves = false, ?callable $getChildren = null): array
+    {
+        if ($getChildren === null) {
+            $getChildren = function (mixed $item): array {
+                if (is_array($item)) {
+                    return $item;
+                }
+                return [];
+            };
+        }
+        $result = [];
+        foreach ($array as $key => $value) {
+            $children = $getChildren($value);
+            if (!$children or $includeNonLeaves) {
+                $result["$key"] = $value;
+            }
+            if ($children) {
+                $flattenChildren = static::flatten($children, $sep, $includeNonLeaves, $getChildren);
+                foreach ($flattenChildren as $childKey => $childValue) {
+                    $result["$key$sep$childKey"] = $childValue;
+                }
+            }
+        }
+        return $result;
+    }
 }
