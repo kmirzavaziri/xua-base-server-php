@@ -14,7 +14,7 @@ abstract class FieldedMethod extends MethodEve {
     /**
      * @return Signature[]
      */
-    protected static function fieldSignatures() : array
+    public static function fieldSignatures() : array
     {
         return [];
     }
