@@ -414,8 +414,12 @@ final class LocaleLanguage extends Service
         return self::localeToLang(self::natToLocale($nat));
     }
 
-    public static function computeDirection(string $text): string
+    public static function computeDirection(?string $text): string
     {
+        // @TODO persian/arabic digits must be evaluated to rtl
+        if (!$text) {
+            return 'ltr';
+        }
         $ltrChars = "A-Za-z\u{00C0}-\u{00D6}\u{00D8}-\u{00F6}\u{00F8}-\u{02B8}\u{0300}-\u{0590}\u{0800}-\u{1FFF}\u{2C00}-\u{FB1C}\u{FDFE}-\u{FE6F}\u{FEFD}-\u{FFFF}";
         $rtlChars = "\u{0591}-\u{07FF}\u{FB1D}-\u{FDFD}\u{FE70}-\u{FEFC}";
         return preg_match("/^[^$ltrChars]*[$rtlChars]/", $text) ? 'rtl' : 'ltr';
