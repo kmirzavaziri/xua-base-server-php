@@ -2,11 +2,9 @@
 
 namespace Xua\Core\Tools\Entity;
 
-use Xua\Core\Exceptions\SuperMarshalException;
-use Xua\Core\Supers\Special\ConditionScheme;
+use Xua\Core\Supers\Highers\Sequence;
 use Xua\Core\Supers\Special\EntityRelation;
 use Xua\Core\Exceptions\EntityConditionException;
-use Xua\Core\Exceptions\SuperValidationException;
 
 final class Condition
 {
@@ -102,18 +100,73 @@ final class Condition
         $condition->template = str_replace('$', $field->name(), $relation);
         $condition->joins = $field->joins();
 
-        $conditionScheme = new ConditionScheme([
-            ConditionScheme::field => $field,
-            ConditionScheme::relation => $relation,
-        ]);
+        self::validate($field, $relation, $value);
 
-        if (!$conditionScheme->accepts($value, $message)) {
-            throw (new EntityConditionException())->fromErrors($message);
-        }
-
-        $condition->parameters = $conditionScheme->marshalDatabase($value);
+        $condition->parameters = self::marshalDatabase($field, $relation, $value);
 
         return $condition;
+    }
+
+    private static function validate(CF $field, string $relation, mixed $value): void
+    {
+        $fieldType = $field->signature->declaration;
+
+        if (in_array($relation, [Condition::BETWEEN, Condition::NBETWEEN])) {
+            $fieldTypeArray = new Sequence([Sequence::minLength => 2, Sequence::maxLength => 2, Sequence::type => $fieldType]);
+            if ($fieldTypeArray->explicitlyAccepts($value, $checkMessage)) {
+                // @TODO from dict
+                // @TODO exp
+                throw new EntityConditionException('When using BETWEEN or NBETWEEN, the provided value must be an array of length 2.' . PHP_EOL . $checkMessage);
+            }
+        } elseif (in_array($relation, [Condition::IN, Condition::NIN])) {
+            $fieldTypeArray = new Sequence([Sequence::type => $fieldType]);
+            if (!$fieldTypeArray->explicitlyAccepts($value, $checkMessage)) {
+                // @TODO exp
+                throw new EntityConditionException('When using IN or NIN, the provided value must be an array.' . PHP_EOL . $checkMessage);
+            }
+        } elseif (in_array($relation, [Condition::ISNULL, Condition::NISNULL])) {
+            if ($value !== null) {
+                // @TODO from dict
+                // @TODO exp
+                throw new EntityConditionException('When using ISNULL or NISNULL, the provided value must be null.');
+            }
+        } elseif (in_array($relation, [
+            Condition::GRATER, Condition::NGRATER, Condition::GRATEREQ, Condition::NGRATEREQ,
+            Condition::LESS, Condition::NLESS, Condition::LESSEQ, Condition::NLESSEQ,
+            Condition::EQ, Condition::NEQ,
+            Condition::NULLSAFEEQ, Condition::NNULLSAFEEQ,
+        ])) {
+            if (!$fieldType->explicitlyAccepts($value, $checkMessage)) {
+                throw new EntityConditionException($checkMessage);
+            }
+        }
+    }
+
+    private static function marshalDatabase(CF $field, string $relation, mixed $value): mixed
+    {
+        $fieldType = $field->signature->declaration;
+
+        if (in_array($relation, [Condition::BETWEEN, Condition::NBETWEEN])) {
+            return [
+                is_string($value[0]) and str_contains($value[0], '$FILTER') ? $value[0] : $fieldType->marshalDatabase($value[0]),
+                $fieldType->marshalDatabase($value[1])
+            ];
+        }
+
+        if (in_array($relation, [Condition::ISNULL, Condition::NISNULL])) {
+            return [];
+        }
+
+        if (in_array($relation, [
+            Condition::GRATER, Condition::NGRATER, Condition::GRATEREQ, Condition::NGRATEREQ,
+            Condition::LESS, Condition::NLESS, Condition::LESSEQ, Condition::NLESSEQ,
+            Condition::EQ, Condition::NEQ,
+            Condition::NULLSAFEEQ, Condition::NNULLSAFEEQ,
+        ])) {
+            return [$fieldType->marshalDatabase($value)];
+        }
+
+        return [$value];
     }
 
     /**

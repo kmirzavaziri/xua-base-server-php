@@ -2,6 +2,7 @@
 
 namespace Xua\Core\Eves;
 
+use Xua\Core\Exceptions\EntityConditionException;
 use Xua\Core\Supers\Highers\StructuredMap;
 use Xua\Core\Supers\Special\ConditionScheme;
 use Xua\Core\Supers\Special\OrderScheme;
@@ -122,7 +123,11 @@ abstract class MethodQuery extends FieldedMethod
                 if ($this->Q_filters[$signature->name] ?? false) {
                     /** @var ConditionScheme $conditionScheme */
                     $conditionScheme = $signature->declaration;
-                    $condition->and($conditionScheme->field, $conditionScheme->relation, $this->Q_filters[$signature->name]);
+                    try {
+                        $condition->andC(($conditionScheme->conditionGenerator)($this->Q_filters[$signature->name]));
+                    } catch (EntityConditionException $e) {
+                        $this->addAndThrowError(static::Q_filters, $e->getErrors());
+                    }
                 }
             }
         }
