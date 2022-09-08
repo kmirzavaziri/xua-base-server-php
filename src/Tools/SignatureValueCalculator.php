@@ -237,7 +237,7 @@ class SignatureValueCalculator
      * @param \Xua\Core\Eves\MethodEve|null $method
      * @return array|int|null
      */
-    private static function getRelative(?Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): null|array|int
+    private static function getRelative(?Entity $entity, EntityFieldScheme $scheme, ?MethodEve $method = null): mixed
     {
         if (!$entity or !$entity->id) {
             return null;
