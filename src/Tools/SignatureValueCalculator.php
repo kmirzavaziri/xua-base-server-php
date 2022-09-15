@@ -106,15 +106,15 @@ class SignatureValueCalculator
                 $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value));
                 if (!$return->id) {
                     throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
-                        'entity' => ExpressionService::get('table_name.singular.' . $relation->relatedEntity::table()),
+                        'entity' => ExpressionService::get('entities.' . $relation->relatedEntity::table() . '.title.singular'),
                         'id' => $value,
                     ]));
                 }
                 if ($return->{$relation->invName}) {
                     /** @noinspection PhpUndefinedMethodInspection */
                     throw new EntityFieldException(ExpressionService::getXua('tools.signature_value_calculator.error_message.related_entity_with_id_is_already_in_rel', [
-                        'entityLeft' => ExpressionService::get('table_name.singular.' . $scheme->signature->class::table()),
-                        'entityRight' => ExpressionService::get('table_name.singular.' . $relation->relatedEntity::table()),
+                        'entityLeft' => ExpressionService::get('entities.' . $scheme->signature->class::table() . '.title.singular'),
+                        'entityRight' => ExpressionService::get('entities.' . $relation->relatedEntity::table() . '.title.singular'),
                         'id' => $value,
                     ]));
                 }
@@ -125,7 +125,7 @@ class SignatureValueCalculator
                 $return = $relation->relatedEntity::getOne(Condition::leaf(CF::_($scheme->identifierField->fullName), Condition::EQ, $value));
                 if (!$return->id) {
                     throw (new EntityFieldException())->setError($scheme->identifierField->name, ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
-                        'entity' => ExpressionService::get('table_name.singular.' . $scheme->signature->declaration->relatedEntity::table()),
+                        'entity' => ExpressionService::get('entities.' . $scheme->signature->declaration->relatedEntity::table() . '.title.singular'),
                         'id' => $value,
                     ]));
                 }
@@ -156,7 +156,7 @@ class SignatureValueCalculator
                 if (!$return->id) {
                     if ($scheme->identifierField->name == 'id' and $value[$scheme->identifierField->name]) {
                         throw (new EntityFieldException())->setError('id', ExpressionService::getXua('supers.special.entity_relation.error_message.entity_with_id_does_not_exist', [
-                            'entity' => ExpressionService::get('table_name.singular.' . $scheme->signature->declaration->relatedEntity::table()),
+                            'entity' => ExpressionService::get('entities.' . $scheme->signature->declaration->relatedEntity::table() . '.title.singular'),
                             'id' => $value[$scheme->identifierField->name],
                         ]));
                     }

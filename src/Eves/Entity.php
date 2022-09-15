@@ -944,13 +944,13 @@ abstract class Entity extends Block
             $fieldNames = array_map(function (array $field) { return $field['field']->name; }, $duplicateIndex->declaration->fields);
             foreach ($fieldNames as $fieldName) {
                 $duplicateExpressions[] = ExpressionService::getXua('eves.entity.column_equal_to_value', [
-                    'column' => ExpressionService::get("column_name.$table.$fieldName"),
+                    'column' => ExpressionService::get("entities.$table.columns.$fieldName.title"),
                     'value' => $duplicateValues[$iterator],
                 ]);
                 $iterator++;
             }
             $message = ExpressionService::getXua('eves.entity.error_message.an_entity_with_expression_already_exists', [
-                'entity' => ExpressionService::get('table_name.singular.' . $table),
+                'entity' => ExpressionService::get('entities.' . $table . '.title.singular'),
                 'expression' => $duplicateExpressions,
             ]);
             if (LocaleLanguage::getLanguage() == LocaleLanguage::LANG_EN) {

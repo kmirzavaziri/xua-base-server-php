@@ -2,25 +2,41 @@
 
 namespace Xua\Core\Tools\Signature;
 
+use JsonSerializable;
 use Xua\Core\Eves\Super;
 use Xua\Core\Exceptions\MagicCallException;
+use Xua\Core\Services\ExpressionService;
 
 /**
  * @property string fullName
  * @property string halfName
+ * @property string expressionsSection
  */
-final class Signature
+final class Signature implements JsonSerializable
 {
     ####################################################################################################################
-    # Getter & Setter ##################################################################################################
+    # Magics ###########################################################################################################
     ####################################################################################################################
     public function __get(string $name)
     {
         return match ($name) {
             'fullName' => $this->class . '::' . $this->prefix . $this->name,
             'halfName' => $this->prefix . $this->name,
+            'expressionsSection' => 'entities.' . str_replace('\\', '_', $this->class), // @TODO for other classes and prefixes (better change entities to classes or signatures or something)
             default => throw new MagicCallException(),
         };
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'name' => $this->name,
+            'default' => $this->default,
+            'verboseTree' => ExpressionService::getTree("$this->expressionsSection.columns.$this->name"),
+            'declaration' => [
+                'class' => get_class($this->declaration),
+                'arguments' => $this->declaration->arguments(),
+            ] // @TODO move this dict to serialize function of the SuperType class and call that here
+        ];
     }
 
     ####################################################################################################################

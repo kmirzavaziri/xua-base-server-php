@@ -29,6 +29,12 @@ final class ExpressionService extends Service
 
     public static function getAbsolute(string $key, ?array $bind, string $path): string
     {
+        $return = self::getAbsoluteTree($key, $bind, $path);
+        return is_scalar($return) ? $return : '';
+    }
+
+    public static function getAbsoluteTree(string $key, ?array $bind, string $path): string|array
+    {
         if (!isset(self::$trees[$path])) {
             self::$trees[$path] = self::parse($path);
         }
@@ -36,7 +42,7 @@ final class ExpressionService extends Service
         if ($bind !== null) {
             $return = preg_replace_callback('/\$([A-Z_a-z]\w*)/', function (array $matches) use($bind) { return self::stringify($bind[$matches[1]] ?? $matches[1]); }, $return);
         }
-        return is_scalar($return) ? $return : '';
+        return $return;
     }
 
     public static function get(string $key, ?array $bind = null, string $path = '', ?string $lang = null): string
@@ -47,6 +53,16 @@ final class ExpressionService extends Service
         $d = DIRECTORY_SEPARATOR;
         $path = ConstantService::get('config', 'services.expression.path') . "$d$path$d$lang.yml";
         return self::getAbsolute($key, $bind, $path);
+    }
+
+    public static function getTree(string $key, ?array $bind = null, string $path = '', ?string $lang = null): string|array
+    {
+        if (!$lang or !in_array($lang, LocaleLanguage::LANG_)) {
+            $lang = LocaleLanguage::getLanguage();
+        }
+        $d = DIRECTORY_SEPARATOR;
+        $path = ConstantService::get('config', 'services.expression.path') . "$d$path$d$lang.yml";
+        return self::getAbsoluteTree($key, $bind, $path);
     }
 
     public static function getVendor(string $key, ?array $bind = null, string $path = '', ?string $lang = null): string {

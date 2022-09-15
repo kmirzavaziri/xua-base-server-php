@@ -51,6 +51,10 @@ abstract class Super extends Block
         return static::class . "($args)";
     }
 
+    public function arguments(): array {
+        return $this->_x_values[self::ARGUMENT_PREFIX];
+    }
+
     /**
      * @return array
      */
