@@ -50,7 +50,7 @@ class FileInstance extends Service
         if (!$this->stored) {
             $this->stored = true;
 
-            $dir = ConstantService::get('config', 'services.storage.path') . $innerDir ? (DIRECTORY_SEPARATOR . $innerDir) : '';
+            $dir = ConstantService::get('config', 'services.storage.path') . ($innerDir ? (DIRECTORY_SEPARATOR . $innerDir) : '');
             $newName = $this->newName($dir);
             $newPath = $dir . DIRECTORY_SEPARATOR . $newName;
             if (!file_exists($dir)) {
