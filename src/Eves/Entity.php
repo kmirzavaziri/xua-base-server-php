@@ -446,9 +446,9 @@ abstract class Entity extends Block
     /**
      * @noinspection PhpUnusedParameterInspection
      */
-    protected static function _count(Condition $condition, Order $order, Pager $pager, string $caller): int
+    protected static function _count(Condition $condition, Pager $pager, string $caller): int
     {
-        return static::_x_count($condition, $order, $pager);
+        return static::_x_count($condition, $pager);
     }
 
     /**
@@ -568,18 +568,15 @@ abstract class Entity extends Block
         return static::_getMany($condition, $order, $pager, $lock, $caller);
     }
 
-    final public static function count(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
+    final public static function count(?Condition $condition = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
     {
         if ($condition === null) {
             $condition = Condition::trueLeaf();
         }
-        if ($order === null) {
-            $order = Order::noOrder();
-        }
         if ($pager === null) {
             $pager = Pager::unlimited();
         }
-        return static::_count($condition, $order, $pager, $caller);
+        return static::_count($condition, $pager, $caller);
     }
 
     final public static function deleteMany(?Condition $condition = null, ?Order $order = null, ?Pager $pager = null, string $caller = Visibility::CALLER_PHP): int
@@ -857,9 +854,9 @@ abstract class Entity extends Block
         return $entities;
     }
 
-    final protected static function _x_count(Condition $condition, Order $order, Pager $pager): int
+    final protected static function _x_count(Condition $condition, Pager $pager): int
     {
-        $statement = self::execute("SELECT COUNT(`" . self::table() . "`.`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . " " . $pager->render(), $condition->parameters);
+        $statement = self::execute("SELECT COUNT(`" . self::table() . "`.`id`) as `c` FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $pager->render(), $condition->parameters);
         return $statement->fetch(PDO::FETCH_ASSOC)['c'];
     }
 
