@@ -7,12 +7,14 @@ use ReflectionObject;
 use Throwable;
 use Xua\Core\Eves\Entity;
 
-final class EntityBuffer {
+final class EntityBuffer
+{
     /**  @var Entity[] */
     private array $entities = [];
     private static ?EntityBuffer $efficientBuffer = null;
 
-    public static function getEfficientBuffer(): self {
+    public static function getEfficientBuffer(): self
+    {
         if (!self::$efficientBuffer) {
             self::$efficientBuffer = new self();
         }
@@ -37,7 +39,7 @@ final class EntityBuffer {
         return $this;
     }
 
-    public function store(): void
+    public function store(): self
     {
         $savePoint = Entity::savePoint();
         try {
@@ -45,6 +47,24 @@ final class EntityBuffer {
         } catch (Throwable $t) {
             Entity::rollbackToSavepoint($savePoint);
             throw $t;
+        }
+        return $this;
+    }
+
+    /**
+     * @return Entity[]
+     */
+    public function getEntities(?string $entityClass = null): array
+    {
+        if ($entityClass === null) {
+            return $this->entities;
+        } else {
+            return array_filter(
+                $this->entities,
+                function (Entity $entity) use($entityClass) {
+                    return is_a($entity, $entityClass);
+                }
+            );
         }
     }
 
