@@ -25,22 +25,12 @@ class Instance extends Super
     protected static function _argumentSignatures(): array
     {
         return array_merge(parent::_argumentSignatures(), [
-            Signature::new(false, static::of, true, null,
-                new Text([])
-            ),
-            Signature::new(false, static::strict, false, false,
-                new Boolean([])
-            ),
-            Signature::new(false, static::acceptClass, false, false,
-                new Boolean([])
-            ),
-            Signature::new(false, static::acceptObject, false, true,
-                new Boolean([])
-            ),
-            Signature::new(false, static::nullable, false, false,
-                new Boolean([])
-            ),
-            ]);
+            Signature::new(false, static::of, true, null, new Text([])),
+            Signature::new(false, static::strict, false, false, new Boolean([])),
+            Signature::new(false, static::acceptClass, false, false, new Boolean([])),
+            Signature::new(false, static::acceptObject, false, true, new Boolean([])),
+            Signature::new(false, static::nullable, false, false, new Boolean([])),
+        ]);
     }
 
     protected function _predicate($input, null|string|array &$message = null): bool
