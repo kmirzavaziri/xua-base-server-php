@@ -416,7 +416,7 @@ final class LocaleLanguage extends Service
 
     public static function computeDirection(?string $text): string
     {
-        // @TODO persian/arabic digits must be evaluated to rtl
+        // @TODO persian/arabic digits must be evaluated to ltr
         if (!$text) {
             return 'ltr';
         }
