@@ -85,7 +85,7 @@ final class Condition
      * @param mixed|null $value
      * @return Condition
      */
-    public static function leaf(CF $field, string $relation, mixed $value = null): Condition
+    public static function leaf(CF $field, string $relation, mixed $value = null, $marshal = true): Condition
     {
         if (!in_array($relation, self::RELATION_)) {
             throw new EntityConditionException('Invalid relation provided. Relation must be a constant of class Condition.');
@@ -102,7 +102,7 @@ final class Condition
 
         self::validate($field, $relation, $value);
 
-        $condition->parameters = self::marshalDatabase($field, $relation, $value);
+        $condition->parameters = self::marshalDatabase($field, $relation, $value, $marshal);
 
         return $condition;
     }
@@ -142,14 +142,16 @@ final class Condition
         }
     }
 
-    private static function marshalDatabase(CF $field, string $relation, mixed $value): mixed
+    private static function marshalDatabase(CF $field, string $relation, mixed $value, $marshal = true): mixed
     {
         $fieldType = $field->signature->declaration;
 
         if (in_array($relation, [Condition::BETWEEN, Condition::NBETWEEN])) {
             return [
-                is_string($value[0]) and str_contains($value[0], '$FILTER') ? $value[0] : $fieldType->marshalDatabase($value[0]),
-                $fieldType->marshalDatabase($value[1])
+                is_string($value[0]) and str_contains($value[0], '$FILTER')
+                    ? $value[0]
+                    : ($marshal ? $fieldType->marshalDatabase($value[0]) : $value[0]),
+                $marshal ? $fieldType->marshalDatabase($value[1]) : $value[1],
             ];
         }
 
@@ -157,7 +159,7 @@ final class Condition
             return [];
         }
 
-        if (in_array($relation, [
+        if ($marshal and in_array($relation, [
             Condition::GRATER, Condition::NGRATER, Condition::GRATEREQ, Condition::NGRATEREQ,
             Condition::LESS, Condition::NLESS, Condition::LESSEQ, Condition::NLESSEQ,
             Condition::EQ, Condition::NEQ,
