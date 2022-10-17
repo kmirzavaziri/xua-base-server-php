@@ -130,13 +130,7 @@ class URPIService extends Service
 
         $isPublicResourcePath = false;
         $internalResourcePath = '';
-        foreach (ConstantService::get('config', 'paths.public') as $publicPath) {
-            $explodedPublicPath = explode(':', $publicPath, 2);
-            if (count($explodedPublicPath) == 2) {
-                [$internalPublicPath, $externalPublicPath] = $explodedPublicPath;
-            } else {
-                [$internalPublicPath, $externalPublicPath] = [$publicPath, $publicPath];
-            }
+        foreach (ConstantService::get('config', 'paths.public') as $internalPublicPath => $externalPublicPath) {
             if (str_starts_with($externalResourcePath, $externalPublicPath)) {
                 $internalResourcePath = $internalPublicPath . DIRECTORY_SEPARATOR . substr($externalResourcePath, strlen($externalPublicPath));
                 if (self::isSecurelyUnderDirectory($internalResourcePath, $internalPublicPath)) {
