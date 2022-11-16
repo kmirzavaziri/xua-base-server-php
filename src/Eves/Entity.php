@@ -137,6 +137,8 @@ abstract class Entity extends Block
      */
     private ?int $_x_given_id;
 
+    private bool $_x_should_delete = false;
+
     /**
      * @var int
      */
@@ -543,6 +545,11 @@ abstract class Entity extends Block
         $this->_delete($force, $caller);
     }
 
+    final public function markToDelete(bool $force = false, string $caller = Visibility::CALLER_PHP): void
+    {
+        $this->_x_should_delete = true;
+    }
+
     /**
      * @return Query[]
      */
@@ -649,6 +656,10 @@ abstract class Entity extends Block
      */
     final protected function _x_storeQueries(): array
     {
+        if ($this->_x_should_delete) {
+            return $this->deleteQueries();
+        }
+
         if (self::$_x_entities_visited_for_store[spl_object_hash($this)] ?? false) {
             return [];
         }
@@ -745,7 +756,7 @@ abstract class Entity extends Block
                         ));
                     }
                 }
-            } elseif ($signature->declaration->isNN) {
+            } elseif ($signature->declaration->isNN and $signature->declaration->definedHere) {
                 foreach ($this->_x_values[self::FIELD_PREFIX][$key] as $relatedEntityKey => $relatedEntity) {
                     try {
                         $queries = array_merge($queries, $relatedEntity->storeQueries());
@@ -832,9 +843,12 @@ abstract class Entity extends Block
     final protected static function _x_getMany(Condition $condition, Order $order, Pager $pager, string $lock): array
     {
         [$columnsExpression, $keys] = self::columnsExpression();
+
         $orderColumnExpression = $order->columnsExpression($columnsExpression);
         $orderColumnExpression = $orderColumnExpression ? ', ' . $orderColumnExpression : '';
-        $statement = self::execute("SELECT DISTINCT $columnsExpression$orderColumnExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . " " . $pager->render() . " " . $lock, $condition->parameters);
+        $columnsExpression .= $orderColumnExpression;
+
+        $statement = self::execute("SELECT DISTINCT $columnsExpression FROM `" . static::table() . "` " . $condition->joins() . " WHERE $condition->template " . $order->render() . " " . $pager->render() . " " . $lock, $condition->parameters);
         $rawArrays = $statement->fetchAll(PDO::FETCH_NUM);
         $arrays = [];
         foreach ($rawArrays as $item => $rawArray) {

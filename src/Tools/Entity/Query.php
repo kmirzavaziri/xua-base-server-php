@@ -52,14 +52,24 @@ final class Query {
 
     public static function insertMany(string $table, array $columns, array $rows): self
     {
-        $placeHolders = implode(",\n", array_fill(0, count($rows), "\t" . implode(', ', array_fill(0, count($columns), '?'))));
+        $placeHolders = implode(
+            ",\n",
+            array_fill(
+                0,
+                count($rows),
+                "\t(" . implode(
+                    ', ',
+                    array_fill(0, count($columns), '?')
+                ) . ')'
+            )
+        );
 
         $bind = [];
         foreach ($rows as $row) {
             $bind = array_merge($bind, $row);
         }
 
-        // @TODO investigate if array to string conversion is correct
+        $columns = '`' . implode('`, `', $columns) . '`';
         return new Query("INSERT INTO `$table` ($columns) VALUES \n$placeHolders", $bind);
     }
 

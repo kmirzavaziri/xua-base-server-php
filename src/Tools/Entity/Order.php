@@ -59,7 +59,6 @@ class Order
                     $result[] = $name;
                 }
             }
-
         }
         return implode(', ', $result);
     }

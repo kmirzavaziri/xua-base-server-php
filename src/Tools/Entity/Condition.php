@@ -74,6 +74,10 @@ final class Condition
      * @var Join[]
      */
     private array $joins = [];
+    /**
+     * @var CF[]
+     */
+    private array $columns = [];
 
     /**
      */
@@ -103,6 +107,8 @@ final class Condition
         self::validate($field, $relation, $value);
 
         $condition->parameters = self::marshalDatabase($field, $relation, $value, $marshal);
+
+        $condition->columns = [$field];
 
         return $condition;
     }
@@ -286,6 +292,7 @@ final class Condition
         $this->template = "($this->template) AND ($condition->template)";
         $this->parameters = array_merge($this->parameters, $condition->parameters);
         $this->joins = array_merge($this->joins, $condition->joins);
+        $this->columns = array_merge($this->columns, $condition->columns);
         return $this;
     }
 
@@ -298,6 +305,7 @@ final class Condition
         $this->template = "($this->template) OR ($condition->template)";
         $this->parameters = array_merge($this->parameters, $condition->parameters);
         $this->joins = array_merge($this->joins, $condition->joins);
+        $this->columns = array_merge($this->columns, $condition->columns);
         return $this;
     }
 
@@ -310,6 +318,7 @@ final class Condition
         $this->template = "($this->template) XOR ($condition->template)";
         $this->parameters = array_merge($this->parameters, $condition->parameters);
         $this->joins = array_merge($this->joins, $condition->joins);
+        $this->columns = array_merge($this->columns, $condition->columns);
         return $this;
     }
 
@@ -364,5 +373,24 @@ final class Condition
         return implode(PHP_EOL, array_map(function (Join $join) {
             return $join->expression();
         }, $joins));
+    }
+
+    public function columnsExpression(string $existingColumnsExpression): string
+    {
+        $existingColumnExpressions = explode(',', $existingColumnsExpression);
+        $existingColumnExpressionsDict = [];
+        foreach ($existingColumnExpressions as $columnExpression) {
+            $existingColumnExpressionsDict[trim($columnExpression)] = true;
+        }
+        $result = [];
+        foreach ($this->columns as $field) {
+            if ($field->signature->declaration->databaseType() != 'DONT STORE') {
+                $name = $field->name();
+                if (!isset($existingColumnExpressionsDict[$name])) {
+                    $result[] = $name;
+                }
+            }
+        }
+        return implode(', ', $result);
     }
 }
