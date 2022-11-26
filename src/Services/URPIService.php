@@ -203,7 +203,9 @@ class URPIService extends Service
         NotFoundInterface::execute();
     }
 
-    public static function publicMethodInit(): void {}
+    public static function afterMethod(string $class, array $request, array $response): void {}
+
+    public static function beforeMethod(string $class, array $request): void {}
 
     public static function publicErrorInit(): void {}
 

@@ -3,10 +3,6 @@
 namespace Xua\Core\Services;
 
 use PDO;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use ReflectionClass;
-use RegexIterator;
 use Xua\Core\Eves\Entity;
 use Xua\Core\Eves\Service;
 use Xua\Core\Tools\Entity\Database;
@@ -24,48 +20,18 @@ final class EntityAlterService extends Service
 
     private static function altersInDirs(array $dirs): string
     {
-        $entities = [];
-        foreach ($dirs as $dir) {
-            $phpFiles = new RegexIterator(new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir)), '/\.php$/');
-            foreach ($phpFiles as $phpFile) {
-                $entities[] = self::getClassName(file_get_contents($phpFile->getRealPath()));
-            }
-        }
+        $entities = ReflectionService::getClassesInDirs($dirs, Entity::class, false);
         $alters = [];
         $newTables = [];
         foreach ($entities as $entity) {
-            if ($entity and is_a($entity, Entity::class, true) and !(new ReflectionClass($entity))->isAbstract()) {
-                $tableNamesAndAlter = $entity::alter();
-                $newTables = array_merge($newTables, $tableNamesAndAlter['tableNames']);
-                if ($tableNamesAndAlter['alters']) {
-                    $alters[] = $tableNamesAndAlter['alters'];
-                }
+            $tableNamesAndAlter = $entity::alter();
+            $newTables = array_merge($newTables, $tableNamesAndAlter['tableNames']);
+            if ($tableNamesAndAlter['alters']) {
+                $alters[] = $tableNamesAndAlter['alters'];
             }
         }
         $alters[] = TableScheme::getDropTables($newTables);
         return trim(implode(PHP_EOL . PHP_EOL, $alters));
-    }
-
-    private static function getClassName(string $phpCode): ?string
-    {
-        $tokens = token_get_all($phpCode);
-        $namespace = '';
-        for ($index = 0; isset($tokens[$index]); $index++) {
-            if (!isset($tokens[$index][0])) {
-                continue;
-            }
-            if ($tokens[$index][0] === T_NAMESPACE) {
-                $index += 2;
-                while (isset($tokens[$index]) && is_array($tokens[$index])) {
-                    $namespace .= $tokens[$index++][1];
-                }
-            }
-            if ($tokens[$index][0] === T_CLASS && $tokens[$index + 1][0] === T_WHITESPACE && $tokens[$index + 2][0] === T_STRING) {
-                $index += 2;
-                return $namespace.'\\'.$tokens[$index][1];
-            }
-        }
-        return null;
     }
 
     private static function alterTransaction(): string

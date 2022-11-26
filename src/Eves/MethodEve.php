@@ -28,7 +28,7 @@ abstract class MethodEve extends Block
 
     final public function __construct(array $request)
     {
-        URPIService::$service::publicMethodInit();
+        URPIService::$service::beforeMethod(static::class, $request);
 
         $this->_x_error = new MethodRequestException();
 
@@ -43,6 +43,8 @@ abstract class MethodEve extends Block
         $this->logs();
 
         self::processResponse(static::responseSignatures(), $this->_x_values[self::RESPONSE_PREFIX]);
+
+        URPIService::$service::afterMethod(static::class, $this->_x_values[self::REQUEST_PREFIX], $this->_x_values[self::RESPONSE_PREFIX]);
     }
 
     /**
