@@ -48,7 +48,7 @@ class Date extends Instance
 
     protected function _unmarshal($input): mixed
     {
-        return $input ? (DateTimeInstance::fromYmd($input) ?? $input) : $input;
+        return ($input and is_string($input)) ? (DateTimeInstance::fromYmd($input) ?? $input) : $input;
     }
 
     protected function _marshalDatabase($input): mixed
