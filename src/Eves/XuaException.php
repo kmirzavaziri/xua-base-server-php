@@ -70,4 +70,11 @@ abstract class XuaException extends Exception
         array_walk_recursive($this->errors, function($a) use (&$return) { $return[] = $a; });
         return $return;
     }
+
+    public function throwIfHasErrors()
+    {
+        if ($this->errors) {
+            throw $this;
+        }
+    }
 }
