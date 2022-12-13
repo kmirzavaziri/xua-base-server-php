@@ -1301,7 +1301,10 @@ abstract class Entity extends Block
         else {
             $found = false;
             foreach ($entity->$key as $index => $item) {
-                if ($item->_x_values[self::FIELD_PREFIX]['id'] == $this->_x_values[self::FIELD_PREFIX]['id']) {
+                if (
+                    $item->_x_values[self::FIELD_PREFIX]['id'] !== null and
+                    $item->_x_values[self::FIELD_PREFIX]['id'] == $this->_x_values[self::FIELD_PREFIX]['id']
+                ) {
                     $entity->_x_values[self::FIELD_PREFIX][$key][$index] = $this;
                     $found = true;
                     break;
