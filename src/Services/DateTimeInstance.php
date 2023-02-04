@@ -192,8 +192,11 @@ class DateTimeInstance extends Service
         $i = $this->YmdHis['i'];
         $s = $this->YmdHis['s'];
         $dt = DateTime::createFromFormat('U', $this->timestamp)->setTimezone(new DateTimeZone($timezone));
-        [$O, $P, $w, $N] = explode('-', $dt->format('O-P-w-N'));
+        $O = $dt->format('O');
+        $P = $dt->format('P');
         /** @var integer $w */
+        $w = $dt->format('w');
+        $N = $dt->format('N');
         $w = (($w + 1) % 7);
         $z = ($m < 7) ? (($m - 1) * 31) + $d - 1 : (($m - 7) * 30) + $d + 185;
         $L = floor(((($Y + 12) % 33) % 4) == 1);
